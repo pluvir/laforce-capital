@@ -861,6 +861,12 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .tf-ticker-action{font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--text-3);opacity:.8}
 .tf-empty{font-size:11px;color:var(--text-3);font-style:italic;padding:8px;background:rgba(0,0,0,.15);border:1px dashed var(--border);border-radius:var(--r);text-align:center;grid-column:1/-1}
 .tf-col-body{font-size:11px;color:var(--text-2);line-height:1.55;padding-top:4px}
+.tf-bullets{display:flex;flex-direction:column;gap:10px;padding-top:2px}
+.tf-bullet-row{display:flex;align-items:flex-start;gap:8px;padding:10px;background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:var(--r);transition:all .2s}
+.tf-bullet-row:hover{background:rgba(0,0,0,.32);border-color:var(--border-2)}
+.tf-bullet-text{font-size:11.5px;color:var(--text-1);line-height:1.55;flex:1;min-width:0}
+.tf-ticker-chip{font-family:'DM Mono',monospace;font-size:11px;font-weight:700;padding:4px 9px;border-radius:14px;border:1px solid;cursor:pointer;letter-spacing:.04em;flex-shrink:0;transition:all .15s;white-space:nowrap}
+.tf-ticker-chip:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.4)}
 .tf-timeline{position:relative;padding-left:4px}
 .tf-tl-step{position:relative;display:flex;gap:14px;padding:10px 0 10px 0;margin-left:16px;border-left:2px solid var(--border)}
 .tf-tl-step:first-child{padding-top:0}
@@ -2291,33 +2297,62 @@ function parseCSV(csv){
   var result=[];var headerSkipped=false;
   lines.forEach(function(line){
     if(!line.trim())return;
-    // Skip section headers like "RECURRING:"
+    // Skip section headers
     if(/^RECURRING:/i.test(line.trim()))return;
-    if(!headerSkipped&&/symbol|ticker|name|quantity/i.test(line)&&!/^[A-Z]{1,6},/.test(line)){headerSkipped=true;return;}
-    // Handle N/A values -- replace with 0
-    var cleaned=line.replace(/\bN\/A\b/gi,'0').replace(/["$]/g,'').trim();
-    var parts=cleaned.split(',').map(function(s){return s.trim();});
+    if(!headerSkipped&&/symbol|ticker|name|quantity/i.test(line)&&!/^[A-Z]{1,6}[\s,\t|]/.test(line)){headerSkipped=true;return;}
+    // Normalize: strip dollar signs, quotes, commas inside numbers, replace N/A
+    var cleaned=line.replace(/\bN\/A\b/gi,'0').replace(/["]/g,'').trim();
+    // Remove $ from numeric tokens only (keep in tickers if any weirdness)
+    cleaned=cleaned.replace(/\$/g,'');
+    // Remove thousands separators inside numbers: "1,234.56" → "1234.56"
+    cleaned=cleaned.replace(/(\d),(\d{3})/g,'$1$2').replace(/(\d),(\d{3})/g,'$1$2');
+    // Split on comma, tab, pipe, or multiple spaces — whichever produces the most tokens
+    var delimiters = [',','\t','|',/\s{2,}/];
+    var parts = [];
+    delimiters.forEach(function(d){
+      var p = cleaned.split(d).map(function(s){return s.trim();}).filter(Boolean);
+      if(p.length > parts.length) parts = p;
+    });
     if(parts.length<2)return;
-    var sym=(parts[0]||'').toUpperCase().replace(/[^A-Z.]/g,'');
-    if(!sym||sym.length<1||sym.length>7)return;
-    if(/^(SYMBOL|TICKER|NAME|STOCK|DESC|EQUIT)/i.test(sym))return;
-    var shares=parseFloat(parts[1])||0;
+    var sym=(parts[0]||'').toUpperCase().replace(/[^A-Z0-9.\-]/g,'').replace(/^\W+|\W+$/g,'');
+    // Allow alphanumerics, dot, hyphen in symbols (BRK.B, BRK-B, NEE-B, etc.)
+    if(!sym||sym.length<1||sym.length>8)return;
+    if(/^(SYMBOL|TICKER|NAME|STOCK|DESC|EQUIT|TOTAL|SUBTOTAL|CASH)$/i.test(sym))return;
+    // Parse numeric fields — handle various orders by scanning for numbers
+    var nums = parts.slice(1).map(function(s){
+      var m = s.match(/-?\d+(\.\d+)?/);
+      return m ? parseFloat(m[0]) : 0;
+    });
+    var shares = nums[0] || 0;
     if(shares<=0)return;
-    var costPS=parseFloat(parts[2])||0;
-    var mktVal=parseFloat(parts[3])||0;
-    // Skip bankrupt/worthless -- no market value AND tiny price
-    if(mktVal===0&&costPS<0.01)return;
-    // Skip positions where price is essentially 0 (NCNCF-style delisted)
-    if(mktVal<0.10&&shares>100)return;
-    if(!mktVal&&costPS&&shares)mktVal=costPS*shares;
-    var cost=costPS*shares;
-    if(mktVal<=0&&cost<=0)return;
+    var costPS = nums[1] || 0;
+    var mktVal = nums[2] || 0;
+    // If only 2 numeric fields present, assume shares + mktVal (common in Robinhood)
+    if(nums.length === 2 && mktVal === 0 && costPS > 0) {
+      mktVal = costPS; costPS = 0;
+    }
+    // Skip bankrupt/worthless — no market value AND tiny price
+    if(mktVal===0 && costPS<0.01) return;
+    // Skip obviously-delisted (near-zero price with large share count)
+    if(mktVal<0.10 && shares>100) return;
+    if(!mktVal && costPS && shares) mktVal = costPS*shares;
+    var cost = costPS*shares;
+    if(mktVal<=0 && cost<=0) return;
     result.push({
-      sym:sym,shares:shares,costPerShare:costPS,
-      cost:cost,mktVal:mktVal||cost,
-      gain:(mktVal||cost)-cost,pct:0
+      sym:sym, shares:shares, costPerShare:costPS,
+      cost:cost, mktVal:mktVal||cost,
+      gain:(mktVal||cost)-cost, pct:0
     });
   });
+  // Within-response dedupe: if AI returned same ticker twice (e.g. from multiple views
+  // of the same account), keep the row with the LARGEST market value and discard the rest.
+  // This prevents the "doubled/tripled total" bug.
+  var byTicker={};
+  result.forEach(function(h){
+    var existing=byTicker[h.sym];
+    if(!existing || h.mktVal > existing.mktVal){ byTicker[h.sym]=h; }
+  });
+  result=Object.keys(byTicker).map(function(k){return byTicker[k];});
   var total=result.reduce(function(s,h){return s+h.mktVal;},0);
   result.forEach(function(h){h.pct=total>0?(h.mktVal/total*100):0;});
   return result;
@@ -2512,16 +2547,46 @@ async function queueImagesForExtraction(files){
 
     if(parsed.length){
       // Track merge stats for the user
-      var stats={found:parsed.length,files:filesToProcess.length,merged:0,new:0};
+      var stats={found:parsed.length,files:filesToProcess.length,merged:0,new:0,replaced:0};
       if(_holdings.length){
-        parsed.forEach(function(newH){
-          var exists=_holdings.find(function(h){return h.sym===newH.sym;});
-          if(exists){
-            exists.shares+=newH.shares;exists.mktVal+=newH.mktVal;exists.cost+=newH.cost;
-            exists.gain=exists.mktVal-exists.cost;
-            stats.merged++;
-          }else{_holdings.push(newH);stats.new++;}
-        });
+        // Detect if the user is re-uploading the SAME account (significant overlap with existing).
+        // This used to silently SUM shares → doubled/tripled portfolio bug.
+        var overlap=parsed.filter(function(p){return _holdings.some(function(h){return h.sym===p.sym;});}).length;
+        var overlapRatio=overlap/parsed.length;
+        // If >=60% of new holdings already exist, assume same account — REPLACE those, don't sum
+        if(overlapRatio>=0.6){
+          var confirmReplace=confirm(
+            overlap+' of '+parsed.length+' tickers match your existing portfolio.\n\n'+
+            'Looks like you re-uploaded the same account.\n\n'+
+            'OK = REPLACE matching positions with these fresher values (recommended)\n'+
+            'Cancel = ADD shares to existing (use only if this is a DIFFERENT account)'
+          );
+          parsed.forEach(function(newH){
+            var exists=_holdings.find(function(h){return h.sym===newH.sym;});
+            if(exists){
+              if(confirmReplace){
+                // REPLACE — overwrite with the new values
+                exists.shares=newH.shares;exists.mktVal=newH.mktVal;exists.cost=newH.cost;
+                exists.costPerShare=newH.costPerShare;exists.gain=exists.mktVal-exists.cost;
+                stats.replaced++;
+              } else {
+                // ADD — user explicitly said different account
+                exists.shares+=newH.shares;exists.mktVal+=newH.mktVal;exists.cost+=newH.cost;
+                exists.gain=exists.mktVal-exists.cost;stats.merged++;
+              }
+            }else{_holdings.push(newH);stats.new++;}
+          });
+        } else {
+          // Low overlap → different account, safe to add
+          parsed.forEach(function(newH){
+            var exists=_holdings.find(function(h){return h.sym===newH.sym;});
+            if(exists){
+              exists.shares+=newH.shares;exists.mktVal+=newH.mktVal;exists.cost+=newH.cost;
+              exists.gain=exists.mktVal-exists.cost;
+              stats.merged++;
+            }else{_holdings.push(newH);stats.new++;}
+          });
+        }
       }else{_holdings=parsed; stats.new=parsed.length;}
       // Count skipped lines visible in raw response
       var rawLines=holdingsText.split('\n').filter(function(l){return l.trim()&&!/^symbol/i.test(l);}).length;
@@ -2531,9 +2596,13 @@ async function queueImagesForExtraction(files){
       status.innerHTML=renderExtractionReceipt(stats,recurring);
       if(recurring.length)renderRecurring(recurring,status);
     }else{
+      // Show raw AI response so user can see exactly what Anthropic extracted
+      var rawPreview=(txt||'').trim();
+      var rawHTML=rawPreview?'<details style="margin-top:10px"><summary style="cursor:pointer;font-size:10px;letter-spacing:.12em;color:var(--gold-light);text-transform:uppercase;font-weight:600;padding:4px 0">View what the AI read →</summary><pre style="margin-top:8px;padding:10px;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:var(--r);font-family:DM Mono,monospace;font-size:10px;color:var(--text-2);white-space:pre-wrap;max-height:280px;overflow-y:auto">'+esc(rawPreview)+'</pre><div style="font-size:10px;color:var(--text-3);margin-top:6px;line-height:1.5">If the AI saw holdings but the parser missed them, copy-paste the lines above into the manual box below — the parser accepts <code style="color:var(--gold-light);font-family:DM Mono,monospace">SYMBOL, SHARES, COST, VALUE</code> or tab-separated.</div></details>':'';
       status.innerHTML='<div class="extract-err">'
         +'<div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Could not extract any holdings</div>'
         +'<div style="font-size:11px;color:var(--text-2);line-height:1.6">Try: (1) a clearer screenshot, (2) make sure ticker/shares/value columns are visible, or (3) use the manual paste box below.</div>'
+        +rawHTML
       +'</div>';
     }
   }catch(err){
@@ -2551,9 +2620,10 @@ function renderExtractionReceipt(s,recurring){
       +'<div style="font-size:18px;color:var(--sage)">✓</div>'
       +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:16px;color:var(--cream);font-weight:500">Portfolio extracted</div>'
     +'</div>'
-    +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px">'
+    +'<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px">'
       +receiptCell('Found',s.found,'var(--gold-light)')
       +receiptCell('New',s.new,'var(--sage)')
+      +receiptCell('Replaced',s.replaced||0,(s.replaced||0)?'var(--gold-light)':'var(--text-3)')
       +receiptCell('Merged',s.merged,'var(--gold)')
       +receiptCell('Skipped',s.skipped||0,s.skipped?'var(--clay)':'var(--text-3)')
     +'</div>'
@@ -4574,6 +4644,55 @@ function tfTickerCards(tickers, label, color){
     +'</button>';
   }).join('');
 }
+// Parse a section like "KEEP AS-IS" into readable per-ticker rows with a one-line rationale
+function tfParseBullets(text, maxItems){
+  if(!text) return [];
+  maxItems = maxItems || 6;
+  // First try to split on bullets/hyphens/numbered lines
+  var raw = text.trim();
+  var items = [];
+  // Split on newline-dash, newline-bullet, newline-number, or sentence-end followed by ticker
+  var rawItems = raw.split(/\n(?=\s*[-•*])|(?:\n\s*\d+[.):])|(?=\s-\s[A-Z]{2,6}\s)/).map(function(s){return s.replace(/^[\s\-•*\d.):]+/,'').trim();}).filter(Boolean);
+  if(rawItems.length<=1){
+    // Fallback: split on ". - " or period followed by uppercase ticker
+    rawItems = raw.split(/(?:\.\s+-\s+|\s-\s(?=[A-Z]{2,6}\s))/).map(function(s){return s.replace(/^[\s\-•*]+/,'').trim();}).filter(Boolean);
+  }
+  rawItems.slice(0,maxItems).forEach(function(item){
+    // Extract the first ticker-like token (2-6 uppercase letters)
+    var tm = item.match(/\b([A-Z]{2,6}(?:\.[A-Z])?)\b/);
+    var ticker = tm ? tm[1] : null;
+    // Skip obviously non-ticker words
+    if(ticker && /^(YOUR|THIS|THAT|THE|WITH|FROM|INTO|AND|FOR|BUT|NOT|NONE|CORE|GROWTH|CASH)$/.test(ticker)){
+      ticker = null;
+      var tm2 = item.substring(tm.index+tm[0].length).match(/\b([A-Z]{2,6}(?:\.[A-Z])?)\b/);
+      if(tm2) ticker = tm2[1];
+    }
+    // Clean rationale: keep a single clean sentence, trim to ~140 chars
+    var rationale = item.replace(/[\n\r]+/g,' ').replace(/\s+/g,' ').trim();
+    // Remove redundant ticker mention if it's at the start
+    if(ticker){
+      rationale = rationale.replace(new RegExp('^'+ticker+'\\s*[:\\-]?\\s*','i'),'');
+      rationale = rationale.replace(new RegExp('^'+ticker+'\\s+at\\s+','i'),'');
+    }
+    // Cap length so columns stay even
+    if(rationale.length > 180) rationale = rationale.substring(0,177).replace(/[\s,.\-]+$/,'')+'…';
+    if(rationale.length > 4) items.push({ticker: ticker, text: rationale});
+  });
+  return items;
+}
+
+// Render the parsed bullets as clean rows (ticker chip + rationale text)
+function tfRenderBulletRows(items, color, actionLabel){
+  if(!items || !items.length) return '<div class="tf-empty">None flagged</div>';
+  return items.map(function(it){
+    var chip = it.ticker ? '<button class="tf-ticker-chip" style="color:'+color+';border-color:'+color.replace(')',',0.35)').replace('var(','rgba(')+';background:'+color.replace(')',',0.08)').replace('var(','rgba(')+'" onclick="quickTick(\''+esc(it.ticker)+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2]);setTimeout(runStock,200)" title="Analyze '+esc(it.ticker)+'">'+esc(it.ticker)+' →</button>' : '';
+    return '<div class="tf-bullet-row">'
+      +(chip || '<div style="width:4px;height:4px;border-radius:50%;background:'+color+';margin-top:9px;flex-shrink:0"></div>')
+      +'<div class="tf-bullet-text">'+esc(it.text)+'</div>'
+    +'</div>';
+  }).join('');
+}
+
 function tfActionTimeline(text){
   if(!text) return '';
   var lines = text.split('\n').map(function(l){return l.trim();}).filter(function(l){return l;});
@@ -4685,24 +4804,21 @@ async function runFeasibilityTunedToStrategy(){
         +(S.gap?'<div style="margin-top:12px;padding:10px 12px;background:rgba(192,113,79,.06);border-left:2px solid var(--clay);border-radius:var(--r);font-size:12px;color:var(--text-1);line-height:1.6">'+esc(S.gap).replace(/\n- /g,'<br>• ').replace(/\n/g,'<br>')+'</div>':'')
       +'</div>'
 
-      // KEEP / TRIM / ADD — color-coded ticker cards
+      // KEEP / TRIM / ADD — color-coded ticker rows with one-line rationale (click ticker to analyze)
       +'<div style="padding:20px 24px;border-bottom:1px solid var(--border)">'
-        +'<div style="font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:12px">◆ Position actions · click to analyze</div>'
-        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">'
+        +'<div style="font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:12px">◆ Position actions · tap any ticker to analyze</div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">'
           +'<div class="tf-action-col">'
             +'<div class="tf-col-head" style="color:var(--sage)">✓ KEEP AS-IS</div>'
-            +'<div class="tf-card-grid">'+(keepTickers.length?tfTickerCards(keepTickers,'Hold','var(--sage)'):'<div class="tf-empty">None flagged</div>')+'</div>'
-            +(S.keep?'<div class="tf-col-body">'+esc(S.keep.substring(0,240))+(S.keep.length>240?'…':'')+'</div>':'')
+            +'<div class="tf-bullets">'+tfRenderBulletRows(tfParseBullets(S.keep,4),'var(--sage)','Hold')+'</div>'
           +'</div>'
           +'<div class="tf-action-col">'
             +'<div class="tf-col-head" style="color:var(--clay)">✗ TRIM OR EXIT</div>'
-            +'<div class="tf-card-grid">'+(trimTickers.length?tfTickerCards(trimTickers,'Trim','var(--clay)'):'<div class="tf-empty">None flagged</div>')+'</div>'
-            +(S.trim?'<div class="tf-col-body">'+esc(S.trim.substring(0,240))+(S.trim.length>240?'…':'')+'</div>':'')
+            +'<div class="tf-bullets">'+tfRenderBulletRows(tfParseBullets(S.trim,4),'var(--clay)','Trim')+'</div>'
           +'</div>'
           +'<div class="tf-action-col">'
             +'<div class="tf-col-head" style="color:var(--gold-light)">+ ADD IMMEDIATELY</div>'
-            +'<div class="tf-card-grid">'+(addTickers.length?tfTickerCards(addTickers,'Add','var(--gold-light)'):'<div class="tf-empty">None flagged</div>')+'</div>'
-            +(S.add?'<div class="tf-col-body">'+esc(S.add.substring(0,240))+(S.add.length>240?'…':'')+'</div>':'')
+            +'<div class="tf-bullets">'+tfRenderBulletRows(tfParseBullets(S.add,5),'var(--gold-light)','Add')+'</div>'
           +'</div>'
         +'</div>'
       +'</div>'
