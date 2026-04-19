@@ -218,6 +218,38 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .adot{width:9px;height:9px;border-radius:2px;flex-shrink:0;box-shadow:0 0 6px currentColor}
 .aitem-sym{font-family:"DM Mono",monospace;font-weight:600;letter-spacing:.02em;font-size:11px}
 .aitem-pct{color:var(--text-3);font-family:"DM Mono",monospace;font-size:10.5px;font-weight:500}
+/* Interactive Execution Step cards */
+.exec-step{display:flex;gap:14px;padding:13px 16px;background:linear-gradient(135deg,rgba(0,0,0,.32),rgba(20,16,12,.18));border:1px solid var(--border);border-radius:10px;margin-bottom:7px;align-items:flex-start;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .18s ease;position:relative;outline:none}
+.exec-step:hover,.exec-step:focus-visible{border-color:rgba(201,168,76,.42);background:linear-gradient(135deg,rgba(20,16,12,.4),rgba(35,28,18,.22));transform:translateX(2px)}
+.exec-step .exec-num{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:20px;line-height:1;min-width:22px;flex-shrink:0;font-weight:500;transition:transform .25s ease}
+.exec-step .exec-body{flex:1;min-width:0}
+.exec-step .exec-text{font-size:13.5px;color:var(--text-1);line-height:1.65;letter-spacing:.005em}
+.exec-step .exec-chev{font-size:11px;color:var(--text-3);margin-left:8px;transition:transform .25s ease,color .15s ease;flex-shrink:0;align-self:center;font-family:"DM Mono",monospace}
+.exec-step:hover .exec-chev{color:var(--gold)}
+.exec-step.expanded{border-color:rgba(201,168,76,.55);background:linear-gradient(135deg,rgba(40,32,18,.4),rgba(20,16,12,.4))}
+.exec-step.expanded .exec-chev{transform:rotate(180deg);color:var(--gold)}
+.exec-step.expanded .exec-num{transform:scale(1.15)}
+.exec-detail{display:none;margin-top:11px;padding-top:11px;border-top:1px dashed rgba(201,168,76,.22);font-size:12.5px;color:var(--text-2);line-height:1.75}
+.exec-step.expanded .exec-detail{display:block;animation:execIn .22s ease}
+.exec-detail-row{display:flex;gap:10px;margin-bottom:7px;align-items:flex-start}
+.exec-detail-icon{flex-shrink:0;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:"DM Mono",monospace;margin-top:2px}
+.exec-detail-icon.what{background:rgba(201,168,76,.18);color:#E8CC7A;border:1px solid rgba(201,168,76,.35)}
+.exec-detail-icon.why{background:rgba(107,170,117,.16);color:#6BAA75;border:1px solid rgba(107,170,117,.32)}
+.exec-detail-icon.tip{background:rgba(192,113,79,.16);color:#C0714F;border:1px solid rgba(192,113,79,.32)}
+.exec-detail-lbl{font-size:9px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;margin-bottom:1px}
+.exec-detail-lbl.what{color:#E8CC7A}
+.exec-detail-lbl.why{color:#6BAA75}
+.exec-detail-lbl.tip{color:#C0714F}
+.exec-detail-text{color:var(--cream-dim)}
+.exec-step-actions{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+.exec-act{font-size:10.5px;letter-spacing:.04em;padding:6px 11px;border-radius:6px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.3);color:#E8CC7A;cursor:pointer;font-family:inherit;transition:background .15s,border-color .15s;font-weight:500}
+.exec-act:hover{background:rgba(201,168,76,.18);border-color:rgba(201,168,76,.55)}
+.exec-act.done{background:rgba(107,170,117,.12);border-color:rgba(107,170,117,.4);color:#9DD0A8}
+.exec-step.done{opacity:.55}
+.exec-step.done .exec-text{text-decoration:line-through;text-decoration-color:rgba(107,170,117,.5)}
+.exec-step.done .exec-num{color:rgba(107,170,117,.6)!important}
+.exec-step.done::after{content:"✓";position:absolute;top:11px;right:14px;color:#6BAA75;font-size:14px;font-weight:700}
+@keyframes execIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 /* Allocation hover tooltip */
 .alloc-tip{position:fixed;z-index:99998;display:none;pointer-events:none;background:linear-gradient(135deg,rgba(20,16,12,.97),rgba(35,28,18,.97));border:1px solid rgba(201,168,76,.42);border-radius:10px;padding:11px 14px;box-shadow:0 14px 40px rgba(0,0,0,.65),0 0 0 1px rgba(201,168,76,.06);min-width:200px;backdrop-filter:blur(10px)}
 .alloc-tip.on{display:block;animation:allocTipIn .14s ease}
@@ -2141,6 +2173,188 @@ function scrollToEl(id,block){
   setTimeout(function(){el.scrollIntoView({behavior:'smooth',block:block||'start'});},80);
 }
 
+/* ========================================================================
+ * Interactive Execution Steps + Urgency/Risk meta cards
+ * Each card is click-to-expand with derived "what/why/pro tip" detail.
+ * "Mark as done" on step cards persists in sessionStorage.
+ * ====================================================================== */
+function _execStorageKey(stepText){
+  try{return 'lfc_execdone_'+btoa(unescape(encodeURIComponent(String(stepText)))).slice(0,40);}catch(e){return 'lfc_execdone_'+String(stepText).slice(0,40);}
+}
+function _execIsDone(stepText){
+  try{return sessionStorage.getItem(_execStorageKey(stepText))==='1';}catch(e){return false;}
+}
+function _execSetDone(stepText,done){
+  try{
+    if(done) sessionStorage.setItem(_execStorageKey(stepText),'1');
+    else     sessionStorage.removeItem(_execStorageKey(stepText));
+  }catch(e){}
+}
+function _explainStep(text){
+  var t=String(text||'');
+  var u=t.toUpperCase();
+  var tickers=(t.match(/\b[A-Z]{1,5}\b/g)||[]).filter(function(x){
+    return !['NO','AI','DCA','ETF','S&P','SPY','VIX','USD','PE','PEG','EPS','IPO','CEO','CFO','API'].includes(x)&&x.length>=2;
+  }).slice(0,5);
+  var what,why,tip;
+  if(/HOLD/.test(u)&&!/SELL/.test(u)){
+    what='Keep these positions untouched. No selling, trimming, or rebalancing — your conviction is the entire thesis.';
+    why='Compounding only works if you let winners run. Selling early to "lock in gains" is the #1 retail mistake.';
+    tip='Set a calendar reminder to review (not act on) these positions quarterly. Reviewing ≠ trading.';
+  } else if(/(ADD|BUY|ACCUMULATE).+(DIP|DROP|FALL|CORRECTION|PULL)/.test(u)){
+    what='Buy more when the price drops by the stated amount. This is dollar-cost averaging into strength.';
+    why='You\'re lowering your average cost on a position you already believe in. Every dip is a discount, not a warning.';
+    tip='Pre-commit the dollar amount before the dip happens. Decide now what you\'ll buy at -10%, -20%, -30%.';
+  } else if(/REPLACE/.test(u)){
+    what='Sell the named lower-quality positions and rotate the proceeds into the suggested higher-quality alternatives.';
+    why='Same sector exposure, better business quality, lower terminal-zero risk. You keep the thesis, drop the fragility.';
+    tip='Do the swap in one trading session, not piecemeal — partial swaps create unintended sector imbalances.';
+  } else if(/(KEEP|MAINTAIN).+(SLEEVE|TACTICAL|CASH|DRY POWDER)/.test(u)){
+    what='Reserve a percentage of your portfolio in cash or liquid instruments for opportunistic deployment.';
+    why='Asymmetric opportunities (panic crashes, single-stock blow-ups) only pay off if you have ammo when they appear.';
+    tip='Park the sleeve in SGOV or BIL — earns ~5% while you wait, settles same-day, no duration risk.';
+  } else if(/(NO SELL|NO SELLING|DO NOT SELL|HARD RULE)/.test(u)){
+    what='A pre-committed behavioral rule: no selling for the stated time window, regardless of headlines or drawdowns.';
+    why='Pre-commitment beats willpower. Decide once when calm, not 50 times when scared. Removes panic from the equation.';
+    tip='Write the rule on a Post-it next to your trading screen. Reread it every time you feel the urge to sell.';
+  } else if(/PER MONTH|MONTHLY|SYSTEMATICALLY|EVERY MONTH/.test(u)){
+    what='Recurring fixed-dollar contribution on a set schedule, regardless of market conditions.';
+    why='You buy more shares when prices fall and fewer when they rise — math does the timing for you. Beats market-timing in every study.';
+    tip='Automate it via your brokerage\'s recurring buy. Manual = you\'ll skip months when you\'re scared. Automation = you won\'t.';
+  } else if(/(IF|WHEN).+(DROP|FALL|CRASH|CORRECTION).+\d+%/.test(u)){
+    what='Conditional buy rule: when the portfolio (or named position) drops by the stated percentage, deploy more capital.';
+    why='Drawdowns are when long-term wealth is built. Most investors flinch — pre-committing turns fear into a buy signal.';
+    tip='Define exactly where the cash comes from BEFORE the drop. Selling other holdings to "buy the dip" defeats the purpose.';
+  } else if(/REBALANCE/.test(u)){
+    what='Trim winners and add to laggards to return to your target allocation percentages.';
+    why='Rebalancing forces you to systematically sell high and buy low — the opposite of what your emotions want.';
+    tip='Rebalance on a fixed calendar (every 6 or 12 months) OR when any position drifts ±5% from target — not both.';
+  } else if(/STOP|EXIT|SELL/.test(u)){
+    what='Exit the named positions or apply a stop-loss rule.';
+    why='Discipline on the sell side preserves capital. Sunk-cost thinking is the most expensive cognitive bias.';
+    tip='Use a hard stop, not a mental stop. Mental stops get rationalized away in real-time.';
+  } else {
+    what='Action item from your strategy. Treat this as binding, not optional.';
+    why='Strategies fail at execution, not at design. Each step is here because it materially changes the outcome.';
+    tip='Block 15 minutes on your calendar this week to do this. Unscheduled = undone.';
+  }
+  return {what:what,why:why,tip:tip,tickers:tickers};
+}
+function _renderExecSteps(steps,color){
+  if(!steps||!steps.length)return '';
+  return steps.map(function(step,i){
+    var done=_execIsDone(step);
+    var ex=_explainStep(step);
+    var encoded=encodeURIComponent(step);
+    var tickerBtns=ex.tickers.length
+      ? '<div class="exec-step-actions">'+ex.tickers.map(function(sym){
+          return '<button class="exec-act" onclick="event.stopPropagation();_execAnalyze(\''+esc(sym)+'\')">Analyze '+esc(sym)+' →</button>';
+        }).join('')+
+        '<button class="exec-act'+(done?' done':'')+'" onclick="event.stopPropagation();_execToggleDone(\''+encoded+'\',this)">'+(done?'✓ Done':'Mark as done')+'</button></div>'
+      : '<div class="exec-step-actions"><button class="exec-act'+(done?' done':'')+'" onclick="event.stopPropagation();_execToggleDone(\''+encoded+'\',this)">'+(done?'✓ Done':'Mark as done')+'</button></div>';
+    return '<div class="exec-step'+(done?' done':'')+'" tabindex="0" role="button" aria-expanded="false" data-step="'+encoded+'" onclick="_execToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_execToggle(this)}">'+
+      '<div class="exec-num" style="color:'+(color||'var(--gold)')+'">'+(i+1)+'</div>'+
+      '<div class="exec-body">'+
+        '<div class="exec-text">'+esc(step)+'</div>'+
+        '<div class="exec-detail">'+
+          '<div class="exec-detail-row"><div class="exec-detail-icon what">W</div><div><div class="exec-detail-lbl what">What this means</div><div class="exec-detail-text">'+esc(ex.what)+'</div></div></div>'+
+          '<div class="exec-detail-row"><div class="exec-detail-icon why">Y</div><div><div class="exec-detail-lbl why">Why it matters</div><div class="exec-detail-text">'+esc(ex.why)+'</div></div></div>'+
+          '<div class="exec-detail-row"><div class="exec-detail-icon tip">!</div><div><div class="exec-detail-lbl tip">Pro tip</div><div class="exec-detail-text">'+esc(ex.tip)+'</div></div></div>'+
+          tickerBtns+
+        '</div>'+
+      '</div>'+
+      '<div class="exec-chev">▾</div>'+
+    '</div>';
+  }).join('');
+}
+function _execToggle(el){
+  var on=el.classList.toggle('expanded');
+  el.setAttribute('aria-expanded',on?'true':'false');
+}
+function _execToggleDone(encodedStep,btn){
+  var step=decodeURIComponent(encodedStep);
+  var card=btn.closest('.exec-step');
+  var nowDone=!_execIsDone(step);
+  _execSetDone(step,nowDone);
+  if(card){ card.classList.toggle('done',nowDone); }
+  if(btn){ btn.classList.toggle('done',nowDone); btn.textContent=nowDone?'✓ Done':'Mark as done'; }
+}
+function _execAnalyze(sym){
+  if(typeof quickTick==='function')quickTick(sym);
+  var navItems=document.querySelectorAll('.nav-item');
+  if(typeof showPanel==='function'&&navItems[2])showPanel('stockcheck',navItems[2]);
+}
+
+/* ----- Meta card explainers (Execute within / Worst case scenario) ----- */
+function _explainUrgency(text){
+  var t=String(text||'');var u=t.toUpperCase();
+  var what,why,tip;
+  if(/NOW|IMMEDIATE|THIS WEEK|TODAY/.test(u)){
+    what='Deploy the strategy now. Decisions made today while you\'re calm are worth more than decisions made under market stress.';
+    why='Timing the entry costs more in missed compounding than it ever saves in a slightly better price. Historical data is unambiguous on this.';
+    tip='Split the deployment into 2-3 tranches over 5 trading days if the dollar amount is large. One shot is fine for small amounts.';
+  } else if(/(\d+)\s*(MONTH|MO)/.test(u)){
+    var m=t.match(/(\d+)\s*(month|mo)/i);
+    var mo=m?m[1]:'24';
+    what='Do the initial deployment now, then hold without trading for '+mo+' months. This is a commitment window, not a review window.';
+    why='Short-term volatility looks catastrophic on a daily chart and invisible on a 24-month chart. Time horizon is the only free lunch in investing.';
+    tip='Disable price alerts and delete trading apps from your home screen for '+mo+' months. Physical friction = compounded wealth.';
+  } else if(/WEEK/.test(u)){
+    what='Complete the deployment within the stated week. Any longer and market conditions may invalidate the sizing.';
+    why='Execution windows exist because the strategy was optimized for current regime — VIX, trend, sector rotation. Stale = different strategy.';
+    tip='Block a 2-hour slot on your calendar this week. Execute all steps in sequence, no partial days.';
+  } else {
+    what='Recommended execution window for this strategy.';
+    why='Strategies have shelf-lives. Delayed execution is equivalent to choosing a different (usually worse) strategy.';
+    tip='Set a deadline in your calendar and treat it as binding. Unscheduled work doesn\'t happen.';
+  }
+  return {what:what,why:why,tip:tip};
+}
+function _explainRisk(text){
+  var t=String(text||'');var u=t.toUpperCase();
+  var what,why,tip;
+  var m=t.match(/(-?\d+)\s*%/);
+  var pct=m?m[1]:'30';
+  if(/2008|CRASH|GFC|GREAT FINANCIAL/.test(u)){
+    what='In a historical 2008-style crisis (18-month bear market, -57% S&P peak-to-trough), this strategy\'s drawdown would reach approximately '+pct+'%.';
+    why='Aggressive strategies take more pain in bad years in exchange for outsized gains in good years. The math only works if you don\'t sell at the bottom.';
+    tip='Stress-test yourself: imagine your portfolio dropping '+pct+'% tomorrow. If you\'d panic-sell, you\'re in the wrong strategy — size down to the Balanced path.';
+  } else if(/DRAWDOWN|DROP|FALL/.test(u)){
+    what='Expected maximum portfolio drawdown under adverse market conditions. This is what losing looks like if markets misbehave.';
+    why='Drawdown is the price of admission for higher expected returns. Anyone selling you upside without drawdown is lying.';
+    tip='Pre-write a "letter to future me" explaining why you chose this strategy. Reread it when the drawdown hits — it will.';
+  } else if(/CONCENTRATION/.test(u)){
+    what='Risk that over-concentration in a single name or sector could trigger outsized losses on an adverse news event.';
+    why='Diversification is the only free lunch. Concentration is a bet that your research is better than the market — it usually isn\'t.';
+    tip='Set a hard cap: no single position above 15-20% of the portfolio. Trim when it breaches. Add to the underweights.';
+  } else {
+    what='Primary downside scenario for this strategy. Knowing the shape of the loss matters more than the average return.';
+    why='Average returns hide tail risks. Planning for the bad year is what makes the good years investable.';
+    tip='Write down the specific trigger that would make you exit the strategy. If none, you have no risk management, you have hope.';
+  }
+  return {what:what,why:why,tip:tip};
+}
+function _renderMetaCard(kind,label,value,color){
+  var ex = kind==='urgency' ? _explainUrgency(value) : _explainRisk(value);
+  var borderColor = kind==='urgency' ? 'var(--border)' : 'rgba(192,113,79,.22)';
+  var bg = kind==='urgency' ? 'rgba(0,0,0,.25)' : 'rgba(192,113,79,.06)';
+  var valColor = color || (kind==='urgency' ? 'var(--gold-light)' : 'var(--clay)');
+  return '<div class="exec-step" style="flex-direction:column;background:'+bg+';border-color:'+borderColor+';padding:14px 16px;gap:0" tabindex="0" role="button" aria-expanded="false" onclick="_execToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_execToggle(this)}">'+
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;width:100%">'+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-size:9px;letter-spacing:.13em;color:var(--text-3);text-transform:uppercase;font-weight:700;margin-bottom:6px">'+esc(label)+'</div>'+
+        '<div style="font-family:\'DM Mono\',monospace;font-size:13.5px;color:'+valColor+';font-weight:600;line-height:1.5">'+esc(value)+'</div>'+
+      '</div>'+
+      '<div class="exec-chev" style="align-self:flex-start;margin-top:3px">▾</div>'+
+    '</div>'+
+    '<div class="exec-detail" style="width:100%">'+
+      '<div class="exec-detail-row"><div class="exec-detail-icon what">W</div><div><div class="exec-detail-lbl what">What this means</div><div class="exec-detail-text">'+esc(ex.what)+'</div></div></div>'+
+      '<div class="exec-detail-row"><div class="exec-detail-icon why">Y</div><div><div class="exec-detail-lbl why">Why it matters</div><div class="exec-detail-text">'+esc(ex.why)+'</div></div></div>'+
+      '<div class="exec-detail-row"><div class="exec-detail-icon tip">!</div><div><div class="exec-detail-lbl tip">Pro tip</div><div class="exec-detail-text">'+esc(ex.tip)+'</div></div></div>'+
+    '</div>'+
+  '</div>';
+}
+
 function parseHoldings(text){
   var result=[];
   text.trim().split('\n').forEach(function(l){
@@ -3355,24 +3569,14 @@ function selectStrategy(key){
       '<div style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:16px;color:var(--cream-dim);margin-bottom:18px;line-height:1.6">' + esc(p.headline) + '</div>' +
 
       '<div style="margin-bottom:16px">' +
-        '<div style="font-size:9px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:10px">Your Execution Steps</div>' +
-        p.steps.map(function(step, i){
-          return '<div style="display:flex;gap:12px;padding:10px 14px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:6px;align-items:flex-start">' +
-            '<div style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:18px;color:'+p.color+';line-height:1;min-width:20px;flex-shrink:0">' + (i+1) + '</div>' +
-            '<div style="font-size:13px;color:var(--text-1);line-height:1.6">' + esc(step) + '</div>' +
-          '</div>';
-        }).join('') +
+        '<div style="font-size:10px;letter-spacing:.14em;color:var(--text-2);text-transform:uppercase;font-weight:700;margin-bottom:6px">Your Execution Steps</div>' +
+        '<div style="font-size:11px;color:var(--text-3);margin-bottom:11px;font-style:italic">Tap any step to expand · Mark items done as you complete them</div>' +
+        _renderExecSteps(p.steps, p.color) +
       '</div>' +
 
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">' +
-        '<div style="padding:12px;background:rgba(0,0,0,.25);border-radius:var(--r-lg);border:1px solid var(--border)">' +
-          '<div style="font-size:8px;letter-spacing:.12em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:5px">Execute within</div>' +
-          '<div style="font-family:DM Mono,monospace;font-size:14px;color:'+p.color+';font-weight:600">' + esc(p.urgency) + '</div>' +
-        '</div>' +
-        '<div style="padding:12px;background:rgba(192,113,79,.06);border-radius:var(--r-lg);border:1px solid rgba(192,113,79,.2)">' +
-          '<div style="font-size:8px;letter-spacing:.12em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:5px">Worst case scenario</div>' +
-          '<div style="font-family:DM Mono,monospace;font-size:13px;color:var(--clay);font-weight:600">' + esc(p.risk) + '</div>' +
-        '</div>' +
+        _renderMetaCard('urgency','Execute within',p.urgency,p.color) +
+        _renderMetaCard('risk','Worst case scenario',p.risk,'var(--clay)') +
       '</div>' +
 
       '<div style="padding:12px 14px;background:rgba(0,0,0,.2);border-radius:var(--r-lg);border:1px solid var(--border);font-size:12px;color:var(--text-2);line-height:1.7;margin-bottom:14px">' +
@@ -3953,24 +4157,14 @@ function selectStrategy(key){
       '<div style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:16px;color:var(--cream-dim);margin-bottom:18px;line-height:1.6">' + esc(p.headline) + '</div>' +
 
       '<div style="margin-bottom:16px">' +
-        '<div style="font-size:9px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:10px">Your Execution Steps</div>' +
-        p.steps.map(function(step, i){
-          return '<div style="display:flex;gap:12px;padding:10px 14px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:6px;align-items:flex-start">' +
-            '<div style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:18px;color:'+p.color+';line-height:1;min-width:20px;flex-shrink:0">' + (i+1) + '</div>' +
-            '<div style="font-size:13px;color:var(--text-1);line-height:1.6">' + esc(step) + '</div>' +
-          '</div>';
-        }).join('') +
+        '<div style="font-size:10px;letter-spacing:.14em;color:var(--text-2);text-transform:uppercase;font-weight:700;margin-bottom:6px">Your Execution Steps</div>' +
+        '<div style="font-size:11px;color:var(--text-3);margin-bottom:11px;font-style:italic">Tap any step to expand · Mark items done as you complete them</div>' +
+        _renderExecSteps(p.steps, p.color) +
       '</div>' +
 
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">' +
-        '<div style="padding:12px;background:rgba(0,0,0,.25);border-radius:var(--r-lg);border:1px solid var(--border)">' +
-          '<div style="font-size:8px;letter-spacing:.12em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:5px">Execute within</div>' +
-          '<div style="font-family:DM Mono,monospace;font-size:14px;color:'+p.color+';font-weight:600">' + esc(p.urgency) + '</div>' +
-        '</div>' +
-        '<div style="padding:12px;background:rgba(192,113,79,.06);border-radius:var(--r-lg);border:1px solid rgba(192,113,79,.2)">' +
-          '<div style="font-size:8px;letter-spacing:.12em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:5px">Worst case scenario</div>' +
-          '<div style="font-family:DM Mono,monospace;font-size:13px;color:var(--clay);font-weight:600">' + esc(p.risk) + '</div>' +
-        '</div>' +
+        _renderMetaCard('urgency','Execute within',p.urgency,p.color) +
+        _renderMetaCard('risk','Worst case scenario',p.risk,'var(--clay)') +
       '</div>' +
 
       '<div style="padding:12px 14px;background:rgba(0,0,0,.2);border-radius:var(--r-lg);border:1px solid var(--border);font-size:12px;color:var(--text-2);line-height:1.7;margin-bottom:14px">' +
@@ -4285,24 +4479,14 @@ function selectStrategy(key){
       '<div style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:16px;color:var(--cream-dim);margin-bottom:18px;line-height:1.6">' + esc(p.headline) + '</div>' +
 
       '<div style="margin-bottom:16px">' +
-        '<div style="font-size:9px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:10px">Your Execution Steps</div>' +
-        p.steps.map(function(step, i){
-          return '<div style="display:flex;gap:12px;padding:10px 14px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:6px;align-items:flex-start">' +
-            '<div style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:18px;color:'+p.color+';line-height:1;min-width:20px;flex-shrink:0">' + (i+1) + '</div>' +
-            '<div style="font-size:13px;color:var(--text-1);line-height:1.6">' + esc(step) + '</div>' +
-          '</div>';
-        }).join('') +
+        '<div style="font-size:10px;letter-spacing:.14em;color:var(--text-2);text-transform:uppercase;font-weight:700;margin-bottom:6px">Your Execution Steps</div>' +
+        '<div style="font-size:11px;color:var(--text-3);margin-bottom:11px;font-style:italic">Tap any step to expand · Mark items done as you complete them</div>' +
+        _renderExecSteps(p.steps, p.color) +
       '</div>' +
 
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">' +
-        '<div style="padding:12px;background:rgba(0,0,0,.25);border-radius:var(--r-lg);border:1px solid var(--border)">' +
-          '<div style="font-size:8px;letter-spacing:.12em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:5px">Execute within</div>' +
-          '<div style="font-family:DM Mono,monospace;font-size:14px;color:'+p.color+';font-weight:600">' + esc(p.urgency) + '</div>' +
-        '</div>' +
-        '<div style="padding:12px;background:rgba(192,113,79,.06);border-radius:var(--r-lg);border:1px solid rgba(192,113,79,.2)">' +
-          '<div style="font-size:8px;letter-spacing:.12em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:5px">Worst case scenario</div>' +
-          '<div style="font-family:DM Mono,monospace;font-size:13px;color:var(--clay);font-weight:600">' + esc(p.risk) + '</div>' +
-        '</div>' +
+        _renderMetaCard('urgency','Execute within',p.urgency,p.color) +
+        _renderMetaCard('risk','Worst case scenario',p.risk,'var(--clay)') +
       '</div>' +
 
       '<div style="padding:12px 14px;background:rgba(0,0,0,.2);border-radius:var(--r-lg);border:1px solid var(--border);font-size:12px;color:var(--text-2);line-height:1.7;margin-bottom:14px">' +
@@ -4570,24 +4754,14 @@ function selectStrategy(key){
       '<div style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:16px;color:var(--cream-dim);margin-bottom:18px;line-height:1.6">' + esc(p.headline) + '</div>' +
 
       '<div style="margin-bottom:16px">' +
-        '<div style="font-size:9px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:10px">Your Execution Steps</div>' +
-        p.steps.map(function(step, i){
-          return '<div style="display:flex;gap:12px;padding:10px 14px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:6px;align-items:flex-start">' +
-            '<div style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:18px;color:'+p.color+';line-height:1;min-width:20px;flex-shrink:0">' + (i+1) + '</div>' +
-            '<div style="font-size:13px;color:var(--text-1);line-height:1.6">' + esc(step) + '</div>' +
-          '</div>';
-        }).join('') +
+        '<div style="font-size:10px;letter-spacing:.14em;color:var(--text-2);text-transform:uppercase;font-weight:700;margin-bottom:6px">Your Execution Steps</div>' +
+        '<div style="font-size:11px;color:var(--text-3);margin-bottom:11px;font-style:italic">Tap any step to expand · Mark items done as you complete them</div>' +
+        _renderExecSteps(p.steps, p.color) +
       '</div>' +
 
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">' +
-        '<div style="padding:12px;background:rgba(0,0,0,.25);border-radius:var(--r-lg);border:1px solid var(--border)">' +
-          '<div style="font-size:8px;letter-spacing:.12em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:5px">Execute within</div>' +
-          '<div style="font-family:DM Mono,monospace;font-size:14px;color:'+p.color+';font-weight:600">' + esc(p.urgency) + '</div>' +
-        '</div>' +
-        '<div style="padding:12px;background:rgba(192,113,79,.06);border-radius:var(--r-lg);border:1px solid rgba(192,113,79,.2)">' +
-          '<div style="font-size:8px;letter-spacing:.12em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:5px">Worst case scenario</div>' +
-          '<div style="font-family:DM Mono,monospace;font-size:13px;color:var(--clay);font-weight:600">' + esc(p.risk) + '</div>' +
-        '</div>' +
+        _renderMetaCard('urgency','Execute within',p.urgency,p.color) +
+        _renderMetaCard('risk','Worst case scenario',p.risk,'var(--clay)') +
       '</div>' +
 
       '<div style="padding:12px 14px;background:rgba(0,0,0,.2);border-radius:var(--r-lg);border:1px solid var(--border);font-size:12px;color:var(--text-2);line-height:1.7;margin-bottom:14px">' +
