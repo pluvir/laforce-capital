@@ -2357,8 +2357,12 @@ function parseCSV(csv){
   var result=[];var headerSkipped=false;
   lines.forEach(function(line){
     if(!line.trim())return;
-    // Skip section headers
+    // Skip section headers + Anthropic's new meta lines
     if(/^RECURRING:/i.test(line.trim()))return;
+    if(/^COUNT\s*:/i.test(line.trim()))return;
+    if(/^NOTE\s*:/i.test(line.trim()))return;
+    if(/^(═|─|━)/.test(line.trim()))return;
+    if(/^(STEP|WORKED EXAMPLE|NOW DO)/i.test(line.trim()))return;
     if(!headerSkipped&&/symbol|ticker|name|quantity/i.test(line)&&!/^[A-Z]{1,6}[\s,\t|]/.test(line)){headerSkipped=true;return;}
     // Normalize: strip dollar signs, quotes, commas inside numbers, replace N/A
     var cleaned=line.replace(/\bN\/A\b/gi,'0').replace(/["]/g,'').trim();
@@ -2600,6 +2604,8 @@ async function queueImagesForExtraction(files){
     }
     var d=await resp.json();
     var txt=d.text;
+    var declaredCount=d.declaredCount||null;
+    var aiUndercount=d.undercount===true;
 
     // Handle no_holdings_found warning from backend
     if(d.warning==='no_holdings_found'){
