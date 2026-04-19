@@ -660,29 +660,32 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
         <div style="font-size:8px;letter-spacing:.26em;color:#8f7a45;text-transform:uppercase;font-weight:600;margin-bottom:6px">How to use this system</div>
         <div style="font-family:Cormorant Garamond,serif;font-size:22px;color:var(--cream);font-weight:500;margin-bottom:14px">Clear instructions for best results</div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
-          <div style="background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px">
+          <div class="onboard-card" onclick="showPanel('portfolio',document.querySelectorAll('.nav-item')[1])" title="Jump to Portfolio Lab">
             <div style="font-size:11px;font-weight:600;letter-spacing:.18em;color:var(--gold);margin-bottom:6px">01</div>
             <div style="font-size:13px;font-weight:600;color:var(--cream);margin-bottom:5px">Add your portfolio</div>
             <div style="font-size:11px;line-height:1.6;color:var(--text-2)">Upload a brokerage export, paste holdings, or use screenshots for portfolio diagnosis.</div>
+            <div class="onboard-cta">Open Portfolio Lab →</div>
           </div>
-          <div style="background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px">
+          <div class="onboard-card" onclick="showPanel('market',document.querySelectorAll('.nav-item')[6])" title="Jump to Live Market">
             <div style="font-size:11px;font-weight:600;letter-spacing:.18em;color:var(--gold);margin-bottom:6px">02</div>
             <div style="font-size:13px;font-weight:600;color:var(--cream);margin-bottom:5px">Sync market context</div>
             <div style="font-size:11px;line-height:1.6;color:var(--text-2)">Pull live market data so the system reads regime, volatility, and trend before advising.</div>
+            <div class="onboard-cta">Open Live Market →</div>
           </div>
-          <div style="background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px">
+          <div class="onboard-card" onclick="showPanel('intelligence',document.querySelectorAll('.nav-item')[4])" title="Jump to Intelligence">
             <div style="font-size:11px;font-weight:600;letter-spacing:.18em;color:var(--gold);margin-bottom:6px">03</div>
             <div style="font-size:13px;font-weight:600;color:var(--cream);margin-bottom:5px">Get action paths</div>
             <div style="font-size:11px;line-height:1.6;color:var(--text-2)">Clear action plan, three strategic approaches, and drill-down analysis only when needed.</div>
+            <div class="onboard-cta">Open Intelligence →</div>
           </div>
         </div>
         <div style="background:linear-gradient(180deg,var(--noir-3),var(--noir-2));border:1px solid var(--border-2);border-radius:var(--r-lg);padding:14px">
           <div style="font-size:12px;font-weight:600;color:var(--gold-light);margin-bottom:10px">Documents &amp; inputs that unlock the strongest analysis</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
-            <div style="background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--text-1)">Brokerage CSV or holdings export</div>
-            <div style="background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--text-1)">Portfolio screenshot for quick intake</div>
-            <div style="background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--text-1)">Cash available to invest now</div>
-            <div style="background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--text-1)">Optional: avg cost &amp; contribution plan</div>
+            <div class="doc-pill" onclick="showPanel('portfolio',document.querySelectorAll('.nav-item')[1])" title="Go to Portfolio Lab to upload a CSV">Brokerage CSV or holdings export <span class="doc-pill-go">→</span></div>
+            <div class="doc-pill" onclick="showPanel('portfolio',document.querySelectorAll('.nav-item')[1])" title="Go to Portfolio Lab to drop screenshots">Portfolio screenshot for quick intake <span class="doc-pill-go">→</span></div>
+            <div class="doc-pill" onclick="showPanel('deploy',document.querySelectorAll('.nav-item')[3])" title="Go to Capital Deployment">Cash available to invest now <span class="doc-pill-go">→</span></div>
+            <div class="doc-pill" onclick="showPanel('cadence',document.querySelectorAll('.nav-item')[5])" title="Go to Cadence Plan">Optional: avg cost &amp; contribution plan <span class="doc-pill-go">→</span></div>
           </div>
         </div>
       </div>
@@ -772,6 +775,40 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .cad-proj-row-open{background:rgba(201,168,76,.06)!important}
 .cad-alloc-row:hover{border-color:var(--border-2)!important;background:var(--noir-3)!important;transform:translateX(2px)}
 .cad-alloc-row-open{border-color:var(--gold-dim)!important;background:rgba(201,168,76,.05)!important;border-radius:var(--r-lg) var(--r-lg) 0 0!important;margin-bottom:0!important;border-bottom:none!important}
+
+/* Interactive onboarding cards */
+.onboard-card{background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;cursor:pointer;transition:all .2s;position:relative}
+.onboard-card:hover{border-color:var(--gold-dim);background:rgba(201,168,76,.04);transform:translateY(-1px)}
+.onboard-cta{font-size:10px;color:var(--gold);font-weight:600;margin-top:10px;opacity:0;transition:opacity .2s}
+.onboard-card:hover .onboard-cta{opacity:1}
+.doc-pill{background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--text-1);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.doc-pill:hover{border-color:var(--gold-dim);background:rgba(201,168,76,.05);color:var(--cream)}
+.doc-pill-go{color:var(--gold);font-weight:600;opacity:0;transition:opacity .15s}
+.doc-pill:hover .doc-pill-go{opacity:1}
+
+/* Sector focus */
+.sector-grid{display:flex;flex-wrap:wrap;gap:7px}
+.sector-chip{padding:8px 14px;font-size:12px;font-weight:500;background:var(--noir-3);border:1px solid var(--border);color:var(--text-2);border-radius:20px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.sector-chip:hover{border-color:var(--border-2);color:var(--cream);background:rgba(201,168,76,.04)}
+.sector-chip.active{background:linear-gradient(135deg,var(--gold),var(--gold-dim));color:var(--noir);border-color:var(--gold);font-weight:700}
+
+/* Interactive strategy steps */
+.strat-step{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:6px;overflow:hidden;cursor:pointer;transition:all .2s}
+.strat-step:hover{border-color:var(--border-2);background:rgba(0,0,0,.32)}
+.strat-step.open{border-color:var(--gold-dim);background:rgba(201,168,76,.04)}
+.strat-step-head{display:flex;gap:12px;padding:10px 14px;align-items:center}
+.strat-step-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;line-height:1;min-width:20px;flex-shrink:0}
+.strat-step-text{flex:1;font-size:13px;color:var(--text-1);line-height:1.6}
+.strat-step-chev{font-size:10px;color:var(--text-3);transition:transform .25s;flex-shrink:0}
+.strat-step.open .strat-step-chev{transform:rotate(180deg);color:var(--gold)}
+.strat-step-body-wrap{display:none;padding:4px 14px 14px 46px;border-top:1px solid var(--border)}
+.strat-step.open .strat-step-body-wrap{display:block;animation:fadeUp .25s ease}
+.strat-step-sec{margin-bottom:10px;padding:9px 11px;background:rgba(0,0,0,.2);border-radius:var(--r);border-left:2px solid}
+.strat-step-lbl{font-size:8px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:4px}
+.strat-step-body-text{font-size:12px;color:var(--text-1);line-height:1.65}
+.strat-step-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.strat-ticker-chip{padding:5px 12px;font-size:11px;font-family:'DM Mono',monospace;font-weight:600;background:var(--gold-muted);border:1px solid var(--border-2);color:var(--gold-light);border-radius:20px;cursor:pointer;transition:all .15s}
+.strat-ticker-chip:hover{background:var(--gold);color:var(--noir);border-color:var(--gold)}
 
 /* Phase-3 trust: architecture note styling */
 .arch-note{margin-top:28px;padding:20px 24px;border:1px dashed var(--border-2);border-radius:var(--r-lg);background:rgba(0,0,0,.15)}
@@ -886,6 +923,55 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 
 </div>
     </div>
+  </div>
+
+  <!-- SECTOR FOCUS — pick a sector, get AI-tailored top picks + entry timing -->
+  <div id="sectorFocus" class="card" style="margin-bottom:20px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px">
+      <div>
+        <div style="font-size:8px;letter-spacing:.26em;color:#8f7a45;text-transform:uppercase;font-weight:600;margin-bottom:6px">Thematic Focus</div>
+        <div style="font-family:Cormorant Garamond,serif;font-size:22px;color:var(--cream);font-weight:500;margin-bottom:4px">Pick a <em style="font-style:italic;color:var(--gold-light)">sector</em> to invest in</div>
+        <div style="font-size:12px;color:var(--text-2);line-height:1.6;max-width:560px">Select a sector you believe in. The AI returns the top 5 names to research, the current sector regime, entry timing, and what breaks the thesis — tailored to your portfolio.</div>
+      </div>
+    </div>
+    <div class="sector-grid" id="sectorGrid">
+      <button class="sector-chip" data-sec="Technology">◆ Technology</button>
+      <button class="sector-chip" data-sec="Artificial Intelligence / Semiconductors">◆ AI &amp; Semis</button>
+      <button class="sector-chip" data-sec="Healthcare / Biotech">◆ Healthcare</button>
+      <button class="sector-chip" data-sec="Financials">◆ Financials</button>
+      <button class="sector-chip" data-sec="Energy (traditional + renewable)">◆ Energy</button>
+      <button class="sector-chip" data-sec="Consumer Discretionary">◆ Consumer</button>
+      <button class="sector-chip" data-sec="Industrials / Defense">◆ Industrials</button>
+      <button class="sector-chip" data-sec="Real Estate / REITs">◆ Real Estate</button>
+      <button class="sector-chip" data-sec="Communication Services">◆ Comms</button>
+      <button class="sector-chip" data-sec="Utilities">◆ Utilities</button>
+      <button class="sector-chip" data-sec="Materials / Commodities">◆ Materials</button>
+      <button class="sector-chip" data-sec="Crypto / Digital Assets">◆ Crypto</button>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap">
+      <div style="flex:1;min-width:220px">
+        <label class="il">Horizon</label>
+        <select id="sectorHorizon" style="width:100%">
+          <option value="12 months">12 months</option>
+          <option value="3 years" selected>3 years</option>
+          <option value="5+ years">5+ years</option>
+        </select>
+      </div>
+      <div style="flex:1;min-width:220px">
+        <label class="il">Risk tolerance</label>
+        <select id="sectorRisk" style="width:100%">
+          <option value="conservative">Conservative</option>
+          <option value="balanced" selected>Balanced</option>
+          <option value="aggressive">Aggressive</option>
+        </select>
+      </div>
+      <div style="flex:1;min-width:220px">
+        <label class="il">Cash to allocate (optional)</label>
+        <input type="number" id="sectorCash" placeholder="e.g. 5000" min="0"/>
+      </div>
+      <button class="btn-p" id="sectorRunBtn" onclick="runSectorAnalysis()" disabled style="opacity:.6">Analyze sector →</button>
+    </div>
+    <div id="sectorOutput" style="margin-top:16px"></div>
   </div>
 
   <div id="portHero" style="display:none">
@@ -1883,6 +1969,7 @@ function openLiveDataModal(){
     if(typeof renderFlowIndicator==='function') renderFlowIndicator('dashboard');
     if(typeof renderNextStepFooter==='function') renderNextStepFooter('dashboard');
     if(typeof syncDecisionSequence==='function') syncDecisionSequence();
+    if(typeof initSectorFocus==='function') initSectorFocus();
   },100);
   updatePulseCells();
   try{
@@ -2249,13 +2336,51 @@ function handleFileInput(files){
 
 async function queueImagesForExtraction(files){
   var status=document.getElementById('portExtractStatus');
-  status.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Reading '+files.length+' screenshot'+(files.length>1?'s':'')+' via secure backend</div><div class="cd-loader-sub">Uploading · parsing · merging positions · detecting recurring investments</div></div></div>';
+
+  // Client-side preflight: validate file types and sizes
+  var allowedExts=['png','jpg','jpeg','webp','gif'];
+  var maxSingleFileSize=5_000_000; // 5MB per file
+  var filesToProcess=[];
+  var rejectedFiles=[];
+
+  for(var i=0;i<files.length;i++){
+    var f=files[i];
+    var ext=f.name.split('.').pop().toLowerCase();
+    if(allowedExts.indexOf(ext)===-1){
+      rejectedFiles.push(f.name+' (invalid format, allowed: png, jpg, jpeg, webp, gif)');
+      continue;
+    }
+    if(f.size>maxSingleFileSize){
+      rejectedFiles.push(f.name+' is too large ('+Math.round(f.size/1000000)+'mb). Resize to under 5MB and retry.');
+      continue;
+    }
+    filesToProcess.push(f);
+  }
+
+  // Show rejection errors if any
+  if(rejectedFiles.length>0){
+    status.innerHTML='<div class="extract-err">'
+      +'<div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">'+rejectedFiles.length+' file(s) rejected</div>'
+      +'<div style="font-size:11px;color:var(--text-2);line-height:1.6">'+rejectedFiles.map(function(f){return esc(f);}).join('<br/>')+'</div>'
+    +'</div>';
+    if(filesToProcess.length===0) return;
+    // If some files passed, continue with them
+  }
+
+  // Limit to first 10 files
+  var skippedCount=0;
+  if(filesToProcess.length>10){
+    skippedCount=filesToProcess.length-10;
+    filesToProcess=filesToProcess.slice(0,10);
+  }
+
+  status.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Reading '+filesToProcess.length+' screenshot'+(filesToProcess.length>1?'s':'')+' · AI takes 10–20 seconds for multi-image extraction</div><div class="cd-loader-sub">Uploading · parsing · merging positions · detecting recurring investments'+(skippedCount>0?' ('+skippedCount+' file'+(skippedCount>1?'s':'')+' skipped — max 10 per request)':'')+'</div></div></div>';
 
   try{
     // Convert each file to { mediaType, data (base64) }
     var images=[];
-    for(var i=0;i<files.length;i++){
-      var f=files[i];
+    for(var i=0;i<filesToProcess.length;i++){
+      var f=filesToProcess[i];
       var b64=await new Promise(function(res,rej){
         var r=new FileReader();
         r.onload=function(e){ res(e.target.result.split(',')[1]); };
@@ -2275,13 +2400,23 @@ async function queueImagesForExtraction(files){
     if(!resp.ok){
       var er=await resp.json().catch(function(){return{error:resp.statusText};});
       var emsg=er.error||resp.statusText;
-      if(resp.status===429) emsg='Rate limit reached — wait 60 seconds and try again.';
-      else if(resp.status===413) emsg='Screenshot too large. Try resizing to under ~4MB per image.';
+      if(resp.status===400) emsg=er.error||'Invalid request format';
+      else if(resp.status===413) emsg=er.error||'Total payload exceeds 20MB limit';
+      else if(resp.status===429) emsg='Rate limit reached — wait 60 seconds and try again.';
       else if(resp.status===502||resp.status===504) emsg='AI service temporarily unavailable. Try again shortly.';
       throw new Error(emsg);
     }
     var d=await resp.json();
     var txt=d.text;
+
+    // Handle no_holdings_found warning from backend
+    if(d.warning==='no_holdings_found'){
+      status.innerHTML='<div class="extract-err">'
+        +'<div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">AI couldn\'t read holdings from these images</div>'
+        +'<div style="font-size:11px;color:var(--text-2);line-height:1.6">Try clearer screenshots, or paste manually below.</div>'
+      +'</div>';
+      return;
+    }
 
     // Split holdings vs recurring
     var parts=txt.split(/^RECURRING:/m);
@@ -2295,7 +2430,7 @@ async function queueImagesForExtraction(files){
 
     if(parsed.length){
       // Track merge stats for the user
-      var stats={found:parsed.length,files:files.length,merged:0,new:0};
+      var stats={found:parsed.length,files:filesToProcess.length,merged:0,new:0};
       if(_holdings.length){
         parsed.forEach(function(newH){
           var exists=_holdings.find(function(h){return h.sym===newH.sym;});
@@ -4143,6 +4278,190 @@ function switchFeasTab(idx,btn){
   document.querySelectorAll('.fpane').forEach(function(p,i){p.classList.toggle('active',i===idx);});
 }
 
+// ================================================================
+// SECTOR FOCUS — pick a sector → AI returns top picks + regime + timing
+// ================================================================
+var _selectedSector = null;
+
+function initSectorFocus(){
+  var grid = document.getElementById('sectorGrid');
+  if(!grid) return;
+  grid.addEventListener('click', function(e){
+    var chip = e.target.closest('.sector-chip');
+    if(!chip) return;
+    document.querySelectorAll('.sector-chip').forEach(function(c){ c.classList.remove('active'); });
+    chip.classList.add('active');
+    _selectedSector = chip.dataset.sec;
+    var btn = document.getElementById('sectorRunBtn');
+    if(btn){ btn.disabled = false; btn.style.opacity = '1'; }
+  });
+}
+
+async function runSectorAnalysis(){
+  var out = document.getElementById('sectorOutput');
+  if(!_selectedSector){
+    out.innerHTML = '<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Pick a sector first</div><div style="font-size:11px;color:var(--text-2)">Click one of the sector chips above.</div></div>';
+    return;
+  }
+  var horizon = document.getElementById('sectorHorizon').value || '3 years';
+  var risk = document.getElementById('sectorRisk').value || 'balanced';
+  var cash = parseFloat(document.getElementById('sectorCash').value) || 0;
+  var h = getHoldings();
+  var holdStr = h.slice(0,10).map(function(x){return x.sym;}).join(', ') || 'no portfolio loaded';
+  var regime = (_marketCtx && _marketCtx.trend ? _marketCtx.trend : 'neutral') + ' trend, VIX ' + (_marketCtx && _marketCtx.vol ? _marketCtx.vol : 'normal');
+
+  out.innerHTML = '<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Analyzing <strong style="color:var(--gold-light)">'+esc(_selectedSector)+'</strong> sector</div><div class="cd-loader-sub">Reading regime · ranking names · sizing entry · flagging risks</div></div></div>';
+
+  var prompt = 'SECTOR INVESTMENT BRIEF: ' + _selectedSector + '\n\nUser context:\n- Current holdings: ' + holdStr + '\n- Risk tolerance: ' + risk + '\n- Time horizon: ' + horizon + '\n- Cash to allocate: ' + (cash ? '$'+cash.toLocaleString() : 'not specified') + '\n- Market regime: ' + regime + '\n\nRespond in EXACTLY this format, each label on its own line. No markdown, no asterisks.\n\nSECTOR REGIME: [Is this sector early-cycle, mid-cycle, late-cycle, or contracting? 2 sentences. Cite a recent driver.]\n\nWHY NOW: [2-3 sentences on why (or why not) this is the moment to add exposure. Be specific about catalysts in the next 3-6 months.]\n\nTOP 5 PICKS: [List 5 tickers with one line each. Format: "TICKER — one-sentence thesis + rough position weight (e.g. 4-6%)". Mix quality compounders with 1-2 asymmetric names.]\n\nAVOID IN THIS SECTOR: [2-3 tickers or subcategories to explicitly steer clear of, with reason]\n\nENTRY APPROACH: [Specific strategy given the '+risk+' risk tolerance — e.g. "DCA over 8 weeks", "Single entry on 5% pullback to $X", "Barbell: 60% ETF + 40% concentrated picks"]\n\nPORTFOLIO FIT: [One sentence on how this sector slots into the user\'s existing holdings — overlap, gap-filling, or diversification]\n\nWHAT BREAKS THE THESIS: [2 specific scenarios that would force a re-evaluation, with the indicator to watch]\n\nCONFIDENCE: [1-10, one sentence on what drives the score]';
+
+  try {
+    var text = await aiCall(prompt, SYS, 1800);
+    var S = {
+      regime:   extractSection(text, 'SECTOR REGIME:'),
+      whyNow:   extractSection(text, 'WHY NOW:'),
+      picks:    extractSection(text, 'TOP 5 PICKS:'),
+      avoid:    extractSection(text, 'AVOID IN THIS SECTOR:'),
+      entry:    extractSection(text, 'ENTRY APPROACH:'),
+      fit:      extractSection(text, 'PORTFOLIO FIT:'),
+      breaks:   extractSection(text, 'WHAT BREAKS THE THESIS:'),
+      conf:     extractSection(text, 'CONFIDENCE:')
+    };
+    var confMatch = (S.conf||'').match(/(\d+(?:\.\d+)?)/);
+    var confScore = confMatch ? parseFloat(confMatch[1]) : null;
+    var confColor = confScore===null?'var(--text-2)':confScore>=8?'var(--sage)':confScore>=6?'var(--gold)':confScore>=4?'var(--gold-dim)':'var(--clay)';
+    var confExplain = (S.conf||'').replace(/^\d+(?:\.\d+)?\s*[-—]?\s*/,'').trim();
+
+    // Extract tickers from the picks section so we can render chips
+    var pickTickers = (S.picks || '').match(/\b[A-Z]{1,5}\b/g) || [];
+    var skipWords = ['DCA','ETF','AI','NO','USD','IPO','M&A','PE','OK','CEO','CFO','CTO','EV','P/E','ROI','RSI'];
+    pickTickers = pickTickers.filter(function(t){ return t.length>=2 && skipWords.indexOf(t)<0; });
+    pickTickers = pickTickers.filter(function(t,i){ return pickTickers.indexOf(t)===i; }).slice(0,8);
+
+    function sec(lbl,color,body){
+      if(!body) return '';
+      return '<div style="margin-bottom:14px;padding:12px 14px;background:rgba(0,0,0,.22);border-left:2px solid '+color+';border-radius:var(--r)">'
+        +'<div style="font-size:9px;letter-spacing:.15em;color:'+color+';text-transform:uppercase;font-weight:700;margin-bottom:5px">'+esc(lbl)+'</div>'
+        +'<div style="font-size:12.5px;color:var(--text-1);line-height:1.75">'+esc(body).replace(/\n- /g,'<br>• ').replace(/\n/g,'<br>')+'</div>'
+      +'</div>';
+    }
+
+    var html = '<div style="background:linear-gradient(145deg,var(--noir-2),var(--noir-1));border:1px solid var(--border-2);border-radius:var(--r-xl);overflow:hidden;animation:fadeUp .3s ease">'
+      +'<div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>'
+      +'<div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">'
+        +'<div>'
+          +'<div style="font-size:9px;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase;font-weight:700;margin-bottom:3px">Sector Brief</div>'
+          +'<div style="font-family:Cormorant Garamond,serif;font-size:22px;color:var(--cream)">'+esc(_selectedSector)+'</div>'
+        +'</div>'
+        +(confScore!==null?'<div style="display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;font-family:DM Mono,monospace;background:rgba(0,0,0,.35);border:1px solid '+confColor+'40;color:'+confColor+'"><span style="letter-spacing:.1em;text-transform:uppercase;font-size:9px;color:var(--text-3)">Confidence</span> '+confScore+'/10</div>':'')
+      +'</div>'
+      +(confExplain?'<div style="padding:10px 20px;background:rgba(0,0,0,.2);font-size:11px;color:var(--text-2);font-style:italic;line-height:1.5;border-bottom:1px solid var(--border)">Confidence basis: '+esc(confExplain)+'</div>':'')
+      +'<div style="padding:18px 20px">'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">'
+          +'<div>'
+            +sec('Sector regime','var(--gold)',S.regime)
+            +sec('Why now','var(--sage)',S.whyNow)
+            +sec('Top 5 picks','var(--gold-light)',S.picks)
+          +'</div>'
+          +'<div>'
+            +sec('Entry approach','var(--gold)',S.entry)
+            +sec('Portfolio fit','var(--sage)',S.fit)
+            +sec('Avoid in this sector','var(--clay)',S.avoid)
+            +sec('What breaks the thesis','var(--clay)',S.breaks)
+          +'</div>'
+        +'</div>'
+        +(pickTickers.length?'<div style="margin-top:10px;padding:12px 14px;background:rgba(201,168,76,.04);border:1px solid var(--border-2);border-radius:var(--r-lg)">'
+          +'<div style="font-size:9px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:8px">◆ Drill into any of these</div>'
+          +'<div class="strat-step-chips">'
+          +pickTickers.map(function(t){ return '<button class="strat-ticker-chip" onclick="quickTick(\''+t+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2]);setTimeout(runStock,200)">'+t+' →</button>'; }).join('')
+          +'</div>'
+        +'</div>':'')
+        +'<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">'
+          +(cash>0?'<button class="btn-p btn-sm" onclick="document.getElementById(\'cashAmt\').value='+cash+';document.getElementById(\'deployStyle\').value=\''+risk+'\';showPanel(\'deploy\',document.querySelectorAll(\'.nav-item\')[3]);setTimeout(runDeploy,300)">Deploy $'+cash.toLocaleString()+' into plan →</button>':'')
+          +'<button class="btn-g btn-sm" onclick="document.getElementById(\'sectorOutput\').innerHTML=\'\';_selectedSector=null;document.querySelectorAll(\'.sector-chip\').forEach(function(c){c.classList.remove(\'active\')});var b=document.getElementById(\'sectorRunBtn\');if(b){b.disabled=true;b.style.opacity=\'.6\'}">Reset</button>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+    out.innerHTML = html;
+  } catch(e) {
+    out.innerHTML = '<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Sector analysis failed</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">'+esc(e.message)+'</div></div>';
+  }
+}
+
+// ================================================================
+// STRATEGY ACTION HELPERS — clean named handlers (no nested-quote hell)
+// ================================================================
+function runFullStudyForStrategy(){
+  showPanel('portfolio', document.querySelectorAll('.nav-item')[1]);
+  setTimeout(function(){
+    if(typeof runFeasibility === 'function') runFeasibility();
+  }, 300);
+}
+function buildCadencePlanForStrategy(){
+  showPanel('cadence', document.querySelectorAll('.nav-item')[5]);
+}
+function changeStrategy(){
+  var sp = document.getElementById('selectedStrategyPanel');
+  if(sp) sp.remove();
+  document.querySelectorAll('.sc2').forEach(function(el){
+    el.style.opacity = '1';
+    el.style.transform = '';
+    el.style.boxShadow = '';
+  });
+  _selectedStrategy = null;
+  var grid = document.getElementById('strategyGrid');
+  if(grid) grid.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// Expand a strategy step on click — loads AI-generated deeper context once
+async function toggleStratStep(idx){
+  var stepEl = document.getElementById('strat-step-'+idx);
+  var body = document.getElementById('strat-step-body-'+idx);
+  if(!stepEl || !body) return;
+  var isOpen = stepEl.classList.contains('open');
+  if(isOpen){ stepEl.classList.remove('open'); return; }
+  stepEl.classList.add('open');
+  if(body.dataset.loaded === '1') return;
+
+  body.innerHTML = '<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Loading tailored context</div><div class="cd-loader-sub">AI is expanding the rationale for your portfolio</div></div></div>';
+
+  try {
+    var stepText = body.dataset.stepText || '';
+    var strategy = body.dataset.strategy || 'balanced';
+    var h = getHoldings();
+    var holdStr = h.slice(0,8).map(function(x){return x.sym;}).join(', ') || 'no portfolio loaded yet';
+    var regime = (_marketCtx && _marketCtx.trend ? _marketCtx.trend : 'neutral') + ' trend, VIX ' + (_marketCtx && _marketCtx.vol ? _marketCtx.vol : 'normal');
+    var prompt = 'Expand on this execution step from a ' + strategy.toUpperCase() + ' wealth strategy:\n"' + stepText + '"\n\nUser holdings: ' + holdStr + '.\nMarket: ' + regime + '.\n\nRespond in EXACTLY this format. Each label on its own line. No markdown.\n\nWHY IT MATTERS: [2-3 sentences on the discipline or alpha this step captures]\nHOW TO DO IT: [2-3 concrete actions or specific price/volume triggers — be specific, not vague]\nWATCH FOR: [1-2 signals that would accelerate or invalidate this step]\nFOR YOUR PORTFOLIO: [one sentence on how this applies to the user\'s actual holdings if any names overlap; otherwise write "Does not directly touch current holdings."]';
+    var text = await aiCall(prompt, SYS, 500);
+    var S = {
+      why:   extractSection(text, 'WHY IT MATTERS:'),
+      how:   extractSection(text, 'HOW TO DO IT:'),
+      watch: extractSection(text, 'WATCH FOR:'),
+      user:  extractSection(text, 'FOR YOUR PORTFOLIO:')
+    };
+    // Pull tickers from step text for clickable chips
+    var skipWords = ['NO','AI','DCA','ETF','CAGR','IRR','P/E','VIX'];
+    var tickers = (stepText.match(/\b[A-Z]{2,5}\b/g) || []).filter(function(t){ return skipWords.indexOf(t) < 0; });
+    tickers = tickers.filter(function(t, i){ return tickers.indexOf(t) === i; }); // unique
+
+    var html = '';
+    if(S.why)   html += '<div class="strat-step-sec" style="border-left-color:var(--gold)"><div class="strat-step-lbl" style="color:var(--gold)">Why it matters</div><div class="strat-step-body-text">' + esc(S.why) + '</div></div>';
+    if(S.how)   html += '<div class="strat-step-sec" style="border-left-color:var(--sage)"><div class="strat-step-lbl" style="color:var(--sage)">How to do it</div><div class="strat-step-body-text">' + esc(S.how) + '</div></div>';
+    if(S.watch) html += '<div class="strat-step-sec" style="border-left-color:var(--clay)"><div class="strat-step-lbl" style="color:var(--clay)">Watch for</div><div class="strat-step-body-text">' + esc(S.watch) + '</div></div>';
+    if(S.user)  html += '<div class="strat-step-sec" style="border-left-color:var(--gold-light)"><div class="strat-step-lbl" style="color:var(--gold-light)">For your portfolio</div><div class="strat-step-body-text">' + esc(S.user) + '</div></div>';
+    if(tickers.length){
+      html += '<div class="strat-step-sec" style="border-left-color:var(--text-2)"><div class="strat-step-lbl" style="color:var(--text-2)">Analyze any of these</div><div class="strat-step-chips">';
+      tickers.forEach(function(t){
+        html += '<button class="strat-ticker-chip" onclick="event.stopPropagation();quickTick(\''+t+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2]);setTimeout(runStock,200)">'+t+' →</button>';
+      });
+      html += '</div></div>';
+    }
+    body.innerHTML = html || '<div style="font-size:12px;color:var(--text-2);padding:8px">No additional context available.</div>';
+    body.dataset.loaded = '1';
+  } catch(e) {
+    body.innerHTML = '<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Could not load context</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">' + esc(e.message) + '</div></div>';
+  }
+}
+
 // STRATEGIES
 function selectStrategy(key){
   _selectedStrategy = key;
@@ -4160,7 +4479,7 @@ function selectStrategy(key){
   btns.forEach(function(btn){
     var card = btn.closest('.sc2');
     var isSelected = card && card.dataset.stratKey === key;
-    btn.textContent = isSelected ? '&#10003; Selected -- Your Strategy' : 'Select This Strategy';
+    btn.textContent = isSelected ? '✓ Selected — Your Strategy' : 'Select This Strategy';
     btn.style.background = isSelected ? 'linear-gradient(135deg,var(--gold),var(--gold-dim))' : '';
     btn.style.color      = isSelected ? 'var(--noir)' : '';
     btn.style.borderColor= isSelected ? 'var(--gold)' : '';
@@ -4180,8 +4499,8 @@ function selectStrategy(key){
       steps:[
         'Trim '+( h.length ? h.slice().sort(function(a,b){return b.mktVal-a.mktVal;})[0].sym : 'top position' )+' and any position above 18% to free up cash',
         'Deploy into VOO (20% of portfolio) + SCHD (15% of portfolio)',
-        'Exit all speculative/tactical positions -- keep proceeds in cash or VOO',
-        'Set a quarterly rebalancing reminder -- sell what grew above target, buy what fell below',
+        'Exit all speculative/tactical positions — keep proceeds in cash or VOO',
+        'Set a quarterly rebalancing reminder — sell what grew above target, buy what fell below',
         'Target: 70% Core · 20% Quality Growth · 10% Cash reserve'
       ],
       urgency:'30 days', risk:'Max drawdown: ~15% in worst case',
@@ -4191,28 +4510,28 @@ function selectStrategy(key){
       name:'Balanced', color:'var(--gold)',
       headline:'Best risk-adjusted returns over any 7-10 year period.',
       steps:[
-        'Trim largest holding to 20% maximum -- sell the excess and hold cash temporarily',
+        'Trim largest holding to 20% maximum — sell the excess and hold cash temporarily',
         'Add VOO to reach 20% of total portfolio (core anchor)',
         'Add SCHD to reach 10% (dividend ballast)',
         'Keep NVDA · AMZN · MSFT · AAPL — these are your growth engine',
         'Exit speculative names (LKNCY, NIO, APRE, any position with no clear thesis)',
         'DCA $500+ per month into VOO on every 5%+ dip in the market',
-        'Rebalance quarterly -- the discipline is the strategy'
+        'Rebalance quarterly — the discipline is the strategy'
       ],
       urgency:'30-60 days', risk:'Max drawdown: ~28% in major correction',
       suitable:'Best if you have a 5-15 year horizon, stable income, and can hold through 25% temporary drawdowns without panic selling.'
     },
     aggressive:{
       name:'Aggressive', color:'var(--clay)',
-      headline:'Maximum upside -- requires iron discipline.',
+      headline:'Maximum upside — requires iron discipline.',
       steps:[
         'Hold your entire growth core — NVDA · GOOGL · AMZN · MSFT · AAPL',
-        'Add NVDA on every 10%+ dip -- this is your highest conviction position',
+        'Add NVDA on every 10%+ dip — this is your highest conviction position',
         'Replace speculative names with AVGO + AMD (higher quality, same sector)',
-        'Keep 10% in a tactical sleeve -- use for asymmetric opportunities only',
+        'Keep 10% in a tactical sleeve — use for asymmetric opportunities only',
         'Set a hard rule: NO selling for 24 months regardless of drawdown',
-        'Add $500+ per month systematically -- do not try to time the market',
-        'If the portfolio drops 30%, add more -- do not exit'
+        'Add $500+ per month systematically — do not try to time the market',
+        'If the portfolio drops 30%, add more — do not exit'
       ],
       urgency:'Execute now, hold 24 months', risk:'Max drawdown: ~48% in a 2008-style crash',
       suitable:'Best if you have 10+ year horizon, high stable income, and have NEVER panic-sold during a market correction.'
@@ -4230,7 +4549,7 @@ function selectStrategy(key){
     '<div style="border-radius:var(--r-xl);border:1px solid '+p.color.replace(')',',0.4)').replace('var(','rgba(')+';background:linear-gradient(145deg,var(--noir-2),var(--noir-1));padding:24px;position:relative;overflow:hidden">' +
       '<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,'+p.color+',transparent)"></div>' +
       '<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">' +
-        '<div style="width:36px;height:36px;border-radius:50%;background:'+p.color+';display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#10003;</div>' +
+        '<div style="width:36px;height:36px;border-radius:50%;background:'+p.color+';display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">✓</div>' +
         '<div>' +
           '<div style="font-size:9px;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:3px">Selected Strategy</div>' +
           '<div style="font-family:Cormorant Garamond,serif;font-size:22px;color:var(--cream)">' + esc(p.name) + ' <em style="font-style:italic;color:'+p.color+'">Path</em></div>' +
@@ -4239,11 +4558,16 @@ function selectStrategy(key){
       '<div style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:16px;color:var(--cream-dim);margin-bottom:18px;line-height:1.6">' + esc(p.headline) + '</div>' +
 
       '<div style="margin-bottom:16px">' +
-        '<div style="font-size:9px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:10px">Your Execution Steps</div>' +
+        '<div style="font-size:9px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:10px">Your Execution Steps <span style="color:var(--gold);font-weight:500;text-transform:none;letter-spacing:0;margin-left:6px">· click any step for AI context</span></div>' +
         p.steps.map(function(step, i){
-          return '<div style="display:flex;gap:12px;padding:10px 14px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:6px;align-items:flex-start">' +
-            '<div style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:18px;color:'+p.color+';line-height:1;min-width:20px;flex-shrink:0">' + (i+1) + '</div>' +
-            '<div style="font-size:13px;color:var(--text-1);line-height:1.6">' + esc(step) + '</div>' +
+          var safeStep = esc(step).replace(/"/g,'&quot;');
+          return '<div class="strat-step" id="strat-step-'+i+'" onclick="toggleStratStep('+i+')">' +
+            '<div class="strat-step-head">' +
+              '<div class="strat-step-num" style="color:'+p.color+'">' + (i+1) + '</div>' +
+              '<div class="strat-step-text">' + esc(step) + '</div>' +
+              '<div class="strat-step-chev">▾</div>' +
+            '</div>' +
+            '<div class="strat-step-body-wrap" id="strat-step-body-'+i+'" data-step-text="'+safeStep+'" data-strategy="'+key+'"></div>' +
           '</div>';
         }).join('') +
       '</div>' +
@@ -4263,10 +4587,10 @@ function selectStrategy(key){
         '<strong style="color:var(--cream)">Is this right for you?</strong> ' + esc(p.suitable) +
       '</div>' +
 
-      '<div style="display:flex;gap:8px">' +
-        '<button class="btn-p" onclick="showPanel(&quot;portfolio&quot;,document.querySelectorAll(&quot;.nav-item&quot;)[1]);setTimeout(runFeasibility,300)">Run Full AI Study with This Strategy &rarr;</button>' +
-        '<button class="btn-g" onclick="showPanel(&quot;cadence&quot;,document.querySelectorAll(&quot;.nav-item&quot;)[5])">Build Cadence Plan</button>' +
-        '<button class="btn-g" onclick="var sp=document.getElementById(&quot;selectedStrategyPanel&quot;);if(sp)sp.remove();document.querySelectorAll(&quot;.sc2&quot;).forEach(function(el){el.style.opacity=&quot;1&quot;;el.style.transform=&quot;&quot;;el.style.boxShadow=&quot;&quot;;});">Change Strategy</button>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button class="btn-p" onclick="runFullStudyForStrategy()">Run Full AI Study with This Strategy →</button>' +
+        '<button class="btn-g" onclick="buildCadencePlanForStrategy()">Build Cadence Plan</button>' +
+        '<button class="btn-g" onclick="changeStrategy()">Change Strategy</button>' +
       '</div>' +
     '</div>';
 
