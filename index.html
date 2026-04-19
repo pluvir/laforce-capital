@@ -261,6 +261,79 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .alloc-tip-cta{font-size:9.5px;color:var(--gold);margin-top:8px;padding-top:7px;border-top:1px dashed rgba(201,168,76,.22);text-align:center;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
 @keyframes allocTipIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
+/* ===== Stock Analysis visual system (.sa-*) ===== */
+.sa-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:14px}
+@media(max-width:760px){.sa-grid{grid-template-columns:1fr}}
+.sa-col{display:flex;flex-direction:column;gap:9px}
+.sa-col-hdr{display:flex;align-items:center;gap:9px;padding:11px 14px;background:linear-gradient(135deg,rgba(20,16,12,.8),rgba(10,8,6,.55));border:1px solid rgba(255,255,255,.05);border-radius:10px;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:700}
+.sa-col-hdr.sig{color:#9DD0A8;border-left:3px solid #6BAA75}
+.sa-col-hdr.exec{color:#E0947A;border-left:3px solid #C0714F}
+.sa-col-hdr-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:#0c0a08}
+.sa-col-hdr.sig .sa-col-hdr-icon{background:#6BAA75}
+.sa-col-hdr.exec .sa-col-hdr-icon{background:#C0714F}
+.sa-card{position:relative;padding:12px 15px 12px 18px;background:linear-gradient(135deg,rgba(20,16,12,.7),rgba(10,8,6,.45));border:1px solid rgba(255,255,255,.05);border-left:3px solid #C9A84C;border-radius:10px;cursor:pointer;outline:none;transition:border-color .15s,background .15s,transform .15s}
+.sa-card:hover,.sa-card:focus-visible,.sa-card.on{transform:translateY(-1px);background:linear-gradient(135deg,rgba(40,30,14,.5),rgba(20,16,12,.55))}
+.sa-card.thesis{border-left-color:#E8CC7A}
+.sa-card.whynow{border-left-color:#9DD0A8}
+.sa-card.signal{border-left-color:#6B9FBF}
+.sa-card.conviction{border-left-color:#D4A574}
+.sa-card.keynum{border-left-color:#E8CC7A;background:linear-gradient(135deg,rgba(40,30,14,.5),rgba(20,16,12,.55))}
+.sa-card.sizing{border-left-color:#B5A8D6}
+.sa-card.entry{border-left-color:#9DD0A8}
+.sa-card.horizon{border-left-color:#6B9FBF}
+.sa-card.breaks{border-left-color:#E0947A}
+.sa-card.waitfor{border-left-color:#D4A574}
+.sa-card.valuation{border-left-color:#E8CC7A}
+.sa-card.momentum{border-left-color:#6B9FBF}
+.sa-card.catalysts{border-left-color:#9DD0A8}
+.sa-card-hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.sa-card-lbl{font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:#C0B594}
+.sa-card.thesis .sa-card-lbl{color:#E8CC7A}
+.sa-card.whynow .sa-card-lbl{color:#9DD0A8}
+.sa-card.signal .sa-card-lbl{color:#6B9FBF}
+.sa-card.conviction .sa-card-lbl{color:#D4A574}
+.sa-card.keynum .sa-card-lbl{color:#E8CC7A}
+.sa-card.sizing .sa-card-lbl{color:#B5A8D6}
+.sa-card.entry .sa-card-lbl{color:#9DD0A8}
+.sa-card.horizon .sa-card-lbl{color:#6B9FBF}
+.sa-card.breaks .sa-card-lbl{color:#E0947A}
+.sa-card.waitfor .sa-card-lbl{color:#D4A574}
+.sa-card.valuation .sa-card-lbl{color:#E8CC7A}
+.sa-card.momentum .sa-card-lbl{color:#6B9FBF}
+.sa-card.catalysts .sa-card-lbl{color:#9DD0A8}
+.sa-card-chev{font-family:'DM Mono',monospace;font-size:10px;color:#6B5E52;transition:transform .25s,color .15s}
+.sa-card:hover .sa-card-chev,.sa-card.on .sa-card-chev{color:#E8CC7A}
+.sa-card.on .sa-card-chev{transform:rotate(180deg)}
+.sa-card-preview{font-size:12.5px;color:#D8C9A8;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sa-card.on .sa-card-preview{display:block;-webkit-line-clamp:unset;overflow:visible}
+.sa-card-detail{display:none;margin-top:9px;padding-top:9px;border-top:1px dashed rgba(201,168,76,.18);font-size:11.5px;color:#B8A882;line-height:1.7}
+.sa-card.on .sa-card-detail{display:block;animation:fvIn .22s ease}
+/* Key Number tile — extra visual weight */
+.sa-keynum-big{font-family:'DM Mono',monospace;font-size:24px;font-weight:700;color:#F8EFD0;letter-spacing:-.01em;line-height:1.15;margin-top:4px}
+/* Risk cards (parsed from "WHAT BREAKS THE THESIS") */
+.sa-risks{display:grid;grid-template-columns:1fr;gap:7px;margin-top:9px}
+.sa-risk-item{display:flex;gap:11px;padding:10px 12px;background:rgba(192,113,79,.06);border:1px solid rgba(192,113,79,.22);border-radius:9px;cursor:pointer;outline:none;transition:border-color .15s,background .15s,transform .15s}
+.sa-risk-item:hover,.sa-risk-item:focus-visible{border-color:rgba(192,113,79,.5);background:rgba(192,113,79,.1);transform:translateX(2px)}
+.sa-risk-icon{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:rgba(192,113,79,.2);color:#E0947A;border:1px solid rgba(192,113,79,.4);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:700}
+.sa-risk-body{font-size:12px;color:#D8C9A8;line-height:1.65;flex:1}
+/* Sizing visual bar */
+.sa-sizing-vis{margin-top:8px}
+.sa-sizing-bar{height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,.04);display:flex;position:relative;margin-bottom:7px}
+.sa-sizing-zone{height:100%;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-family:'DM Mono',monospace;letter-spacing:.04em;color:rgba(0,0,0,.5);font-weight:700}
+.sa-sizing-zone.scout{background:rgba(139,125,90,.5);flex:1}
+.sa-sizing-zone.starter{background:rgba(107,170,117,.5);flex:1}
+.sa-sizing-zone.core{background:rgba(201,168,76,.7);flex:2}
+.sa-sizing-zone.cap{background:rgba(192,113,79,.65);flex:1}
+.sa-sizing-marker{position:absolute;top:-3px;bottom:-3px;width:3px;background:#F8EFD0;border-radius:2px;box-shadow:0 0 8px #F8EFD0;transition:left .8s ease}
+.sa-sizing-labels{display:flex;justify-content:space-between;font-size:9px;color:#8B7D68;font-family:'DM Mono',monospace;letter-spacing:.04em;text-transform:uppercase}
+/* Sortable holdings table headers */
+.htbl th.sortable{cursor:pointer;user-select:none;transition:color .15s,background .15s;position:relative}
+.htbl th.sortable:hover{color:#E8CC7A;background:rgba(201,168,76,.05)}
+.htbl th.sortable.active{color:#F2E6BD}
+.htbl .sort-arr{display:inline-block;width:9px;font-family:'DM Mono',monospace;font-size:10px;color:#6B5E52;margin-left:3px;vertical-align:baseline;transition:color .15s}
+.htbl th.sortable:hover .sort-arr{color:#C9A84C}
+.htbl th.sortable.active .sort-arr{color:#E8CC7A}
+
 /* ===== Head-to-Head Compare visual system ===== */
 .cmp-hero{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin-bottom:18px}
 .cmp-side{padding:18px 16px;background:linear-gradient(145deg,rgba(20,16,12,.7),rgba(10,8,6,.5));border:1px solid rgba(201,168,76,.18);border-radius:12px;text-align:center;transition:border-color .3s,background .3s,transform .3s;position:relative}
@@ -319,6 +392,57 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .cmp-final{padding:18px 20px;background:linear-gradient(135deg,rgba(40,30,14,.5),rgba(20,16,12,.6));border:1px solid rgba(201,168,76,.4);border-radius:12px}
 .cmp-final-lbl{font-size:9.5px;letter-spacing:.18em;color:#E8CC7A;text-transform:uppercase;font-weight:700;margin-bottom:7px}
 .cmp-final-body{font-size:14px;color:#F2E6BD;line-height:1.8;font-family:'Inter',sans-serif}
+/* Clickable verdict bar — expandable per-edge breakdown */
+.cmp-verdict.ss-clickable{cursor:pointer;outline:none;transition:border-color .15s,transform .15s}
+.cmp-verdict.ss-clickable:hover,.cmp-verdict.ss-clickable.on{border-color:rgba(201,168,76,.55);transform:translateY(-1px)}
+.cmp-verdict-chev{position:absolute;top:11px;right:14px;font-family:'DM Mono',monospace;font-size:11px;color:#6B5E52;transition:transform .25s,color .15s}
+.cmp-verdict.ss-clickable{position:relative}
+.cmp-verdict.ss-clickable:hover .cmp-verdict-chev,.cmp-verdict.ss-clickable.on .cmp-verdict-chev{color:#E8CC7A}
+.cmp-verdict.ss-clickable.on .cmp-verdict-chev{transform:rotate(180deg)}
+.cmp-verdict-detail{display:none;margin-top:13px;padding-top:12px;border-top:1px dashed rgba(201,168,76,.2)}
+.cmp-verdict.ss-clickable.on .cmp-verdict-detail{display:block;animation:fvIn .22s ease}
+.cmp-edge-mini{display:grid;grid-template-columns:90px 1fr 70px;gap:10px;align-items:center;padding:7px 0;font-size:11.5px}
+.cmp-edge-mini + .cmp-edge-mini{border-top:1px dashed rgba(201,168,76,.1)}
+.cmp-edge-mini-lbl{font-family:'DM Mono',monospace;font-weight:700;color:#C0B594;letter-spacing:.04em;font-size:11px}
+.cmp-edge-mini-bar{height:7px;border-radius:3px;background:rgba(255,255,255,.04);overflow:hidden;display:flex}
+.cmp-edge-mini-fill{height:100%;transition:width .6s ease}
+.cmp-edge-mini-winner{font-family:'DM Mono',monospace;font-size:11px;font-weight:700;text-align:right;letter-spacing:.04em}
+.cmp-edge-mini.win-a .cmp-edge-mini-fill{background:linear-gradient(90deg,#E8CC7A,#C9A84C);width:100%}
+.cmp-edge-mini.win-a .cmp-edge-mini-winner{color:#E8CC7A}
+.cmp-edge-mini.win-b .cmp-edge-mini-fill{background:linear-gradient(90deg,#9B8FC0,#6B9FBF);width:100%;margin-left:auto}
+.cmp-edge-mini.win-b .cmp-edge-mini-winner{color:#9B8FC0}
+.cmp-edge-mini.win-tie .cmp-edge-mini-fill{background:rgba(139,125,90,.5);width:50%;margin-left:25%}
+.cmp-edge-mini.win-tie .cmp-edge-mini-winner{color:#8B7D68}
+
+/* Allocation scenario cards */
+.cmp-scenarios-hdr{font-size:11px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:#E8CC7A;margin:18px 0 10px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.cmp-scenarios-sub{font-size:10.5px;letter-spacing:.04em;color:#8B7D68;font-weight:500;text-transform:none;font-style:italic}
+.cmp-scenarios{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:11px;margin-bottom:16px}
+.cmp-scenario{position:relative;padding:14px 16px;background:linear-gradient(135deg,rgba(20,16,12,.7),rgba(10,8,6,.5));border:1px solid rgba(255,255,255,.08);border-radius:11px;cursor:pointer;outline:none;transition:border-color .18s,background .18s,transform .15s}
+.cmp-scenario:hover,.cmp-scenario:focus-visible,.cmp-scenario.on{transform:translateY(-2px);border-color:rgba(201,168,76,.45);background:linear-gradient(135deg,rgba(40,30,14,.45),rgba(20,16,12,.55))}
+.cmp-scenario.recommended{border-color:rgba(107,170,117,.45);background:linear-gradient(135deg,rgba(20,30,20,.45),rgba(10,18,10,.5))}
+.cmp-scenario.recommended::before{content:"RECOMMENDED";position:absolute;top:-8px;right:14px;font-size:8.5px;letter-spacing:.16em;font-weight:700;color:#0c0a08;background:linear-gradient(135deg,#9DD0A8,#6BAA75);padding:3px 9px;border-radius:4px;box-shadow:0 4px 12px rgba(107,170,117,.3)}
+.cmp-scenario-hdr{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.cmp-scenario-icon{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;font-weight:700;color:#0c0a08;flex-shrink:0;background:linear-gradient(135deg,#E8CC7A,#C9A84C)}
+.cmp-scenario.recommended .cmp-scenario-icon{background:linear-gradient(135deg,#9DD0A8,#6BAA75)}
+.cmp-scenario-title{font-family:"Cormorant Garamond",serif;font-size:16px;color:#F8EFD0;font-weight:500;flex:1;line-height:1.25}
+.cmp-scenario-chev{font-family:'DM Mono',monospace;font-size:11px;color:#6B5E52;transition:transform .25s,color .15s}
+.cmp-scenario:hover .cmp-scenario-chev,.cmp-scenario.on .cmp-scenario-chev{color:#E8CC7A}
+.cmp-scenario.on .cmp-scenario-chev{transform:rotate(180deg)}
+.cmp-scenario-split{display:flex;height:18px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,.04);margin-bottom:8px}
+.cmp-scenario-split-a{background:linear-gradient(90deg,#E8CC7A,#C9A84C);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10.5px;font-weight:700;color:#0c0a08;letter-spacing:.04em;transition:width .8s ease}
+.cmp-scenario-split-b{background:linear-gradient(90deg,#9B8FC0,#6B9FBF);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10.5px;font-weight:700;color:#0c0a08;letter-spacing:.04em;transition:width .8s ease}
+.cmp-scenario-split-w{background:rgba(139,125,90,.4);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;color:#C0B594;letter-spacing:.04em;border-left:1px dashed rgba(255,255,255,.15);transition:width .8s ease}
+.cmp-scenario-labels{display:flex;justify-content:space-between;font-size:10px;color:#8B7D68;font-family:'DM Mono',monospace;margin-bottom:8px;letter-spacing:.04em}
+.cmp-scenario-body{font-size:12px;color:#C0B594;line-height:1.65}
+.cmp-scenario-detail{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed rgba(201,168,76,.2);font-size:11.5px;color:#B8A882;line-height:1.7}
+.cmp-scenario.on .cmp-scenario-detail{display:block;animation:fvIn .22s ease}
+.cmp-scenario-pros{margin-top:6px}
+.cmp-scenario-pros-lbl{font-size:9px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:#9DD0A8;margin-bottom:3px}
+.cmp-scenario-cons-lbl{font-size:9px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:#E0947A;margin-top:7px;margin-bottom:3px}
+.cmp-scenario-actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.cmp-sc-btn{font-size:10.5px;letter-spacing:.04em;padding:6px 11px;border-radius:6px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.32);color:#E8CC7A;cursor:pointer;font-family:inherit;font-weight:500;transition:background .15s,border-color .15s}
+.cmp-sc-btn:hover{background:rgba(201,168,76,.2);border-color:rgba(201,168,76,.55)}
 
 /* ===== Thematic Focus / Sector picker ===== */
 .tf-head{margin-bottom:14px}
@@ -1466,8 +1590,14 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
       <div style="overflow-x:auto">
         <table class="htbl" id="labTable">
           <thead><tr>
-            <th>Symbol</th><th>Shares</th><th class="r">Cost/Share</th>
-            <th class="r">Market Value</th><th class="r">Gain/Loss</th><th class="r">Return</th><th>Class</th><th></th>
+            <th class="sortable" data-sort="sym"          onclick="sortHoldings('sym')">Symbol <span class="sort-arr" id="sa-sym"></span></th>
+            <th class="sortable" data-sort="shares"       onclick="sortHoldings('shares')">Shares <span class="sort-arr" id="sa-shares"></span></th>
+            <th class="r sortable" data-sort="costPerShare" onclick="sortHoldings('costPerShare')">Cost/Share <span class="sort-arr" id="sa-costPerShare"></span></th>
+            <th class="r sortable" data-sort="mktVal"     onclick="sortHoldings('mktVal')">Market Value <span class="sort-arr" id="sa-mktVal"></span></th>
+            <th class="r sortable" data-sort="gain"       onclick="sortHoldings('gain')">Gain/Loss <span class="sort-arr" id="sa-gain"></span></th>
+            <th class="r sortable" data-sort="ret"        onclick="sortHoldings('ret')">Return <span class="sort-arr" id="sa-ret"></span></th>
+            <th class="sortable" data-sort="cls"          onclick="sortHoldings('cls')">Class <span class="sort-arr" id="sa-cls"></span></th>
+            <th></th>
           </tr></thead>
           <tbody id="labTbody"></tbody>
         </table>
@@ -3205,7 +3335,50 @@ async function processImageFile(file){
   return queueImagesForExtraction([file]);
 }
 
-// LAB TABLE
+// LAB TABLE — click-to-sort state (persisted across renders)
+var _labSort={key:null,dir:1}; // dir: 1=asc, -1=desc; null key = original insertion order
+function sortHoldings(key){
+  if(!key){return;}
+  // Toggle direction if same column; else set sensible default direction per column
+  if(_labSort.key===key){
+    _labSort.dir=-_labSort.dir;
+  }else{
+    _labSort.key=key;
+    // For text columns start asc, for numeric columns start desc (biggest first)
+    _labSort.dir=(key==='sym'||key==='cls')?1:-1;
+  }
+  renderLabTable();
+}
+function _labSortedHoldings(){
+  var arr=(_holdings||[]).slice();
+  var k=_labSort.key;
+  if(!k)return arr;
+  var dir=_labSort.dir;
+  arr.sort(function(a,b){
+    var av,bv;
+    if(k==='sym'){av=(a.sym||'').toUpperCase();bv=(b.sym||'').toUpperCase();return av<bv?-1*dir:av>bv?1*dir:0;}
+    if(k==='cls'){av=classify(a.sym)||'';bv=classify(b.sym)||'';return av<bv?-1*dir:av>bv?1*dir:0;}
+    if(k==='ret'){av=a.cost>0?(a.gain/a.cost*100):0;bv=b.cost>0?(b.gain/b.cost*100):0;}
+    else {av=Number(a[k])||0;bv=Number(b[k])||0;}
+    return av<bv?-1*dir:av>bv?1*dir:0;
+  });
+  return arr;
+}
+function _labUpdateSortArrows(){
+  ['sym','shares','costPerShare','mktVal','gain','ret','cls'].forEach(function(k){
+    var arr=document.getElementById('sa-'+k);
+    var th=document.querySelector('.htbl th[data-sort="'+k+'"]');
+    if(!arr||!th)return;
+    if(_labSort.key===k){
+      arr.textContent=_labSort.dir>0?'▲':'▼';
+      th.classList.add('active');
+    }else{
+      arr.textContent='';
+      th.classList.remove('active');
+    }
+  });
+}
+
 function renderLabTable(){
   var wrap=document.getElementById('labHoldingsWrap');var tbody=document.getElementById('labTbody');
   if(!_holdings||!_holdings.length){if(wrap)wrap.style.display='none';return;}
@@ -3215,7 +3388,9 @@ function renderLabTable(){
   var gain=total-cost;var pct=cost>0?(gain/cost*100):0;
   var lm=document.getElementById('labMetrics');
   if(lm)lm.innerHTML=fmt$(total)+' total &nbsp;&middot;&nbsp; <span style="color:'+(gain>=0?'var(--sage)':'var(--clay)')+'">'+(gain>=0?'+':'')+fmt$(gain)+' ('+pct.toFixed(1)+'%)</span>';
-  if(tbody)tbody.innerHTML=_holdings.map(function(h,i){
+  _labUpdateSortArrows();
+  var rows=_labSortedHoldings();
+  if(tbody)tbody.innerHTML=rows.map(function(h,i){
     var cls=classify(h.sym);var col=CLS_C[cls]||'#8b7d5a';var gPct=h.cost>0?(h.gain/h.cost*100):0;
     return '<tr>'+
       '<td><span class="hsym" onclick="quickTick(\''+esc(h.sym)+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2])">'+esc(h.sym)+'</span></td>'+
@@ -3225,12 +3400,16 @@ function renderLabTable(){
       '<td class="r" style="font-family:\'DM Mono\',monospace;font-size:11px;color:'+(h.gain>=0?'var(--sage)':'var(--clay)')+'">'+(h.gain>=0?'+':'')+fmt$(h.gain)+'</td>'+
       '<td class="r" style="font-family:\'DM Mono\',monospace;font-size:11px;color:'+(gPct>=0?'var(--sage)':'var(--clay)')+'">'+(gPct>=0?'+':'')+gPct.toFixed(1)+'%</td>'+
       '<td><span class="cpill" style="color:'+col+';border-color:'+col+'44">'+cls+'</span></td>'+
-      '<td><button class="btn-d" onclick="removeHolding('+i+')">x</button></td>'+
+      '<td><button class="btn-d" onclick="removeHoldingBySym(\''+esc(h.sym)+'\')">x</button></td>'+
     '</tr>';
   }).join('');
 }
 
 function removeHolding(i){_holdings.splice(i,1);saveHoldings();renderLabTable();renderDashboard();}
+function removeHoldingBySym(sym){
+  var idx=_holdings.findIndex(function(h){return h&&h.sym===sym;});
+  if(idx>=0){_holdings.splice(idx,1);saveHoldings();renderLabTable();renderDashboard();}
+}
 
 // DASHBOARD
 function renderDashboard(){
@@ -3639,27 +3818,90 @@ function renderStockOutput(ticker,text,full){
       +sec('Wait for','var(--text-2)',S.waitFor)
     +'</div>';
   } else {
-    // Institutional 2-column: Signal/Conviction (left) vs Sizing/Timing (right)
-    bodyHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px">'
+    // INSTITUTIONAL MODE — click-to-expand visual cards
+    function saCard(cls,label,body,detailPrompt){
+      if(!body) return '';
+      return '<div class="sa-card '+cls+'" tabindex="0" role="button" aria-expanded="false" onclick="_saToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_saToggle(this)}">'+
+        '<div class="sa-card-hdr"><span class="sa-card-lbl">'+esc(label)+'</span><span class="sa-card-chev">▾</span></div>'+
+        '<div class="sa-card-preview">'+esc(body).replace(/\n/g,'<br>')+'</div>'+
+        (detailPrompt?'<div class="sa-card-detail">'+detailPrompt+'</div>':'')+
+      '</div>';
+    }
+    // Parse risks into individual cards
+    function saRiskCards(body){
+      if(!body) return '';
+      var items=body.split(/\n/).map(function(l){return l.replace(/^[-•*]\s*/,'').trim();}).filter(function(l){return l.length>6;});
+      if(!items.length) items=[body];
+      return '<div class="sa-risks">'+items.slice(0,5).map(function(it,i){
+        return '<div class="sa-risk-item" tabindex="0"><div class="sa-risk-icon">'+(i+1)+'</div><div class="sa-risk-body">'+esc(it)+'</div></div>';
+      }).join('')+'</div>';
+    }
+    // Sizing visual: infer zone from body text
+    function saSizingVis(body){
+      if(!body) return '';
+      var u=body.toUpperCase();
+      var pos = /OVER\s*CAP|TOO\s*LARGE/.test(u) ? 95
+              : /NEAR\s*CAP|CAP\s*LIMIT/.test(u) ? 72
+              : /RIGHT[- ]SIZED|CORE\s*WEIGHT|APPROPRIATE/.test(u) ? 50
+              : /STARTER|BUILD|SCOUT/.test(u) ? 25 : 50;
+      return '<div class="sa-sizing-vis">'+
+        '<div class="sa-sizing-bar">'+
+          '<div class="sa-sizing-zone scout">SCOUT</div>'+
+          '<div class="sa-sizing-zone starter">STARTER</div>'+
+          '<div class="sa-sizing-zone core">CORE</div>'+
+          '<div class="sa-sizing-zone cap">CAP</div>'+
+          '<div class="sa-sizing-marker" style="left:'+pos+'%"></div>'+
+        '</div>'+
+        '<div class="sa-sizing-labels"><span>0%</span><span>5%</span><span>12%</span><span>20%+</span></div>'+
+      '</div>';
+    }
+    // Key Number — big stat tile (extract a number or keep the first sentence)
+    function saKeyNumber(body){
+      if(!body) return '';
+      var m=body.match(/([+-]?\d+(?:[.,]\d+)?%?)/);
+      var bigStat = m?m[1]:'';
+      var rest=bigStat?body.replace(m[0],'').replace(/^[\s—\-:]+/,''):body;
+      return '<div class="sa-card keynum" tabindex="0" role="button" aria-expanded="false" onclick="_saToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_saToggle(this)}">'+
+        '<div class="sa-card-hdr"><span class="sa-card-lbl">★ Key Number</span><span class="sa-card-chev">▾</span></div>'+
+        (bigStat?'<div class="sa-keynum-big">'+esc(bigStat)+'</div>':'')+
+        '<div class="sa-card-preview" style="margin-top:4px">'+esc(rest).replace(/\n/g,'<br>')+'</div>'+
+      '</div>';
+    }
+
+    bodyHTML='<div class="sa-grid">'+
       // LEFT — thesis + opportunity
-      +'<div class="card" style="border-top:2px solid rgba(107,170,117,.35)">'
-        +'<div style="font-size:8px;letter-spacing:.22em;color:var(--sage);text-transform:uppercase;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px dashed rgba(107,170,117,.22)">◆ Signal &amp; Conviction</div>'
-        +sec('Thesis','var(--gold)',S.thesis)
-        +sec('Why Now','var(--sage)',S.whyNow)
-        +sec('Signal','var(--gold)',S.signal)
-        +sec('Conviction','var(--sage)',S.conviction)
-        +(full?sec('Valuation','var(--text-2)',S.valuation)+sec('Momentum','var(--text-2)',S.momentum)+sec('Catalysts','var(--gold)',S.catalysts):sec('Key number','var(--gold)',S.keyNumber))
-      +'</div>'
+      '<div class="sa-col">'+
+        '<div class="sa-col-hdr sig"><div class="sa-col-hdr-icon">◆</div>Signal & Conviction</div>'+
+        saCard('thesis','Thesis', S.thesis, 'The core bet. If this doesn\'t hold, everything else falls apart.')+
+        saCard('whynow','Why Now', S.whyNow, 'Timing matters. Catalysts turn theses into returns. Without one, you\'re paying holding costs.')+
+        saCard('signal','Signal', S.signal, 'The raw fundamental read. Numbers don\'t lie, but they don\'t explain context — that\'s Conviction below.')+
+        saCard('conviction','Conviction', S.conviction, 'Why this stays in a portfolio beyond the signal. Moat, management, durability — the qualitative edge.')+
+        (full?
+          saCard('valuation','Valuation', S.valuation, 'Current multiples vs history and peers. Cheap only matters if quality holds.')+
+          saCard('momentum','Momentum', S.momentum, 'Price action + technical setup. Tape is a real factor.')+
+          saCard('catalysts','Catalysts', S.catalysts, 'Near-term events that could move the stock — dated and specific.')
+          : saKeyNumber(S.keyNumber))+
+      '</div>'+
       // RIGHT — execution + discipline
-      +'<div class="card" style="border-top:2px solid rgba(192,113,79,.35)">'
-        +'<div style="font-size:8px;letter-spacing:.22em;color:var(--clay);text-transform:uppercase;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px dashed rgba(192,113,79,.22)">◆ Sizing, Timing &amp; Discipline</div>'
-        +sec('Position sizing','var(--gold)',S.sizing)
-        +sec('Entry approach','var(--gold)',S.entry)
-        +sec('Time horizon','var(--text-2)',S.horizon)
-        +sec('What breaks the thesis','var(--clay)',S.breaks)
-        +sec('Wait for if not now','var(--text-2)',S.waitFor)
-      +'</div>'
-    +'</div>';
+      '<div class="sa-col">'+
+        '<div class="sa-col-hdr exec"><div class="sa-col-hdr-icon">◆</div>Sizing, Timing & Discipline</div>'+
+        (S.sizing?'<div class="sa-card sizing" tabindex="0" role="button" aria-expanded="false" onclick="_saToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_saToggle(this)}">'+
+          '<div class="sa-card-hdr"><span class="sa-card-lbl">◐ Position Sizing</span><span class="sa-card-chev">▾</span></div>'+
+          '<div class="sa-card-preview">'+esc(S.sizing).replace(/\n/g,'<br>')+'</div>'+
+          saSizingVis(S.sizing)+
+          '<div class="sa-card-detail">Sizing governs survival. A great thesis at 20% of portfolio still ruins you when it misses — the cap exists to keep one call from being fatal.</div>'+
+        '</div>':'')+
+        saCard('entry','Entry Approach', S.entry, 'Execution plan. Market, limit, DCA tranches, or wait — pick one and commit before the price moves.')+
+        saCard('horizon','Time Horizon', S.horizon, 'How long this thesis needs to play out. Time horizon mismatch is the #1 unforced error.')+
+        (S.breaks?'<div class="sa-card breaks" tabindex="0" role="button" aria-expanded="false" onclick="_saToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_saToggle(this)}">'+
+          '<div class="sa-card-hdr"><span class="sa-card-lbl">⚠ What Breaks The Thesis</span><span class="sa-card-chev">▾</span></div>'+
+          '<div class="sa-card-preview" style="margin-bottom:4px;font-style:italic;color:#B8A882">Three scenarios that invalidate the call — watch these specifically.</div>'+
+          saRiskCards(S.breaks)+
+          '<div class="sa-card-detail">If any of these materializes, the thesis is wrong — exit fast, don\'t rationalize.</div>'+
+        '</div>':'')+
+        saCard('waitfor','Wait For', S.waitFor, 'The specific trigger that upgrades the setup. If you don\'t buy today, these are the signs to re-check.')+
+      '</div>'+
+    '</div>';
   }
 
   // Final action bar
@@ -5024,14 +5266,14 @@ function _cdLaneTipEl(){
   return t;
 }
 function _cdHighlightLane(lane,on){
-  // Highlight matching donut segment
+  // Highlight the matching donut segment only — leave the other segments alone
   ['core','growth','tactical'].forEach(function(l){
     var seg=document.getElementById('cdSeg'+l.charAt(0).toUpperCase()+l.slice(1));
     if(!seg)return;
     seg.classList.toggle('cd-seg-focus', on && l===lane);
-    seg.classList.toggle('cd-seg-mute',  on && l!==lane);
+    seg.classList.remove('cd-seg-mute');
   });
-  // Highlight matching allocation rows
+  // Illuminate ONLY the allocation rows in that lane — don't dim anything else
   var d=window._deployData; var style=window._currentDeployStyle||'balanced';
   var allocs=(d&&d[style]&&d[style].allocations)||[];
   var matchSyms={};
@@ -5041,7 +5283,7 @@ function _cdHighlightLane(lane,on){
     var sym=symEl?symEl.textContent.trim():'';
     var match = on && matchSyms[sym];
     r.classList.toggle('cd-row-focus', match);
-    r.classList.toggle('cd-row-mute',  on && !match);
+    r.classList.remove('cd-row-mute');
   });
 }
 function _cdLaneCopy(lane){
@@ -6371,15 +6613,113 @@ async function runCompare(){
       '</div>'+
     '</div>';
 
-    // Verdict bar
-    var verdictBar='<div class="cmp-verdict">'+
-      '<div class="cmp-verdict-hdr">Edge Score · 6 categories</div>'+
+    // Verdict bar — now clickable with per-edge breakdown
+    var edgeOrder=['VALUATION','GROWTH','MOMENTUM','CATALYST','RISK','FIT'];
+    var miniRows=edgeOrder.map(function(k){
+      var w=secs[k].winner;
+      var winCls = w===a?'win-a' : w===b?'win-b' : 'win-tie';
+      var winLbl = w===a?a : w===b?b : 'Tie';
+      return '<div class="cmp-edge-mini '+winCls+'">'+
+        '<div class="cmp-edge-mini-lbl">'+esc(k.charAt(0)+k.slice(1).toLowerCase())+'</div>'+
+        '<div class="cmp-edge-mini-bar"><div class="cmp-edge-mini-fill"></div></div>'+
+        '<div class="cmp-edge-mini-winner">'+esc(winLbl)+'</div>'+
+      '</div>';
+    }).join('');
+    var verdictBar='<div class="cmp-verdict ss-clickable" tabindex="0" role="button" aria-expanded="false" onclick="_ssToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_ssToggle(this)}">'+
+      '<div class="cmp-verdict-chev">▾</div>'+
+      '<div class="cmp-verdict-hdr">Edge Score · 6 categories · tap to expand</div>'+
       '<div class="cmp-verdict-bar">'+
         '<div class="cmp-verdict-fill-a" style="width:'+pctA.toFixed(1)+'%"></div>'+
         '<div class="cmp-verdict-fill-b" style="width:'+pctB.toFixed(1)+'%"></div>'+
       '</div>'+
       '<div class="cmp-verdict-labels"><span>'+esc(a)+' '+scoreA+'</span><span>'+esc(b)+' '+scoreB+'</span></div>'+
+      '<div class="cmp-verdict-detail">'+miniRows+'</div>'+
     '</div>';
+
+    // ===== ALLOCATION SCENARIOS =====
+    // Score-driven recommended split: lopsided = single name, close = balanced
+    var diff=Math.abs(scoreA-scoreB);
+    var leader = scoreA>scoreB ? a : scoreB>scoreA ? b : null;
+    var laggard = leader===a ? b : leader===b ? a : null;
+    var leaderScore = Math.max(scoreA,scoreB), laggardScore = Math.min(scoreA,scoreB);
+    var recSplit; // [pctA, pctB, pctWait]
+    var recRationale;
+    if(!leader){
+      recSplit=[50,50,0];
+      recRationale='Tied across 6 categories. A 50/50 split lets both theses play out and rebalances over time.';
+    } else if(diff>=4){
+      recSplit = leader===a ? [80,10,10] : [10,80,10];
+      recRationale='Lopsided edge to '+leader+' ('+leaderScore+'-'+laggardScore+'). Concentrate ~80% in the leader and keep a small starter in '+laggard+' as optionality.';
+    } else if(diff===2){
+      recSplit = leader===a ? [65,25,10] : [25,65,10];
+      recRationale='Clear edge to '+leader+' ('+leaderScore+'-'+laggardScore+') but '+laggard+' isn\'t broken. ~65/25 weighted toward the leader, 10% dry powder for pullback adds.';
+    } else {
+      recSplit = leader===a ? [55,35,10] : [35,55,10];
+      recRationale='Narrow edge ('+leaderScore+'-'+laggardScore+'). 55/35 weighted slightly to '+leader+' with 10% dry powder.';
+    }
+    function scenarioCard(opts){
+      var pctA=opts.split[0], pctB=opts.split[1], pctW=opts.split[2]||0;
+      var splitBar='<div class="cmp-scenario-split">'+
+        (pctA?'<div class="cmp-scenario-split-a" style="width:'+pctA+'%">'+pctA+'%</div>':'')+
+        (pctB?'<div class="cmp-scenario-split-b" style="width:'+pctB+'%">'+pctB+'%</div>':'')+
+        (pctW?'<div class="cmp-scenario-split-w" style="width:'+pctW+'%">'+pctW+'%</div>':'')+
+      '</div>';
+      var lblBar='<div class="cmp-scenario-labels">'+
+        '<span>'+esc(a)+'</span>'+
+        '<span>'+esc(b)+'</span>'+
+        (pctW?'<span>Wait</span>':'')+
+      '</div>';
+      var prosHTML='<div class="cmp-scenario-pros"><div class="cmp-scenario-pros-lbl">Pros</div><div>'+(opts.pros||[]).map(function(x){return '· '+esc(x);}).join('<br>')+'</div></div>';
+      var consHTML='<div><div class="cmp-scenario-cons-lbl">Risks</div><div>'+(opts.cons||[]).map(function(x){return '· '+esc(x);}).join('<br>')+'</div></div>';
+      var actBtns='<div class="cmp-scenario-actions">'+
+        (pctA>0?'<button class="cmp-sc-btn" onclick="event.stopPropagation();_execAnalyze(\''+esc(a)+'\')">Analyze '+esc(a)+' →</button>':'')+
+        (pctB>0?'<button class="cmp-sc-btn" onclick="event.stopPropagation();_execAnalyze(\''+esc(b)+'\')">Analyze '+esc(b)+' →</button>':'')+
+      '</div>';
+      return '<div class="cmp-scenario'+(opts.recommended?' recommended':'')+'" tabindex="0" role="button" aria-expanded="false" onclick="_cmpToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_cmpToggle(this)}">'+
+        '<div class="cmp-scenario-hdr">'+
+          '<div class="cmp-scenario-icon">'+esc(opts.icon||'$')+'</div>'+
+          '<div class="cmp-scenario-title">'+esc(opts.title)+'</div>'+
+          '<div class="cmp-scenario-chev">▾</div>'+
+        '</div>'+
+        splitBar+lblBar+
+        '<div class="cmp-scenario-body">'+esc(opts.body)+'</div>'+
+        '<div class="cmp-scenario-detail">'+
+          (opts.howto?'<div style="margin-bottom:7px"><strong style="color:#E8CC7A">How:</strong> '+esc(opts.howto)+'</div>':'')+
+          prosHTML+consHTML+actBtns+
+        '</div>'+
+      '</div>';
+    }
+    var scenariosHTML='<div class="cmp-scenarios-hdr">📊 Allocation Scenarios <span class="cmp-scenarios-sub">tap any card for full breakdown</span></div>'+
+      '<div class="cmp-scenarios">'+
+        scenarioCard({
+          title:'All-in '+a, icon:'A', split:[100,0,0], recommended:false,
+          body:'100% '+a+' — concentrated bet on the '+a+' thesis.',
+          howto:'Put the entire dollar amount into '+a+' today as a single position.',
+          pros:['Maximum upside if '+a+' thesis plays out','Single thesis = easy to monitor','No dilution from a second story'],
+          cons:['Single-name risk — one bad earnings is the whole portfolio','No optionality if '+(laggard||b)+' becomes the better setup','Higher volatility on this slice']
+        })+
+        scenarioCard({
+          title:'All-in '+b, icon:'B', split:[0,100,0], recommended:false,
+          body:'100% '+b+' — concentrated bet on the '+b+' thesis.',
+          howto:'Put the entire dollar amount into '+b+' today as a single position.',
+          pros:['Maximum upside if '+b+' thesis plays out','Single thesis = easy to monitor','No dilution from a second story'],
+          cons:['Single-name risk — one bad earnings is the whole portfolio','No optionality if '+(leader||a)+' becomes the better setup','Higher volatility on this slice']
+        })+
+        scenarioCard({
+          title:'Recommended Split', icon:'★', split:recSplit, recommended:true,
+          body:recRationale,
+          howto:'Deploy '+recSplit[0]+'% to '+a+' and '+recSplit[1]+'% to '+b+' today'+(recSplit[2]?', keep '+recSplit[2]+'% as cash dry-powder for pullback adds.':'.'),
+          pros:['Captures the edge without single-name risk','Preserves optionality if the laggard catches up','Diversification reduces drawdown'],
+          cons:['Lower upside than all-in on the leader','Two positions = more monitoring','Rebalancing needed if one runs hard']
+        })+
+        scenarioCard({
+          title:'Stage Entry', icon:'⏱', split: leader===a?[60,0,40]:[0,60,40], recommended:false,
+          body:'Buy '+(leader||a)+' at 60% now, wait for '+(laggard||b)+' at a better trigger before deploying the rest.',
+          howto:'Deploy 60% into '+(leader||a)+' immediately. Hold 40% as cash. Add to '+(laggard||b)+' on a 10-15% pullback OR after the next earnings confirms the thesis.',
+          pros:['Forces patience on the laggard','Cash earns ~5% in SGOV/BIL while waiting','Avoids buying '+(laggard||b)+' before its setup improves'],
+          cons:['Cash drag if '+(laggard||b)+' rallies without the trigger','Requires actually pulling the trigger when conditions hit','More mental overhead']
+        })+
+      '</div>';
 
     // Edge cards
     function edgeDetail(kind,winner,loser){
@@ -6433,7 +6773,7 @@ async function runCompare(){
       '<div class="cmp-final-body">'+esc(secs.VERDICT.body)+'</div>'+
     '</div>' : '';
 
-    out.innerHTML=heroHTML+verdictBar+edgesHTML+finalHTML;
+    out.innerHTML=heroHTML+verdictBar+edgesHTML+scenariosHTML+finalHTML;
     hideAiToast();
   }catch(err){
     out.innerHTML='<div class="thinking" style="border-color:var(--clay)">'+esc(err.message)+'</div>';
@@ -6441,6 +6781,10 @@ async function runCompare(){
   }
 }
 function _cmpToggle(el){
+  var on=el.classList.toggle('on');
+  el.setAttribute('aria-expanded',on?'true':'false');
+}
+function _saToggle(el){
   var on=el.classList.toggle('on');
   el.setAttribute('aria-expanded',on?'true':'false');
 }
