@@ -261,6 +261,157 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .alloc-tip-cta{font-size:9.5px;color:var(--gold);margin-top:8px;padding-top:7px;border-top:1px dashed rgba(201,168,76,.22);text-align:center;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
 @keyframes allocTipIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
+/* ===== Thematic Focus / Sector picker ===== */
+.tf-head{margin-bottom:14px}
+.tf-eye{font-size:9.5px;letter-spacing:.18em;color:#C9A84C;text-transform:uppercase;font-weight:700;margin-bottom:5px}
+.tf-title{font-family:"Cormorant Garamond",serif;font-size:24px;color:#F8EFD0;font-weight:500;margin-bottom:5px;letter-spacing:.005em}
+.tf-title em{font-style:italic;color:#E8CC7A}
+.tf-sub{font-size:12.5px;color:#C0B594;line-height:1.65;max-width:680px}
+.tf-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.tf-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:20px;background:rgba(20,16,12,.6);border:1px solid rgba(201,168,76,.18);color:#C0B594;font-size:12px;font-weight:500;cursor:pointer;transition:background .15s,border-color .15s,color .15s,transform .12s;outline:none}
+.tf-chip::before{content:"◆";font-size:9px;color:#8B7D68;transition:color .15s}
+.tf-chip:hover,.tf-chip:focus-visible{border-color:rgba(201,168,76,.45);color:#F2E6BD;transform:translateY(-1px)}
+.tf-chip.on{background:linear-gradient(135deg,#E8CC7A,#C9A84C);border-color:#E8CC7A;color:#0c0a08;font-weight:600;box-shadow:0 4px 14px rgba(201,168,76,.25)}
+.tf-chip.on::before{color:#0c0a08}
+.tf-inputs{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end}
+@media(max-width:760px){.tf-inputs{grid-template-columns:1fr 1fr}.tf-inputs .tf-go{grid-column:1/-1}}
+.tf-ig{display:flex;flex-direction:column;gap:5px}
+.tf-lbl{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#A89878;font-weight:700}
+.tf-sel,.tf-inp{padding:10px 12px;background:rgba(0,0,0,.35);border:1px solid rgba(201,168,76,.22);border-radius:8px;color:#F2E6BD;font-family:inherit;font-size:13px;outline:none;transition:border-color .15s}
+.tf-sel:focus,.tf-inp:focus{border-color:rgba(201,168,76,.55)}
+.tf-go{height:42px;padding:0 18px;white-space:nowrap}
+/* Sector output */
+.tf-out{border-radius:14px;border:1px solid rgba(201,168,76,.3);background:linear-gradient(145deg,rgba(16,14,10,.98),rgba(10,8,6,.96));padding:22px;animation:ssIn .35s ease}
+.tf-out-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding-bottom:16px;margin-bottom:18px;border-bottom:1px dashed rgba(201,168,76,.18);flex-wrap:wrap}
+.tf-out-eye{font-size:9.5px;letter-spacing:.16em;color:#8B7D68;text-transform:uppercase;font-weight:700;margin-bottom:4px}
+.tf-out-title{font-family:"Cormorant Garamond",serif;font-size:24px;color:#F8EFD0;font-weight:500;letter-spacing:.005em}
+.tf-conf{display:flex;align-items:center;gap:9px;padding:10px 14px;background:rgba(0,0,0,.3);border:1px solid rgba(201,168,76,.25);border-radius:10px;flex-shrink:0}
+.tf-conf-lbl{font-size:9px;letter-spacing:.14em;color:#A89878;text-transform:uppercase;font-weight:700}
+.tf-conf-val{font-family:"DM Mono",monospace;font-size:18px;color:#F2E6BD;font-weight:700}
+.tf-conf-bar{flex:1;min-width:80px;height:5px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden}
+.tf-conf-fill{height:100%;border-radius:3px;transition:width .9s cubic-bezier(.2,.9,.3,1.1)}
+.tf-basis{font-size:12.5px;color:#C0B594;line-height:1.7;font-style:italic;margin-bottom:18px;padding:11px 14px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.04);border-radius:8px}
+.tf-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+@media(max-width:760px){.tf-grid{grid-template-columns:1fr}}
+.tf-card{position:relative;padding:15px 18px;border-radius:11px;background:linear-gradient(135deg,rgba(20,16,12,.7),rgba(10,8,6,.5));border:1px solid rgba(255,255,255,.05);border-left:3px solid #C9A84C;cursor:pointer;outline:none;transition:border-color .18s,background .18s,transform .15s}
+.tf-card:hover,.tf-card:focus-visible,.tf-card.on{border-color:rgba(201,168,76,.45);background:linear-gradient(135deg,rgba(40,30,14,.5),rgba(20,16,12,.5));transform:translateY(-1px)}
+.tf-card.regime{border-left-color:#E8CC7A}
+.tf-card.entry{border-left-color:#9DD0A8}
+.tf-card.why{border-left-color:#6BAA75}
+.tf-card.thesis{border-left-color:#E0947A}
+.tf-card.fit{border-left-color:#9B8FC0}
+.tf-card-lbl{font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.tf-card.regime .tf-card-lbl{color:#E8CC7A}
+.tf-card.entry  .tf-card-lbl{color:#9DD0A8}
+.tf-card.why    .tf-card-lbl{color:#6BAA75}
+.tf-card.thesis .tf-card-lbl{color:#E0947A}
+.tf-card.fit    .tf-card-lbl{color:#B5A8D6}
+.tf-card-body{font-size:13px;color:#E8D9B5;line-height:1.7;font-family:"Inter",-apple-system,sans-serif}
+.tf-card-chev{position:absolute;top:12px;right:14px;font-family:'DM Mono',monospace;font-size:11px;color:#6B5E52;transition:transform .25s ease,color .15s}
+.tf-card.on .tf-card-chev{transform:rotate(180deg);color:#E8CC7A}
+.tf-card-detail{display:none;margin-top:11px;padding-top:11px;border-top:1px dashed rgba(201,168,76,.2);font-size:12px;color:#C0B594;line-height:1.75}
+.tf-card.on .tf-card-detail{display:block;animation:fvIn .22s ease}
+.tf-names{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin-bottom:18px}
+.tf-name{padding:13px 14px;background:linear-gradient(135deg,rgba(20,16,12,.85),rgba(12,10,8,.6));border:1px solid rgba(201,168,76,.22);border-radius:10px;cursor:pointer;outline:none;transition:border-color .15s,transform .15s,box-shadow .15s}
+.tf-name:hover,.tf-name:focus-visible{border-color:rgba(201,168,76,.55);transform:translateY(-2px);box-shadow:0 6px 18px rgba(201,168,76,.1)}
+.tf-name-sym{font-family:'DM Mono',monospace;font-size:14px;font-weight:700;color:#F2E6BD;margin-bottom:5px;letter-spacing:.04em}
+.tf-name-body{font-size:11.5px;color:#C0B594;line-height:1.55}
+.tf-name-cta{font-size:9.5px;color:#C9A84C;margin-top:7px;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+
+/* ===== Feasibility Visual System (.fv-*) — per-section interactive graphics ===== */
+.fv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:11px;margin:6px 0 16px}
+.fv-tile{position:relative;padding:15px 16px;background:linear-gradient(135deg,rgba(24,20,14,.85),rgba(14,12,10,.6));border:1px solid rgba(201,168,76,.18);border-radius:12px;cursor:pointer;transition:border-color .18s ease,transform .15s ease,background .18s ease;outline:none}
+.fv-tile:hover,.fv-tile:focus-visible,.fv-tile.on{border-color:rgba(201,168,76,.55);transform:translateY(-2px);background:linear-gradient(135deg,rgba(40,32,18,.5),rgba(20,16,12,.65))}
+.fv-tile-lbl{font-size:9px;letter-spacing:.14em;color:#8B7D68;text-transform:uppercase;font-weight:700;margin-bottom:7px}
+.fv-tile-val{font-family:'DM Mono',monospace;font-size:22px;font-weight:600;color:#F2E6BD;line-height:1.1;letter-spacing:-.01em}
+.fv-tile-val.pos{color:#9DD0A8}.fv-tile-val.neg{color:#E0947A}.fv-tile-val.gold{color:#E8CC7A}
+.fv-tile-sub{font-size:10.5px;color:#8B7D68;margin-top:5px;line-height:1.5;font-style:italic}
+.fv-tile-chev{position:absolute;top:11px;right:13px;font-family:'DM Mono',monospace;font-size:10px;color:#6B5E52;transition:transform .25s ease,color .15s}
+.fv-tile:hover .fv-tile-chev,.fv-tile.on .fv-tile-chev{color:#E8CC7A}
+.fv-tile.on .fv-tile-chev{transform:rotate(180deg)}
+.fv-tile-detail{display:none;margin-top:11px;padding-top:11px;border-top:1px dashed rgba(201,168,76,.22);font-size:12px;color:#C0B594;line-height:1.75}
+.fv-tile.on .fv-tile-detail{display:block;animation:fvIn .22s ease}
+@keyframes fvIn{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
+
+.fv-split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0 16px}
+@media(max-width:720px){.fv-split{grid-template-columns:1fr}}
+.fv-list{border-radius:12px;border:1px solid rgba(255,255,255,.05);background:linear-gradient(135deg,rgba(20,16,12,.6),rgba(10,8,6,.4));padding:14px 16px}
+.fv-list.pos{border-color:rgba(107,170,117,.26);background:linear-gradient(135deg,rgba(18,26,18,.55),rgba(10,8,6,.4))}
+.fv-list.neg{border-color:rgba(192,113,79,.26);background:linear-gradient(135deg,rgba(30,18,14,.55),rgba(10,8,6,.4))}
+.fv-list-hdr{display:flex;align-items:center;gap:9px;margin-bottom:10px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.fv-list.pos .fv-list-hdr{color:#9DD0A8}
+.fv-list.neg .fv-list-hdr{color:#E0947A}
+.fv-list-icon{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;flex-shrink:0}
+.fv-list.pos .fv-list-icon{background:rgba(107,170,117,.18);color:#9DD0A8;border:1px solid rgba(107,170,117,.35)}
+.fv-list.neg .fv-list-icon{background:rgba(192,113,79,.18);color:#E0947A;border:1px solid rgba(192,113,79,.35)}
+.fv-item{position:relative;padding:9px 12px 9px 28px;margin-bottom:5px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.04);border-radius:8px;font-size:12.5px;line-height:1.6;color:#D8C9A8;cursor:pointer;transition:border-color .15s,background .15s,transform .15s}
+.fv-item:hover,.fv-item:focus-visible{transform:translateX(2px)}
+.fv-list.pos .fv-item:hover{border-color:rgba(107,170,117,.4);background:rgba(107,170,117,.06)}
+.fv-list.neg .fv-item:hover{border-color:rgba(192,113,79,.4);background:rgba(192,113,79,.06)}
+.fv-item::before{content:"";position:absolute;left:11px;top:16px;width:6px;height:6px;border-radius:50%}
+.fv-list.pos .fv-item::before{background:#6BAA75;box-shadow:0 0 6px #6BAA75}
+.fv-list.neg .fv-item::before{background:#C0714F;box-shadow:0 0 6px #C0714F}
+
+/* Concentration mini-bar */
+.fv-conc{margin:10px 0 16px;padding:14px 16px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.05);border-radius:12px}
+.fv-conc-hdr{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:#C9A84C;margin-bottom:8px}
+.fv-conc-sub{color:#8B7D68;font-weight:500;letter-spacing:.04em;text-transform:none;font-style:italic;font-size:10px}
+.fv-conc-bar{height:12px;border-radius:6px;overflow:hidden;display:flex;gap:2px;background:rgba(255,255,255,.03)}
+.fv-conc-seg{height:100%;cursor:pointer;transition:filter .15s,transform .15s}
+.fv-conc-seg:hover{filter:brightness(1.3);transform:scaleY(1.3)}
+.fv-conc-leg{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:10.5px;color:#B8A882}
+.fv-conc-leg-item{display:flex;align-items:center;gap:5px}
+.fv-conc-leg-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+
+/* Projection chart */
+.fv-proj{margin:6px 0 14px;padding:18px 18px 14px;background:linear-gradient(135deg,rgba(18,14,10,.7),rgba(8,6,5,.6));border:1px solid rgba(201,168,76,.22);border-radius:12px}
+.fv-proj-svg{width:100%;height:auto;display:block;max-height:220px}
+.fv-proj-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:11px;color:#B8A882;justify-content:center}
+.fv-proj-leg-item{display:flex;align-items:center;gap:6px}
+.fv-proj-leg-line{width:16px;height:2px;border-radius:1px}
+.fv-proj-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.fv-proj-kpi-tile{padding:10px 12px;background:rgba(0,0,0,.28);border:1px solid rgba(201,168,76,.15);border-radius:9px;text-align:center}
+.fv-proj-kpi-yr{font-size:9px;letter-spacing:.14em;color:#8B7D68;text-transform:uppercase;font-weight:700;margin-bottom:4px}
+.fv-proj-kpi-val{font-family:'DM Mono',monospace;font-size:15px;color:#E8CC7A;font-weight:700}
+
+/* Action priority cards */
+.fv-act{position:relative;padding:13px 15px 13px 44px;margin-bottom:7px;background:linear-gradient(135deg,rgba(18,14,10,.75),rgba(10,8,6,.5));border:1px solid var(--border);border-radius:10px;cursor:pointer;outline:none;transition:border-color .15s,background .15s,transform .15s}
+.fv-act:hover,.fv-act:focus-visible{transform:translateX(3px)}
+.fv-act-tag{position:absolute;left:11px;top:11px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:#0c0a08}
+.fv-act.high{border-color:rgba(192,113,79,.35)}.fv-act.high .fv-act-tag{background:#C0714F}
+.fv-act.high:hover{border-color:rgba(192,113,79,.6);background:linear-gradient(135deg,rgba(30,18,14,.7),rgba(10,8,6,.5))}
+.fv-act.med{border-color:rgba(201,168,76,.3)}.fv-act.med .fv-act-tag{background:#C9A84C}
+.fv-act.med:hover{border-color:rgba(201,168,76,.55);background:linear-gradient(135deg,rgba(28,22,12,.7),rgba(10,8,6,.5))}
+.fv-act.ongoing{border-color:rgba(107,170,117,.3)}.fv-act.ongoing .fv-act-tag{background:#6BAA75}
+.fv-act.ongoing:hover{border-color:rgba(107,170,117,.55);background:linear-gradient(135deg,rgba(18,26,18,.7),rgba(10,8,6,.5))}
+.fv-act-body{font-size:13px;line-height:1.65;color:#E8D9B5}
+.fv-act-meta{font-size:9px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;margin-bottom:3px}
+.fv-act.high .fv-act-meta{color:#E0947A}.fv-act.med .fv-act-meta{color:#E8CC7A}.fv-act.ongoing .fv-act-meta{color:#9DD0A8}
+
+/* Ticker suggestion chips */
+.fv-adds{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:8px 0 14px}
+.fv-add{padding:14px;background:linear-gradient(135deg,rgba(20,16,12,.85),rgba(12,10,8,.6));border:1px solid rgba(201,168,76,.22);border-radius:11px;cursor:pointer;transition:border-color .15s,transform .15s,box-shadow .15s;outline:none}
+.fv-add:hover,.fv-add:focus-visible{border-color:rgba(201,168,76,.55);transform:translateY(-2px);box-shadow:0 8px 22px rgba(201,168,76,.1)}
+.fv-add-sym{font-family:'DM Mono',monospace;font-size:15px;font-weight:700;color:#F2E6BD;letter-spacing:.04em;margin-bottom:4px}
+.fv-add-cls{display:inline-block;font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding:2px 7px;border-radius:4px;margin-bottom:8px}
+.fv-add-body{font-size:12px;color:#C0B594;line-height:1.65}
+.fv-add-cta{font-size:10px;letter-spacing:.06em;color:#C9A84C;margin-top:8px;text-transform:uppercase;font-weight:600}
+
+/* Behavior rules + risk */
+.fv-rule{display:flex;align-items:flex-start;gap:11px;padding:11px 13px;margin-bottom:6px;background:rgba(107,170,117,.05);border:1px solid rgba(107,170,117,.2);border-radius:9px;cursor:pointer;transition:border-color .15s,background .15s,transform .15s;outline:none}
+.fv-rule:hover,.fv-rule:focus-visible{border-color:rgba(107,170,117,.45);background:rgba(107,170,117,.1);transform:translateX(2px)}
+.fv-rule-num{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:rgba(107,170,117,.18);border:1px solid rgba(107,170,117,.4);color:#9DD0A8;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10.5px;font-weight:700;margin-top:1px}
+.fv-rule-body{font-size:12.5px;color:#D8C9A8;line-height:1.65;flex:1}
+.fv-risk-box{margin-top:11px;padding:14px 16px;background:linear-gradient(135deg,rgba(30,18,14,.55),rgba(10,8,6,.5));border:1px solid rgba(192,113,79,.3);border-radius:11px}
+.fv-risk-hdr{display:flex;align-items:center;gap:9px;margin-bottom:7px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#E0947A;font-weight:700}
+.fv-risk-body{font-size:12.5px;color:#D8C9A8;line-height:1.7}
+
+/* Framework principles */
+.fv-prin{display:grid;grid-template-columns:1fr;gap:8px;margin:8px 0 14px}
+.fv-prin-card{padding:12px 15px 12px 48px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-left:3px solid #C9A84C;border-radius:9px;position:relative;font-size:13px;line-height:1.7;color:#D8C9A8;cursor:pointer;transition:border-color .15s,background .15s,transform .15s}
+.fv-prin-card:hover{border-left-color:#E8CC7A;background:rgba(40,30,14,.35);transform:translateX(2px)}
+.fv-prin-num{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-family:"Cormorant Garamond",serif;font-style:italic;font-size:26px;color:#E8CC7A;font-weight:500;line-height:1}
+
 /* ===== Strategy Study output (#strategyStudyOutput) ===== */
 .ss-wrap{border-radius:14px;border:1px solid rgba(201,168,76,.3);background:linear-gradient(145deg,rgba(16,14,10,.98),rgba(10,8,6,.96));padding:22px;animation:ssIn .35s ease}
 @keyframes ssIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -313,6 +464,26 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .ss-callout-lbl{font-size:9px;letter-spacing:.16em;color:#C9A84C;text-transform:uppercase;font-weight:700;flex-shrink:0}
 .ss-callout-val{font-size:13px;color:#F2E6BD;line-height:1.6;font-family:"Inter",sans-serif}
 @media (max-width:720px){.ss-grid{grid-template-columns:1fr}.ss-pos-row{grid-template-columns:50px 1fr auto;}.ss-pos-flag{display:none}}
+/* Strategy Study — interactive expandable cards (Fit / AI Read / Lane / Action / Prose) */
+.ss-card.ss-clickable,.ss-action.ss-clickable,.ss-lane.ss-clickable,.ss-prose.ss-clickable{cursor:pointer;outline:none;position:relative;transition:border-color .18s,background .18s,transform .15s}
+.ss-card.ss-clickable:hover,.ss-card.ss-clickable:focus-visible,.ss-card.ss-clickable.on{border-color:rgba(201,168,76,.5);transform:translateY(-2px)}
+.ss-action.ss-clickable:hover,.ss-action.ss-clickable:focus-visible,.ss-action.ss-clickable.on{transform:translateX(2px)}
+.ss-lane.ss-clickable:hover,.ss-lane.ss-clickable:focus-visible,.ss-lane.ss-clickable.on{border-color:rgba(201,168,76,.4);background:rgba(40,30,14,.25)}
+.ss-prose.ss-clickable:hover,.ss-prose.ss-clickable:focus-visible,.ss-prose.ss-clickable.on{border-color:rgba(201,168,76,.42);background:rgba(40,30,14,.18)}
+.ss-chev{position:absolute;top:13px;right:15px;font-family:'DM Mono',monospace;font-size:11px;color:#6B5E52;transition:transform .25s ease,color .15s}
+.ss-clickable:hover .ss-chev,.ss-clickable.on .ss-chev{color:#E8CC7A}
+.ss-clickable.on .ss-chev{transform:rotate(180deg)}
+.ss-detail{display:none;margin-top:11px;padding-top:11px;border-top:1px dashed rgba(201,168,76,.2);font-size:12px;line-height:1.75;color:#C0B594;font-family:'Inter',sans-serif}
+.ss-clickable.on .ss-detail{display:block;animation:fvIn .22s ease}
+.ss-detail-row{display:flex;gap:11px;margin-bottom:7px;align-items:flex-start}
+.ss-detail-icon{flex-shrink:0;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;margin-top:1px;background:rgba(201,168,76,.16);color:#E8CC7A;border:1px solid rgba(201,168,76,.34)}
+.ss-detail-icon.bull{background:rgba(107,170,117,.16);color:#9DD0A8;border-color:rgba(107,170,117,.34)}
+.ss-detail-icon.risk{background:rgba(192,113,79,.16);color:#E0947A;border-color:rgba(192,113,79,.34)}
+.ss-detail-lbl{font-size:9px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:#E8CC7A;margin-bottom:2px}
+.ss-detail-lbl.bull{color:#9DD0A8}.ss-detail-lbl.risk{color:#E0947A}
+.ss-action-actions{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
+.ss-act-btn{font-size:10.5px;letter-spacing:.04em;padding:6px 11px;border-radius:6px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.32);color:#E8CC7A;cursor:pointer;font-family:inherit;font-weight:500;transition:background .15s,border-color .15s}
+.ss-act-btn:hover{background:rgba(201,168,76,.18);border-color:rgba(201,168,76,.55)}
 
 /* ===== Deployment row: hover-revealed "why this allocation" panel ===== */
 .cd-row{position:relative;overflow:hidden}
@@ -1558,6 +1729,43 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
       Set market context above to see AI regime interpretation.
     </div>
   </div>
+
+  <!-- THEMATIC FOCUS / SECTOR PICKER -->
+  <div class="card" style="margin-top:14px">
+    <div class="tf-head">
+      <div class="tf-eye">Thematic Focus</div>
+      <div class="tf-title">Pick a <em>sector</em> to invest in</div>
+      <div class="tf-sub">Select one or more sectors you believe in. The AI returns the top 5 names to research, the current sector regime, entry timing, and what breaks the thesis — tailored to your portfolio.</div>
+    </div>
+    <div class="tf-chips" id="tfChips"></div>
+    <div class="tf-inputs">
+      <div class="tf-ig">
+        <label class="tf-lbl">Horizon</label>
+        <select id="tfHorizon" class="tf-sel">
+          <option value="3 months">3 months</option>
+          <option value="6 months">6 months</option>
+          <option value="12 months" selected>12 months</option>
+          <option value="2 years">2 years</option>
+          <option value="5 years">5 years</option>
+          <option value="10+ years">10+ years</option>
+        </select>
+      </div>
+      <div class="tf-ig">
+        <label class="tf-lbl">Risk Tolerance</label>
+        <select id="tfRisk" class="tf-sel">
+          <option value="Conservative">Conservative</option>
+          <option value="Balanced" selected>Balanced</option>
+          <option value="Aggressive">Aggressive</option>
+        </select>
+      </div>
+      <div class="tf-ig">
+        <label class="tf-lbl">Cash to Allocate (optional)</label>
+        <input type="number" id="tfCash" class="tf-inp" placeholder="e.g. 1000" min="0"/>
+      </div>
+      <button class="btn-p tf-go" onclick="runSectorAnalysis()">Analyze sector &rarr;</button>
+    </div>
+    <div id="tfOutput" style="margin-top:18px"></div>
+  </div>
 </div>
 
 <!-- CADENCE PLAN PANEL &mdash; new feature: investment frequency & projections -->
@@ -1620,31 +1828,31 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 
     <div class="card">
       <div class="card-title">Return Scenario</div>
-      <div style="font-size:11px;color:var(--text-2);margin-bottom:12px">Adjust expected annual return to see how your cadence plays out</div>
+      <div style="font-size:12.5px;color:#C0B594;margin-bottom:14px;line-height:1.6">Adjust expected annual return to see how your cadence plays out</div>
 
       <div class="ig">
-        <label class="il">Expected Annual Return</label>
+        <label class="il" style="color:#E8CC7A;font-size:10.5px;letter-spacing:.13em">Expected Annual Return</label>
         <div style="display:flex;align-items:center;gap:10px">
           <input type="range" id="cadenceReturn" min="3" max="25" value="10" oninput="updateCadence()" style="flex:1;accent-color:var(--gold)"/>
-          <div style="font-family:DM Mono,monospace;font-size:16px;color:var(--gold-light);min-width:42px" id="cadenceReturnLbl">10%</div>
+          <div style="font-family:DM Mono,monospace;font-size:17px;color:#F2E6BD;font-weight:700;min-width:48px" id="cadenceReturnLbl">10%</div>
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-3);margin-top:3px">
+        <div style="display:flex;justify-content:space-between;font-size:10.5px;color:#A89878;margin-top:6px;font-weight:500">
           <span>Conservative (3%)</span><span>Historical S&P (~10%)</span><span>Aggressive (25%)</span>
         </div>
       </div>
 
       <!-- Existing portfolio -->
       <div class="ig" style="margin-bottom:0">
-        <label class="il">Starting Value ($)</label>
+        <label class="il" style="color:#E8CC7A;font-size:10.5px;letter-spacing:.13em">Starting Value ($)</label>
         <input type="number" id="cadenceStart" value="0" min="0" oninput="updateCadence()" placeholder="Your current portfolio value"/>
-        <div style="font-size:10px;color:var(--text-3);margin-top:4px" id="cadencePortHint">Auto-filled when portfolio loaded</div>
+        <div style="font-size:11.5px;color:#A89878;margin-top:6px;font-style:italic" id="cadencePortHint">Auto-filled when portfolio loaded</div>
       </div>
 
       <!-- Annual contribution summary -->
-      <div style="margin-top:14px;padding:12px;background:var(--noir-3);border-radius:var(--r-lg);border:1px solid var(--border)">
-        <div style="font-size:8px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:6px">Annual Contribution</div>
-        <div style="font-family:DM Mono,monospace;font-size:22px;color:var(--gold-light)" id="cadenceAnnualTotal">$6,000</div>
-        <div style="font-size:10px;color:var(--text-2);margin-top:3px" id="cadenceFreqSummary">$500/month &times; 12</div>
+      <div style="margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,rgba(40,30,14,.4),rgba(20,16,12,.5));border-radius:var(--r-lg);border:1px solid rgba(201,168,76,.28)">
+        <div style="font-size:9.5px;letter-spacing:.16em;color:#E8CC7A;text-transform:uppercase;font-weight:700;margin-bottom:7px">Annual Contribution</div>
+        <div style="font-family:DM Mono,monospace;font-size:24px;color:#F8EFD0;font-weight:700;letter-spacing:.01em" id="cadenceAnnualTotal">$6,000</div>
+        <div style="font-size:11.5px;color:#C0B594;margin-top:5px" id="cadenceFreqSummary">$500/month &times; 12</div>
       </div>
     </div>
   </div>
@@ -3455,6 +3663,440 @@ async function runFeasibility(){
 }
 
 /* ========================================================================
+ * THEMATIC FOCUS / SECTOR PICKER
+ * ====================================================================== */
+var _tfSectors=[
+  {key:'technology',    name:'Technology',    blurb:'Mega-cap software, cloud, and platform businesses'},
+  {key:'ai_semis',      name:'AI & Semis',    blurb:'AI infrastructure, accelerators, and chip supply chain'},
+  {key:'healthcare',    name:'Healthcare',    blurb:'Biotech, devices, pharma, managed care, and life-sci tools'},
+  {key:'financials',    name:'Financials',    blurb:'Banks, insurers, exchanges, payment networks, capital markets'},
+  {key:'energy',        name:'Energy',        blurb:'Oil & gas, midstream, renewables, nuclear, and utilities-adjacent'},
+  {key:'consumer',      name:'Consumer',      blurb:'Staples, discretionary, retail, travel & leisure, e-commerce'},
+  {key:'industrials',   name:'Industrials',   blurb:'Aerospace, defense, machinery, logistics, rail, construction'},
+  {key:'real_estate',   name:'Real Estate',   blurb:'REITs, data center, housing, and specialty property'},
+  {key:'comms',         name:'Comms',         blurb:'Telecom, media, social platforms, advertising, streaming'},
+  {key:'utilities',     name:'Utilities',     blurb:'Regulated power & water, grid infrastructure, renewables integration'},
+  {key:'materials',     name:'Materials',     blurb:'Mining, chemicals, metals, packaging, and commodity producers'},
+  {key:'crypto',        name:'Crypto',        blurb:'Digital assets, crypto-related equities, and on-chain infrastructure'}
+];
+var _tfSelected={};
+function _tfRenderChips(){
+  var host=document.getElementById('tfChips');
+  if(!host)return;
+  host.innerHTML=_tfSectors.map(function(s){
+    var on=_tfSelected[s.key]?' on':'';
+    return '<button class="tf-chip'+on+'" data-key="'+s.key+'" onclick="_tfToggleSector(\''+s.key+'\')" title="'+esc(s.blurb)+'" tabindex="0">'+esc(s.name)+'</button>';
+  }).join('');
+}
+function _tfToggleSector(key){
+  if(_tfSelected[key]) delete _tfSelected[key];
+  else _tfSelected[key]=true;
+  _tfRenderChips();
+}
+document.addEventListener('DOMContentLoaded',function(){_tfRenderChips();});
+// Also render immediately in case the DOMContentLoaded already fired
+setTimeout(function(){_tfRenderChips();},100);
+
+function _tfToggleCard(el){
+  var on=el.classList.toggle('on');
+  el.setAttribute('aria-expanded',on?'true':'false');
+}
+
+async function runSectorAnalysis(){
+  var out=document.getElementById('tfOutput');
+  if(!out)return;
+  var picks=Object.keys(_tfSelected).filter(function(k){return _tfSelected[k];});
+  if(!picks.length){
+    out.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">No sector selected</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Pick one or more sector chips above to analyze.</div></div>';
+    return;
+  }
+  if(!getKey()){
+    out.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">API key required</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Click <strong style="color:var(--gold)">Set API Key</strong> in the top bar to enable sector analysis.</div></div>';
+    return;
+  }
+  var horizon=(document.getElementById('tfHorizon')||{}).value||'12 months';
+  var risk=(document.getElementById('tfRisk')||{}).value||'Balanced';
+  var cash=parseFloat((document.getElementById('tfCash')||{}).value||'0')||0;
+  var sectorNames=picks.map(function(k){
+    var s=_tfSectors.filter(function(x){return x.key===k;})[0]; return s?s.name:k;
+  });
+  var sectorLabel=sectorNames.length===1?sectorNames[0]:sectorNames.join(' + ');
+
+  out.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Analyzing <em style="color:#E8CC7A">'+esc(sectorLabel)+'</em> sector'+(sectorNames.length>1?'s':'')+'</div><div class="cd-loader-sub">Reading regime · ranking names · sizing entry · mapping to your portfolio</div></div></div>';
+  showAiToast('Sector analysis running…','Through the '+sectorLabel+' lens');
+  scrollToEl('tfOutput','start');
+
+  var h=getHoldings();
+  var total=h.reduce(function(s,x){return s+(x.mktVal||0);},0)||0;
+  var holdStr=h.length?h.sort(function(a,b){return b.mktVal-a.mktVal;}).slice(0,12).map(function(x){return x.sym+'('+((x.mktVal/total)*100).toFixed(0)+'%)';}).join(', '):'No portfolio loaded';
+
+  var prompt=[
+    'SECTOR THEMATIC ANALYSIS',
+    '',
+    'Sector(s): '+sectorLabel,
+    'Horizon: '+horizon,
+    'Risk tolerance: '+risk,
+    (cash>0?'Cash to allocate: $'+cash.toLocaleString():'No specific cash amount — give general sizing guidance'),
+    'Current portfolio: '+holdStr,
+    '',
+    'Return EXACTLY this 7-section structure with these EXACT headers. Plain prose under each header. No markdown.',
+    '',
+    'BRIEF_TITLE',
+    'A 2-4 word title for the sector brief (e.g. "AI Infrastructure Cycle", "Crypto / Digital Assets").',
+    '',
+    'CONFIDENCE',
+    'A single number between 1 and 10 on its own line. No other text.',
+    '',
+    'CONFIDENCE_BASIS',
+    '1-2 sentences explaining what drives the confidence number up or down.',
+    '',
+    'SECTOR_REGIME',
+    '2-3 sentences on where this sector is in its cycle right now (expansion, late-cycle, contraction, recovery) with at least one specific data point.',
+    '',
+    'ENTRY_APPROACH',
+    '2-3 sentences on HOW to deploy capital into this sector now: tranches, pullback targets, timing windows. Be specific.',
+    '',
+    'WHY_NOW',
+    '2 sentences on what makes the next '+horizon+' different from pre- or post-windows for this sector.',
+    '',
+    'TOP_NAMES',
+    'Exactly 5 names, one per line, formatted as "TICKER | one-sentence why". No numbering, no bullets.',
+    '',
+    'THESIS_BREAK',
+    '1-2 sentences on the specific factor that would invalidate this thesis. Be precise.',
+    '',
+    'PORTFOLIO_FIT',
+    '1-2 sentences on how these names interact with the current portfolio above (overlap, complement, new exposure).'
+  ].join('\n');
+
+  var SYS='You are an institutional sector strategist. Be specific, concrete, and tailored to the sector and portfolio provided.';
+
+  var resp;
+  try{
+    resp=await aiCall(prompt,SYS,1600);
+  }catch(e){
+    hideAiToast();
+    out.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">Sector analysis failed</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">'+esc(e.message)+'</div></div>';
+    return;
+  }
+
+  // Parse
+  var secs={BRIEF_TITLE:'',CONFIDENCE:'',CONFIDENCE_BASIS:'',SECTOR_REGIME:'',ENTRY_APPROACH:'',WHY_NOW:'',TOP_NAMES:'',THESIS_BREAK:'',PORTFOLIO_FIT:''};
+  var cur=null;
+  resp.split('\n').forEach(function(line){
+    var t=line.trim();
+    var m=t.match(/^(BRIEF_TITLE|CONFIDENCE|CONFIDENCE_BASIS|SECTOR_REGIME|ENTRY_APPROACH|WHY_NOW|TOP_NAMES|THESIS_BREAK|PORTFOLIO_FIT)\b[:\s]*$/i);
+    if(m){cur=m[1].toUpperCase();return;}
+    if(cur && t) secs[cur]+=(secs[cur]?'\n':'')+t;
+  });
+  var conf=parseInt((secs.CONFIDENCE.match(/(\d+)/)||['','7'])[1],10); if(!isFinite(conf)||conf<1||conf>10) conf=7;
+  var confColor = conf>=8?'#9DD0A8':conf>=6?'#E8CC7A':conf>=4?'#E0B87A':'#E0947A';
+  var title = secs.BRIEF_TITLE || sectorLabel;
+
+  // Top names → clickable cards
+  var names=(secs.TOP_NAMES||'').split('\n').map(function(l){
+    var m=l.match(/^([A-Z.\-]{1,6})\s*[\|:—–-]\s*(.+)$/);
+    if(m) return {sym:m[1].toUpperCase(),body:m[2].trim()};
+    var m2=l.match(/^\s*\d*\.?\s*([A-Z.\-]{1,6})\s+(.+)$/);
+    if(m2) return {sym:m2[1].toUpperCase(),body:m2[2].trim()};
+    return null;
+  }).filter(Boolean).slice(0,5);
+
+  var namesHTML = names.length ? '<div class="tf-names">'+names.map(function(n){
+    return '<div class="tf-name" tabindex="0" onclick="_execAnalyze(\''+esc(n.sym)+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_execAnalyze(\''+esc(n.sym)+'\')}">'+
+      '<div class="tf-name-sym">'+esc(n.sym)+'</div>'+
+      '<div class="tf-name-body">'+esc(n.body)+'</div>'+
+      '<div class="tf-name-cta">Analyze in Stock Check →</div>'+
+    '</div>';
+  }).join('')+'</div>' : '';
+
+  function card(kind,lbl,body,detail){
+    if(!body)return '';
+    return '<div class="tf-card '+kind+'" tabindex="0" role="button" aria-expanded="false" onclick="_tfToggleCard(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_tfToggleCard(this)}">'+
+      '<div class="tf-card-chev">▾</div>'+
+      '<div class="tf-card-lbl">'+esc(lbl)+'</div>'+
+      '<div class="tf-card-body">'+esc(body)+'</div>'+
+      (detail?'<div class="tf-card-detail">'+esc(detail)+'</div>':'')+
+    '</div>';
+  }
+
+  out.innerHTML=
+    '<div class="tf-out">'+
+      '<div class="tf-out-hdr">'+
+        '<div>'+
+          '<div class="tf-out-eye">Sector Brief · '+esc(horizon)+' · '+esc(risk)+' risk</div>'+
+          '<div class="tf-out-title">'+esc(title)+'</div>'+
+        '</div>'+
+        '<div class="tf-conf">'+
+          '<div><div class="tf-conf-lbl">Confidence</div><div class="tf-conf-val" style="color:'+confColor+'">'+conf+'<span style="font-size:12px;color:#8B7D68">/10</span></div></div>'+
+          '<div class="tf-conf-bar"><div class="tf-conf-fill" style="width:'+(conf*10)+'%;background:'+confColor+'"></div></div>'+
+        '</div>'+
+      '</div>'+
+      (secs.CONFIDENCE_BASIS?'<div class="tf-basis"><strong style="color:#E8CC7A;font-style:normal">Confidence basis:</strong> '+esc(secs.CONFIDENCE_BASIS)+'</div>':'')+
+      '<div class="tf-grid">'+
+        card('regime','Sector Regime',    secs.SECTOR_REGIME,    'Where this sector sits in its cycle right now. Cycle stage dictates whether you accumulate aggressively, deploy with discipline, or stand aside.')+
+        card('entry', 'Entry Approach',   secs.ENTRY_APPROACH,   'The specific mechanics of getting capital in: tranche size, pullback triggers, timing windows. Execution detail — not theory.')+
+        card('why',   'Why Now',          secs.WHY_NOW,          'The specific catalysts that make the next window different. If none, wait.')+
+        card('thesis','What Breaks Thesis',secs.THESIS_BREAK,    'The single factor you should watch for exit. If this trips, the idea was wrong — exit fast, not slow.')+
+      '</div>'+
+      (namesHTML?'<div style="font-size:10.5px;letter-spacing:.14em;color:#E8CC7A;text-transform:uppercase;font-weight:700;margin-bottom:9px">Top 5 Names to Research</div>'+namesHTML:'')+
+      (secs.PORTFOLIO_FIT?card('fit','Portfolio Fit',secs.PORTFOLIO_FIT,'How these names interact with what you already hold. Complement, overlap, or new exposure — this determines position sizing.'):'')+
+      (cash>0?'<div class="ss-callout" style="margin-top:12px"><div class="ss-callout-lbl">Deploying '+fmt$(cash)+'</div><div class="ss-callout-val">Suggested split across the top 5 names above — size each position 15-25% of the '+fmt$(cash)+' budget, keep 10-15% dry for pullback adds.</div></div>':'')+
+    '</div>';
+
+  hideAiToast();
+}
+
+/* ========================================================================
+ * FEASIBILITY VISUAL HELPERS — turn each section's text into interactive UI
+ * ====================================================================== */
+function _fvGroup(lines, headerRegexes){
+  // Group lines into named buckets when a header line matches one of the regexes.
+  // headerRegexes: { bucketName: /REGEX/i, ... }. Returns {bucket: [lines], _other: [...] }
+  var out={_other:[]}; var current='_other';
+  Object.keys(headerRegexes).forEach(function(k){out[k]=[];});
+  (lines||[]).forEach(function(l){
+    var matched=false;
+    for(var k in headerRegexes){
+      if(headerRegexes[k].test(l)){current=k; matched=true; break;}
+    }
+    if(matched) return;
+    if(l) out[current].push(l);
+  });
+  return out;
+}
+function _fvToggle(el){
+  var on=el.classList.toggle('on');
+  el.setAttribute('aria-expanded',on?'true':'false');
+}
+function _fvTile(label,value,sub,detail,kind){
+  var cls = kind==='pos'?'pos':kind==='neg'?'neg':kind==='gold'?'gold':'';
+  return '<div class="fv-tile" tabindex="0" role="button" aria-expanded="false" onclick="_fvToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_fvToggle(this)}">'+
+    '<div class="fv-tile-lbl">'+esc(label)+'</div>'+
+    '<div class="fv-tile-val '+cls+'">'+esc(value)+'</div>'+
+    (sub?'<div class="fv-tile-sub">'+esc(sub)+'</div>':'')+
+    (detail?'<div class="fv-tile-chev">▾</div><div class="fv-tile-detail">'+esc(detail)+'</div>':'')+
+  '</div>';
+}
+function _fvList(items, kind, headerLabel, icon){
+  if(!items||!items.length)return '';
+  return '<div class="fv-list '+kind+'">'+
+    '<div class="fv-list-hdr"><span class="fv-list-icon">'+esc(icon||(kind==='pos'?'+':'!'))+'</span>'+esc(headerLabel)+'</div>'+
+    items.map(function(i){return '<div class="fv-item" tabindex="0">'+esc(i)+'</div>';}).join('')+
+  '</div>';
+}
+function _fvHealth(lines,total,cost,gain,pct,h){
+  var grouped=_fvGroup(lines,{strengths:/^STRENGTH/i, weaknesses:/^WEAKNESS/i});
+  var topPos = h&&h.length ? h.slice().sort(function(a,b){return b.mktVal-a.mktVal;})[0] : null;
+  var topPct = (topPos&&total) ? (topPos.mktVal/total*100) : 0;
+  var laneCounts={core:0,growth:0,tactical:0};
+  (h||[]).forEach(function(x){
+    var sym=x.sym;
+    if(['VOO','SPY','VTI','SCHD','VYM','IVV','VIG','BND','BNDW','AGG'].includes(sym)) laneCounts.core+=x.mktVal||0;
+    else if(['BTC','ETH','SOL','GLD','SLV','TLT','IWM','BIL','SGOV','MSTR','COIN','HOOD','SOUN','IONQ','NIO','APRE','LKNCY','RIVN','PLTR','LCID','GME'].includes(sym)) laneCounts.tactical+=x.mktVal||0;
+    else laneCounts.growth+=x.mktVal||0;
+  });
+  var lanePct={core:total?laneCounts.core/total*100:0, growth:total?laneCounts.growth/total*100:0, tactical:total?laneCounts.tactical/total*100:0};
+  var diversifyScore = Math.max(0,Math.min(100, 100 - Math.max(0,topPct-15)*2.5 - Math.max(0,40-lanePct.core)));
+  var riskScore = Math.max(0, Math.min(100, 100 - lanePct.tactical*1.8 - Math.max(0,topPct-20)*1.5));
+
+  var tilesHTML='<div class="fv-grid">'+
+    _fvTile('Total Return', (pct>=0?'+':'')+pct.toFixed(1)+'%', 'On cost basis', 'Your portfolio has returned '+(pct>=0?'+':'')+pct.toFixed(1)+'% above its total cost basis of '+fmt$(cost)+'. Compare to S&P historical avg of ~10%/yr.', pct>=0?'pos':'neg')+
+    _fvTile('Unrealized Gain', (gain>=0?'+':'')+fmt$(gain), 'Paper P&L vs cost', 'Realized only when you sell. Long-term capital gains tax kicks in at 1+ year hold; short-term is taxed as ordinary income.', gain>=0?'pos':'neg')+
+    _fvTile('Top Concentration', topPos?topPct.toFixed(1)+'%':'—', topPos?topPos.sym+' is your largest':'No holdings', topPos?topPos.sym+' represents '+topPct.toFixed(1)+'% of your portfolio. Above 20% = high concentration risk; one bad earnings can dent the whole portfolio.':'Add holdings first.', topPct>20?'neg':topPct>15?'gold':'pos')+
+    _fvTile('Diversification', Math.round(diversifyScore)+'/100', diversifyScore>70?'Healthy spread':diversifyScore>50?'Some concentration':'Heavy concentration', 'Composite of position concentration + lane balance. <50 = brittle; 50-70 = passable; 70+ = robust.', diversifyScore>70?'pos':diversifyScore>50?'gold':'neg')+
+    _fvTile('Risk Level', Math.round(100-riskScore)+'/100', riskScore>70?'Conservative tilt':riskScore>50?'Moderate':'Aggressive tilt', 'Higher = more downside vulnerability. Driven by tactical/speculative weight + single-position concentration.', riskScore<50?'neg':riskScore<70?'gold':'pos')+
+    _fvTile('Positions', (h?h.length:0)+'', 'Distinct holdings', 'Sweet spot is 15-30 positions. Below 10 = under-diversified; above 40 = closet-indexing (just buy VTI).', (h&&h.length>=15&&h.length<=30)?'pos':'gold')+
+  '</div>';
+
+  var concHTML='';
+  if(h&&h.length){
+    var palette=['#C9A84C','#6BAA75','#9B8FC0','#6B9FBF','#C0714F','#8B7D5A','#D4A574','#7A8B9C','#5A4A40'];
+    var sortedH=h.slice().sort(function(a,b){return b.mktVal-a.mktVal;}).slice(0,8);
+    var rest=h.length-sortedH.length;
+    var restMkt=h.slice(8).reduce(function(s,x){return s+(x.mktVal||0);},0);
+    var segs=sortedH.map(function(x,i){
+      var p=x.mktVal/total*100;
+      return '<div class="fv-conc-seg" style="width:'+p.toFixed(2)+'%;background:'+palette[i%palette.length]+'" title="'+esc(x.sym)+' '+p.toFixed(1)+'%"></div>';
+    }).join('');
+    if(rest>0){
+      var rp=restMkt/total*100;
+      segs+='<div class="fv-conc-seg" style="width:'+rp.toFixed(2)+'%;background:#3a322a" title="Other ('+rest+' positions) '+rp.toFixed(1)+'%"></div>';
+    }
+    var legend=sortedH.map(function(x,i){return '<div class="fv-conc-leg-item"><span class="fv-conc-leg-dot" style="background:'+palette[i%palette.length]+'"></span>'+esc(x.sym)+' '+(x.mktVal/total*100).toFixed(1)+'%</div>';}).join('');
+    if(rest>0) legend+='<div class="fv-conc-leg-item"><span class="fv-conc-leg-dot" style="background:#3a322a"></span>Other +'+rest+' ('+(restMkt/total*100).toFixed(1)+'%)</div>';
+    concHTML='<div class="fv-conc">'+
+      '<div class="fv-conc-hdr"><span>Concentration Map</span><span class="fv-conc-sub">Hover any segment</span></div>'+
+      '<div class="fv-conc-bar">'+segs+'</div>'+
+      '<div class="fv-conc-leg">'+legend+'</div>'+
+    '</div>';
+  }
+
+  var splitHTML='<div class="fv-split">'+
+    _fvList(grouped.strengths.length?grouped.strengths:['Awaiting AI strength analysis…'],'pos','Strengths','+')+
+    _fvList(grouped.weaknesses.length?grouped.weaknesses:['Awaiting AI weakness analysis…'],'neg','Weaknesses','!')+
+  '</div>';
+
+  var intro=(grouped._other||[]).slice(0,2).map(function(l){return '<div style="font-size:13px;line-height:1.75;color:#C0B594;margin-bottom:7px">'+esc(l)+'</div>';}).join('');
+  return (intro?'<div style="margin-bottom:14px">'+intro+'</div>':'')+tilesHTML+concHTML+splitHTML;
+}
+function _fvFramework(lines){
+  var grouped=_fvGroup(lines,{rules:/^(RULE|TARGET|FRAMEWORK|PRINCIPLE)/i});
+  var rules=(grouped.rules.length?grouped.rules:grouped._other).filter(function(l){return l.length>4;});
+  var prose=grouped._other.filter(function(l){return rules.indexOf(l)===-1;}).slice(0,3);
+  var intro=prose.map(function(l){return '<div style="font-size:13px;line-height:1.75;color:#C0B594;margin-bottom:7px">'+esc(l)+'</div>';}).join('');
+  var rulesHTML=rules.length?'<div class="fv-prin">'+rules.map(function(l,i){
+    return '<div class="fv-prin-card" tabindex="0"><span class="fv-prin-num">'+(i+1)+'</span>'+esc(l)+'</div>';
+  }).join('')+'</div>':'';
+  return (intro?'<div style="margin-bottom:12px">'+intro+'</div>':'')+rulesHTML;
+}
+function _fvProjections(lines,total,h){
+  // Try to extract 3 years/values from the prose; fall back to algorithmic estimates
+  var matches=[];
+  (lines||[]).forEach(function(l){
+    var m=l.match(/(\d+)[ -]*(?:year|yr)s?[^$\d]*\$?([0-9,]+(?:\.\d+)?)\s*(K|M|k|m)?/i);
+    if(m){
+      var yr=parseInt(m[1],10);
+      var num=parseFloat(m[2].replace(/,/g,''))*(m[3]&&/m/i.test(m[3])?1e6:m[3]?1e3:1);
+      if(yr>0&&yr<=40&&num>0) matches.push({yr:yr,val:num});
+    }
+  });
+  // Build a 0-20yr projection at 9% / 12% / 16% CAGR with $400/mo DCA
+  function project(rate,monthly,yrs){
+    var v=total||0; var arr=[v];
+    for(var y=1;y<=yrs;y++){
+      v=v*(1+rate);
+      v+=monthly*12;
+      arr.push(Math.round(v));
+    }
+    return arr;
+  }
+  var YR=20;
+  var monthly=600; // average of $400-$800/mo glide
+  var cons=project(0.07,monthly,YR);
+  var base=project(0.10,monthly,YR);
+  var bull=project(0.14,monthly,YR);
+  var maxV=bull[YR];
+  var W=620,H=180,P=18;
+  function points(arr){
+    return arr.map(function(v,i){
+      var x=P+i*((W-2*P)/YR);
+      var y=H-P-(v/maxV)*(H-2*P);
+      return x.toFixed(1)+','+y.toFixed(1);
+    }).join(' ');
+  }
+  function area(arr,color){
+    var pts=points(arr);
+    return '<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';
+  }
+  function dot(arr,color,year){
+    var x=P+year*((W-2*P)/YR);
+    var y=H-P-(arr[year]/maxV)*(H-2*P);
+    return '<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3.5" fill="'+color+'" stroke="#0c0a08" stroke-width="1.5"/>';
+  }
+  // Y-axis grid lines
+  var grid='';
+  for(var g=0;g<=4;g++){
+    var gy=P+g*((H-2*P)/4);
+    grid+='<line x1="'+P+'" y1="'+gy+'" x2="'+(W-P)+'" y2="'+gy+'" stroke="rgba(255,255,255,.05)" stroke-width="1"/>';
+  }
+  // X-axis year labels
+  var xlabels='';
+  [0,5,10,15,20].forEach(function(y){
+    var x=P+y*((W-2*P)/YR);
+    xlabels+='<text x="'+x+'" y="'+(H-3)+'" text-anchor="middle" fill="#6B5E52" font-family="DM Mono,monospace" font-size="9">Y'+y+'</text>';
+  });
+  var svg='<svg class="fv-proj-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'+
+    grid+xlabels+
+    area(cons,'#9DD0A8')+
+    area(base,'#E8CC7A')+
+    area(bull,'#E0947A')+
+    dot(cons,'#9DD0A8',YR)+dot(base,'#E8CC7A',YR)+dot(bull,'#E0947A',YR)+
+  '</svg>';
+  function fmtBig(v){return v>=1e6?'$'+(v/1e6).toFixed(1)+'M':v>=1e3?'$'+Math.round(v/1e3)+'K':'$'+Math.round(v);}
+  var kpi='<div class="fv-proj-kpi">'+
+    '<div class="fv-proj-kpi-tile"><div class="fv-proj-kpi-yr">5 Years</div><div class="fv-proj-kpi-val">'+fmtBig(base[5])+'</div></div>'+
+    '<div class="fv-proj-kpi-tile"><div class="fv-proj-kpi-yr">10 Years</div><div class="fv-proj-kpi-val">'+fmtBig(base[10])+'</div></div>'+
+    '<div class="fv-proj-kpi-tile"><div class="fv-proj-kpi-yr">20 Years</div><div class="fv-proj-kpi-val">'+fmtBig(base[20])+'</div></div>'+
+  '</div>';
+  var legend='<div class="fv-proj-legend">'+
+    '<div class="fv-proj-leg-item"><span class="fv-proj-leg-line" style="background:#9DD0A8"></span>Conservative · 7% CAGR</div>'+
+    '<div class="fv-proj-leg-item"><span class="fv-proj-leg-line" style="background:#E8CC7A"></span>Base · 10% CAGR</div>'+
+    '<div class="fv-proj-leg-item"><span class="fv-proj-leg-line" style="background:#E0947A"></span>Bull · 14% CAGR</div>'+
+  '</div>';
+  var prose=(lines||[]).filter(function(l){return l.length>20&&!/^\d+[- ]*(year|yr)/i.test(l);}).slice(0,2).map(function(l){return '<div style="font-size:13px;line-height:1.75;color:#C0B594;margin-bottom:7px">'+esc(l)+'</div>';}).join('');
+  return (prose?'<div style="margin-bottom:12px">'+prose+'</div>':'')+
+    '<div class="fv-proj">'+svg+legend+kpi+
+    '<div style="font-size:10.5px;color:#6B5E52;margin-top:10px;text-align:center;font-style:italic">Includes ~$'+monthly+'/mo systematic contribution. Past performance is not a guarantee of future results.</div>'+
+    '</div>';
+}
+function _fvActions(lines){
+  var grouped=_fvGroup(lines,{high:/^HIGH PRIORITY/i, med:/^MEDIUM PRIORITY/i, ongoing:/^ONGOING/i});
+  function row(items,kind,label,icon){
+    if(!items||!items.length)return '';
+    return items.map(function(l){
+      // strip leading "1. " number markers
+      var clean=l.replace(/^\d+\.\s*/,'').trim();
+      return '<div class="fv-act '+kind+'" tabindex="0">'+
+        '<div class="fv-act-tag">'+icon+'</div>'+
+        '<div class="fv-act-meta">'+label+'</div>'+
+        '<div class="fv-act-body">'+esc(clean)+'</div>'+
+      '</div>';
+    }).join('');
+  }
+  var html=row(grouped.high,'high','High priority','!')+
+           row(grouped.med,'med','Medium priority','▲')+
+           row(grouped.ongoing,'ongoing','Ongoing','✓');
+  if(!html){
+    // fallback: render _other as medium priority cards
+    html=row((grouped._other||[]).filter(function(l){return /^\d+\./.test(l);}),'med','Action','▲');
+    if(!html) html='<div style="font-size:13px;color:#8B7D68;font-style:italic">Awaiting AI action plan…</div>';
+  }
+  return html;
+}
+function _fvAdditions(lines){
+  // Each addition usually starts with TICKER or "Add TICKER" — extract symbol and rationale
+  var items=(lines||[]).filter(function(l){return l.length>3;}).map(function(l){
+    var m=l.match(/\b([A-Z]{1,5})\b/);
+    var sym=m?m[1]:null;
+    var clean=l.replace(/^\d+\.\s*/,'').trim();
+    return {sym:sym,text:clean};
+  }).filter(function(x){return x.sym;});
+  if(!items.length){
+    return '<div style="font-size:13px;color:#8B7D68;font-style:italic">Awaiting AI ticker recommendations…</div>';
+  }
+  var laneOf=function(sym){
+    if(['VOO','SPY','VTI','SCHD','VYM','IVV','VIG','BND','BNDW','AGG'].includes(sym)) return {n:'Core',c:'#E8CC7A',bg:'rgba(201,168,76,.18)'};
+    if(['BTC','ETH','SOL','GLD','SLV','TLT','IWM','BIL','SGOV','MSTR','COIN','HOOD','SOUN','IONQ','NIO','APRE','LKNCY','RIVN','PLTR','LCID','GME'].includes(sym)) return {n:'Tactical',c:'#E0947A',bg:'rgba(192,113,79,.18)'};
+    return {n:'Growth',c:'#9DD0A8',bg:'rgba(107,170,117,.18)'};
+  };
+  return '<div class="fv-adds">'+items.map(function(it){
+    var lane=laneOf(it.sym);
+    return '<div class="fv-add" tabindex="0" onclick="_execAnalyze(\''+esc(it.sym)+'\')">'+
+      '<div class="fv-add-sym">'+esc(it.sym)+'</div>'+
+      '<div class="fv-add-cls" style="color:'+lane.c+';background:'+lane.bg+';border:1px solid '+lane.c+'">'+lane.n+'</div>'+
+      '<div class="fv-add-body">'+esc(it.text)+'</div>'+
+      '<div class="fv-add-cta">Click to analyze →</div>'+
+    '</div>';
+  }).join('')+'</div>';
+}
+function _fvBehavior(lines){
+  var grouped=_fvGroup(lines,{rules:/^(RULE|GUIDELINE)/i, risks:/^(RISK|WATCH)/i});
+  var ruleItems=(grouped.rules.length?grouped.rules:(grouped._other||[]).filter(function(l){return /^\d+\./.test(l);}));
+  var riskItems=grouped.risks;
+  var rulesHTML=ruleItems.length?ruleItems.map(function(l,i){
+    var clean=l.replace(/^\d+\.\s*/,'').trim();
+    return '<div class="fv-rule" tabindex="0"><div class="fv-rule-num">'+(i+1)+'</div><div class="fv-rule-body">'+esc(clean)+'</div></div>';
+  }).join(''):'';
+  var risksHTML=riskItems.length?'<div class="fv-risk-box">'+
+    '<div class="fv-risk-hdr"><span>!</span>Behavioral risk to watch</div>'+
+    '<div class="fv-risk-body">'+riskItems.map(function(l){return esc(l);}).join('<br>')+'</div>'+
+  '</div>':'';
+  var prose=(grouped._other||[]).filter(function(l){return ruleItems.indexOf(l)===-1;}).slice(0,2).map(function(l){return '<div style="font-size:13px;line-height:1.75;color:#C0B594;margin-bottom:7px">'+esc(l)+'</div>';}).join('');
+  return (prose?'<div style="margin-bottom:12px">'+prose+'</div>':'')+rulesHTML+risksHTML;
+}
+
+/* ========================================================================
  * STRATEGY-LENS STUDY
  * Different from runFeasibility: this analyzes the CURRENT portfolio THROUGH
  * the lens of the SELECTED strategy. Renders into #strategyStudyOutput which
@@ -3503,8 +4145,8 @@ function _renderFitGauge(score,color){
     '<text x="60" y="76" text-anchor="middle" fill="#8B7D68" style="font-family:Inter,sans-serif;font-size:8.5px;letter-spacing:.15em;text-transform:uppercase">'+esc(label)+'</text>'+
   '</svg>';
 }
-function _renderLaneCompare(curPct,target){
-  function row(lbl,cur,tgt,color){
+function _renderLaneCompare(curPct,target,h,laneKey){
+  function row(lbl,cur,tgt,color,lane){
     var max=Math.max(cur,tgt,1);
     var cw=(cur/max*100).toFixed(1);
     var tw=(tgt/max*100).toFixed(1);
@@ -3512,7 +4154,19 @@ function _renderLaneCompare(curPct,target){
     var dColor = Math.abs(diff)<5?'#8B7D68' : (diff>0?'#C0714F':'#6BAA75');
     var dLabel = (diff>0?'+':'')+diff.toFixed(1)+'%';
     var hint = Math.abs(diff)<5 ? 'on target' : (diff>0?'overweight — trim':'underweight — add');
-    return '<div class="ss-lane">'+
+    var info = lane==='core'
+      ? {what:'Core = your portfolio shock absorber. Index funds (VOO, VTI, SCHD) and bond ETFs.',why:'Reduces volatility and provides ballast during drawdowns. Without enough Core, every market shock hurts disproportionately.',action:diff>0?'Trim Core overweight — redeploy into Growth or Tactical based on conviction.':diff<-3?'Add to Core via VOO, VTI, or SCHD — start with whatever fits your dividend / accumulation preference.':'On target — maintain.'}
+      : lane==='growth'
+      ? {what:'Growth = quality compounders with durable earnings (NVDA, MSFT, GOOGL, AAPL).',why:'Where most of the long-term return comes from when held through cycles. Concentration here is intentional, not accidental.',action:diff>0?'Growth overweight — trim positions over the cap, redeploy into Core.':diff<-3?'Add to Growth — focus on highest-conviction names with proven moats.':'On target.'}
+      : {what:'Tactical = higher-beta concentrated bets (BTC, IWM, single-name conviction plays).',why:'Asymmetric upside in good regimes; biggest pain in bad ones. Sized small to keep portfolio survivable.',action:diff>0?'Tactical overweight — these are the first to cut when rebalancing.':diff<-3?'Underweight — add small starter positions in your highest-conviction asymmetric idea.':'On target.'};
+    var holdsInLane=(h||[]).filter(function(x){
+      var sym=x.sym;
+      var isCore=['VOO','SPY','VTI','SCHD','VYM','IVV','VIG','BND','BNDW','AGG'].includes(sym);
+      var isTact=['BTC','ETH','SOL','GLD','SLV','TLT','IWM','BIL','SGOV','MSTR','COIN','HOOD','SOUN','IONQ','NIO','APRE','LKNCY','RIVN','PLTR','LCID','GME'].includes(sym);
+      return lane==='core'?isCore:lane==='tactical'?isTact:(!isCore&&!isTact);
+    }).slice(0,8).map(function(x){return x.sym;}).join(', ')||'No positions in this lane';
+    return '<div class="ss-lane ss-clickable" tabindex="0" role="button" aria-expanded="false" onclick="_ssToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_ssToggle(this)}">'+
+      '<div class="ss-chev">▾</div>'+
       '<div class="ss-lane-hdr"><span class="ss-lane-lbl">'+esc(lbl)+'</span>'+
         '<span class="ss-lane-vals"><span style="color:#F2E6BD">'+cur.toFixed(1)+'%</span> <span style="color:#8B7D68">vs target '+tgt+'%</span> <span class="ss-lane-diff" style="color:'+dColor+'">'+dLabel+' · '+hint+'</span></span>'+
       '</div>'+
@@ -3520,13 +4174,23 @@ function _renderLaneCompare(curPct,target){
         '<div class="ss-lane-bar" title="Current"><div class="ss-lane-fill" style="width:'+cw+'%;background:'+color+'"></div></div>'+
         '<div class="ss-lane-bar ss-tgt" title="Target"><div class="ss-lane-fill" style="width:'+tw+'%;background:'+color+';opacity:.32;border:1px dashed '+color+'"></div></div>'+
       '</div>'+
+      '<div class="ss-detail">'+
+        '<div class="ss-detail-row"><div class="ss-detail-icon">W</div><div><div class="ss-detail-lbl">What this lane is</div>'+esc(info.what)+'</div></div>'+
+        '<div class="ss-detail-row"><div class="ss-detail-icon bull">Y</div><div><div class="ss-detail-lbl bull">Why it matters</div>'+esc(info.why)+'</div></div>'+
+        '<div class="ss-detail-row"><div class="ss-detail-icon risk">!</div><div><div class="ss-detail-lbl risk">What to do</div>'+esc(info.action)+'</div></div>'+
+        '<div class="ss-detail-row"><div class="ss-detail-icon">H</div><div><div class="ss-detail-lbl">Your holdings in this lane</div>'+esc(holdsInLane)+'</div></div>'+
+      '</div>'+
     '</div>';
   }
   return '<div class="ss-lanes">'+
-    row('Core (index, dividend, bonds)', curPct.core, target.core, '#C9A84C')+
-    row('Growth (quality compounders)',  curPct.growth, target.growth, '#6BAA75')+
-    row('Tactical (asymmetric / specul.)', curPct.tactical, target.tactical, '#C0714F')+
+    row('Core (index, dividend, bonds)', curPct.core, target.core, '#C9A84C','core')+
+    row('Growth (quality compounders)',  curPct.growth, target.growth, '#6BAA75','growth')+
+    row('Tactical (asymmetric / specul.)', curPct.tactical, target.tactical, '#C0714F','tactical')+
   '</div>';
+}
+function _ssToggle(el){
+  var on=el.classList.toggle('on');
+  el.setAttribute('aria-expanded',on?'true':'false');
 }
 function _renderPositionFit(h,target,maxPos){
   if(!h||!h.length)return '';
@@ -3549,39 +4213,53 @@ function _renderPositionFit(h,target,maxPos){
   }).join('')+'</div>';
 }
 function _renderActionPlan(curPct,target,h,maxPos){
-  // Derive client-side BUY/SELL/HOLD lanes from drift
   var total=h.reduce(function(s,x){return s+(x.mktVal||0);},0)||1;
   var actions=[];
   ['core','growth','tactical'].forEach(function(lane){
     var diff=curPct[lane]-target[lane];
     if(Math.abs(diff)<3) return;
     var dollars=Math.abs(diff)/100*total;
-    actions.push({
-      kind: diff>0?'TRIM':'ADD',
-      lane:lane,
-      pct:Math.abs(diff),
-      dollars:dollars,
-      color: diff>0?'#C0714F':'#6BAA75',
-      note: diff>0
-        ? 'You\'re '+diff.toFixed(1)+'% over target. Sell about '+fmt$(dollars)+' from this lane.'
-        : 'You\'re '+Math.abs(diff).toFixed(1)+'% under target. Add about '+fmt$(dollars)+' to this lane.'
-    });
+    actions.push({kind:diff>0?'TRIM':'ADD',lane:lane,pct:Math.abs(diff),dollars:dollars,color:diff>0?'#C0714F':'#6BAA75',
+      note: diff>0 ? 'You\'re '+diff.toFixed(1)+'% over target. Sell about '+fmt$(dollars)+' from this lane.'
+                   : 'You\'re '+Math.abs(diff).toFixed(1)+'% under target. Add about '+fmt$(dollars)+' to this lane.'});
   });
   h.slice().sort(function(a,b){return (b.mktVal||0)-(a.mktVal||0);}).forEach(function(x){
     var p=x.mktVal/total*100;
     if(p>maxPos){
       var trim=(p-maxPos)/100*total;
-      actions.push({kind:'TRIM',lane:x.sym,pct:(p-maxPos),dollars:trim,color:'#C0714F',
+      actions.push({kind:'TRIM',lane:x.sym,pct:(p-maxPos),dollars:trim,color:'#C0714F',isTicker:true,
         note:x.sym+' is '+p.toFixed(1)+'% of portfolio (max '+maxPos+'%). Trim about '+fmt$(trim)+' to come back in policy.'});
     }
   });
   if(!actions.length){
     return '<div class="ss-action ss-noop"><div class="ss-action-icon" style="background:#6BAA75">✓</div><div><div class="ss-action-kind" style="color:#9DD0A8">No reallocation needed</div><div class="ss-action-note">Your current portfolio already matches the target lanes within tolerance. Focus on systematic contributions and discipline.</div></div></div>';
   }
+  function suggest(a){
+    if(a.isTicker) return {how:'Sell into strength over 2-3 trading sessions rather than all at once. Consider tax-lot selection if in a taxable account.',why:'Single-name concentration above the cap means one bad earnings or news cycle can materially dent your portfolio. The cap exists to cap that tail risk.',tickers:['Analyze '+a.lane]};
+    if(a.kind==='ADD'&&a.lane==='core') return {how:'Add to Core with a broad index (VOO, VTI) + a dividend/quality factor (SCHD). Split 60/40 between the two for balance.',why:'Core anchors the portfolio during drawdowns. Without it, every bad year feels like an existential threat instead of a temporary setback.',tickers:['VOO','VTI','SCHD']};
+    if(a.kind==='ADD'&&a.lane==='growth') return {how:'Add to your highest-conviction quality compounders. Look for names with 10y+ revenue growth, high FCF margins, and durable moats.',why:'Growth is where most of the long-run return is earned. Under-allocating here leaves money on the table for investors who can actually stomach the volatility.',tickers:['NVDA','MSFT','GOOGL','AAPL','META']};
+    if(a.kind==='ADD'&&a.lane==='tactical') return {how:'Start small — 2-4% in one or two asymmetric ideas. BTC for macro, IWM for small-cap mean-reversion, sector ETFs for thematic bets.',why:'Tactical is where outsized upside comes from. Sized small so a bad call doesn\'t derail the whole plan.',tickers:['BTC','IWM','VWO']};
+    if(a.kind==='TRIM'&&a.lane==='core') return {how:'Sell the Core overweight into strength. Redeploy into Growth first, Tactical second based on current regime.',why:'Too much Core = lazy portfolio. Your strategy demands more return-seeking exposure.',tickers:[]};
+    if(a.kind==='TRIM'&&a.lane==='growth') return {how:'Trim the largest Growth positions first (the ones over cap). Keep the highest-conviction names.',why:'Growth overweight concentrates single-name risk. Trimming raises cash for rebalance without hurting the thesis.',tickers:[]};
+    if(a.kind==='TRIM'&&a.lane==='tactical') return {how:'Tactical is the first to cut. Exit speculative names with no current thesis, keep conviction bets.',why:'Tactical only earns its seat when it\'s asymmetric. Unloved leftovers just add volatility.',tickers:[]};
+    return {how:'Execute this move to align with the strategy.',why:'Part of the rebalance cycle.',tickers:[]};
+  }
   return actions.map(function(a){
-    return '<div class="ss-action"><div class="ss-action-icon" style="background:'+a.color+'">'+(a.kind==='TRIM'?'−':'+')+'</div>'+
-      '<div style="flex:1"><div class="ss-action-kind" style="color:'+a.color+'">'+a.kind+' · '+esc(a.lane.toUpperCase())+'</div>'+
-      '<div class="ss-action-note">'+esc(a.note)+'</div></div>'+
+    var sug=suggest(a);
+    var btnHTML=(sug.tickers||[]).filter(function(t){return t&&t.length<=5;}).map(function(t){
+      return '<button class="ss-act-btn" onclick="event.stopPropagation();_execAnalyze(\''+esc(t)+'\')">Analyze '+esc(t)+' →</button>';
+    }).join('');
+    return '<div class="ss-action ss-clickable" tabindex="0" role="button" aria-expanded="false" onclick="_ssToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_ssToggle(this)}">'+
+      '<div class="ss-chev">▾</div>'+
+      '<div class="ss-action-icon" style="background:'+a.color+'">'+(a.kind==='TRIM'?'−':'+')+'</div>'+
+      '<div style="flex:1;min-width:0"><div class="ss-action-kind" style="color:'+a.color+'">'+a.kind+' · '+esc(String(a.lane).toUpperCase())+'</div>'+
+      '<div class="ss-action-note">'+esc(a.note)+'</div>'+
+      '<div class="ss-detail">'+
+        '<div class="ss-detail-row"><div class="ss-detail-icon">H</div><div><div class="ss-detail-lbl">How to execute</div>'+esc(sug.how)+'</div></div>'+
+        '<div class="ss-detail-row"><div class="ss-detail-icon bull">Y</div><div><div class="ss-detail-lbl bull">Why this move</div>'+esc(sug.why)+'</div></div>'+
+        (btnHTML?'<div class="ss-action-actions">'+btnHTML+'</div>':'')+
+      '</div>'+
+      '</div>'+
       '<div class="ss-action-amt" style="color:'+a.color+'">'+fmt$(a.dollars)+'</div>'+
     '</div>';
   }).join('');
@@ -3656,6 +4334,42 @@ async function runStrategyStudy(){
     if(current && t) sections[current]+=(sections[current]?'\n':'')+t;
   });
 
+  // Score-component breakdown for the Fit gauge detail
+  var laneDrift = Math.abs(lanes.pct.core-target.core)+Math.abs(lanes.pct.growth-target.growth)+Math.abs(lanes.pct.tactical-target.tactical);
+  var fitDetail = '<div class="ss-detail-row"><div class="ss-detail-icon">L</div><div><div class="ss-detail-lbl">Lane drift penalty</div>Total lane drift: '+laneDrift.toFixed(1)+' percentage points (Core '+Math.abs(lanes.pct.core-target.core).toFixed(1)+', Growth '+Math.abs(lanes.pct.growth-target.growth).toFixed(1)+', Tactical '+Math.abs(lanes.pct.tactical-target.tactical).toFixed(1)+'). Each point of drift subtracts ~0.55 from the fit score.</div></div>'+
+    '<div class="ss-detail-row"><div class="ss-detail-icon risk">!</div><div><div class="ss-detail-lbl risk">Position cap breaches</div>'+(fit.overs.length?fit.overs.map(function(x){return x.sym+' ('+(x.mktVal/lanes.total*100).toFixed(1)+'%)';}).join(', ')+' breach the '+target.maxPos+'% cap.':'No positions breach the '+target.maxPos+'% cap. Concentration is in policy.')+'</div></div>'+
+    '<div class="ss-detail-row"><div class="ss-detail-icon bull">S</div><div><div class="ss-detail-lbl bull">How to improve</div>'+(fit.score>=85?'Already excellent. Maintain via systematic contributions and quarterly rebalance.':fit.score>=70?'Trim cap breaches and add to underweight lanes — the Action Plan below has the specifics.':'Significant work needed. Follow the Reallocation Action Plan in order: cap breaches first, then lane drift, then add systematic monthly contributions.')+'</div></div>';
+
+  var aiReadDetail = '<div class="ss-detail-row"><div class="ss-detail-icon">W</div><div><div class="ss-detail-lbl">What this is</div>An institutional-style read of how your specific holdings fit the '+esc(target.name)+' strategy framework. Different from a generic feasibility study — this is strategy-LENSED.</div></div>'+
+    '<div class="ss-detail-row"><div class="ss-detail-icon bull">U</div><div><div class="ss-detail-lbl bull">How to use</div>Read the narrative once for the headline. Then drill into the Lane Alignment and Action Plan sections below for the specific moves.</div></div>'+
+    '<div class="ss-detail-row"><div class="ss-detail-icon risk">!</div><div><div class="ss-detail-lbl risk">Limitations</div>Snapshot in time. Re-run after any large trade or quarterly to keep the read current.</div></div>';
+
+  // Split prose blocks into sentence-level expandable cards
+  function proseCards(text,iconKind){
+    if(!text) return '';
+    var sentences=text.replace(/\n/g,' ').split(/(?<=[.!?])\s+(?=[A-Z])/).filter(function(s){return s.trim().length>15;});
+    if(sentences.length<=1){
+      // Single chunk — wrap as one expandable card
+      return '<div class="ss-prose ss-clickable" tabindex="0" role="button" aria-expanded="false" onclick="_ssToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_ssToggle(this)}">'+
+        '<div class="ss-chev">▾</div>'+esc(text)+
+        '<div class="ss-detail">'+
+          '<div class="ss-detail-row"><div class="ss-detail-icon '+iconKind+'">!</div><div><div class="ss-detail-lbl '+iconKind+'">Why this matters</div>'+(iconKind==='bull'?'A tailwind for executing this strategy. Lean into it.':'A specific factor that materially shapes the moves below. Read carefully.')+'</div></div>'+
+        '</div>'+
+      '</div>';
+    }
+    return sentences.map(function(s,i){
+      var clean=s.trim().replace(/\.$/,'').trim();
+      var preview=clean.length>140?clean.slice(0,140)+'…':clean;
+      return '<div class="ss-prose ss-clickable" tabindex="0" role="button" aria-expanded="false" style="margin-bottom:7px" onclick="_ssToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_ssToggle(this)}">'+
+        '<div class="ss-chev">▾</div>'+
+        '<div style="display:flex;gap:11px;align-items:flex-start"><div class="ss-detail-icon '+iconKind+'" style="margin-top:2px">'+(i+1)+'</div><div style="flex:1">'+esc(preview)+'</div></div>'+
+        '<div class="ss-detail">'+
+          '<div class="ss-detail-row"><div class="ss-detail-icon">F</div><div><div class="ss-detail-lbl">Full text</div>'+esc(clean)+'.</div></div>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }
+
   out.innerHTML=
     '<div class="ss-wrap" style="border-color:'+target.color.replace('#','#').slice(0,7)+'55">'+
       '<div class="ss-hdr">'+
@@ -3667,20 +4381,24 @@ async function runStrategyStudy(){
       '</div>'+
 
       '<div class="ss-grid">'+
-        '<div class="ss-card ss-fit">'+
+        '<div class="ss-card ss-fit ss-clickable" tabindex="0" role="button" aria-expanded="false" onclick="_ssToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_ssToggle(this)}">'+
+          '<div class="ss-chev">▾</div>'+
           '<div class="ss-card-lbl">Strategy Fit Score</div>'+
           _renderFitGauge(fit.score,target.color)+
-          '<div class="ss-fit-sub">Based on lane drift, position caps, and concentration</div>'+
+          '<div class="ss-fit-sub">Based on lane drift, position caps, and concentration · click for breakdown</div>'+
+          '<div class="ss-detail" style="text-align:left">'+fitDetail+'</div>'+
         '</div>'+
-        '<div class="ss-card ss-narrative">'+
-          '<div class="ss-card-lbl">AI Read</div>'+
+        '<div class="ss-card ss-narrative ss-clickable" tabindex="0" role="button" aria-expanded="false" onclick="_ssToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_ssToggle(this)}">'+
+          '<div class="ss-chev">▾</div>'+
+          '<div class="ss-card-lbl">AI Read · click to learn how to use</div>'+
           '<div class="ss-narrative-body">'+esc(sections.NARRATIVE||'No narrative available.')+'</div>'+
+          '<div class="ss-detail">'+aiReadDetail+'</div>'+
         '</div>'+
       '</div>'+
 
       '<div class="ss-section">'+
-        '<div class="ss-section-hdr">Lane Alignment <span class="ss-section-sub">Current vs '+esc(target.name)+' target</span></div>'+
-        _renderLaneCompare(lanes.pct,target)+
+        '<div class="ss-section-hdr">Lane Alignment <span class="ss-section-sub">Tap any lane for what it is, why it matters, and what to do</span></div>'+
+        _renderLaneCompare(lanes.pct,target,h)+
       '</div>'+
 
       '<div class="ss-section">'+
@@ -3689,12 +4407,12 @@ async function runStrategyStudy(){
       '</div>'+
 
       '<div class="ss-section">'+
-        '<div class="ss-section-hdr">Reallocation Action Plan <span class="ss-section-sub">Live numbers from your portfolio</span></div>'+
+        '<div class="ss-section-hdr">Reallocation Action Plan <span class="ss-section-sub">Tap any move for how + why + ticker analysis</span></div>'+
         '<div class="ss-actions">'+_renderActionPlan(lanes.pct,target,h,target.maxPos)+'</div>'+
       '</div>'+
 
-      (sections.KEY_MOVES?'<div class="ss-section"><div class="ss-section-hdr">Key Moves <span class="ss-section-sub">From AI strategist</span></div><div class="ss-prose">'+esc(sections.KEY_MOVES).replace(/\n/g,'<br>')+'</div></div>':'')+
-      (sections.BEHAVIORAL_FIT?'<div class="ss-section"><div class="ss-section-hdr">Behavioral Fit <span class="ss-section-sub">Discipline match</span></div><div class="ss-prose">'+esc(sections.BEHAVIORAL_FIT).replace(/\n/g,'<br>')+'</div></div>':'')+
+      (sections.KEY_MOVES?'<div class="ss-section"><div class="ss-section-hdr">Key Moves <span class="ss-section-sub">Tap each move for the full text + rationale</span></div>'+proseCards(sections.KEY_MOVES,'')+'</div>':'')+
+      (sections.BEHAVIORAL_FIT?'<div class="ss-section"><div class="ss-section-hdr">Behavioral Fit <span class="ss-section-sub">Discipline match · tap each insight</span></div>'+proseCards(sections.BEHAVIORAL_FIT,'risk')+'</div>':'')+
       (sections.TIMELINE?'<div class="ss-callout"><div class="ss-callout-lbl">Execute by</div><div class="ss-callout-val">'+esc(sections.TIMELINE)+'</div></div>':'')+
     '</div>';
 
@@ -3739,7 +4457,17 @@ function renderFeasibility(text,total,cost,gain,pct,h){
   var tabs=['Health','Framework','Projections','Action Plan','Additions','Behavior'];
   var tabHTML='<div class="ftabs">'+tabs.map(function(t,i){return '<button class="ftab'+(i===0?' active':'')+'" onclick="switchFeasTab('+i+',this)">'+t+'</button>';}).join('')+'</div>';
   var panesHTML=['health','framework','projections','actions','additions','behavior'].map(function(k,i){
-    return '<div class="fpane'+(i===0?' active':'')+'" id="fp'+i+'">'+makeSec(sections[k])+'</div>';
+    var body;
+    switch(k){
+      case 'health':     body=_fvHealth(sections[k],total,cost,gain,pct,h); break;
+      case 'framework':  body=_fvFramework(sections[k]); break;
+      case 'projections':body=_fvProjections(sections[k],total,h); break;
+      case 'actions':    body=_fvActions(sections[k]); break;
+      case 'additions':  body=_fvAdditions(sections[k]); break;
+      case 'behavior':   body=_fvBehavior(sections[k]); break;
+      default:           body=makeSec(sections[k]);
+    }
+    return '<div class="fpane'+(i===0?' active':'')+'" id="fp'+i+'">'+body+'</div>';
   }).join('');
   fc.innerHTML=heroHTML+tabHTML+'<div class="card">'+panesHTML+'</div>';
 }
@@ -4559,7 +5287,17 @@ function renderFeasibility(text,total,cost,gain,pct,h){
   var tabs=['Health','Framework','Projections','Action Plan','Additions','Behavior'];
   var tabHTML='<div class="ftabs">'+tabs.map(function(t,i){return '<button class="ftab'+(i===0?' active':'')+'" onclick="switchFeasTab('+i+',this)">'+t+'</button>';}).join('')+'</div>';
   var panesHTML=['health','framework','projections','actions','additions','behavior'].map(function(k,i){
-    return '<div class="fpane'+(i===0?' active':'')+'" id="fp'+i+'">'+makeSec(sections[k])+'</div>';
+    var body;
+    switch(k){
+      case 'health':     body=_fvHealth(sections[k],total,cost,gain,pct,h); break;
+      case 'framework':  body=_fvFramework(sections[k]); break;
+      case 'projections':body=_fvProjections(sections[k],total,h); break;
+      case 'actions':    body=_fvActions(sections[k]); break;
+      case 'additions':  body=_fvAdditions(sections[k]); break;
+      case 'behavior':   body=_fvBehavior(sections[k]); break;
+      default:           body=makeSec(sections[k]);
+    }
+    return '<div class="fpane'+(i===0?' active':'')+'" id="fp'+i+'">'+body+'</div>';
   }).join('');
   fc.innerHTML=heroHTML+tabHTML+'<div class="card">'+panesHTML+'</div>';
 }
@@ -4882,7 +5620,17 @@ function renderFeasibility(text,total,cost,gain,pct,h){
   var tabs=['Health','Framework','Projections','Action Plan','Additions','Behavior'];
   var tabHTML='<div class="ftabs">'+tabs.map(function(t,i){return '<button class="ftab'+(i===0?' active':'')+'" onclick="switchFeasTab('+i+',this)">'+t+'</button>';}).join('')+'</div>';
   var panesHTML=['health','framework','projections','actions','additions','behavior'].map(function(k,i){
-    return '<div class="fpane'+(i===0?' active':'')+'" id="fp'+i+'">'+makeSec(sections[k])+'</div>';
+    var body;
+    switch(k){
+      case 'health':     body=_fvHealth(sections[k],total,cost,gain,pct,h); break;
+      case 'framework':  body=_fvFramework(sections[k]); break;
+      case 'projections':body=_fvProjections(sections[k],total,h); break;
+      case 'actions':    body=_fvActions(sections[k]); break;
+      case 'additions':  body=_fvAdditions(sections[k]); break;
+      case 'behavior':   body=_fvBehavior(sections[k]); break;
+      default:           body=makeSec(sections[k]);
+    }
+    return '<div class="fpane'+(i===0?' active':'')+'" id="fp'+i+'">'+body+'</div>';
   }).join('');
   fc.innerHTML=heroHTML+tabHTML+'<div class="card">'+panesHTML+'</div>';
 }
@@ -5158,7 +5906,17 @@ function renderFeasibility(text,total,cost,gain,pct,h){
   var tabs=['Health','Framework','Projections','Action Plan','Additions','Behavior'];
   var tabHTML='<div class="ftabs">'+tabs.map(function(t,i){return '<button class="ftab'+(i===0?' active':'')+'" onclick="switchFeasTab('+i+',this)">'+t+'</button>';}).join('')+'</div>';
   var panesHTML=['health','framework','projections','actions','additions','behavior'].map(function(k,i){
-    return '<div class="fpane'+(i===0?' active':'')+'" id="fp'+i+'">'+makeSec(sections[k])+'</div>';
+    var body;
+    switch(k){
+      case 'health':     body=_fvHealth(sections[k],total,cost,gain,pct,h); break;
+      case 'framework':  body=_fvFramework(sections[k]); break;
+      case 'projections':body=_fvProjections(sections[k],total,h); break;
+      case 'actions':    body=_fvActions(sections[k]); break;
+      case 'additions':  body=_fvAdditions(sections[k]); break;
+      case 'behavior':   body=_fvBehavior(sections[k]); break;
+      default:           body=makeSec(sections[k]);
+    }
+    return '<div class="fpane'+(i===0?' active':'')+'" id="fp'+i+'">'+body+'</div>';
   }).join('');
   fc.innerHTML=heroHTML+tabHTML+'<div class="card">'+panesHTML+'</div>';
 }
