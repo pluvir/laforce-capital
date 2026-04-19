@@ -2249,61 +2249,39 @@ function handleFileInput(files){
 
 async function queueImagesForExtraction(files){
   var status=document.getElementById('portExtractStatus');
-  // Screenshot extraction requires a multimodal backend endpoint not yet wired up.
-  // Show a friendly message pointing to the working paths until the endpoint ships.
-  status.innerHTML='<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Screenshot extraction coming soon</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">The backend doesn\'t yet support image uploads. For now: export your brokerage data as a <strong>CSV</strong> and drop it here, or <strong>paste</strong> holdings into the manual box below. Both paths work perfectly.</div></div>';
-  return;
-  // --- legacy direct-Anthropic code retained below for when the multimodal endpoint ships ---
-  var key=getKey();
-  if(!key){status.innerHTML='<div style="color:var(--clay);font-size:12px">API key required to extract from images. Set your key above.</div>';return;}
+  status.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Reading '+files.length+' screenshot'+(files.length>1?'s':'')+' via secure backend</div><div class="cd-loader-sub">Uploading · parsing · merging positions · detecting recurring investments</div></div></div>';
 
   try{
-    // Build content array -- one image block per file plus a combined instruction
-    var contentBlocks=[];
+    // Convert each file to { mediaType, data (base64) }
+    var images=[];
     for(var i=0;i<files.length;i++){
       var f=files[i];
-      var b64=await new Promise(function(res,rej){var r=new FileReader();r.onload=function(e){res(e.target.result.split(',')[1]);};r.onerror=rej;r.readAsDataURL(f);});
-      var mt='image/'+f.name.split('.').pop().toLowerCase().replace('jpg','jpeg');
-      contentBlocks.push({type:'image',source:{type:'base64',media_type:mt,data:b64}});
+      var b64=await new Promise(function(res,rej){
+        var r=new FileReader();
+        r.onload=function(e){ res(e.target.result.split(',')[1]); };
+        r.onerror=rej;
+        r.readAsDataURL(f);
+      });
+      var ext=f.name.split('.').pop().toLowerCase();
+      var mt='image/'+(ext==='jpg'?'jpeg':ext);
+      images.push({mediaType:mt,data:b64});
     }
 
-    // Smart extraction prompt -- handles Robinhood, fractional shares, recurring investments, bankrupt positions
-    var extractPrompt=[
-      'You are analyzing '+files.length+' brokerage screenshot(s). Extract ALL stock/ETF holdings from ALL images combined.',
-      '',
-      'Rules:',
-      '- Include fractional shares (e.g. 26.3771 shares)',
-      '- Skip bankrupt/delisted positions with N/A price (no market value)',
-      '- Skip positions with $0.0001 or near-zero price (likely worthless)',
-      '- If a position appears in multiple screenshots, combine the shares (they may be different accounts)',
-      '- If you see "Recurring Investments" (e.g. SCHD $15/month, VOO $40/month), note them separately at the END after a line that says RECURRING:',
-      '- Extract market value and cost basis when visible',
-      '',
-      'Return ONLY this format (no headers, no explanations):',
-      'SYMBOL,SHARES,COST_PER_SHARE,MARKET_VALUE',
-      '',
-      'Then if recurring investments found:',
-      'RECURRING:',
-      'SYMBOL,MONTHLY_AMOUNT',
-      '',
-      'Example:',
-      'AAPL,26.3771,180.60,7127.88',
-      'NVDA,48,126.74,9680.64',
-      'RECURRING:',
-      'SCHD,15',
-      'VOO,40'
-    ].join('\n');
-
-    contentBlocks.push({type:'text',text:extractPrompt});
-
-    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+    var resp=await fetch(API_BASE+'/api/ai/extract-holdings',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1200,messages:[{role:'user',content:contentBlocks}]})
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({images:images})
     });
-    if(!resp.ok){var er=await resp.json().catch(function(){return{};});throw new Error((er.error&&er.error.message)||resp.statusText);}
+    if(!resp.ok){
+      var er=await resp.json().catch(function(){return{error:resp.statusText};});
+      var emsg=er.error||resp.statusText;
+      if(resp.status===429) emsg='Rate limit reached — wait 60 seconds and try again.';
+      else if(resp.status===413) emsg='Screenshot too large. Try resizing to under ~4MB per image.';
+      else if(resp.status===502||resp.status===504) emsg='AI service temporarily unavailable. Try again shortly.';
+      throw new Error(emsg);
+    }
     var d=await resp.json();
-    var txt=d.content[0].text;
+    var txt=d.text;
 
     // Split holdings vs recurring
     var parts=txt.split(/^RECURRING:/m);
