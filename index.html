@@ -851,6 +851,29 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .sector-chip:hover{border-color:var(--border-2);color:var(--cream);background:rgba(201,168,76,.04)}
 .sector-chip.active{background:linear-gradient(135deg,var(--gold),var(--gold-dim));color:var(--noir);border-color:var(--gold);font-weight:700}
 
+/* Tuned feasibility — visual components */
+.tf-action-col{display:flex;flex-direction:column;gap:10px}
+.tf-col-head{font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.tf-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tf-ticker-card{padding:9px 10px;border-radius:var(--r);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left}
+.tf-ticker-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.tf-ticker-sym{font-family:'DM Mono',monospace;font-size:14px;font-weight:700;letter-spacing:.02em}
+.tf-ticker-action{font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--text-3);opacity:.8}
+.tf-empty{font-size:11px;color:var(--text-3);font-style:italic;padding:8px;background:rgba(0,0,0,.15);border:1px dashed var(--border);border-radius:var(--r);text-align:center;grid-column:1/-1}
+.tf-col-body{font-size:11px;color:var(--text-2);line-height:1.55;padding-top:4px}
+.tf-timeline{position:relative;padding-left:4px}
+.tf-tl-step{position:relative;display:flex;gap:14px;padding:10px 0 10px 0;margin-left:16px;border-left:2px solid var(--border)}
+.tf-tl-step:first-child{padding-top:0}
+.tf-tl-step:last-child{padding-bottom:0;border-left-color:transparent}
+.tf-tl-dot{position:absolute;left:-16px;top:8px;width:30px;height:30px;border-radius:50%;background:var(--noir-3);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;font-weight:700;color:var(--gold);box-shadow:0 0 10px rgba(201,168,76,.2)}
+.tf-tl-body{padding:6px 0 0 24px;font-size:12.5px;color:var(--text-1);line-height:1.7}
+
+@media(max-width:900px){
+  .tf-action-col{grid-column:1/-1!important}
+  #stratTunedFeas [style*="grid-template-columns:1fr 1fr 1fr"]{grid-template-columns:1fr!important}
+  .tf-card-grid{grid-template-columns:1fr 1fr 1fr}
+}
+
 /* Interactive strategy steps */
 .strat-step{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:6px;overflow:hidden;cursor:pointer;transition:all .2s}
 .strat-step:hover{border-color:var(--border-2);background:rgba(0,0,0,.32)}
@@ -2398,7 +2421,7 @@ async function queueImagesForExtraction(files){
 
   // Client-side preflight: validate file types and sizes
   var allowedExts=['png','jpg','jpeg','webp','gif'];
-  var maxSingleFileSize=5_000_000; // 5MB per file
+  var maxSingleFileSize=10_000_000; // 10MB per file (modern phone screenshots are 4-8MB)
   var filesToProcess=[];
   var rejectedFiles=[];
 
@@ -2410,7 +2433,7 @@ async function queueImagesForExtraction(files){
       continue;
     }
     if(f.size>maxSingleFileSize){
-      rejectedFiles.push(f.name+' is too large ('+Math.round(f.size/1000000)+'mb). Resize to under 5MB and retry.');
+      rejectedFiles.push(f.name+' is too large ('+Math.round(f.size/1000000)+'MB). Resize to under 10MB and retry (right-click → Export → smaller size on macOS Preview).');
       continue;
     }
     filesToProcess.push(f);
@@ -4482,6 +4505,95 @@ function runFullStudyForStrategy(){
   setTimeout(function(){ runFeasibilityTunedToStrategy(); }, 250);
 }
 
+// -- Visual helpers for the tuned feasibility render --
+function tfBucketParse(text){
+  var B = {Core:{c:null,t:null}, Growth:{c:null,t:null}, Tactical:{c:null,t:null}, Cash:{c:null,t:null}};
+  Object.keys(B).forEach(function(k){
+    var re = new RegExp(k + '[^\\d]{0,15}(\\d+(?:\\.\\d+)?)\\s*%?[^\\d]{0,10}(?:vs|versus|v\\.|\\/|to|→|target)[^\\d]{0,10}(\\d+(?:\\.\\d+)?)', 'i');
+    var m = text && text.match(re);
+    if(m){ B[k].c = parseFloat(m[1]); B[k].t = parseFloat(m[2]); }
+  });
+  return B;
+}
+function tfExtractTickers(text, max){
+  if(!text) return [];
+  var skip = ['DCA','ETF','AI','NO','USD','IPO','PE','EV','CEO','CFO','ROI','VIX','RSI','MA','YTD','CAGR','SPY','VOO','SCHD','AAPL','NVDA','MSFT','GOOGL','AMZN','META','TSLA','AMD','AVGO']; // keep the obvious tickers by NOT filtering them
+  // Above line: we do NOT filter common tickers. Only filter tiny non-ticker words.
+  var actualSkip = ['AI','NO','USD','IPO','PE','EV','CEO','CFO','ROI','VIX','RSI','MA','YTD','CAGR','OR','AT','IS','TO','DO','BY','IN','ON','OF','AS','BE','IF','IT','UP'];
+  var found = text.match(/\b[A-Z]{1,5}\b/g) || [];
+  var uniq = [];
+  found.forEach(function(t){ if(t.length >= 2 && actualSkip.indexOf(t) < 0 && uniq.indexOf(t) < 0) uniq.push(t); });
+  return uniq.slice(0, max || 8);
+}
+function tfRing(score, color){
+  var s = Math.max(0, Math.min(10, Number(score)||0));
+  var C = 2 * Math.PI * 34;
+  var filled = (s/10) * C;
+  return '<svg viewBox="0 0 90 90" style="width:92px;height:92px;flex-shrink:0">'
+    +'<circle cx="45" cy="45" r="34" fill="none" stroke="var(--noir-3)" stroke-width="7"/>'
+    +'<circle cx="45" cy="45" r="34" fill="none" stroke="'+color+'" stroke-width="7" stroke-dasharray="'+filled.toFixed(1)+' '+C.toFixed(1)+'" stroke-linecap="round" transform="rotate(-90 45 45)" style="filter:drop-shadow(0 0 6px '+color+'80)"/>'
+    +'<text x="45" y="49" text-anchor="middle" font-family="DM Mono, monospace" font-size="22" font-weight="700" fill="'+color+'">'+s.toFixed(1)+'</text>'
+    +'<text x="45" y="63" text-anchor="middle" font-size="7" fill="var(--text-3)" letter-spacing="2" font-weight="700">FIT</text>'
+  +'</svg>';
+}
+function tfBucketBars(buckets){
+  var html = '';
+  ['Core','Growth','Tactical','Cash'].forEach(function(k){
+    var b = buckets[k];
+    if(b.c === null || b.t === null) return;
+    var gap = b.c - b.t;
+    var gapColor = Math.abs(gap) < 4 ? 'var(--sage)' : Math.abs(gap) < 12 ? 'var(--gold)' : 'var(--clay)';
+    var gapTxt = Math.abs(gap) < 1 ? 'on target' : gap > 0 ? '+'+gap.toFixed(0)+'% over' : gap.toFixed(0)+'% under';
+    var barWidth = Math.min(100, b.c);
+    var targetPos = Math.min(100, Math.max(0, b.t));
+    html += '<div style="margin-bottom:14px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+        +'<span style="font-size:12px;color:var(--cream);font-weight:600;letter-spacing:.02em">'+k+'</span>'
+        +'<span style="font-size:10px;color:'+gapColor+';font-weight:700;font-family:\'DM Mono\',monospace;padding:2px 8px;border-radius:10px;background:'+gapColor.replace(')',',0.1)').replace('var(','rgba(')+';border:1px solid '+gapColor.replace(')',',0.25)').replace('var(','rgba(')+'">'+gapTxt+'</span>'
+      +'</div>'
+      +'<div style="position:relative;height:14px;background:var(--noir-3);border-radius:7px;border:1px solid var(--border)">'
+        +'<div style="position:absolute;left:0;top:0;bottom:0;width:'+barWidth+'%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:7px;transition:width .6s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px rgba(201,168,76,.3)"></div>'
+        +'<div style="position:absolute;left:calc('+targetPos+'% - 1px);top:-4px;bottom:-4px;width:3px;background:var(--cream);border-radius:2px;box-shadow:0 0 6px rgba(240,232,208,.6)" title="Target '+b.t+'%"></div>'
+      +'</div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-3);margin-top:4px;font-family:\'DM Mono\',monospace">'
+        +'<span>Current <strong style="color:var(--gold-light)">'+b.c.toFixed(0)+'%</strong></span>'
+        +'<span>Target <strong style="color:var(--cream)">'+b.t.toFixed(0)+'%</strong></span>'
+      +'</div>'
+    +'</div>';
+  });
+  return html || '<div style="font-size:11px;color:var(--text-3);font-style:italic;padding:8px 0">Could not extract bucket percentages from AI response. See "Gap to target" section below.</div>';
+}
+function tfTickerCards(tickers, label, color){
+  if(!tickers.length) return '';
+  var alpha = color.replace(')',',0.08)').replace('var(','rgba(');
+  var alpha2 = color.replace(')',',0.35)').replace('var(','rgba(');
+  return tickers.map(function(t){
+    return '<button class="tf-ticker-card" style="background:'+alpha+';border:1px solid '+alpha2+';color:'+color+'" onclick="quickTick(\''+t+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2]);setTimeout(runStock,200)">'
+      +'<span class="tf-ticker-sym" style="color:'+color+'">'+t+'</span>'
+      +'<span class="tf-ticker-action">'+esc(label)+' →</span>'
+    +'</button>';
+  }).join('');
+}
+function tfActionTimeline(text){
+  if(!text) return '';
+  var lines = text.split('\n').map(function(l){return l.trim();}).filter(function(l){return l;});
+  var steps = [];
+  lines.forEach(function(l){
+    var m = l.match(/^(\d+)[.):]?\s*(.+)/);
+    if(m){ steps.push({n: m[1], txt: m[2]}); }
+    else if(steps.length && l.length > 4 && !/^[A-Z]{2,}:/.test(l)){ steps[steps.length-1].txt += ' ' + l; }
+  });
+  if(!steps.length){
+    return '<div style="font-size:12.5px;color:var(--text-1);line-height:1.75">'+esc(text).replace(/\n/g,'<br>')+'</div>';
+  }
+  return '<div class="tf-timeline">' + steps.map(function(s, i){
+    return '<div class="tf-tl-step">'
+      +'<div class="tf-tl-dot">'+s.n+'</div>'
+      +'<div class="tf-tl-body">'+esc(s.txt)+'</div>'
+    +'</div>';
+  }).join('') + '</div>';
+}
+
 // Tuned version — runs a feasibility study through the lens of the selected strategy
 // and renders inline inside the strategy panel (not at the top of Portfolio Lab)
 async function runFeasibilityTunedToStrategy(){
@@ -4543,36 +4655,78 @@ async function runFeasibilityTunedToStrategy(){
       +'</div>';
     }
 
-    slot.innerHTML = '<div style="background:linear-gradient(145deg,var(--noir-2),var(--noir-1));border:1px solid var(--border-2);border-radius:var(--r-xl);overflow:hidden">'
+    // Extract visual data
+    var buckets = tfBucketParse(S.gap);
+    var keepTickers = tfExtractTickers(S.keep, 6);
+    var trimTickers = tfExtractTickers(S.trim, 6);
+    var addTickers  = tfExtractTickers(S.add, 8);
+
+    slot.innerHTML = '<div style="background:linear-gradient(145deg,var(--noir-2),var(--noir-1));border:1px solid var(--border-2);border-radius:var(--r-xl);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)">'
       +'<div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>'
-      +'<div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">'
-        +'<div>'
-          +'<div style="font-size:9px;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase;font-weight:700;margin-bottom:3px">◆ Tuned feasibility</div>'
-          +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:20px;color:var(--cream)">Your portfolio through the <em style="color:var(--gold-light)">'+esc(stratName)+'</em> lens</div>'
+
+      // HEADER — big fit ring + title + confidence chip
+      +'<div style="padding:22px 24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:20px;flex-wrap:wrap">'
+        +(fitScore!==null ? tfRing(fitScore, fitColor) : '')
+        +'<div style="flex:1;min-width:240px">'
+          +'<div style="font-size:9px;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase;font-weight:700;margin-bottom:4px">◆ Tuned feasibility</div>'
+          +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:22px;color:var(--cream);line-height:1.25;margin-bottom:6px">Your portfolio through the <em style="color:var(--gold-light);font-style:italic">'+esc(stratName)+'</em> lens</div>'
+          +(fitSentence?'<div style="font-size:12px;color:var(--cream-dim);line-height:1.55;font-style:italic">'+esc(fitSentence)+'</div>':'')
         +'</div>'
-        +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'
-          +(fitScore!==null?'<div style="padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;font-family:\'DM Mono\',monospace;background:rgba(0,0,0,.3);border:1px solid '+fitColor+'40;color:'+fitColor+'"><span style="letter-spacing:.1em;text-transform:uppercase;font-size:9px;color:var(--text-3)">Fit</span> '+fitScore+'/10</div>':'')
-          +(confScore!==null?'<div style="padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;font-family:\'DM Mono\',monospace;background:rgba(0,0,0,.3);border:1px solid '+confColor+'40;color:'+confColor+'"><span style="letter-spacing:.1em;text-transform:uppercase;font-size:9px;color:var(--text-3)">Conf</span> '+confScore+'/10</div>':'')
+        +(confScore!==null?'<div style="padding:8px 14px;border-radius:20px;font-size:11px;font-weight:700;font-family:\'DM Mono\',monospace;background:rgba(0,0,0,.35);border:1px solid '+confColor+'40;color:'+confColor+';flex-shrink:0"><span style="letter-spacing:.1em;text-transform:uppercase;font-size:9px;color:var(--text-3)">Conf</span> '+confScore+'/10</div>':'')
+      +'</div>'
+
+      // GAP TO TARGET — horizontal bar chart with markers
+      +'<div style="padding:20px 24px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.12)">'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">'
+          +'<div style="font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;font-weight:700">◆ Current vs '+esc(stratName)+' target</div>'
+          +'<div style="font-size:10px;color:var(--text-3);font-style:italic">Gold bar = current · White line = target</div>'
+        +'</div>'
+        +tfBucketBars(buckets)
+        +(S.gap?'<div style="margin-top:12px;padding:10px 12px;background:rgba(192,113,79,.06);border-left:2px solid var(--clay);border-radius:var(--r);font-size:12px;color:var(--text-1);line-height:1.6">'+esc(S.gap).replace(/\n- /g,'<br>• ').replace(/\n/g,'<br>')+'</div>':'')
+      +'</div>'
+
+      // KEEP / TRIM / ADD — color-coded ticker cards
+      +'<div style="padding:20px 24px;border-bottom:1px solid var(--border)">'
+        +'<div style="font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:12px">◆ Position actions · click to analyze</div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">'
+          +'<div class="tf-action-col">'
+            +'<div class="tf-col-head" style="color:var(--sage)">✓ KEEP AS-IS</div>'
+            +'<div class="tf-card-grid">'+(keepTickers.length?tfTickerCards(keepTickers,'Hold','var(--sage)'):'<div class="tf-empty">None flagged</div>')+'</div>'
+            +(S.keep?'<div class="tf-col-body">'+esc(S.keep.substring(0,240))+(S.keep.length>240?'…':'')+'</div>':'')
+          +'</div>'
+          +'<div class="tf-action-col">'
+            +'<div class="tf-col-head" style="color:var(--clay)">✗ TRIM OR EXIT</div>'
+            +'<div class="tf-card-grid">'+(trimTickers.length?tfTickerCards(trimTickers,'Trim','var(--clay)'):'<div class="tf-empty">None flagged</div>')+'</div>'
+            +(S.trim?'<div class="tf-col-body">'+esc(S.trim.substring(0,240))+(S.trim.length>240?'…':'')+'</div>':'')
+          +'</div>'
+          +'<div class="tf-action-col">'
+            +'<div class="tf-col-head" style="color:var(--gold-light)">+ ADD IMMEDIATELY</div>'
+            +'<div class="tf-card-grid">'+(addTickers.length?tfTickerCards(addTickers,'Add','var(--gold-light)'):'<div class="tf-empty">None flagged</div>')+'</div>'
+            +(S.add?'<div class="tf-col-body">'+esc(S.add.substring(0,240))+(S.add.length>240?'…':'')+'</div>':'')
+          +'</div>'
         +'</div>'
       +'</div>'
-      +(fitSentence?'<div style="padding:12px 20px;background:rgba(0,0,0,.2);font-size:13px;color:var(--cream-dim);line-height:1.6;font-style:italic;border-bottom:1px solid var(--border)">'+esc(fitSentence)+'</div>':'')
-      +'<div style="padding:18px 20px">'
-        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">'
-          +'<div>'
-            +sec('Gap to target','var(--clay)',S.gap)
-            +sec('Keep as-is','var(--sage)',S.keep)
-            +sec('Trim or exit','var(--clay)',S.trim)
-          +'</div>'
-          +'<div>'
-            +sec('Add immediately','var(--gold-light)',S.add)
-            +sec('Sequenced action plan','var(--gold)',S.plan)
-            +sec('Behavioral warning','var(--gold-dim)',S.warning)
-          +'</div>'
+
+      // ACTION PLAN — numbered timeline
+      +(S.plan?'<div style="padding:20px 24px;border-bottom:1px solid var(--border)">'
+        +'<div style="font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:14px">◆ Sequenced action plan</div>'
+        +tfActionTimeline(S.plan)
+      +'</div>':'')
+
+      // BEHAVIORAL WARNING — alert card
+      +(S.warning?'<div style="padding:16px 24px;background:rgba(201,168,76,.05);border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start">'
+        +'<div style="font-size:20px;line-height:1;flex-shrink:0">⚠</div>'
+        +'<div>'
+          +'<div style="font-size:10px;letter-spacing:.16em;color:var(--gold-dim);text-transform:uppercase;font-weight:700;margin-bottom:4px">Behavioral warning</div>'
+          +'<div style="font-size:12.5px;color:var(--text-1);line-height:1.65">'+esc(S.warning)+'</div>'
         +'</div>'
-        +'<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">'
-          +'<button class="btn-g btn-sm" onclick="var el=document.getElementById(\'stratTunedFeas\');if(el)el.remove();">Close study</button>'
-          +'<button class="btn-g btn-sm" onclick="showPanel(\'deploy\',document.querySelectorAll(\'.nav-item\')[3])">Go to Capital Deployment →</button>'
-        +'</div>'
+      +'</div>':'')
+
+      // FOOTER — actions
+      +'<div style="padding:14px 24px;display:flex;gap:8px;flex-wrap:wrap">'
+        +'<button class="btn-p btn-sm" onclick="showPanel(\'deploy\',document.querySelectorAll(\'.nav-item\')[3])">Go to Capital Deployment →</button>'
+        +'<button class="btn-g btn-sm" onclick="runFullStudyForStrategy()">Re-run analysis</button>'
+        +'<button class="btn-g btn-sm" onclick="var el=document.getElementById(\'stratTunedFeas\');if(el)el.remove();">Close study</button>'
       +'</div>'
     +'</div>';
     slot.scrollIntoView({behavior:'smooth',block:'start'});
