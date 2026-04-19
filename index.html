@@ -2415,18 +2415,38 @@ async function queueImagesForExtraction(files){
         mismatch:(parsed.reportedCount>0 && parsed.reportedCount!==parsed.parsedCount),
         errors:parsed.errors||[]
       };
+      // Normalize every numeric field to Number — sessionStorage round-trips
+      // can hand us strings, and "341" + 39610.55 concatenates.
+      function _clean(h){
+        return {
+          sym: h.sym,
+          shares: Number(h.shares)||0,
+          costPerShare: Number(h.costPerShare)||0,
+          cost: Number(h.cost)||0,
+          mktVal: Number(h.mktVal)||0,
+          gain: Number(h.gain)||0,
+          pct: Number(h.pct)||0
+        };
+      }
       if(_holdings.length){
         parsed.forEach(function(newH){
-          var exists=_holdings.find(function(h){return h.sym===newH.sym;});
-          if(exists){
-            exists.shares+=newH.shares;exists.mktVal+=newH.mktVal;exists.cost+=newH.cost;
-            exists.gain=exists.mktVal-exists.cost;
-            stats.merged++;
-          }else{_holdings.push(newH);stats.new++;}
+          var idx=_holdings.findIndex(function(h){return h&&h.sym===newH.sym;});
+          var clean=_clean(newH);
+          if(idx>=0){ _holdings[idx]=clean; stats.merged++; }
+          else     { _holdings.push(clean); stats.new++; }
         });
-      }else{_holdings=parsed.slice(); stats.new=parsed.length;}
+      }else{
+        _holdings=parsed.map(_clean);
+        stats.new=parsed.length;
+      }
 
-      dedupeHoldings();saveHoldings();renderLabTable();renderDashboard();
+      dedupeHoldings();saveHoldings();
+
+      // TEMP DEBUG — mktVal is the single source of truth for portfolio total.
+      var totalValue=_holdings.reduce(function(s,h){return s+(Number(h&&h.mktVal)||0);},0);
+      console.log("TOTAL VALUE:", totalValue, _holdings);
+
+      renderLabTable();renderDashboard();
 
       // Console-log the receipt diagnostics so you can spot COUNT/parsed mismatches.
       try{console.log('[extract]',{model:stats.model,parsed:stats.parsed,found:stats.found,new:stats.new,merged:stats.merged,skipped:stats.skipped,mismatch:stats.mismatch,errors:stats.errors});}catch(e){}
@@ -2506,14 +2526,22 @@ function renderRecurring(recurring,statusEl){
 function dedupeHoldings(){
   var seen={};var deduped=[];
   _holdings.forEach(function(h){
-    if(!h.sym)return;
+    if(!h||!h.sym)return;
+    // Coerce every numeric field — protects against sessionStorage strings.
+    h.shares=Number(h.shares)||0;
+    h.costPerShare=Number(h.costPerShare)||0;
+    h.cost=Number(h.cost)||0;
+    h.mktVal=Number(h.mktVal)||0;
+    h.gain=Number(h.gain)||0;
     if(seen[h.sym]){
-      seen[h.sym].shares+=h.shares;seen[h.sym].mktVal+=h.mktVal;seen[h.sym].cost+=h.cost;
+      seen[h.sym].shares+=h.shares;
+      seen[h.sym].mktVal+=h.mktVal;
+      seen[h.sym].cost+=h.cost;
       seen[h.sym].gain=seen[h.sym].mktVal-seen[h.sym].cost;
     }else{seen[h.sym]=h;deduped.push(h);}
   });
   _holdings=deduped;
-  var total=_holdings.reduce(function(s,h){return s+h.mktVal;},0);
+  var total=_holdings.reduce(function(s,h){return s+(Number(h&&h.mktVal)||0);},0);
   _holdings.forEach(function(h){h.pct=total>0?(h.mktVal/total*100):0;});
 }
 
