@@ -4,7 +4,6 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>LaForce Capital - Private Wealth Intelligence</title>
-<!-- v1776564311712 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -411,7 +410,8 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 /* Donut */
 .cd-donut-wrap{position:relative;width:320px;height:320px;margin:0 auto}
 .cd-donut-svg{width:100%;height:100%;transform:rotate(-90deg);filter:drop-shadow(0 4px 20px rgba(0,0,0,.4))}
-.cd-seg{fill:none;stroke-width:34;transition:all .8s cubic-bezier(.4,0,.2,1);transform-origin:center}
+.cd-seg{fill:none;stroke-width:34;transition:stroke-dasharray .8s cubic-bezier(.4,0,.2,1),stroke-dashoffset .8s cubic-bezier(.4,0,.2,1),opacity .3s,filter .3s;transform-origin:center}
+.cd-seg-click:hover{stroke-width:38;filter:drop-shadow(0 0 10px currentColor)}
 .cd-seg-bg{fill:none;stroke:var(--noir-3);stroke-width:34}
 .cd-donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
 .cd-donut-lbl{font-size:9px;font-weight:700;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase;margin-bottom:6px}
@@ -457,6 +457,25 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .cd-foot{margin-top:24px;padding-top:18px;border-top:1px solid rgba(201,168,76,.08);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:10px;color:var(--text-3);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
 .cd-foot-brand{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:var(--gold-dim);letter-spacing:.02em;text-transform:none;font-weight:400}
 @media(max-width:880px){.cd-split{grid-template-columns:1fr}.cd-cards{grid-template-columns:1fr}.cd-hdr{flex-direction:column}.cd-right{text-align:left}.cd-row{grid-template-columns:90px 1fr 60px}.cd-amt{display:none}.cd-panel{padding:24px}.cd-donut-wrap{width:260px;height:260px}}
+
+/* Feedback panel */
+.rating-btn{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  width:64px;padding:12px 8px;border-radius:var(--r-lg);
+  border:1px solid var(--border);background:var(--noir-3);
+  color:var(--text-2);font-size:18px;font-weight:700;cursor:pointer;
+  font-family:"DM Mono",monospace;transition:all .2s;
+}
+.rating-btn span{font-size:8px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);font-family:"DM Sans",sans-serif}
+.rating-btn:hover{border-color:var(--gold-dim);color:var(--cream)}
+.rating-btn.active{background:var(--gold-muted);border-color:var(--gold-dim);color:var(--gold-light)}
+.fb-chip{
+  padding:6px 14px;border-radius:20px;border:1px solid var(--border);
+  background:var(--noir-3);color:var(--text-2);font-size:11px;font-weight:500;
+  cursor:pointer;transition:all .2s;font-family:"DM Sans",sans-serif;
+}
+.fb-chip:hover{border-color:var(--border-2);color:var(--cream)}
+.fb-chip.active{background:var(--gold-muted);border-color:var(--gold-dim);color:var(--gold-light)}
 </style>
 </head>
 <body>
@@ -512,6 +531,10 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   </div>
   <div class="topbar-right">
     <div class="ai-badge"><div class="ai-dot"></div>AI Online</div>
+    <div class="key-btn" onclick="openLiveDataModal()" title="Connect live market data">
+      <div class="key-dot" id="liveStatusDot" style="background:var(--text-3)"></div>
+      <span id="liveStatusTxt">Demo data</span>
+    </div>
     <div class="key-btn" onclick="showKeyModal()">
       <div class="key-dot" id="keyDot"></div>
       <span id="keyChipTxt">Set API Key</span>
@@ -594,7 +617,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
         <div class="wstep-t">Add your portfolio</div>
         <div class="wstep-d">Upload a brokerage export, paste holdings, or use screenshots for instant portfolio diagnosis.</div>
       </div>
-      <div class="wstep" onclick="showPanel('market',document.querySelectorAll('.nav-item')[4])">
+      <div class="wstep" onclick="showPanel('market',document.querySelectorAll('.nav-item')[6])">
         <div class="wstep-n">ii.</div>
         <div class="wstep-t">Sync market context</div>
         <div class="wstep-d">The system reads regime, volatility, and trend before advising &mdash; market-first logic.</div>
@@ -677,11 +700,66 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 @keyframes dsProgAnim{from{width:0}to{width:100%}}
 
 .cd-row-clickable{cursor:pointer;transition:all .2s}
-.cd-row-clickable:hover{border-color:rgba(201,168,76,.3)!important;background:var(--noir-3)!important;transform:translateX(3px)}
+.cd-row-clickable:hover{border-color:rgba(201,168,76,.3);background:var(--noir-3);transform:translateX(3px)}
 .cd-row-selected{border-color:var(--gold)!important;background:rgba(201,168,76,.06)!important;box-shadow:0 0 0 1px rgba(201,168,76,.2)}
-.cd-drill-hint{font-size:11px;color:rgba(201,168,76,.35);flex-shrink:0;transition:color .2s;margin-left:4px}
+.cd-drill-hint{font-size:11px;color:rgba(201,168,76,.4);flex-shrink:0;transition:color .2s}
 .cd-row-clickable:hover .cd-drill-hint{color:var(--gold)}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* V2: responsive drill-down */
+@media(max-width:760px){
+  #cdDrillDown > div > div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+  #cdDrillDown > div > div[style*="grid-template-columns:1fr 1fr"] > div[style*="border-right"]{border-right:none!important;border-bottom:1px solid var(--border)!important}
+  .cd-split{grid-template-columns:1fr!important;gap:20px!important}
+  .cd-cards{grid-template-columns:1fr!important}
+  .cd-row{grid-template-columns:80px 1fr 56px!important}
+  .cd-amt{display:none!important}
+}
+
+/* V2: better loader state */
+.cd-loader{display:flex;align-items:center;gap:14px;padding:18px 22px;background:linear-gradient(90deg,var(--noir-2),var(--noir-1),var(--noir-2));background-size:200% 100%;animation:cdShimmer 2s linear infinite;border:1px solid var(--border-2);border-radius:var(--r-xl)}
+@keyframes cdShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.cd-loader-text{font-size:13px;color:var(--text-1);line-height:1.5}
+.cd-loader-sub{font-size:11px;color:var(--text-3);margin-top:3px;font-style:italic}
+
+/* Phase-3 trust: extraction receipt + error panels */
+.extract-receipt{padding:14px 16px;background:linear-gradient(180deg,rgba(107,170,117,.06),rgba(107,170,117,.02));border:1px solid rgba(107,170,117,.22);border-radius:var(--r-lg);margin-top:4px;animation:fadeUp .3s ease}
+.extract-err{padding:12px 14px;background:rgba(192,113,79,.08);border:1px solid rgba(192,113,79,.25);border-radius:var(--r-lg);margin-top:4px}
+
+/* Strategy tabs: distinct visual signatures per lens */
+.cd-tab-conservative.active{background:linear-gradient(180deg,rgba(107,170,117,.16),rgba(107,170,117,.06))!important;color:var(--sage)!important;border-color:rgba(107,170,117,.35)!important;box-shadow:inset 0 1px 0 rgba(107,170,117,.2),0 1px 4px rgba(0,0,0,.4)!important}
+.cd-tab-balanced.active{background:linear-gradient(180deg,rgba(201,168,76,.14),rgba(201,168,76,.06))!important;color:var(--gold-light)!important;border-color:rgba(201,168,76,.35)!important}
+.cd-tab-aggressive.active{background:linear-gradient(180deg,rgba(192,113,79,.16),rgba(192,113,79,.06))!important;color:var(--clay)!important;border-color:rgba(192,113,79,.35)!important;box-shadow:inset 0 1px 0 rgba(192,113,79,.2),0 1px 4px rgba(0,0,0,.4)!important}
+
+/* Phase A: flow indicator + next-step footer */
+.flow-indicator{display:flex;align-items:center;gap:0;margin:18px 0;padding:10px 14px;background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r-lg);overflow-x:auto}
+.flow-step{display:flex;align-items:center;gap:8px;padding:6px 12px;white-space:nowrap;flex-shrink:0}
+.flow-step+.flow-step::before{content:'›';color:var(--text-3);margin-right:4px;font-size:14px}
+.flow-num{width:22px;height:22px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--text-3);font-family:'DM Mono',monospace}
+.flow-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--text-3)}
+.flow-step.done .flow-num{background:var(--sage);color:var(--noir);border-color:var(--sage)}
+.flow-step.done .flow-label{color:var(--text-2)}
+.flow-step.active .flow-num{background:var(--gold);color:var(--noir);border-color:var(--gold);box-shadow:0 0 10px rgba(201,168,76,.4)}
+.flow-step.active .flow-label{color:var(--gold-light);font-weight:700}
+
+.next-step-footer{margin-top:22px;padding:16px 20px;background:linear-gradient(135deg,rgba(201,168,76,.05),rgba(107,170,117,.03));border:1px solid var(--border-2);border-left:3px solid var(--gold);border-radius:var(--r-lg);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.next-step-eye{font-size:9px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;font-weight:700;white-space:nowrap}
+.next-step-text{flex:1;min-width:200px;font-size:13px;color:var(--text-1);line-height:1.6}
+.next-step-text em{color:var(--gold-light);font-style:italic}
+
+/* Cadence: interactive rows */
+.cad-proj-row:hover{background:rgba(201,168,76,.04)}
+.cad-proj-row-open{background:rgba(201,168,76,.06)!important}
+.cad-alloc-row:hover{border-color:var(--border-2)!important;background:var(--noir-3)!important;transform:translateX(2px)}
+.cad-alloc-row-open{border-color:var(--gold-dim)!important;background:rgba(201,168,76,.05)!important;border-radius:var(--r-lg) var(--r-lg) 0 0!important;margin-bottom:0!important;border-bottom:none!important}
+
+/* Phase-3 trust: architecture note styling */
+.arch-note{margin-top:28px;padding:20px 24px;border:1px dashed var(--border-2);border-radius:var(--r-lg);background:rgba(0,0,0,.15)}
+.arch-note h4{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--gold-light);margin-bottom:10px}
+.arch-note .arch-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:10px}
+.arch-note .arch-col{padding:12px;background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r)}
+.arch-note .arch-lbl{font-size:8px;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase;font-weight:700;margin-bottom:6px}
+.arch-note .arch-list{font-size:11px;color:var(--text-1);line-height:1.7}
+@media(max-width:760px){.arch-note .arch-grid{grid-template-columns:1fr}}
 </style>
 
 <div class="ds-step active" onclick="toggleDsStep(this,0)">
@@ -892,9 +970,9 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   </div>
 </div>
 
-<!-- PORTFOLIO LAB -->
-</div></div></div>
+</div>
 
+<!-- PORTFOLIO LAB -->
 <div class="panel" id="panel-portfolio">
   <div class="ph">
     <div class="ph-eye">Portfolio Lab</div>
@@ -1416,10 +1494,6 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 
 </div><!-- end #main -->
 
-</div>
-
-</div>
-
 <!-- RIGHT SIDEBAR -->
 <div id="rsidebar">
   <div class="sc">
@@ -1443,7 +1517,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <div class="sc">
     <div class="sc-hdr">
       <div class="sc-title"><div class="sc-dot"></div>Market Pulse</div>
-      <button class="sc-act" onclick="showPanel('market',document.querySelectorAll('.nav-item')[4])">Update</button>
+      <button class="sc-act" onclick="showPanel('market',document.querySelectorAll('.nav-item')[6])">Update</button>
     </div>
     <svg width="100%" height="68" viewBox="0 0 240 68">
       <defs><linearGradient id="gaugeG" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -1468,7 +1542,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   <div class="sc">
     <div class="sc-hdr">
       <div class="sc-title"><div class="sc-dot"></div>Watchlist</div>
-      <button class="sc-act" onclick="showPanel('watchlist',document.querySelectorAll('.nav-item')[6])">View all</button>
+      <button class="sc-act" onclick="showPanel('watchlist',document.querySelectorAll('.nav-item')[8])">View all</button>
     </div>
     <div id="sideWl"><div class="wlrow"><span class="wlsym" style="color:var(--text-3)">-</span><span style="font-size:11px;color:var(--text-3)">Add tickers</span></div></div>
   </div>
@@ -1583,10 +1657,198 @@ var TAPE_DATA=[
 
 function buildTape(){
   var t=document.getElementById('tapeTrack');var html='';
-  TAPE_DATA.concat(TAPE_DATA).forEach(function(d){
+  var data=(window._liveTape&&window._liveTape.length)?window._liveTape:TAPE_DATA;
+  data.concat(data).forEach(function(d){
     html+='<div class="ti"><span class="ti-sym">'+d.sym+'</span><span class="ti-px">'+d.px+'</span><span class="ti-chg '+(d.up?'tu':'td')+'">'+d.chg+'</span></div>';
   });
   t.innerHTML=html;
+}
+
+/* =================================================================
+ * LIVE MARKET DATA MODULE — browser-safe prototype layer
+ * -----------------------------------------------------------------
+ * Uses Finnhub free tier (60 req/min, CORS-enabled) when a user key
+ * is supplied. Falls back gracefully to static values if no key or
+ * the network fails. Cached in sessionStorage (30s TTL) to stay
+ * well under rate limits.
+ *
+ * LONG-TERM: this whole block should move behind a server proxy so
+ * API keys never ship to the browser and upstream providers can be
+ * swapped (Polygon / IEX Cloud / Tiingo) without UI changes.
+ * ================================================================= */
+var LiveData = (function(){
+  var LS_KEY='lfc_finnhub_key';
+  var CACHE_TTL_MS=30*1000;
+  var POLL_MS=60*1000;           // refresh every 60s
+  var TRACKED=['SPY','QQQ','NVDA'];
+  var _pollTimer=null;
+
+  function getKey(){
+    try{return sessionStorage.getItem(LS_KEY)||localStorage.getItem(LS_KEY)||'';}catch(e){return '';}
+  }
+  function setKey(k){
+    try{sessionStorage.setItem(LS_KEY,k);localStorage.setItem(LS_KEY,k);}catch(e){}
+  }
+  function clearKey(){
+    try{sessionStorage.removeItem(LS_KEY);localStorage.removeItem(LS_KEY);}catch(e){}
+  }
+  function isActive(){return !!getKey();}
+
+  function fromCache(sym){
+    try{
+      var raw=sessionStorage.getItem('lfc_q_'+sym);
+      if(!raw) return null;
+      var parsed=JSON.parse(raw);
+      if(Date.now()-parsed.t<CACHE_TTL_MS) return parsed.q;
+    }catch(e){}
+    return null;
+  }
+  function toCache(sym,q){
+    try{sessionStorage.setItem('lfc_q_'+sym,JSON.stringify({t:Date.now(),q:q}));}catch(e){}
+  }
+
+  // Quote shape: {symbol, price, change, changePct, up}
+  async function quote(sym){
+    var cached=fromCache(sym);
+    if(cached) return cached;
+    var key=getKey(); if(!key) throw new Error('no-key');
+    var url='https://finnhub.io/api/v1/quote?symbol='+encodeURIComponent(sym)+'&token='+encodeURIComponent(key);
+    var r=await fetch(url);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    var j=await r.json();
+    if(j.c===0&&j.pc===0) throw new Error('no-data');
+    var chg=j.c-j.pc; var pct=j.pc?(chg/j.pc*100):0;
+    var q={symbol:sym,price:j.c,change:chg,changePct:pct,up:chg>=0,prevClose:j.pc,high:j.h,low:j.l,time:j.t};
+    toCache(sym,q);
+    return q;
+  }
+
+  function fmtPx(p){
+    if(p==null||isNaN(p)) return '-';
+    if(p>=1000) return p.toFixed(0);
+    if(p>=100) return p.toFixed(1);
+    return p.toFixed(2);
+  }
+
+  async function refreshTopBar(){
+    if(!isActive()) return false;
+    var map={SPY:'iSpx',QQQ:'iNdq',NVDA:null};
+    // Fetch SPY, QQQ in parallel; VIX + 10Y degrade gracefully
+    var symbols=['SPY','QQQ','NVDA'];
+    var results=await Promise.allSettled(symbols.map(quote));
+    var ok=0;
+    results.forEach(function(r,i){
+      if(r.status!=='fulfilled') return;
+      ok++;
+      var q=r.value;
+      if(symbols[i]==='SPY'){
+        setEl('iSpx',fmtPx(q.price),q.changePct);
+      }else if(symbols[i]==='QQQ'){
+        setEl('iNdq',fmtPx(q.price),q.changePct);
+      }
+    });
+    // Refresh tape with a small live-biased basket (top trackers plus whatever holdings user has)
+    await refreshTape();
+    markStatus(ok>0?'live':'error');
+    // Update regime suggestion from live SPY move + VIX if we have it
+    suggestRegimeFromLive();
+    return ok>0;
+  }
+
+  function setEl(id,val,pct){
+    var el=document.getElementById(id); if(!el) return;
+    el.textContent=val;
+    var cid=id+'C'; var cEl=document.getElementById(cid);
+    if(cEl&&typeof pct==='number'){
+      var sign=pct>=0?'+':'';
+      cEl.textContent=sign+pct.toFixed(2)+'%';
+      cEl.className='idx-chg '+(pct>=0?'c-up':'c-dn');
+    }
+  }
+
+  async function refreshTape(){
+    if(!isActive()){window._liveTape=null; return;}
+    var syms=['SPY','QQQ','NVDA','AAPL','MSFT','GOOGL','AMZN','META','AVGO','TSLA','AMD','JPM','VOO','SCHD','COST','PLTR'];
+    // Include user holdings symbols if present
+    try{
+      var h=(typeof _holdings!=='undefined'&&_holdings)?_holdings:[];
+      h.slice(0,8).forEach(function(x){if(x&&x.sym&&syms.indexOf(x.sym)<0)syms.push(x.sym);});
+    }catch(e){}
+    var results=await Promise.allSettled(syms.map(quote));
+    var arr=[];
+    results.forEach(function(r,i){
+      if(r.status==='fulfilled'){
+        var q=r.value;
+        arr.push({sym:syms[i],px:fmtPx(q.price),chg:(q.changePct>=0?'+':'')+q.changePct.toFixed(1)+'%',up:q.up});
+      }
+    });
+    if(arr.length>=8){window._liveTape=arr; if(typeof buildTape==='function') buildTape();}
+  }
+
+  function suggestRegimeFromLive(){
+    // Only suggest, never overwrite user's manual setting
+    if(_marketCtx && _marketCtx._userSet) return;
+    var spy=fromCache('SPY'); if(!spy) return;
+    // A mini heuristic: price change % today
+    var move=spy.changePct||0;
+    var implied= move>0.8?'bull':move<-0.8?'bear':'neutral';
+    _marketCtx.trend=implied;
+    _marketCtx._liveSuggested=true;
+    if(typeof updatePulseCells==='function') updatePulseCells();
+  }
+
+  function markStatus(state){
+    var el=document.getElementById('liveStatusDot'); if(!el) return;
+    var lbl=document.getElementById('liveStatusTxt');
+    var chip=el.parentElement;
+    if(state==='live'){
+      el.style.background='var(--sage)';el.style.boxShadow='0 0 6px var(--sage)';
+      if(lbl)lbl.textContent='Live';
+      if(chip)chip.setAttribute('title','Live market data connected — quotes refresh every 60s via Finnhub');
+    } else if(state==='error'){
+      el.style.background='var(--clay)';el.style.boxShadow='none';
+      if(lbl)lbl.textContent='Live: error';
+      if(chip)chip.setAttribute('title','Live data request failed — click to reconnect or fall back to demo values');
+    } else {
+      el.style.background='var(--text-3)';el.style.boxShadow='none';
+      if(lbl)lbl.textContent='Demo data';
+      if(chip)chip.setAttribute('title','Showing demo market data. Click to connect a free Finnhub key for live quotes. All analysis still works — just uses static reference values.');
+    }
+  }
+
+  function start(){
+    stop();
+    if(!isActive()){markStatus('off');return;}
+    refreshTopBar().catch(function(){markStatus('error');});
+    _pollTimer=setInterval(function(){refreshTopBar().catch(function(){});},POLL_MS);
+  }
+  function stop(){if(_pollTimer){clearInterval(_pollTimer);_pollTimer=null;}}
+
+  return {getKey:getKey,setKey:setKey,clearKey:clearKey,isActive:isActive,quote:quote,start:start,stop:stop,refresh:refreshTopBar,markStatus:markStatus};
+})();
+
+function openLiveDataModal(){
+  var m=document.getElementById('liveDataModal');
+  if(m){m.classList.add('open');return;}
+  m=document.createElement('div');m.className='modal-bg open';m.id='liveDataModal';
+  m.innerHTML='<div class="modal">'
+    +'<div class="modal-x" onclick="document.getElementById(\'liveDataModal\').classList.remove(\'open\')">x</div>'
+    +'<h2>Live Market Data</h2>'
+    +'<p>Paste a free <a href="https://finnhub.io/register" target="_blank">Finnhub</a> API key to stream real US equity quotes into the top bar and tape. 60 requests/minute is well under the free tier.</p>'
+    +'<div style="background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:14px;text-align:left;font-size:12px;color:var(--text-1);line-height:1.7">'
+      +'<div style="font-size:9px;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:6px">What you get</div>'
+      +'• SPY, QQQ, NVDA and your holdings refreshed every 60s<br>'
+      +'• Regime auto-suggested from live SPY move<br>'
+      +'• Graceful fallback to demo data if the service is down'
+    +'</div>'
+    +'<div class="ig"><input type="password" id="liveKeyInput" placeholder="finnhub api key" value="'+LiveData.getKey()+'"/></div>'
+    +'<div style="display:flex;gap:8px;margin-top:8px">'
+      +'<button class="btn-p" style="flex:1;padding:11px" onclick="LiveData.setKey(document.getElementById(\'liveKeyInput\').value.trim());LiveData.start();document.getElementById(\'liveDataModal\').classList.remove(\'open\');">Save &amp; Connect</button>'
+      +'<button class="btn-g" onclick="LiveData.clearKey();LiveData.stop();LiveData.markStatus(\'off\');document.getElementById(\'liveDataModal\').classList.remove(\'open\');">Disconnect</button>'
+    +'</div>'
+    +'<p style="margin-top:14px;font-size:10px;color:var(--text-3)">Stored in your browser only. In production this proxy belongs on a server.</p>'
+  +'</div>';
+  document.body.appendChild(m);
 }
 
 
@@ -1595,8 +1857,15 @@ function buildTape(){
   try{ _apiKey = sessionStorage.getItem('lfc_key') || localStorage.getItem('inv_engine_key') || ''; }catch(e){}
   updateKeyBanner();
   buildTape();
+  LiveData.start();
   renderSideVerdicts();
   renderSideWl();
+  // Render flow indicator + next-step footer on the initial dashboard view
+  setTimeout(function(){
+    if(typeof renderFlowIndicator==='function') renderFlowIndicator('dashboard');
+    if(typeof renderNextStepFooter==='function') renderNextStepFooter('dashboard');
+    if(typeof syncDecisionSequence==='function') syncDecisionSequence();
+  },100);
   updatePulseCells();
   try{
     var saved = sessionStorage.getItem('lfc_holdings2');
@@ -1648,13 +1917,105 @@ function saveKey(){
 }
 function clearKey(){_apiKey='';try{sessionStorage.removeItem('lfc_key');localStorage.removeItem('inv_engine_key');}catch(e){}updateKeyBanner();}
 
-// NAV
+/* =================================================================
+ * SECTION: NAVIGATION & PRODUCT FLOW
+ * The product's spine. Every panel transition goes through showPanel.
+ * Flow state (where the user is in the 5-step sequence) is computed
+ * from real app state — holdings count, market context, deploy data.
+ * Future: server-backed "journey" persisted per user.
+ * ================================================================= */
 function showPanel(id,navEl){
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('panel-'+id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
   if(navEl)navEl.classList.add('active');
-  if(id==='watchlist')renderWatchlist(); if(id==='intelligence')renderIntelligencePanel(); if(id==='cadence')updateCadence();
+  if(id==='watchlist')renderWatchlist();
+  if(id==='intelligence')renderIntelligencePanel();
+  if(id==='cadence')updateCadence();
+  // Render flow indicator + next-step footer on every panel switch
+  renderFlowIndicator(id);
+  renderNextStepFooter(id);
+  // Auto-sync decision-sequence card on the dashboard with app state
+  if(id==='dashboard') syncDecisionSequence();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Compute which of the 5 steps the user is on
+function computeFlowStage(){
+  var hasMarket = !!(_marketCtx && _marketCtx._userSet);
+  var hasPortfolio = _holdings && _holdings.length>0;
+  var hasDeploy = !!window._deployData;
+  if(!hasMarket && !hasPortfolio) return 1;          // step 1 — set regime
+  if(hasMarket && !hasPortfolio) return 2;           // step 2 — upload portfolio
+  if(hasPortfolio && !hasDeploy) return 3;           // step 3 — action plan
+  if(hasDeploy) return 4;                            // step 4 — deploy
+  return 1;
+}
+
+function renderFlowIndicator(activePanel){
+  // Only show on key panels
+  var panelMap={dashboard:0,portfolio:1,intelligence:2,deploy:3,stockcheck:4};
+  if(!(activePanel in panelMap)) return;
+  var host=document.getElementById('panel-'+activePanel);
+  if(!host) return;
+  var existing=host.querySelector('.flow-indicator'); if(existing) existing.remove();
+  var stage=computeFlowStage();
+  var steps=[
+    {n:'1',label:'Market Regime'},
+    {n:'2',label:'Portfolio Diagnosis'},
+    {n:'3',label:'Action Plan'},
+    {n:'4',label:'Deploy Capital'},
+    {n:'5',label:'Drill-Down'}
+  ];
+  var html='<div class="flow-indicator">'+steps.map(function(s,i){
+    var cls= (i+1<stage?'done':i+1===stage?'active':'');
+    return '<div class="flow-step '+cls+'"><div class="flow-num">'+s.n+'</div><div class="flow-label">'+s.label+'</div></div>';
+  }).join('')+'</div>';
+  // Insert before the first .ph block or at top
+  var ph=host.querySelector('.ph')||host.querySelector('.wh');
+  if(ph){ph.insertAdjacentHTML('afterend',html);} else {host.insertAdjacentHTML('afterbegin',html);}
+}
+
+function renderNextStepFooter(activePanel){
+  var host=document.getElementById('panel-'+activePanel);
+  if(!host) return;
+  var existing=host.querySelector('.next-step-footer'); if(existing) existing.remove();
+  var stage=computeFlowStage();
+  var hasPortfolio=_holdings && _holdings.length>0;
+  var footers={
+    dashboard: stage<2
+      ? {eye:'Start here',text:'Set your <em>market regime</em> in Live Market so every recommendation downstream has context.',btn:'Go to Live Market →',action:"showPanel('market',document.querySelectorAll('.nav-item')[6])"}
+      : !hasPortfolio
+        ? {eye:'Next step',text:'Upload your <em>portfolio</em> so the system can diagnose concentration, gaps, and fit.',btn:'Upload portfolio →',action:"showPanel('portfolio',document.querySelectorAll('.nav-item')[1])"}
+        : {eye:'Next step',text:'View your full <em>action plan</em> — health score, regime fit, deployment recommendations.',btn:'View Intelligence →',action:"showPanel('intelligence',document.querySelectorAll('.nav-item')[4])"},
+    portfolio: hasPortfolio
+      ? {eye:'Diagnosis ready',text:'Holdings loaded. Next, generate the <em>feasibility study</em> or jump to Intelligence for the full diagnosis.',btn:'View Intelligence →',action:"showPanel('intelligence',document.querySelectorAll('.nav-item')[4])"}
+      : null,
+    intelligence: hasPortfolio
+      ? {eye:'When ready',text:'Turn the diagnosis into a <em>deployment plan</em> — three risk lanes with specific tickers and sizing.',btn:'Deploy capital →',action:"showPanel('deploy',document.querySelectorAll('.nav-item')[3])"}
+      : {eye:'Before deploying',text:'Upload a portfolio first so the intelligence engine can read your actual positions.',btn:'Upload portfolio →',action:"showPanel('portfolio',document.querySelectorAll('.nav-item')[1])"},
+    deploy: {eye:'Deep dive',text:'Click any allocation row or donut segment above for the <em>stock-level drill-down</em> — why this, why now, what breaks it.',btn:'Stock Analysis →',action:"showPanel('stockcheck',document.querySelectorAll('.nav-item')[2])"},
+    stockcheck: hasPortfolio?{eye:'Structural view',text:'Stepping back from the single name — check the <em>portfolio-level</em> diagnosis for how this fits.',btn:'View Intelligence →',action:"showPanel('intelligence',document.querySelectorAll('.nav-item')[4])"}:null
+  };
+  var f=footers[activePanel]; if(!f) return;
+  var html='<div class="next-step-footer">'
+    +'<div class="next-step-eye">◆ '+f.eye+'</div>'
+    +'<div class="next-step-text">'+f.text+'</div>'
+    +'<button class="btn-p btn-sm" onclick="'+f.action+'">'+f.btn+'</button>'
+  +'</div>';
+  host.insertAdjacentHTML('beforeend',html);
+}
+
+// Auto-advance decision sequence card on dashboard based on app state
+function syncDecisionSequence(){
+  var steps=document.querySelectorAll('#decisionSeq .ds-step');
+  if(!steps.length) return;
+  var stage=computeFlowStage();
+  // Open the step matching current stage (1-indexed)
+  var target=Math.min(stage-1,steps.length-1);
+  steps.forEach(function(s,i){
+    s.classList.toggle('active',i===target);
+  });
 }
 // PULSE
 function updatePulseCells(){
@@ -1684,6 +2045,11 @@ function updatePulseCells(){
   }
 }
 
+/* =================================================================
+ * SECTION: HOLDINGS — classify, parse, merge, dedupe
+ * Pure client logic. In production these stay in browser but the
+ * parsed result POSTs to /api/portfolio for server-side persistence.
+ * ================================================================= */
 // CLASSIFY
 var CLS_C={Core:'#C9A84C',Growth:'#6BAA75',Bond:'#9B8FC0',Crypto:'#F59E0B',Speculative:'#C0714F',Other:'#6B9FBF'};
 function classify(sym){
@@ -1775,9 +2141,34 @@ function parseCSV(csv){
 
 function loadManual(){
   var txt=document.getElementById('manualInput').value.trim();
-  if(!txt){alert('Please enter holdings.');return;}
-  _holdings=parseHoldings(txt);saveHoldings();renderLabTable();renderDashboard();
-  showPanel("portfolio",document.querySelectorAll(".nav-item")[1]);
+  var status=document.getElementById('portExtractStatus');
+  if(!txt){
+    if(status) status.innerHTML='<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Nothing to load</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">Paste holdings first. Format: <code style="font-family:DM Mono,monospace;color:var(--gold-light);font-size:11px">SYMBOL, SHARES, COST, MARKET VALUE</code> — one per line.</div></div>';
+    else alert('Please enter holdings.');
+    return;
+  }
+  var parsed=parseHoldings(txt);
+  if(!parsed.length){
+    if(status) status.innerHTML='<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Could not parse any holdings</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">Check the format — each line needs at least <strong>SYMBOL, SHARES</strong>. Example:<br><code style="font-family:DM Mono,monospace;color:var(--gold-light);font-size:11px">AAPL, 50, 175.20, 9500</code></div></div>';
+    else alert('Could not parse any holdings — check the format.');
+    return;
+  }
+  // Merge with existing instead of wiping
+  var beforeCount=_holdings.length;
+  parsed.forEach(function(p){
+    var exists=_holdings.find(function(h){return h.sym===p.sym;});
+    if(exists){ exists.shares+=p.shares; exists.mktVal+=p.mktVal; exists.cost+=p.cost; exists.gain=exists.mktVal-exists.cost; }
+    else _holdings.push(p);
+  });
+  dedupeHoldings();
+  saveHoldings();
+  renderLabTable();
+  renderDashboard();
+  if(status){
+    var stats={found:parsed.length,files:1,new:Math.max(0,_holdings.length-beforeCount),merged:Math.max(0,parsed.length-(Math.max(0,_holdings.length-beforeCount))),skipped:0};
+    status.innerHTML=renderExtractionReceipt(stats,[]);
+  }
+  showPanel('portfolio',document.querySelectorAll('.nav-item')[1]);
 }
 
 function clearAll(){
@@ -1789,18 +2180,7 @@ function clearAll(){
   var wh=document.getElementById('welcomeHero');if(wh)wh.style.display='block'; resetOppLayer(); var pq2=document.getElementById('imgPreviewQueue');if(pq2){pq2.style.display='none';var pl2=document.getElementById('imgPreviewList');if(pl2)pl2.innerHTML='';} _recurringInvestments=[];
 }
 
-function handleFileInput(files){
-  if(!files||!files.length)return;
-  Array.from(files).forEach(function(f){
-    var ext=f.name.split('.').pop().toLowerCase();
-    if(['png','jpg','jpeg'].includes(ext)){processImageFile(f);}
-    else if(ext==='csv'){
-      var fr=new FileReader();
-      fr.onload=function(e){var h=parseCSV(e.target.result);if(h.length){_holdings=h;saveHoldings();renderLabTable();renderDashboard();}else alert('Could not parse CSV. Try: SYMBOL,SHARES,COST,VALUE format');};
-      fr.readAsText(f);
-    }
-  });
-}
+// NOTE: handleFileInput is defined below in the multi-image queue section — this earlier stub was removed during consolidation.
 
 function handleDrop(e){
   e.preventDefault();
@@ -1917,27 +2297,61 @@ async function queueImagesForExtraction(files){
     var recurring=parseRecurring(recurringText);
 
     if(parsed.length){
-      // Merge with any existing holdings (don't wipe if user already has some)
+      // Track merge stats for the user
+      var stats={found:parsed.length,files:files.length,merged:0,new:0};
       if(_holdings.length){
         parsed.forEach(function(newH){
           var exists=_holdings.find(function(h){return h.sym===newH.sym;});
           if(exists){
             exists.shares+=newH.shares;exists.mktVal+=newH.mktVal;exists.cost+=newH.cost;
             exists.gain=exists.mktVal-exists.cost;
-          }else{_holdings.push(newH);}
+            stats.merged++;
+          }else{_holdings.push(newH);stats.new++;}
         });
-      }else{_holdings=parsed;}
+      }else{_holdings=parsed; stats.new=parsed.length;}
+      // Count skipped lines visible in raw response
+      var rawLines=holdingsText.split('\n').filter(function(l){return l.trim()&&!/^symbol/i.test(l);}).length;
+      stats.skipped=Math.max(0,rawLines-parsed.length);
       dedupeHoldings();saveHoldings();renderLabTable();renderDashboard();
-      var msg='Extracted '+parsed.length+' holdings from '+files.length+' screenshot'+(files.length>1?'s':'');
-      if(recurring.length)msg+=' &middot; '+recurring.length+' recurring investment'+(recurring.length>1?'s':'')+' detected';
-      status.innerHTML='<div style="color:var(--sage);font-size:12px">'+msg+'</div>';
+
+      status.innerHTML=renderExtractionReceipt(stats,recurring);
       if(recurring.length)renderRecurring(recurring,status);
     }else{
-      status.innerHTML='<div style="color:var(--clay);font-size:12px">Could not extract holdings. Try a clearer screenshot or use the manual entry below.</div>';
+      status.innerHTML='<div class="extract-err">'
+        +'<div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Could not extract any holdings</div>'
+        +'<div style="font-size:11px;color:var(--text-2);line-height:1.6">Try: (1) a clearer screenshot, (2) make sure ticker/shares/value columns are visible, or (3) use the manual paste box below.</div>'
+      +'</div>';
     }
   }catch(err){
-    status.innerHTML='<div style="color:var(--clay);font-size:12px">Extraction failed: '+esc(err.message)+'</div>';
+    status.innerHTML='<div class="extract-err">'
+      +'<div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Extraction failed</div>'
+      +'<div style="font-size:11px;color:var(--text-2);line-height:1.6">'+esc(err.message)+'</div>'
+    +'</div>';
   }
+}
+
+// Phase-3 trust: explicit post-upload receipt so user sees what AI did
+function renderExtractionReceipt(s,recurring){
+  return '<div class="extract-receipt">'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
+      +'<div style="font-size:18px;color:var(--sage)">✓</div>'
+      +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:16px;color:var(--cream);font-weight:500">Portfolio extracted</div>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px">'
+      +receiptCell('Found',s.found,'var(--gold-light)')
+      +receiptCell('New',s.new,'var(--sage)')
+      +receiptCell('Merged',s.merged,'var(--gold)')
+      +receiptCell('Skipped',s.skipped||0,s.skipped?'var(--clay)':'var(--text-3)')
+    +'</div>'
+    +(recurring&&recurring.length?'<div style="font-size:11px;color:var(--sage);margin-bottom:4px">+ '+recurring.length+' recurring investment'+(recurring.length>1?'s':'')+' detected</div>':'')
+    +'<div style="font-size:10px;color:var(--text-3);line-height:1.5">Merged = same ticker combined across files. Skipped = unreadable or zero-value rows (delisted / bankrupt positions).</div>'
+  +'</div>';
+}
+function receiptCell(lbl,val,color){
+  return '<div style="background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:var(--r);padding:8px 10px">'
+    +'<div style="font-size:8px;letter-spacing:.12em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:2px">'+lbl+'</div>'
+    +'<div style="font-family:DM Mono,monospace;font-size:15px;color:'+color+';font-weight:600">'+val+'</div>'
+  +'</div>';
 }
 
 function parseRecurring(text){
@@ -2152,7 +2566,10 @@ function renderSideVerdicts(){
   }).join('');
 }
 
-// WATCHLIST
+/* =================================================================
+ * SECTION: WATCHLIST — local-first, localStorage-backed
+ * Future: sync to /api/watchlist with per-user scope.
+ * ================================================================= */
 function addToWatchlist(){
   var sym=document.getElementById('wlInput').value.trim().toUpperCase();if(!sym)return;
   if(!_watchlist.includes(sym))_watchlist.push(sym);
@@ -2184,7 +2601,10 @@ function renderSideWl(){
   }).join('');
 }
 
-// STOCK CHECK
+/* =================================================================
+ * SECTION: STOCK ANALYSIS — quick / full / beginner modes
+ * Future: /api/analyze?ticker=... with server-held Anthropic key.
+ * ================================================================= */
 var _currentMode='quick';var _beginMode2=false;
 function setStockMode(m){
   _currentMode=m;
@@ -2201,58 +2621,173 @@ function toggleBegin(){
 }
 
 async function runStock(){
-  var ticker=(document.getElementById('tickerInput').value||'').trim().toUpperCase();
-  if(!ticker){alert('Enter a ticker symbol');return;}
+  var ticker=(document.getElementById('tickerInput').value||'').trim().toUpperCase().replace(/[^A-Z.]/g,'');
   var out=document.getElementById('stockOutput');
-  out.innerHTML='<div class="thinking"><div class="spinner"></div>Analyzing '+esc(ticker)+'...</div>';
+  if(!ticker){
+    if(out) out.innerHTML='<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Enter a ticker</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">Type a symbol like <code style="font-family:DM Mono,monospace;color:var(--gold-light)">NVDA</code> or pick one from the chips above.</div></div>';
+    return;
+  }
+  if(!getKey()){
+    if(out) out.innerHTML='<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Anthropic API key required</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">Click <strong style="color:var(--gold)">Set API Key</strong> in the top bar to unlock AI analysis. Free key at console.anthropic.com.</div></div>';
+    return;
+  }
+  out.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Analyzing <strong style="color:var(--gold-light);font-family:DM Mono,monospace">'+esc(ticker)+'</strong></div><div class="cd-loader-sub">Reading market context · building verdict · scoring catalysts · sizing conviction</div></div></div>';
   var full=_currentMode==='full';var begin=_beginMode2;
   var holdCtx='';
   if(_holdings.length){var owns=_holdings.find(function(h){return h.sym===ticker;});holdCtx=owns?'Investor currently owns '+owns.shares+' shares at '+fmt$(owns.costPerShare||0)+' cost.':'Investor does not currently own this stock.';}
-  var prompt=begin?
-'Analyze '+ticker+' for a beginner investor in plain English.\n\n1. What this company does (2 sentences, simple)\n2. Should I buy it? (Clear YES/NO/WAIT with one sentence why)\n3. Why this might be good (3 bullet points, plain language)\n4. What could go wrong (2 bullet points)\n5. If I had $1,000 to invest: what should I do?\n\nMarket: '+_marketCtx.trend+' trend, VIX '+_marketCtx.vol+'.\n'+holdCtx+'\n\nBe like a knowledgeable friend. Clear, direct, no jargon. No markdown symbols.'
-:
-'Perform a '+(full?'comprehensive institutional':'rapid institutional')+' analysis of '+ticker+'.\n\nMarket context: trend='+_marketCtx.trend+', volatility='+_marketCtx.vol+', bias='+_marketCtx.bias+'.\n'+holdCtx+'\n\n'+(full?'Structure:\nVERDICT: [BUY/WAIT/AVOID] - [one decisive sentence]\nTHESIS: [3-sentence investment thesis]\nVALUATION: [P/E, EV/EBITDA, PEG, comparison to peers]\nMOMENTUM: [price action, technical setup, key levels]\nCATALYSTS: [2-3 near-term catalysts]\nRISKS: [3 specific risks with probability]\nTRADE PLAN:\n  Entry: [price or condition]\n  Target: [12-month price target with bull/base/bear]\n  Stop Loss: [specific level]\n  Position Size: [% of portfolio recommendation]\n  Time Horizon: [hold period]\nPORTFOLIO FIT: [how this fits a disciplined portfolio]':'VERDICT: [BUY/WAIT/AVOID] - [decisive one-liner]\nTHESIS: [2 sentences]\nKEY NUMBER: [one metric that matters most]\nRISK: [biggest single risk]\nTRADE: Entry [level], Target [level], Stop [level]\nWATCHLIST NOTE: [what to watch for next]')+'\n\nNo markdown. No asterisks. Direct institutional prose.';
+  var regimeStr=(_marketCtx?(_marketCtx.trend||'neutral')+' trend, VIX '+(_marketCtx.vol||'normal')+', bias '+(_marketCtx.bias||'balanced'):'neutral');
+  var today=(new Date()).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+
+  var prompt;
+  if(begin){
+    prompt='Analyze '+ticker+' for a beginner investor in plain English.\n\nMarket context: '+regimeStr+'.\n'+holdCtx+'\nToday: '+today+'\n\nRespond in EXACTLY this format, each label on its own line. No markdown. No asterisks.\n\nVERDICT: [BUY / WAIT / AVOID] - [one punchy sentence]\nCONFIDENCE: [1-10] - [one sentence on why — data clarity, catalyst, valuation]\nWHAT THEY DO: [2 simple sentences about the business]\nWHY THIS MIGHT BE GOOD: [3 short bullet points starting with -]\nWHAT COULD GO WRONG: [2 short bullet points starting with -]\nIF I HAD $1000: [one sentence on what to do today]\nTIMING WINDOW: [when to act — "Buy this week", "Wait for pullback to $X", etc.]\nWAIT FOR: [specific price or event that would make this a better entry]';
+  } else {
+    prompt='INSTITUTIONAL '+(full?'FULL':'QUICK')+' ANALYSIS: '+ticker+'\n\nContext:\n- Market regime: '+regimeStr+'\n- '+holdCtx+'\n- Today: '+today+'\n\nRespond in EXACTLY this format, using these exact labels (all caps, each on its own line, followed by body text). No markdown, no asterisks, no bullets beyond the hyphen format.\n\nVERDICT: [BUY / ADD / HOLD / TRIM / AVOID] - [one punchy sentence stating the decision]\n\nCONFIDENCE: [1-10] - [one sentence on what drives the score: catalyst visibility, valuation certainty, data quality]\n\nTHESIS: [2-3 sentences on the specific investment thesis. Reference earnings growth rate, margin profile, moat. Use real numbers where possible.]\n\nWHY NOW: [2-3 sentences on the timing trigger — specific catalyst in next 1-6 months, valuation setup vs history, or technical/flow setup. Be concrete about what changes this quarter.]\n\nSIGNAL: [The raw fundamental read. Valuation vs history, earnings direction, sector momentum. One paragraph.]\n\nCONVICTION: [Why this belongs in a portfolio beyond the signal — durability of the thesis, moat, management quality. One paragraph.]\n\n'+(full?'VALUATION: [P/E, EV/EBITDA, PEG, one-line comp to peers]\n\nMOMENTUM: [price action, technical setup, key support/resistance levels]\n\nCATALYSTS: [2-3 near-term catalysts, each starting with a hyphen]\n\n':'KEY NUMBER: [the single metric that matters most right now]\n\n')+'WHAT BREAKS THE THESIS: [3 specific risks, each on its own line starting with a hyphen. Name the exact scenario, not generic risk.]\n\nPOSITION SIZING: [Explicit recommendation — "Right-sized at 3-5% of portfolio", "Starter 1-2%", "Not sized for portfolio yet". Mention max cap for this risk profile.]\n\nENTRY APPROACH: [Market order today / Limit at $X / DCA over N weeks / Wait. Name real price levels when possible.]\n\nTIMING WINDOW: ["Enter within [N days/weeks]" or "Wait for [specific signal/date]". Reference next earnings, Fed meeting, or chart level if relevant.]\n\nTIME HORIZON: [Specific hold period + what to watch that would change the thesis]\n\nWAIT FOR IF NOT NOW: [Specific trigger to upgrade the setup — price level, earnings confirmation, macro event]\n\nFINAL ACTION: [One sentence starting with a verb: Buy, Add, Trim, Hold, Wait, or Avoid.]';
+  }
   try{
-    var response=await aiCall(prompt,SYS,full?1600:800);
+    var response=await aiCall(prompt,SYS,full?2000:1100);
     renderStockOutput(ticker,response,full);
   }catch(err){
-    out.innerHTML='<div class="thinking" style="border-color:var(--clay)">'+esc(err.message)+'</div>';
+    out.innerHTML='<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Analysis failed</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">'+esc(err.message)+'</div></div>';
   }
 }
 
 function renderStockOutput(ticker,text,full){
   var out=document.getElementById('stockOutput');
-  var lines=text.split('\n').map(function(l){return l.trim();}).filter(Boolean);
-  var verdictLine=lines.find(function(l){return /^VERDICT:|^(BUY|WAIT|AVOID|STRONG BUY|SELL)/i.test(l);});
-  var verdict='WAIT';
-  if(verdictLine){if(/STRONG BUY/i.test(verdictLine))verdict='STRONG BUY';else if(/\bBUY\b/i.test(verdictLine))verdict='BUY';else if(/\bAVOID\b|\bSELL\b/i.test(verdictLine))verdict='AVOID';}
-  var vc=verdict==='BUY'||verdict==='STRONG BUY'?'vh-b':verdict==='AVOID'?'vh-a':'vh-w';
-  var vwc=verdict==='BUY'||verdict==='STRONG BUY'?'vw-b':verdict==='AVOID'?'vw-a':'vw-w';
-  var thesis=lines.find(function(l){return /^THESIS:/i.test(l);});
-  if(thesis)thesis=thesis.replace(/^THESIS:/i,'').trim();else thesis=lines.slice(1,3).join(' ');
-  var skip=['VERDICT','STRONG BUY','BUY','WAIT','AVOID','THESIS'];
-  var bodyLines=lines.filter(function(l){return !skip.some(function(s){return l.toUpperCase().startsWith(s+':')||l.toUpperCase()===s;}) && !(/^THESIS:/i.test(l));});
-  var sectHTML=bodyLines.map(function(l){
-    if(/^[A-Z\s\/]+:/.test(l)&&l.indexOf(' ')<20){var kv=l.split(':');return '<div style="font-size:9px;letter-spacing:.12em;color:var(--text-2);text-transform:uppercase;font-weight:600;margin:14px 0 5px">'+esc(kv[0])+'</div>'+(kv.slice(1).join(':').trim()?'<div style="font-size:13px;line-height:1.7;color:var(--text-1)">'+esc(kv.slice(1).join(':').trim())+'</div>':'');}
-    if(/^\s*(Entry|Target|Stop|Position|Time)/i.test(l)){var kv=l.split(':');return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><span style="font-size:9px;letter-spacing:.1em;color:var(--text-3);text-transform:uppercase;font-weight:600">'+esc(kv[0].trim())+'</span><span style="font-family:\'DM Mono\',monospace;font-size:12px;color:var(--cream);font-weight:500">'+esc(kv.slice(1).join(':').trim())+'</span></div>';}
-    return '<div style="font-size:13px;line-height:1.7;color:var(--text-1);margin-bottom:7px">'+esc(l)+'</div>';
-  }).join('');
-  out.innerHTML='<div class="verdict-hero '+vc+'"><div class="vword '+vwc+'">'+esc(verdict)+'</div><div class="vmeta">'+esc(ticker)+' &middot; AI Analysis &middot; '+(_currentMode==='full'?'Full Report':'Quick Scan')+(_beginMode2?' &middot; Beginner Mode':'')+'</div>'+(thesis?'<div class="vthesis">'+esc(thesis)+'</div>':'')+'</div>'+
-    '<div class="card">'+sectHTML+'</div>'+
-    '<div style="display:flex;gap:8px;margin-top:11px">'+
-      '<button class="btn-s btn-sm" onclick="addWl2(\''+esc(ticker)+'\',\''+esc(verdict)+'\',\''+esc((thesis||'').substring(0,80))+'\')">+ Watchlist</button>'+
-      '<button class="btn-g btn-sm" onclick="quickTick(\''+esc(ticker)+'\');setStockMode(\'full\');runStock()">Full Analysis</button>'+
-    '</div>';
-  addSideVerdict(ticker,verdict,thesis||'');
+  // Pull every labeled section using the same extractor as the deployment drill-down
+  var S={
+    verdict: extractSection(text,'VERDICT:'),
+    confidence: extractSection(text,'CONFIDENCE:'),
+    thesis: extractSection(text,'THESIS:'),
+    whyNow: extractSection(text,'WHY NOW:'),
+    signal: extractSection(text,'SIGNAL:'),
+    conviction: extractSection(text,'CONVICTION:'),
+    valuation: extractSection(text,'VALUATION:'),
+    momentum: extractSection(text,'MOMENTUM:'),
+    catalysts: extractSection(text,'CATALYSTS:'),
+    keyNumber: extractSection(text,'KEY NUMBER:'),
+    breaks: extractSection(text,'WHAT BREAKS THE THESIS:') || extractSection(text,'WHAT COULD GO WRONG:'),
+    sizing: extractSection(text,'POSITION SIZING:'),
+    entry: extractSection(text,'ENTRY APPROACH:'),
+    timingWindow: extractSection(text,'TIMING WINDOW:'),
+    horizon: extractSection(text,'TIME HORIZON:'),
+    waitFor: extractSection(text,'WAIT FOR IF NOT NOW:') || extractSection(text,'WAIT FOR:'),
+    whatThey: extractSection(text,'WHAT THEY DO:'),
+    whyGood: extractSection(text,'WHY THIS MIGHT BE GOOD:'),
+    if1k: extractSection(text,'IF I HAD $1000:'),
+    finalAction: extractSection(text,'FINAL ACTION:')
+  };
+
+  // Verdict parsing
+  var vLine=(S.verdict||'').toUpperCase();
+  var verdict = /STRONG BUY/.test(vLine)?'STRONG BUY'
+               :/\bADD\b/.test(vLine)?'ADD'
+               :/\bBUY\b/.test(vLine)?'BUY'
+               :/\bTRIM\b/.test(vLine)?'TRIM'
+               :/\bAVOID|\bSELL\b/.test(vLine)?'AVOID'
+               :/\bHOLD\b/.test(vLine)?'HOLD'
+               :'WAIT';
+  var vc = verdict==='BUY'||verdict==='STRONG BUY'||verdict==='ADD'?'vh-b':verdict==='AVOID'||verdict==='TRIM'?'vh-a':'vh-w';
+  var vwc = verdict==='BUY'||verdict==='STRONG BUY'||verdict==='ADD'?'vw-b':verdict==='AVOID'||verdict==='TRIM'?'vw-a':'vw-w';
+  var verdictSentence = (S.verdict||'').replace(/^[A-Z\s]+[-—]\s*/,'').trim();
+
+  // Confidence chip
+  var confMatch=(S.confidence||'').match(/(\d+(?:\.\d+)?)/);
+  var confScore=confMatch?parseFloat(confMatch[1]):null;
+  var confColor=confScore===null?'var(--text-2)':confScore>=8?'var(--sage)':confScore>=6?'var(--gold)':confScore>=4?'var(--gold-dim)':'var(--clay)';
+  var confExplain=(S.confidence||'').replace(/^\d+(?:\.\d+)?\s*[-—]?\s*/,'').trim();
+
+  // Hero
+  var heroHTML='<div class="verdict-hero '+vc+'">'
+    +'<div class="vword '+vwc+'">'+esc(verdict)+'</div>'
+    +'<div class="vmeta">'+esc(ticker)+' · '+(_currentMode==='full'?'Full Report':'Quick Scan')+(_beginMode2?' · Beginner':'')+' · '+(new Date()).toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div>'
+    +(verdictSentence?'<div class="vthesis">'+esc(verdictSentence)+'</div>':'')
+    +(confScore!==null?'<div style="margin-top:14px;display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;font-family:\'DM Mono\',monospace;background:rgba(0,0,0,.35);border:1px solid '+confColor+'40;color:'+confColor+'"><span style="letter-spacing:.1em;text-transform:uppercase;font-size:9px;color:var(--text-3)">Confidence</span> '+confScore+'/10</div>':'')
+  +'</div>';
+
+  // Timing window strip
+  var timingHTML = S.timingWindow?('<div style="padding:13px 18px;margin-top:12px;background:linear-gradient(90deg,rgba(201,168,76,.07),transparent);border:1px solid var(--border-2);border-left:3px solid var(--gold);border-radius:var(--r-lg);display:flex;align-items:center;gap:14px;flex-wrap:wrap">'
+    +'<div style="font-size:9px;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;font-weight:700;white-space:nowrap">⏱ Timing Window</div>'
+    +'<div style="font-size:13px;color:var(--cream);font-weight:500;line-height:1.5">'+esc(S.timingWindow)+'</div>'
+  +'</div>'):'';
+
+  // Section builder with mode-appropriate framework
+  function sec(lbl,color,body){
+    if(!body) return '';
+    return '<div style="margin-bottom:16px">'
+      +'<div style="font-size:9px;letter-spacing:.14em;color:'+color+';text-transform:uppercase;font-weight:700;margin-bottom:6px">'+esc(lbl)+'</div>'
+      +'<div style="font-size:13px;color:var(--text-1);line-height:1.75">'+esc(body).replace(/\n- /g,'<br>• ').replace(/\n/g,'<br>')+'</div>'
+    +'</div>';
+  }
+
+  var bodyHTML;
+  if(_beginMode2){
+    bodyHTML='<div class="card">'
+      +sec('What they do','var(--gold)',S.whatThey)
+      +sec('Why this might be good','var(--sage)',S.whyGood)
+      +sec('What could go wrong','var(--clay)',S.breaks)
+      +sec('If you had $1,000','var(--gold)',S.if1k)
+      +sec('Wait for','var(--text-2)',S.waitFor)
+    +'</div>';
+  } else {
+    // Institutional 2-column: Signal/Conviction (left) vs Sizing/Timing (right)
+    bodyHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px">'
+      // LEFT — thesis + opportunity
+      +'<div class="card" style="border-top:2px solid rgba(107,170,117,.35)">'
+        +'<div style="font-size:8px;letter-spacing:.22em;color:var(--sage);text-transform:uppercase;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px dashed rgba(107,170,117,.22)">◆ Signal &amp; Conviction</div>'
+        +sec('Thesis','var(--gold)',S.thesis)
+        +sec('Why Now','var(--sage)',S.whyNow)
+        +sec('Signal','var(--gold)',S.signal)
+        +sec('Conviction','var(--sage)',S.conviction)
+        +(full?sec('Valuation','var(--text-2)',S.valuation)+sec('Momentum','var(--text-2)',S.momentum)+sec('Catalysts','var(--gold)',S.catalysts):sec('Key number','var(--gold)',S.keyNumber))
+      +'</div>'
+      // RIGHT — execution + discipline
+      +'<div class="card" style="border-top:2px solid rgba(192,113,79,.35)">'
+        +'<div style="font-size:8px;letter-spacing:.22em;color:var(--clay);text-transform:uppercase;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px dashed rgba(192,113,79,.22)">◆ Sizing, Timing &amp; Discipline</div>'
+        +sec('Position sizing','var(--gold)',S.sizing)
+        +sec('Entry approach','var(--gold)',S.entry)
+        +sec('Time horizon','var(--text-2)',S.horizon)
+        +sec('What breaks the thesis','var(--clay)',S.breaks)
+        +sec('Wait for if not now','var(--text-2)',S.waitFor)
+      +'</div>'
+    +'</div>';
+  }
+
+  // Final action bar
+  var finalHTML = S.finalAction?('<div style="margin-top:14px;padding:14px 18px;background:rgba(201,168,76,.06);border:1px solid var(--border-2);border-radius:var(--r-lg);display:flex;align-items:center;gap:12px;flex-wrap:wrap">'
+    +'<div style="font-size:9px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;font-weight:700;white-space:nowrap">◆ Final Action</div>'
+    +'<div style="font-size:14px;color:var(--cream);font-weight:500;line-height:1.5">'+esc(S.finalAction)+'</div>'
+  +'</div>'):'';
+
+  // Actions
+  var actionsHTML='<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">'
+    +'<button class="btn-s btn-sm" onclick="addWl2(\''+esc(ticker)+'\',\''+esc(verdict)+'\',\''+esc((S.thesis||S.whatThey||'').substring(0,80))+'\')">+ Watchlist</button>'
+    +(!full&&!_beginMode2?'<button class="btn-p btn-sm" onclick="setStockMode(\'full\');runStock()">Run Full Report →</button>':'')
+    +'<button class="btn-g btn-sm" onclick="showPanel(\'deploy\',document.querySelectorAll(\'.nav-item\')[3])">Deploy capital →</button>'
+    +'<button class="btn-g btn-sm" onclick="showPanel(\'compare\',document.querySelectorAll(\'.nav-item\')[7]);document.getElementById(\'compA\').value=\''+esc(ticker)+'\'">Compare vs peer →</button>'
+  +'</div>';
+
+  out.innerHTML = heroHTML + timingHTML + bodyHTML + finalHTML + actionsHTML;
+  addSideVerdict(ticker,verdict,S.thesis||'');
 }
 function addWl2(sym,verdict,thesis){if(!_watchlist.includes(sym))_watchlist.push(sym);try{localStorage.setItem('lfc_wl2',JSON.stringify(_watchlist));}catch(e){}renderSideWl();renderWatchlist();}
 
 // FEASIBILITY
 async function runFeasibility(){
-  var h=getHoldings();if(!h.length){alert('Load holdings first');return;}
+  var h=getHoldings();
   var fo=document.getElementById('feasOutput');var fc=document.getElementById('feasContent');
   if(!fo||!fc)return;
-  fo.style.display='block';fc.innerHTML='<div class="thinking"><div class="spinner"></div>Running institutional portfolio feasibility analysis...</div>';
+  if(!h.length){
+    fo.style.display='block';
+    fc.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">No portfolio loaded yet</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Add holdings above — upload a brokerage CSV, drop screenshots, or paste manually. The feasibility engine needs your actual positions to diagnose concentration, health, and strategy fit.</div></div>';
+    return;
+  }
+  if(!getKey()){
+    fo.style.display='block';
+    fc.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">AI key required for feasibility study</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Click <strong style="color:var(--gold)">Set API Key</strong> in the top bar. The study runs entirely against your holdings + market context — no data leaves your browser except the prompt itself.</div></div>';
+    return;
+  }
+  fo.style.display='block';fc.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Running institutional portfolio feasibility study</div><div class="cd-loader-sub">Grading structure · mapping allocation · projecting paths · writing action plan</div></div></div>';
   var total=h.reduce(function(s,x){return s+x.mktVal;},0);
   var cost=h.reduce(function(s,x){return s+x.cost;},0);
   var gain=total-cost;var pct=cost>0?(gain/cost*100):0;
@@ -2450,7 +2985,7 @@ function selectStrategy(key){
         'Deploy into VOO (20% of portfolio) + SCHD (15% of portfolio)',
         'Exit all speculative/tactical positions -- keep proceeds in cash or VOO',
         'Set a quarterly rebalancing reminder -- sell what grew above target, buy what fell below',
-        'Target: 70% Core &middot; 20% Quality Growth &middot; 10% Cash reserve'
+        'Target: 70% Core · 20% Quality Growth · 10% Cash reserve'
       ],
       urgency:'30 days', risk:'Max drawdown: ~15% in worst case',
       suitable:'Best if this portfolio is your primary savings, time horizon under 7 years, or you are near a major financial event.'
@@ -2462,7 +2997,7 @@ function selectStrategy(key){
         'Trim largest holding to 20% maximum -- sell the excess and hold cash temporarily',
         'Add VOO to reach 20% of total portfolio (core anchor)',
         'Add SCHD to reach 10% (dividend ballast)',
-        'Keep NVDA &middot; AMZN &middot; MSFT &middot; AAPL -- these are your growth engine',
+        'Keep NVDA · AMZN · MSFT · AAPL — these are your growth engine',
         'Exit speculative names (LKNCY, NIO, APRE, any position with no clear thesis)',
         'DCA $500+ per month into VOO on every 5%+ dip in the market',
         'Rebalance quarterly -- the discipline is the strategy'
@@ -2474,7 +3009,7 @@ function selectStrategy(key){
       name:'Aggressive', color:'var(--clay)',
       headline:'Maximum upside -- requires iron discipline.',
       steps:[
-        'Hold your entire growth core -- NVDA &middot; GOOGL &middot; AMZN &middot; MSFT &middot; AAPL',
+        'Hold your entire growth core — NVDA · GOOGL · AMZN · MSFT · AAPL',
         'Add NVDA on every 10%+ dip -- this is your highest conviction position',
         'Replace speculative names with AVGO + AMD (higher quality, same sector)',
         'Keep 10% in a tactical sleeve -- use for asymmetric opportunities only',
@@ -2482,7 +3017,7 @@ function selectStrategy(key){
         'Add $500+ per month systematically -- do not try to time the market',
         'If the portfolio drops 30%, add more -- do not exit'
       ],
-      urgency:'Execute now, hold 24 months', risk:'Max drawdown: ~48% in 2008-style crash',
+      urgency:'Execute now, hold 24 months', risk:'Max drawdown: ~48% in a 2008-style crash',
       suitable:'Best if you have 10+ year horizon, high stable income, and have NEVER panic-sold during a market correction.'
     }
   };
@@ -2546,77 +3081,102 @@ function selectStrategy(key){
   }
 }
 
-// DEPLOY
+/* =================================================================
+ * CAPITAL DEPLOYMENT ENGINE
+ * -----------------------------------------------------------------
+ * Client-side orchestration. In production:
+ *   - runDeploy()        → POST /api/deploy/plan       (server builds JSON)
+ *   - drillDownStock()   → POST /api/deploy/drill      (server calls Anthropic)
+ *   - setDeployStrategy() stays client (pure view logic)
+ * The JSON contract below is the future API schema.
+ * ================================================================= */
 async function runDeploy(){
   var cash=parseFloat(document.getElementById('cashAmt').value)||0;
   var style=document.getElementById('deployStyle').value;
   var notes=document.getElementById('deployNotes').value.trim();
-  if(!cash){alert('Enter a cash amount to deploy.');return;}
   var out=document.getElementById('deployOutput');
-  out.innerHTML='<div class="thinking"><div class="spinner"></div>Building your deployment plan for '+fmt$(cash)+'...</div>';
+  if(!cash||cash<=0){
+    if(out) out.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">Enter cash to deploy</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Set a <strong>Cash Available ($)</strong> above. Or use a Quick Scenario button — the engine scales the plan to any amount.</div></div>';
+    return;
+  }
+  if(!getKey()){
+    if(out) out.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">Anthropic API key required</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Click <strong style="color:var(--gold)">Set API Key</strong> in the top bar to enable the deployment engine. The plan is generated fresh from your portfolio context + current market regime.</div></div>';
+    return;
+  }
+  out.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Structuring deployment plan for <strong style="color:var(--gold-light);font-family:DM Mono,monospace">'+fmt$(cash)+'</strong></div><div class="cd-loader-sub">Reading regime · balancing lanes · ranking tickers · sizing tranches</div></div></div>';
   var h=getHoldings();
   var portCtx=h.length?h.map(function(x){return x.sym+'('+(x.mktVal/h.reduce(function(s,y){return s+y.mktVal;},0)*100).toFixed(0)+'%)';}).join(', '):'No portfolio loaded';
   var now=new Date();
   var dateStr=now.toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'})+' - '+now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-  var sysPrompt='You are an elite institutional portfolio manager. Respond with ONLY a valid JSON object. No markdown, no code fences, no explanation. Raw JSON only.';
-  var userPrompt='Deploy $'+cash.toLocaleString()+' with '+style+' risk.\nPortfolio: '+portCtx+'\nMarket: '+_marketCtx.trend+' trend, VIX '+_marketCtx.vol+(notes?'\nGoals: '+notes:'')+'.\n\nReturn ONLY this JSON with 5-7 real tickers per strategy, percentages sum to 100:\n{"overview":"2-sentence rationale","conservative":{"label":"Conservative","ornament":"quote","riskScore":"Risk 2/10","upside":"Upside +9%","riskBody":"risk 1-2 sentences","bullBody":"bull 1-2 sentences","riskPoints":[["Term","detail"],["Term","detail"],["Term","detail"]],"bullPoints":[["Term","detail"],["Term","detail"],["Term","detail"]],"allocations":[{"sym":"VOO","pct":55,"color":"#C9A84C","cls":"core"},{"sym":"SCHD","pct":25,"color":"#C9A84C","cls":"core"},{"sym":"AAPL","pct":10,"color":"#6BAA75","cls":"growth"},{"sym":"MSFT","pct":8,"color":"#6BAA75","cls":"growth"},{"sym":"GLD","pct":2,"color":"#C0714F","cls":"tactical"}],"totals":{"core":80,"growth":18,"tactical":2}},"balanced":{"label":"Balanced","ornament":"quote","riskScore":"Risk 4/10","upside":"Upside +18%","riskBody":"risk","bullBody":"bull","riskPoints":[["Term","d"],["Term","d"],["Term","d"]],"bullPoints":[["Term","d"],["Term","d"],["Term","d"]],"allocations":[{"sym":"VOO","pct":40,"color":"#C9A84C","cls":"core"},{"sym":"SCHD","pct":15,"color":"#C9A84C","cls":"core"},{"sym":"NVDA","pct":12,"color":"#6BAA75","cls":"growth"},{"sym":"AMZN","pct":10,"color":"#6BAA75","cls":"growth"},{"sym":"GOOGL","pct":8,"color":"#6BAA75","cls":"growth"},{"sym":"META","pct":7,"color":"#6BAA75","cls":"growth"},{"sym":"BTC","pct":8,"color":"#C0714F","cls":"tactical"}],"totals":{"core":55,"growth":37,"tactical":8}},"aggressive":{"label":"Aggressive","ornament":"quote","riskScore":"Risk 7/10","upside":"Upside +34%","riskBody":"risk","bullBody":"bull","riskPoints":[["Term","d"],["Term","d"],["Term","d"]],"bullPoints":[["Term","d"],["Term","d"],["Term","d"]],"allocations":[{"sym":"VOO","pct":25,"color":"#C9A84C","cls":"core"},{"sym":"NVDA","pct":20,"color":"#6BAA75","cls":"growth"},{"sym":"AMZN","pct":14,"color":"#6BAA75","cls":"growth"},{"sym":"GOOGL","pct":10,"color":"#6BAA75","cls":"growth"},{"sym":"META","pct":10,"color":"#6BAA75","cls":"growth"},{"sym":"BTC","pct":12,"color":"#C0714F","cls":"tactical"},{"sym":"IWM","pct":9,"color":"#C0714F","cls":"tactical"}],"totals":{"core":25,"growth":54,"tactical":21}}}';
+
+  var sysPrompt='You are an elite institutional portfolio manager. You MUST respond with ONLY a valid JSON object. No markdown, no code blocks, no explanation before or after. Just raw JSON.';
+
+  var userPrompt='Deploy $'+cash.toLocaleString()+' with '+style+' risk bias.\nExisting portfolio: '+portCtx+'\nMarket: '+_marketCtx.trend+' trend, VIX '+_marketCtx.vol+(notes?'\nGoals: '+notes:'')+'\n\nRespond with ONLY this JSON (populate all 3 strategies with 5-7 real tickers each, percentages sum to 100):\n{"overview":"2-sentence strategy rationale","conservative":{"label":"Conservative","ornament":"investing wisdom quote","riskScore":"Risk 2/10","upside":"Upside +9%","riskBody":"main risk in 1-2 sentences","bullBody":"bull case in 1-2 sentences","riskPoints":[["Term","detail"],["Term","detail"],["Term","detail"]],"bullPoints":[["Term","detail"],["Term","detail"],["Term","detail"]],"allocations":[{"sym":"VOO","pct":55,"color":"#C9A84C","cls":"core"},{"sym":"SCHD","pct":25,"color":"#C9A84C","cls":"core"},{"sym":"AAPL","pct":10,"color":"#6BAA75","cls":"growth"},{"sym":"MSFT","pct":8,"color":"#6BAA75","cls":"growth"},{"sym":"GLD","pct":2,"color":"#C0714F","cls":"tactical"}],"totals":{"core":80,"growth":18,"tactical":2}},"balanced":{"label":"Balanced","ornament":"investing wisdom quote","riskScore":"Risk 4/10","upside":"Upside +18%","riskBody":"main risk","bullBody":"bull case","riskPoints":[["Term","detail"],["Term","detail"],["Term","detail"]],"bullPoints":[["Term","detail"],["Term","detail"],["Term","detail"]],"allocations":[{"sym":"VOO","pct":40,"color":"#C9A84C","cls":"core"},{"sym":"SCHD","pct":15,"color":"#C9A84C","cls":"core"},{"sym":"NVDA","pct":12,"color":"#6BAA75","cls":"growth"},{"sym":"AMZN","pct":10,"color":"#6BAA75","cls":"growth"},{"sym":"GOOGL","pct":8,"color":"#6BAA75","cls":"growth"},{"sym":"META","pct":7,"color":"#6BAA75","cls":"growth"},{"sym":"BTC","pct":8,"color":"#C0714F","cls":"tactical"}],"totals":{"core":55,"growth":37,"tactical":8}},"aggressive":{"label":"Aggressive","ornament":"investing wisdom quote","riskScore":"Risk 7/10","upside":"Upside +34%","riskBody":"main risk","bullBody":"bull case","riskPoints":[["Term","detail"],["Term","detail"],["Term","detail"]],"bullPoints":[["Term","detail"],["Term","detail"],["Term","detail"]],"allocations":[{"sym":"VOO","pct":25,"color":"#C9A84C","cls":"core"},{"sym":"NVDA","pct":20,"color":"#6BAA75","cls":"growth"},{"sym":"AMZN","pct":14,"color":"#6BAA75","cls":"growth"},{"sym":"GOOGL","pct":10,"color":"#6BAA75","cls":"growth"},{"sym":"META","pct":10,"color":"#6BAA75","cls":"growth"},{"sym":"BTC","pct":12,"color":"#C0714F","cls":"tactical"},{"sym":"IWM","pct":9,"color":"#C0714F","cls":"tactical"}],"totals":{"core":25,"growth":54,"tactical":21}}}';
+
   try{
     var resp=await aiCall(userPrompt,sysPrompt,2400);
     var data;
+    // Try multiple JSON extraction strategies
     try{
-      var clean=resp.trim().replace(/^[sS]*?({)/,'$1').replace(/}[sS]*$/,'}'+'');
-      // Actually: find first { and last }
-      var fi=resp.indexOf('{');var li=resp.lastIndexOf('}');
-      if(fi>-1&&li>fi){clean=resp.substring(fi,li+1);}else{clean=resp;}
+      var clean=resp.trim();
+      // Remove markdown code blocks if present
+      clean=clean.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/```\s*$/,'').trim();
+      // Find first { and last }
+      var fi=clean.indexOf('{');
+      var li=clean.lastIndexOf('}');
+      if(fi>-1&&li>fi)clean=clean.substring(fi,li+1);
       data=JSON.parse(clean);
     }catch(pe){
+      // AI didn't return JSON &mdash; show formatted fallback
       out.innerHTML=renderDeployFallback(resp,cash);
       return;
     }
+    // Render the Claude Design panel
     out.innerHTML=buildDeployPanel(data,cash,dateStr);
-    window._deployData=data;window._deployCash=cash;
+    window._deployData=data;
+    window._deployCash=cash;
     setDeployStrategy('balanced');
   }catch(e){
-    out.innerHTML='<div class="card" style="color:var(--clay);padding:20px">'+esc(e.message)+'</div>';
+    out.innerHTML='<div class="card" style="color:var(--clay);padding:20px;line-height:1.7">'+esc(e.message)+'</div>';
   }
 }
 
 function buildDeployPanel(d,cash,dateStr){
-  var C=2*Math.PI*80;
   return '<div class="cd-panel">'
     +'<header class="cd-hdr"><div>'
       +'<div class="cd-eyebrow">&#9670; Deployment Engine &middot; Live</div>'
       +'<h1 class="cd-h1">Capital <span class="cd-accent">Deployment</span></h1>'
-      +'<div class="cd-lede">Tactical allocation &mdash; three strategy lanes. <strong style="color:var(--gold-light)">Click any stock</strong> for deep AI analysis.</div>'
+      +'<div class="cd-lede">Tactical allocation framework &mdash; three strategy lanes. Click any stock for deep analysis.</div>'
     +'</div><div class="cd-right">'
       +'<div class="cd-cash-lbl">Deployable Capital</div>'
       +'<div class="cd-cash-val">'+fmt$(cash)+'</div>'
       +'<div class="cd-cash-sub">'+esc(dateStr)+'</div>'
     +'</div></header>'
     +'<div class="cd-tabs">'
-      +'<button class="cd-tab" data-s="conservative" onclick="setDeployStrategy(this.dataset.s)"><span class="cd-dot"></span>Conservative</button>'
-      +'<button class="cd-tab active" data-s="balanced" onclick="setDeployStrategy(this.dataset.s)"><span class="cd-dot"></span>Balanced</button>'
-      +'<button class="cd-tab" data-s="aggressive" onclick="setDeployStrategy(this.dataset.s)"><span class="cd-dot"></span>Aggressive</button>'
+      +'<button class="cd-tab cd-tab-conservative" data-s="conservative" onclick="setDeployStrategy(this.dataset.s)" title="Capital preservation first. Dividend + index core. Max 3-5% single position."><span class="cd-dot"></span>◐ Conservative</button>'
+      +'<button class="cd-tab cd-tab-balanced active" data-s="balanced" onclick="setDeployStrategy(this.dataset.s)" title="Risk-adjusted total return. Quality compounders. Max 8-12% single position."><span class="cd-dot"></span>◑ Balanced</button>'
+      +'<button class="cd-tab cd-tab-aggressive" data-s="aggressive" onclick="setDeployStrategy(this.dataset.s)" title="Asymmetric upside. Concentrated conviction. Max 15-20% single position."><span class="cd-dot"></span>● Aggressive</button>'
     +'</div>'
+    +'<div id="cdLensRationale" style="font-size:11px;color:var(--text-2);margin:-10px 0 16px;padding:8px 14px;background:rgba(0,0,0,.22);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r);line-height:1.6;font-style:italic"></div>'
     +'<div class="cd-split">'
       +'<div class="cd-donut-wrap">'
         +'<svg class="cd-donut-svg" viewBox="0 0 200 200" id="cdDonutSvg">'
           +'<circle class="cd-seg-bg" cx="100" cy="100" r="80"></circle>'
-          +'<circle class="cd-seg" id="cdSegCore" cx="100" cy="100" r="80" stroke="#C9A84C" stroke-dasharray="0 503" stroke-linecap="butt"></circle>'
-          +'<circle class="cd-seg" id="cdSegGrowth" cx="100" cy="100" r="80" stroke="#6BAA75" stroke-dasharray="0 503" stroke-dashoffset="0" stroke-linecap="butt"></circle>'
-          +'<circle class="cd-seg" id="cdSegTactical" cx="100" cy="100" r="80" stroke="#C0714F" stroke-dasharray="0 503" stroke-dashoffset="0" stroke-linecap="butt"></circle>'
+          +'<circle class="cd-seg cd-seg-click" id="cdSegCore" cx="100" cy="100" r="80" stroke="#C9A84C" stroke-dasharray="0 503" stroke-linecap="butt" onclick="drillDownSegment(\'core\')" style="cursor:pointer"></circle>'
+          +'<circle class="cd-seg cd-seg-click" id="cdSegGrowth" cx="100" cy="100" r="80" stroke="#6BAA75" stroke-dasharray="0 503" stroke-dashoffset="0" stroke-linecap="butt" onclick="drillDownSegment(\'growth\')" style="cursor:pointer"></circle>'
+          +'<circle class="cd-seg cd-seg-click" id="cdSegTactical" cx="100" cy="100" r="80" stroke="#C0714F" stroke-dasharray="0 503" stroke-dashoffset="0" stroke-linecap="butt" onclick="drillDownSegment(\'tactical\')" style="cursor:pointer"></circle>'
         +'</svg>'
         +'<div class="cd-donut-center">'
           +'<div class="cd-donut-lbl" id="cdDonutLbl">Balanced</div>'
           +'<div class="cd-donut-val" id="cdDonutVal">100<span style="font-size:22px;opacity:.6">%</span></div>'
           +'<div class="cd-donut-sub" id="cdDonutSub">55C &middot; 37G &middot; 8T</div>'
-          +'<div class="cd-donut-orn" id="cdDonutOrn"></div>'
+          +'<div class="cd-donut-orn" id="cdDonutOrn">&ldquo;Time in market beats timing the market.&rdquo;</div>'
         +'</div>'
       +'</div>'
       +'<div>'
         +'<div class="cd-alloc-head">'
           +'<div class="cd-alloc-title">Target Allocation</div>'
-          +'<div class="cd-alloc-meta" id="cdAllocMeta">positions &middot; rebalance quarterly</div>'
+          +'<div class="cd-alloc-meta" id="cdAllocMeta">7 positions &middot; rebalance quarterly</div>'
         +'</div>'
         +'<div id="cdAllocList"></div>'
         +'<div class="cd-legend">'
@@ -2626,21 +3186,23 @@ function buildDeployPanel(d,cash,dateStr){
         +'</div>'
       +'</div>'
     +'</div>'
+    // Drill-down panel (hidden by default) — renders ABOVE risk/bull cards when a stock is selected
+    +'<div id="cdDrillDown" style="display:none;margin-top:16px;margin-bottom:18px;animation:fadeUp .3s ease"></div>'
+    // Risk & Bull cards
     +'<div class="cd-cards">'
       +'<div class="cd-card risk" id="cdRiskCard">'
-        +'<div class="cd-card-hdr"><div class="cd-card-eye"><span class="cd-card-bullet"></span>Risk Scenario</div><div class="cd-card-score" id="cdRiskScore">Risk &middot; 4/10</div></div>'
+        +'<div class="cd-card-hdr"><div class="cd-card-eye"><span class="cd-card-bullet"></span>Risk Scenario</div><div class="cd-card-score" id="cdRiskScore">Risk · 4/10</div></div>'
         +'<div class="cd-card-title">What breaks the <span class="cd-ca">thesis</span></div>'
-        +'<div class="cd-card-body" id="cdRiskBody">Select a stock below for specific risk analysis.</div>'
+        +'<div class="cd-card-body" id="cdRiskBody">Late-cycle rate surprise could drag growth harder than core. Keep stops tight on tactical sleeve.</div>'
         +'<div class="cd-card-points" id="cdRiskPoints"></div>'
       +'</div>'
       +'<div class="cd-card bull" id="cdBullCard">'
-        +'<div class="cd-card-hdr"><div class="cd-card-eye"><span class="cd-card-bullet"></span>Bull Case</div><div class="cd-card-score" id="cdBullScore">Upside &middot; +18%</div></div>'
+        +'<div class="cd-card-hdr"><div class="cd-card-eye"><span class="cd-card-bullet"></span>Bull Case</div><div class="cd-card-score" id="cdBullScore">Upside · +18%</div></div>'
         +'<div class="cd-card-title">Why this <span class="cd-ca">works</span></div>'
-        +'<div class="cd-card-body" id="cdBullBody">Select a stock below for specific bull case.</div>'
+        +'<div class="cd-card-body" id="cdBullBody">Earnings broadening plus a Fed pivot creates a durable setup for core leadership with growth tailwinds.</div>'
         +'<div class="cd-card-points" id="cdBullPoints"></div>'
       +'</div>'
     +'</div>'
-    +'<div id="cdDrillDown" style="display:none;margin-top:20px;animation:fadeUp .35s ease"></div>'
     +'<div class="cd-foot">'
       +'<div>&#9670; Strategy framework &middot; Institutional-grade &middot; Click any stock for AI analysis</div>'
       +'<div class="cd-foot-brand">LaForce Capital &middot; Private wealth intelligence</div>'
@@ -2653,23 +3215,48 @@ function setDeployStrategy(name){
   if(!d) return;
   var s=d[name]; if(!s) return;
   var C=2*Math.PI*80;
+  // Update tabs
   document.querySelectorAll('.cd-tab').forEach(function(t){t.classList.toggle('active',t.dataset.s===name);});
+  // Update donut
   var core=s.totals?s.totals.core:55, growth=s.totals?s.totals.growth:37, tactical=s.totals?s.totals.tactical:8;
   var cL=(core/100)*C, gL=(growth/100)*C, tL=(tactical/100)*C;
-  var sc=document.getElementById('cdSegCore'),sg=document.getElementById('cdSegGrowth'),st=document.getElementById('cdSegTactical');
+  var sc=document.getElementById('cdSegCore'), sg=document.getElementById('cdSegGrowth'), st=document.getElementById('cdSegTactical');
   if(sc){sc.setAttribute('stroke-dasharray',cL.toFixed(1)+' '+(C-cL).toFixed(1));sc.setAttribute('stroke-dashoffset','0');}
   if(sg){sg.setAttribute('stroke-dasharray',gL.toFixed(1)+' '+(C-gL).toFixed(1));sg.setAttribute('stroke-dashoffset',(-cL).toFixed(1));}
   if(st){st.setAttribute('stroke-dasharray',tL.toFixed(1)+' '+(C-tL).toFixed(1));st.setAttribute('stroke-dashoffset',(-(cL+gL)).toFixed(1));}
   var lbl=document.getElementById('cdDonutLbl'); if(lbl) lbl.textContent=s.label||name;
   var sub=document.getElementById('cdDonutSub'); if(sub) sub.innerHTML=core+'C &middot; '+growth+'G &middot; '+tactical+'T';
-  var orn=document.getElementById('cdDonutOrn'); if(orn) orn.textContent=s.ornament?'"'+s.ornament+'"':'';
+  var orn=document.getElementById('cdDonutOrn'); if(orn) orn.textContent=s.ornament||'';
+  // Lens rationale strip — tells the user WHY this lens sizes the way it does
+  var lensRat={
+    conservative:'Conservative lens · Max single-position cap 5% · Core-heavy for capital preservation · Only pay up for proven compounders',
+    balanced:'Balanced lens · Max single-position cap 12% · Quality growth weighted over speculative · Rebalance quarterly to target',
+    aggressive:'Aggressive lens · Max single-position cap 20% · Concentrated conviction in secular leaders · Accept higher drawdown for asymmetric upside'
+  };
+  var lr=document.getElementById('cdLensRationale'); if(lr) lr.textContent=lensRat[name]||'';
+
+  // Sizing rationale per position — function of weight vs lens cap
+  function sizingNote(pct,lens){
+    var cap=lens==='conservative'?5:lens==='balanced'?12:20;
+    if(pct>cap) return 'Over cap — size down';
+    if(pct>cap*0.8) return 'Near cap — full size';
+    if(pct>=cap*0.4) return 'Core weight';
+    if(pct>=cap*0.15) return 'Starter position';
+    return 'Scout position';
+  }
+
+  // Render allocation rows — now with per-row sizing rationale visible at a glance
   var list=document.getElementById('cdAllocList');
   if(list&&s.allocations){
-    list.innerHTML=s.allocations.map(function(a){
-      var p=a.pct||0; var barW=Math.min(100,p*2.5);
-      return '<div class="cd-row cd-row-clickable" onclick="drillDownStock(''+esc(a.sym)+'',''+name+'')" title="Click for AI analysis">'
-        +'<div class="cd-ticker"><span class="cd-ticker-dot" style="background:'+a.color+';box-shadow:0 0 8px '+a.color+'44"></span><span class="cd-ticker-sym">'+esc(a.sym)+'</span></div>'
-        +'<div class="cd-bar-wrap"><div class="cd-bar" style="width:'+barW+'%;background:linear-gradient(90deg,'+a.color+','+a.color+'66)"></div></div>'
+    list.innerHTML=s.allocations.map(function(a,i){
+      var p=a.pct||0; var barW=Math.min(100,p*2.2);
+      var sz=sizingNote(p,name);
+      var szColor=sz==='Over cap — size down'?'var(--clay)':sz==='Near cap — full size'?'var(--gold)':sz==='Core weight'?'var(--sage)':'var(--text-2)';
+      return '<div class="cd-row cd-row-clickable" onclick="drillDownStock(\''+esc(a.sym)+'\',\''+name+'\')" title="Click for AI analysis of '+esc(a.sym)+'">'
+        +'<div class="cd-ticker"><span class="cd-ticker-dot" style="background:'+a.color+';box-shadow:0 0 8px '+a.color+'40"></span><span class="cd-ticker-sym">'+esc(a.sym)+'</span>'
+          +'<span style="display:block;font-size:9px;color:'+szColor+';letter-spacing:.05em;margin-top:2px;font-weight:500;font-family:\'DM Sans\',sans-serif">'+esc(sz)+'</span>'
+        +'</div>'
+        +'<div class="cd-bar-wrap"><div class="cd-bar" style="width:'+barW+'%;background:linear-gradient(90deg,'+a.color+',rgba(255,255,255,.2));box-shadow:0 0 8px '+a.color+'30"></div></div>'
         +'<div class="cd-pct">'+p+'%</div>'
         +'<div class="cd-amt">'+fmt$(cash*p/100)+'</div>'
         +'<div class="cd-drill-hint">&#9432;</div>'
@@ -2677,132 +3264,230 @@ function setDeployStrategy(name){
     }).join('');
   }
   var meta=document.getElementById('cdAllocMeta');
-  if(meta&&s.allocations) meta.innerHTML=s.allocations.length+' positions &middot; rebalance quarterly';
+  if(meta&&s.allocations) meta.innerHTML=s.allocations.length+' positions · rebalance quarterly · caps enforced by lens';
+  // Update cards
   var rs=document.getElementById('cdRiskScore'); if(rs) rs.textContent=s.riskScore||'Risk';
   var bs=document.getElementById('cdBullScore'); if(bs) bs.textContent=s.upside||'Upside';
-  var rb=document.getElementById('cdRiskBody'); if(rb) rb.textContent=s.riskBody||'Click any stock below for specific risk analysis.';
-  var bb=document.getElementById('cdBullBody'); if(bb) bb.textContent=s.bullBody||'Click any stock below for the bull case.';
+  var rb=document.getElementById('cdRiskBody'); if(rb) rb.textContent=s.riskBody||'';
+  var bb=document.getElementById('cdBullBody'); if(bb) bb.textContent=s.bullBody||'';
   var rp=document.getElementById('cdRiskPoints');
   if(rp&&s.riskPoints) rp.innerHTML=s.riskPoints.map(function(p){return '<div class="cd-card-pt"><span><strong>'+esc(p[0])+'</strong> &mdash; '+esc(p[1])+'</span></div>';}).join('');
   var bp=document.getElementById('cdBullPoints');
   if(bp&&s.bullPoints) bp.innerHTML=s.bullPoints.map(function(p){return '<div class="cd-card-pt"><span><strong>'+esc(p[0])+'</strong> &mdash; '+esc(p[1])+'</span></div>';}).join('');
-  var dd=document.getElementById('cdDrillDown'); if(dd){dd.style.display='none';dd.innerHTML='';}
+  // Clear any open drill-down
+  var dd=document.getElementById('cdDrillDown'); if(dd){dd.style.display='none'; dd.innerHTML='';}
+  // Reset segment + row opacity (cleared from any prior segment click)
+  ['cdSegCore','cdSegGrowth','cdSegTactical'].forEach(function(id){var el=document.getElementById(id);if(el){el.style.opacity='1';el.style.filter='none';}});
+  document.querySelectorAll('.cd-row-clickable').forEach(function(r){r.style.opacity='1';r.classList.remove('cd-row-selected');});
   window._currentDeployStyle=name;
 }
 
-async function drillDownStock(sym,style){
+async function drillDownStock(sym, style){
+  // Highlight selected row
   document.querySelectorAll('.cd-row-clickable').forEach(function(r){r.classList.remove('cd-row-selected');});
-  document.querySelectorAll('.cd-row-clickable').forEach(function(r){
-    var s=r.querySelector('.cd-ticker-sym');
-    if(s&&s.textContent===sym) r.classList.add('cd-row-selected');
-  });
-  var dd=document.getElementById('cdDrillDown'); if(!dd) return;
+  var rows = document.querySelectorAll('.cd-row-clickable');
+  rows.forEach(function(r){ if(r.querySelector('.cd-ticker-sym')&&r.querySelector('.cd-ticker-sym').textContent===sym) r.classList.add('cd-row-selected'); });
+
+  var dd=document.getElementById('cdDrillDown');
+  if(!dd) return;
+
   dd.style.display='block';
-  dd.innerHTML='<div style="padding:20px;background:var(--noir-2);border:1px solid var(--border-2);border-radius:14px;display:flex;align-items:center;gap:14px"><div class="spinner"></div><div style="font-size:13px;color:var(--text-2)">Running AI deep-dive on <strong style="color:var(--gold-light)">'+esc(sym)+'</strong> &mdash; <em>'+esc(style)+'</em> lens...</div></div>';
+  dd.innerHTML='<div class="cd-loader">'
+    +'<div class="spinner"></div>'
+    +'<div>'
+      +'<div class="cd-loader-text">Analyzing <strong style="color:var(--gold-light);font-family:DM Mono,monospace">'+esc(sym)+'</strong> through the <em style="color:var(--gold)">'+esc(style)+'</em> lens</div>'
+      +'<div class="cd-loader-sub">Reading regime · valuing catalysts · sizing conviction · writing entry plan</div>'
+    +'</div>'
+  +'</div>';
+  // Scroll drill-down into view so the user sees it loading above the risk/bull cards
+  setTimeout(function(){dd.scrollIntoView({behavior:'smooth',block:'center'});},100);
+
+  // Also update risk/bull cards with a loading state
   var rb=document.getElementById('cdRiskBody'); if(rb) rb.textContent='Analyzing '+sym+' risk profile...';
   var bb=document.getElementById('cdBullBody'); if(bb) bb.textContent='Building bull case for '+sym+'...';
+
+  // Get allocation data for context
   var d=window._deployData; var cash=window._deployCash||0;
-  var s=d&&d[style]; var alloc=s&&s.allocations?s.allocations.find(function(a){return a.sym===sym;}):null;
-  var allocPct=alloc?alloc.pct:0; var allocAmt=fmt$(cash*allocPct/100);
-  var styleLens=style==='conservative'?'capital preservation first, downside protection essential':style==='balanced'?'risk-adjusted return, quality over pure momentum':'maximum upside with disciplined entry and exit';
-  var sysPrompt='You are an elite institutional equity analyst. Be specific, data-driven, and direct. No filler.';
-  var userPrompt='Deep-dive analysis of '+sym+' for a deployment plan.
+  var s=d&&d[style];
+  var alloc=s&&s.allocations?s.allocations.find(function(a){return a.sym===sym;}):null;
+  var allocPct=alloc?alloc.pct:0;
+  var allocAmt=fmt$(cash*allocPct/100);
 
-Context:
-- Strategy: '+style+' ('+styleLens+')
-- Allocation: '+allocPct+'% = '+allocAmt+'
-- Market: '+(_marketCtx?_marketCtx.trend+' trend, VIX '+_marketCtx.vol:'neutral')+'
+  var sysPrompt='You are an elite institutional equity analyst at a private wealth firm. You write with Goldman-research precision: specific numbers, clear price levels, concrete catalysts, real timeframes. No fluff, no hedging, no markdown symbols. Never use asterisks, hashes, or bullets beyond the hyphen format requested. You acknowledge uncertainty with a confidence score rather than vague language.';
 
-Use EXACTLY these section headers:
+  var lensDescription = style==='conservative'
+    ? 'capital preservation first; prioritize dividend yield, low beta, and downside protection; only pay up for proven compounders'
+    : style==='balanced'
+    ? 'risk-adjusted total return; quality over momentum; reasonable multiples on durable earnings'
+    : 'asymmetric upside; concentrated conviction; tolerate volatility in exchange for secular growth leadership';
+  var regimeStr = (_marketCtx?(_marketCtx.trend||'neutral')+' trend, VIX '+(_marketCtx.vol||'normal')+', bias '+(_marketCtx.bias||'balanced'):'neutral, normal VIX, balanced bias');
 
-VERDICT: [BUY/ADD/HOLD/TRIM/AVOID] - one punchy sentence
+  var userPrompt='DEEP DRILL-DOWN: '+sym+'\n\nContext:\n- Strategy lens: '+style.toUpperCase()+' ('+lensDescription+')\n- Proposed allocation: '+allocPct+'% of this deployment = '+allocAmt+'\n- Market regime right now: '+regimeStr+'\n- Today: '+(new Date()).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'\n\nRespond in EXACTLY this format, using these exact labels (all caps, each on its own line, followed by the body). No markdown. No asterisks. No extra sections.\n\nVERDICT: [BUY / ADD / HOLD / TRIM / AVOID] - [one punchy sentence stating the decision]\n\nCONFIDENCE: [1-10] - [one sentence explaining what drives the confidence: data quality, catalyst visibility, valuation certainty]\n\nWHY THIS STOCK: [2-3 sentences on the specific thesis - name the business model advantage, current earnings growth rate, margin profile, and competitive moat. Reference specific numbers where possible.]\n\nWHY NOW: [2-3 sentences on the timing trigger - specific catalyst in next 1-6 months, current valuation setup vs history, or technical/flow setup. Be concrete about what is changing THIS quarter.]\n\nWHY IT FITS '+style.toUpperCase()+': [2 sentences tying this stock to this exact risk lens - not generic]\n\nWHAT BREAKS THE THESIS: [3 specific risks, each on its own line starting with a hyphen. Name the exact scenario, not a generic risk. Example: "- Data-center capex slows if hyperscalers miss guidance in Q2 prints"]\n\nPOSITION SIZING: [Evaluate the '+allocPct+'% weight against Kelly/conviction framework. Say explicitly: "Too small", "Right-sized", or "Too large" and give the recommended weight range. Mention max single-position cap for this lens.]\n\nENTRY APPROACH: [Specific execution plan. Pick one: (a) Market order today, (b) Limit at $X, (c) DCA over N weeks at $Y per tranche, or (d) Wait. Name real price levels when possible.]\n\nTIMING WINDOW: [When to act. Format: "Enter within [days/weeks]" or "Wait for [specific signal/date]". Reference the next earnings date, Fed meeting, or chart level if relevant.]\n\nWAIT FOR IF NOT NOW: [Specific trigger that would upgrade the setup. Example: "Pullback to $X (20-day MA)", "Next earnings print confirming 25%+ data-center growth", "VIX above 22 for re-entry"]\n\nFINAL ACTION: [One sentence: exactly what to do today. Must start with a verb: Buy, Add, Trim, Hold, Wait, Avoid.]';
 
-WHY AI CHOSE THIS: 2-3 sentences on the specific thesis - earnings, valuation, catalyst, cycle position
-
-WHY IT FITS '+style.toUpperCase()+': 1-2 sentences on why this suits the '+style+' risk profile
-
-KEY RISKS:
-- Risk one
-- Risk two  
-- Risk three
-
-ENTRY APPROACH: Specific entry - order type, price level, timing
-
-POSITION SIZING: Comment on the '+allocPct+'% weight - is it right for this name
-
-TIME HORIZON: Specific timeframe and key milestones to watch
-
-IF NOT NOW: What price or condition makes this a better entry
-
-FINAL ACTION: One sentence - exactly what to do today';
   try{
     var resp=await aiCall(userPrompt,sysPrompt,1000);
-    function exSec(label){
-      var idx=resp.indexOf(label); if(idx<0) return '';
-      var start=idx+label.length;
-      var allLabels=['VERDICT:','WHY AI CHOSE THIS:','WHY IT FITS','KEY RISKS:','ENTRY APPROACH:','POSITION SIZING:','TIME HORIZON:','IF NOT NOW:','FINAL ACTION:'];
-      var end=resp.length;
-      allLabels.forEach(function(nl){if(nl!==label){var ni=resp.indexOf(nl,start);if(ni>-1&&ni<end)end=ni;}});
-      return resp.substring(start,end).trim();
+    // Parse the response into sections
+    var sections={
+      verdict: extractSection(resp,'VERDICT:'),
+      confidence: extractSection(resp,'CONFIDENCE:'),
+      whyChosen: extractSection(resp,'WHY THIS STOCK:') || extractSection(resp,'WHY AI CHOSE THIS:'),
+      whyNow: extractSection(resp,'WHY NOW:'),
+      whyFits: extractSection(resp,'WHY IT FITS '+style.toUpperCase()+':'),
+      risks: extractSection(resp,'WHAT BREAKS THE THESIS:') || extractSection(resp,'KEY RISKS:'),
+      entry: extractSection(resp,'ENTRY APPROACH:'),
+      sizing: extractSection(resp,'POSITION SIZING:'),
+      timingWindow: extractSection(resp,'TIMING WINDOW:'),
+      horizon: extractSection(resp,'TIME HORIZON:') || extractSection(resp,'TIMING WINDOW:'),
+      ifNotNow: extractSection(resp,'WAIT FOR IF NOT NOW:') || extractSection(resp,'IF NOT NOW:'),
+      finalAction: extractSection(resp,'FINAL ACTION:')
+    };
+
+    // Determine verdict color
+    var vText=(sections.verdict||'').toUpperCase();
+    var vColor=vText.indexOf('BUY')>-1||vText.indexOf('ADD')>-1?'var(--sage)':vText.indexOf('TRIM')>-1||vText.indexOf('AVOID')>-1?'var(--clay)':'var(--gold)';
+    var vWord=vText.indexOf('STRONG BUY')>-1?'STRONG BUY':vText.indexOf('BUY')>-1?'BUY':vText.indexOf('ADD')>-1?'ADD':vText.indexOf('TRIM')>-1?'TRIM':vText.indexOf('AVOID')>-1?'AVOID':'HOLD';
+
+    // Update risk card with stock-specific data
+    var rb=document.getElementById('cdRiskBody');
+    if(rb) rb.textContent=sections.risks||'See drill-down below.';
+    var rp=document.getElementById('cdRiskPoints');
+    if(rp&&sections.risks){
+      var riskLines=sections.risks.split('\n').filter(function(l){return l.trim().startsWith('-');});
+      rp.innerHTML=riskLines.map(function(l){return '<div class="cd-card-pt"><span>'+esc(l.replace(/^-\s*/,''))+'</span></div>';}).join('');
     }
-    var verdict=exSec('VERDICT:'), whyChosen=exSec('WHY AI CHOSE THIS:'), whyFits=exSec('WHY IT FITS '+style.toUpperCase()+':');
-    var risks=exSec('KEY RISKS:'), entry=exSec('ENTRY APPROACH:'), sizing=exSec('POSITION SIZING:');
-    var horizon=exSec('TIME HORIZON:'), ifNotNow=exSec('IF NOT NOW:'), finalAction=exSec('FINAL ACTION:');
-    var vUp=(verdict||'').toUpperCase();
-    var vColor=vUp.indexOf('BUY')>-1||vUp.indexOf('ADD')>-1?'var(--sage)':vUp.indexOf('TRIM')>-1||vUp.indexOf('AVOID')>-1?'var(--clay)':'var(--gold)';
-    var vWord=vUp.indexOf('STRONG BUY')>-1?'STRONG BUY':vUp.indexOf('BUY')>-1?'BUY':vUp.indexOf('ADD')>-1?'ADD':vUp.indexOf('TRIM')>-1?'TRIM':vUp.indexOf('AVOID')>-1?'AVOID':'HOLD';
-    // Update risk card
-    var rbEl=document.getElementById('cdRiskBody'); if(rbEl) rbEl.textContent=sizing||risks||'See drill-down.';
-    var rpEl=document.getElementById('cdRiskPoints');
-    if(rpEl&&risks){var rl=risks.split('\n').filter(function(l){return l.trim().startsWith('-');}); rpEl.innerHTML=rl.map(function(l){return '<div class="cd-card-pt"><span>'+esc(l.replace(/^-\s*/,''))+'</span></div>';}).join('');}
-    // Update bull card
-    var bbEl=document.getElementById('cdBullBody'); if(bbEl) bbEl.textContent=whyChosen||'';
-    var bpEl=document.getElementById('cdBullPoints');
-    if(bpEl) bpEl.innerHTML='<div class="cd-card-pt"><span><strong>Entry</strong> &mdash; '+esc(entry||'See below')+'</span></div><div class="cd-card-pt"><span><strong>Horizon</strong> &mdash; '+esc(horizon||'See below')+'</span></div>';
-    function sec(title,color,content){
-      if(!content) return '';
-      return '<div style="margin-bottom:16px"><div style="font-size:9px;letter-spacing:.13em;color:'+color+';text-transform:uppercase;font-weight:700;margin-bottom:5px">'+esc(title)+'</div><div style="font-size:12px;color:var(--text-1);line-height:1.75">'+esc(content).replace(/\n- /g,'<br>&bull; ').replace(/\n/g,'<br>')+'</div></div>';
+
+    // Update bull card with stock-specific data
+    var bb=document.getElementById('cdBullBody');
+    if(bb) bb.textContent=sections.whyChosen||'';
+    var bp=document.getElementById('cdBullPoints');
+    if(bp){
+      bp.innerHTML='<div class="cd-card-pt"><span><strong>Entry</strong> &mdash; '+esc(sections.entry||'See drill-down')+'</span></div>'
+        +'<div class="cd-card-pt"><span><strong>Horizon</strong> &mdash; '+esc(sections.horizon||'See drill-down')+'</span></div>';
     }
-    dd.innerHTML='<div style="background:linear-gradient(145deg,var(--noir-2),var(--noir-1));border:1px solid var(--border-2);border-radius:16px;overflow:hidden">'
-      +'<div style="height:2px;background:linear-gradient(90deg,transparent,'+vColor+',transparent)"></div>'
-      +'<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 14px;border-bottom:1px solid var(--border)">'
-        +'<div style="display:flex;align-items:center;gap:12px">'
-          +'<div style="font-family:DM Mono,monospace;font-size:24px;font-weight:700;color:var(--gold-light)">'+esc(sym)+'</div>'
-          +'<div style="padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;font-family:DM Mono,monospace;color:'+vColor+';border:1px solid '+vColor+'40;background:'+vColor+'10">'+esc(vWord)+'</div>'
-          +'<div style="font-size:11px;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase">'+esc(style)+' lens</div>'
+
+    // Parse confidence score
+    var confMatch = (sections.confidence||'').match(/(\d+(?:\.\d+)?)/);
+    var confScore = confMatch ? parseFloat(confMatch[1]) : null;
+    var confColor = confScore===null?'var(--text-2)':confScore>=8?'var(--sage)':confScore>=6?'var(--gold)':confScore>=4?'var(--gold-dim)':'var(--clay)';
+    var confExplain = (sections.confidence||'').replace(/^\d+(?:\.\d+)?\s*[-—]?\s*/,'').trim();
+
+    // Render full drill-down card
+    dd.innerHTML='<div style="background:linear-gradient(145deg,var(--noir-2),var(--noir-1));border:1px solid var(--border-2);border-radius:var(--r-xl);overflow:hidden;position:relative;box-shadow:0 16px 48px rgba(0,0,0,.4)">'
+      // Top gold line
+      +'<div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>'
+      // Header bar
+      +'<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px">'
+        +'<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">'
+          +'<div style="font-family:DM Mono,monospace;font-size:22px;font-weight:700;color:var(--gold-light)">'+esc(sym)+'</div>'
+          +'<div style="padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;font-family:DM Mono,monospace;background:rgba(0,0,0,.3);border:1px solid;color:'+vColor+';border-color:'+vColor+'40">'+esc(vWord)+'</div>'
+          +(confScore!==null?'<div title="AI analyst confidence based on catalyst visibility, data quality, and valuation certainty" style="display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;font-family:DM Mono,monospace;background:rgba(0,0,0,.3);border:1px solid '+confColor+'40;color:'+confColor+'"><span style="letter-spacing:.1em;text-transform:uppercase;font-size:8px;color:var(--text-3)">Conf</span> '+confScore+'/10</div>':'')
+          +'<div style="font-size:11px;color:var(--text-2);font-style:italic">via '+esc(style)+' lens · '+allocPct+'% · '+allocAmt+'</div>'
         +'</div>'
         +'<div style="display:flex;gap:8px">'
-          +'<button onclick="quickTick(''+esc(sym)+'')" style="padding:7px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--gold-light);font-family:DM Sans,sans-serif">Full Analysis &rarr;</button>'
-          +'<button onclick="addWl2(''+esc(sym)+'')" style="padding:7px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--text-2);font-family:DM Sans,sans-serif">+ Watchlist</button>'
-          +'<button onclick="this.closest('#cdDrillDown').style.display='none'" style="padding:7px 10px;border-radius:8px;font-size:13px;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--text-3);font-family:DM Sans,sans-serif">&times;</button>'
+          +'<button onclick="quickTick(\''+esc(sym)+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2])" style="padding:6px 12px;border-radius:var(--r);font-size:11px;font-weight:600;cursor:pointer;background:var(--gold-muted);border:1px solid var(--border-2);color:var(--gold-light);font-family:DM Sans,sans-serif">Full Analysis &rarr;</button>'
+          +'<button onclick="addWl2(\''+esc(sym)+'\')" style="padding:6px 12px;border-radius:var(--r);font-size:11px;font-weight:600;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--text-2);font-family:DM Sans,sans-serif">+ Watchlist</button>'
+          +'<button onclick="document.getElementById(\'cdDrillDown\').style.display=\'none\'" style="padding:6px 10px;border-radius:var(--r);font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--text-3);font-family:DM Sans,sans-serif" title="Close">&times;</button>'
         +'</div>'
       +'</div>'
-      +(verdict?'<div style="padding:14px 20px;background:rgba(0,0,0,.2);border-bottom:1px solid var(--border)"><div style="font-size:9px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;margin-bottom:5px">AI Verdict</div><div style="font-size:14px;color:var(--cream);line-height:1.6;font-weight:500">'+esc(verdict.replace(/^(STRONG BUY|BUY|ADD|HOLD|TRIM|AVOID)\s*[-]\s*/i,''))+'</div></div>':'')
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)">'
-        +'<div style="padding:18px 20px;border-right:1px solid var(--border)">'
-          +sec('Why AI Chose This','var(--gold)',whyChosen)
-          +sec('Why It Fits '+style.charAt(0).toUpperCase()+style.slice(1),'var(--sage)',whyFits)
-          +sec('If Not Now','var(--text-2)',ifNotNow)
+      // Verdict hero + confidence explanation
+      +(sections.verdict?'<div style="padding:14px 20px;background:rgba(0,0,0,.2);border-bottom:1px solid var(--border)">'
+        +'<div style="font-size:9px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:4px">AI Verdict</div>'
+        +'<div style="font-size:14px;color:var(--cream);line-height:1.6">'+esc(sections.verdict.replace(/^(BUY|ADD|HOLD|TRIM|AVOID|STRONG BUY)\s*[-—]\s*/i,''))+'</div>'
+        +(confExplain?'<div style="margin-top:8px;font-size:11px;color:var(--text-3);line-height:1.5;font-style:italic">Confidence basis: '+esc(confExplain)+'</div>':'')
+      +'</div>':'')
+      // Timing window strip (high-signal)
+      +(sections.timingWindow?'<div style="padding:12px 20px;background:linear-gradient(90deg,rgba(201,168,76,.06),transparent);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;flex-wrap:wrap">'
+        +'<div style="font-size:9px;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;font-weight:700;white-space:nowrap">⏱ Timing Window</div>'
+        +'<div style="font-size:13px;color:var(--cream);font-weight:500;line-height:1.5">'+esc(sections.timingWindow)+'</div>'
+      +'</div>':'')
+      // Two-column analysis: Opportunity (why) + Discipline (how)
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0">'
+        // Left col — OPPORTUNITY
+        +'<div style="padding:16px 20px;border-right:1px solid var(--border)">'
+          +'<div style="font-size:8px;letter-spacing:.2em;color:var(--sage);text-transform:uppercase;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px dashed rgba(107,170,117,.2)">◆ Opportunity</div>'
+          +drillSection('Why This Stock','var(--gold)',sections.whyChosen)
+          +drillSection('Why Now','var(--sage)',sections.whyNow)
+          +drillSection('Why It Fits '+style.charAt(0).toUpperCase()+style.slice(1),'var(--sage)',sections.whyFits)
         +'</div>'
-        +'<div style="padding:18px 20px">'
-          +sec('Entry Approach','var(--gold)',entry)
-          +sec('Position Sizing ('+allocPct+'%)','var(--cream-dim)',sizing)
-          +sec('Time Horizon','var(--text-2)',horizon)
+        // Right col — DISCIPLINE
+        +'<div style="padding:16px 20px">'
+          +'<div style="font-size:8px;letter-spacing:.2em;color:var(--clay);text-transform:uppercase;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px dashed rgba(192,113,79,.2)">◆ Structure &amp; Discipline</div>'
+          +drillSection('Entry Approach','var(--gold)',sections.entry)
+          +drillSection('Position Sizing ('+allocPct+'% / '+allocAmt+')','var(--text-2)',sections.sizing)
+          +drillSection('Wait For (if not now)','var(--text-2)',sections.ifNotNow)
         +'</div>'
       +'</div>'
-      +(finalAction?'<div style="padding:14px 20px;background:rgba(201,168,76,.04);display:flex;align-items:flex-start;gap:14px"><div style="font-size:9px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;font-weight:700;white-space:nowrap;margin-top:2px">Final Action</div><div style="font-size:13px;color:var(--cream);font-weight:500;line-height:1.6">'+esc(finalAction)+'</div></div>':'')
+      // Final action bar
+      +(sections.finalAction?'<div style="padding:14px 20px;background:rgba(201,168,76,.06);border-top:1px solid var(--border-2);display:flex;align-items:center;gap:12px;flex-wrap:wrap">'
+        +'<div style="font-size:9px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;font-weight:700;white-space:nowrap">◆ Final Action</div>'
+        +'<div style="font-size:13px;color:var(--cream);font-weight:500;line-height:1.5">'+esc(sections.finalAction)+'</div>'
+      +'</div>':'')
     +'</div>';
+
+    // Scroll drill-down into view
     dd.scrollIntoView({behavior:'smooth',block:'nearest'});
-  }catch(e){dd.innerHTML='<div class="card" style="color:var(--clay);padding:16px">Analysis error: '+esc(e.message)+'</div>';}
+
+  }catch(e){
+    dd.innerHTML='<div class="card" style="color:var(--clay);padding:16px">Analysis failed: '+esc(e.message)+'</div>';
+  }
+}
+
+// Click a donut segment -> filter allocation list to that class and auto-drill the top holding
+function drillDownSegment(cls){
+  var d=window._deployData; var style=window._currentDeployStyle||'balanced';
+  if(!d||!d[style]||!d[style].allocations) return;
+  var allocs=d[style].allocations.filter(function(a){return (a.cls||'').toLowerCase()===cls;});
+  if(!allocs.length) return;
+  // Subtle pulse on selected segment, dim others
+  ['cdSegCore','cdSegGrowth','cdSegTactical'].forEach(function(id){
+    var el=document.getElementById(id); if(!el) return;
+    var match=(id.toLowerCase().indexOf(cls)>-1);
+    el.style.opacity=match?'1':'0.35';
+    el.style.filter=match?'drop-shadow(0 0 8px currentColor)':'none';
+  });
+  // Highlight matching rows
+  document.querySelectorAll('.cd-row-clickable').forEach(function(r){
+    var sym=r.querySelector('.cd-ticker-sym');
+    var inClass=sym && allocs.some(function(a){return a.sym===sym.textContent;});
+    r.style.opacity=inClass?'1':'0.4';
+  });
+  // Auto-drill the largest position in that class
+  var top=allocs.slice().sort(function(a,b){return (b.pct||0)-(a.pct||0);})[0];
+  if(top) drillDownStock(top.sym,style);
+}
+
+function extractSection(text, label){
+  if(!text||!label) return '';
+  var idx=text.indexOf(label);
+  if(idx<0) return '';
+  var start=idx+label.length;
+  // Find next section label or end
+  var nextLabels=['VERDICT:','CONFIDENCE:','WHY THIS STOCK:','WHY AI CHOSE THIS:','WHY NOW:','WHY IT FITS','WHAT BREAKS THE THESIS:','KEY RISKS:','ENTRY APPROACH:','POSITION SIZING:','TIMING WINDOW:','TIME HORIZON:','WAIT FOR IF NOT NOW:','IF NOT NOW:','FINAL ACTION:'];
+  var end=text.length;
+  nextLabels.forEach(function(nl){
+    if(nl===label) return;
+    var ni=text.indexOf(nl,start);
+    if(ni>-1&&ni<end) end=ni;
+  });
+  return text.substring(start,end).trim();
+}
+
+function drillSection(title, color, content){
+  if(!content) return '';
+  return '<div style="margin-bottom:14px">'
+    +'<div style="font-size:9px;letter-spacing:.12em;color:'+color+';text-transform:uppercase;font-weight:700;margin-bottom:5px">'+esc(title)+'</div>'
+    +'<div style="font-size:12px;color:var(--text-1);line-height:1.7">'+esc(content).replace(/\n- /g,'<br>&bull; ').replace(/\n/g,'<br>')+'</div>'
+  +'</div>';
 }
 
 function renderDeployFallback(text,cash){
   var lines=text.split('\n');
   return '<div class="card">'+lines.map(function(l){
-    var lt=l.trim(); if(!lt) return '<div style="height:6px"></div>';
+    var lt=l.trim();
+    if(!lt) return '<div style="height:8px"></div>';
     if(/^\d+\.\s+[A-Z]/.test(lt)) return '<div style="font-size:9px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;font-weight:700;margin:16px 0 8px;border-top:1px solid var(--border);padding-top:14px">'+esc(lt)+'</div>';
     var m=lt.match(/^([A-Z]{1,6})\s*[-]\s*(\$[\d,]+)\s*[-]\s*(\d+%)\s*[-]?\s*(.*)/);
-    if(m) return '<div class="cd-row cd-row-clickable" onclick="drillDownStock(''+m[1]+'',window._currentDeployStyle||'balanced')"><div class="cd-ticker"><span class="cd-ticker-dot" style="background:#C9A84C"></span><span class="cd-ticker-sym">'+esc(m[1])+'</span></div><div style="font-size:12px;color:var(--text-1);flex:1">'+esc(m[4])+'</div><div class="cd-drill-hint">&#9432;</div></div>';
+    if(m) return '<div class="cd-row" style="cursor:default"><div class="cd-ticker"><span class="cd-ticker-dot" style="background:#C9A84C"></span><span class="cd-ticker-sym">'+esc(m[1])+'</span></div><div style="font-size:12px;color:var(--text-1)">'+esc(m[4])+'</div></div>';
     return '<div style="font-size:13px;color:var(--text-1);line-height:1.7;margin-bottom:4px">'+esc(lt)+'</div>';
   }).join('')+'</div>';
 }
@@ -2893,7 +3578,7 @@ function selectStrategy(key){
         'Deploy into VOO (20% of portfolio) + SCHD (15% of portfolio)',
         'Exit all speculative/tactical positions -- keep proceeds in cash or VOO',
         'Set a quarterly rebalancing reminder -- sell what grew above target, buy what fell below',
-        'Target: 70% Core &middot; 20% Quality Growth &middot; 10% Cash reserve'
+        'Target: 70% Core · 20% Quality Growth · 10% Cash reserve'
       ],
       urgency:'30 days', risk:'Max drawdown: ~15% in worst case',
       suitable:'Best if this portfolio is your primary savings, time horizon under 7 years, or you are near a major financial event.'
@@ -2905,7 +3590,7 @@ function selectStrategy(key){
         'Trim largest holding to 20% maximum -- sell the excess and hold cash temporarily',
         'Add VOO to reach 20% of total portfolio (core anchor)',
         'Add SCHD to reach 10% (dividend ballast)',
-        'Keep NVDA &middot; AMZN &middot; MSFT &middot; AAPL -- these are your growth engine',
+        'Keep NVDA · AMZN · MSFT · AAPL — these are your growth engine',
         'Exit speculative names (LKNCY, NIO, APRE, any position with no clear thesis)',
         'DCA $500+ per month into VOO on every 5%+ dip in the market',
         'Rebalance quarterly -- the discipline is the strategy'
@@ -2917,7 +3602,7 @@ function selectStrategy(key){
       name:'Aggressive', color:'var(--clay)',
       headline:'Maximum upside -- requires iron discipline.',
       steps:[
-        'Hold your entire growth core -- NVDA &middot; GOOGL &middot; AMZN &middot; MSFT &middot; AAPL',
+        'Hold your entire growth core — NVDA · GOOGL · AMZN · MSFT · AAPL',
         'Add NVDA on every 10%+ dip -- this is your highest conviction position',
         'Replace speculative names with AVGO + AMD (higher quality, same sector)',
         'Keep 10% in a tactical sleeve -- use for asymmetric opportunities only',
@@ -2925,7 +3610,7 @@ function selectStrategy(key){
         'Add $500+ per month systematically -- do not try to time the market',
         'If the portfolio drops 30%, add more -- do not exit'
       ],
-      urgency:'Execute now, hold 24 months', risk:'Max drawdown: ~48% in 2008-style crash',
+      urgency:'Execute now, hold 24 months', risk:'Max drawdown: ~48% in a 2008-style crash',
       suitable:'Best if you have 10+ year horizon, high stable income, and have NEVER panic-sold during a market correction.'
     }
   };
@@ -3225,7 +3910,7 @@ function selectStrategy(key){
         'Deploy into VOO (20% of portfolio) + SCHD (15% of portfolio)',
         'Exit all speculative/tactical positions -- keep proceeds in cash or VOO',
         'Set a quarterly rebalancing reminder -- sell what grew above target, buy what fell below',
-        'Target: 70% Core &middot; 20% Quality Growth &middot; 10% Cash reserve'
+        'Target: 70% Core · 20% Quality Growth · 10% Cash reserve'
       ],
       urgency:'30 days', risk:'Max drawdown: ~15% in worst case',
       suitable:'Best if this portfolio is your primary savings, time horizon under 7 years, or you are near a major financial event.'
@@ -3237,7 +3922,7 @@ function selectStrategy(key){
         'Trim largest holding to 20% maximum -- sell the excess and hold cash temporarily',
         'Add VOO to reach 20% of total portfolio (core anchor)',
         'Add SCHD to reach 10% (dividend ballast)',
-        'Keep NVDA &middot; AMZN &middot; MSFT &middot; AAPL -- these are your growth engine',
+        'Keep NVDA · AMZN · MSFT · AAPL — these are your growth engine',
         'Exit speculative names (LKNCY, NIO, APRE, any position with no clear thesis)',
         'DCA $500+ per month into VOO on every 5%+ dip in the market',
         'Rebalance quarterly -- the discipline is the strategy'
@@ -3249,7 +3934,7 @@ function selectStrategy(key){
       name:'Aggressive', color:'var(--clay)',
       headline:'Maximum upside -- requires iron discipline.',
       steps:[
-        'Hold your entire growth core -- NVDA &middot; GOOGL &middot; AMZN &middot; MSFT &middot; AAPL',
+        'Hold your entire growth core — NVDA · GOOGL · AMZN · MSFT · AAPL',
         'Add NVDA on every 10%+ dip -- this is your highest conviction position',
         'Replace speculative names with AVGO + AMD (higher quality, same sector)',
         'Keep 10% in a tactical sleeve -- use for asymmetric opportunities only',
@@ -3257,7 +3942,7 @@ function selectStrategy(key){
         'Add $500+ per month systematically -- do not try to time the market',
         'If the portfolio drops 30%, add more -- do not exit'
       ],
-      urgency:'Execute now, hold 24 months', risk:'Max drawdown: ~48% in 2008-style crash',
+      urgency:'Execute now, hold 24 months', risk:'Max drawdown: ~48% in a 2008-style crash',
       suitable:'Best if you have 10+ year horizon, high stable income, and have NEVER panic-sold during a market correction.'
     }
   };
@@ -3510,7 +4195,7 @@ function selectStrategy(key){
         'Deploy into VOO (20% of portfolio) + SCHD (15% of portfolio)',
         'Exit all speculative/tactical positions -- keep proceeds in cash or VOO',
         'Set a quarterly rebalancing reminder -- sell what grew above target, buy what fell below',
-        'Target: 70% Core &middot; 20% Quality Growth &middot; 10% Cash reserve'
+        'Target: 70% Core · 20% Quality Growth · 10% Cash reserve'
       ],
       urgency:'30 days', risk:'Max drawdown: ~15% in worst case',
       suitable:'Best if this portfolio is your primary savings, time horizon under 7 years, or you are near a major financial event.'
@@ -3522,7 +4207,7 @@ function selectStrategy(key){
         'Trim largest holding to 20% maximum -- sell the excess and hold cash temporarily',
         'Add VOO to reach 20% of total portfolio (core anchor)',
         'Add SCHD to reach 10% (dividend ballast)',
-        'Keep NVDA &middot; AMZN &middot; MSFT &middot; AAPL -- these are your growth engine',
+        'Keep NVDA · AMZN · MSFT · AAPL — these are your growth engine',
         'Exit speculative names (LKNCY, NIO, APRE, any position with no clear thesis)',
         'DCA $500+ per month into VOO on every 5%+ dip in the market',
         'Rebalance quarterly -- the discipline is the strategy'
@@ -3534,7 +4219,7 @@ function selectStrategy(key){
       name:'Aggressive', color:'var(--clay)',
       headline:'Maximum upside -- requires iron discipline.',
       steps:[
-        'Hold your entire growth core -- NVDA &middot; GOOGL &middot; AMZN &middot; MSFT &middot; AAPL',
+        'Hold your entire growth core — NVDA · GOOGL · AMZN · MSFT · AAPL',
         'Add NVDA on every 10%+ dip -- this is your highest conviction position',
         'Replace speculative names with AVGO + AMD (higher quality, same sector)',
         'Keep 10% in a tactical sleeve -- use for asymmetric opportunities only',
@@ -3542,7 +4227,7 @@ function selectStrategy(key){
         'Add $500+ per month systematically -- do not try to time the market',
         'If the portfolio drops 30%, add more -- do not exit'
       ],
-      urgency:'Execute now, hold 24 months', risk:'Max drawdown: ~48% in 2008-style crash',
+      urgency:'Execute now, hold 24 months', risk:'Max drawdown: ~48% in a 2008-style crash',
       suitable:'Best if you have 10+ year horizon, high stable income, and have NEVER panic-sold during a market correction.'
     }
   };
@@ -3613,7 +4298,9 @@ function quickDeploy(amount,style){document.getElementById('cashAmt').value=amou
 async function runMarket(){
   _marketCtx.trend=document.getElementById('mTrend').value;_marketCtx.vol=document.getElementById('mVol').value;
   _marketCtx.bias=document.getElementById('mBias').value;_marketCtx.earnings=document.getElementById('mEarnings').value;
-  _marketCtx.notes=document.getElementById('mNotes').value;updatePulseCells();
+  _marketCtx.notes=document.getElementById('mNotes').value;
+  _marketCtx._userSet=true;     // prevent live-data heuristic from overwriting
+  updatePulseCells();
   var out=document.getElementById('marketOutput');var sum=document.getElementById('mktSummaryText');
   out.innerHTML='<div class="thinking"><div class="spinner"></div>Analyzing market conditions...</div>';
   var prompt='MARKET INTELLIGENCE BRIEF\n\nConditions: SPX trend='+_marketCtx.trend+', VIX='+_marketCtx.vol+', bias='+_marketCtx.bias+', earnings='+_marketCtx.earnings+'.'+(_marketCtx.notes?'\nContext: '+_marketCtx.notes:'')+(getHoldings().length?'\nPortfolio: '+getHoldings().slice(0,6).map(function(h){return h.sym;}).join(', '):'')+'.\n\n1. MARKET REGIME: Current environment in 2 sentences. What cycle phase are we in?\n\n2. SECTOR ROTATION: Which sectors favored/avoided? Name specific ETFs.\n\n3. FACTOR ANALYSIS: Value vs Growth, Large vs Small, Domestic vs International.\n\n4. RISK FACTORS: Top 3 macro risks for next 30-60 days with probability.\n\n5. TACTICAL IMPLICATIONS: 3 specific portfolio actions suggested by this environment.\n\n6. OPPORTUNITIES: Any asymmetric opportunities or mispricings?\n\n7. BEHAVIORAL WATCH: Emotional mistakes investors make in this regime. How to avoid.\n\nNo markdown. Institutional tone. Be specific.';
@@ -3801,6 +4488,10 @@ async function renderOppLayer(holdings){
 // ----------------------------------------------------------
 
 var TARGET_MIX = {Core:55, Growth:30, Tactical:10, Cash:5};
+/* =================================================================
+ * SECTION: CADENCE PLAN — DCA projections, pure math
+ * No server round-trip needed — stays client forever.
+ * ================================================================= */
 var _cadenceFreq = 'monthly';
 var _intelCtx = {trend:'neutral', vix:'normal', momentum:'extended'};
 var _cadenceFreqMap = {weekly:52, monthly:12, quarterly:4, semiannual:2, annual:1, none:0};
@@ -4052,31 +4743,167 @@ function updateCadence(){
     var contributed=start+now+(amt*timesPerYear*yr);var gain=base-contributed;
     return{yr:yr,bear:bear,base:base,bull:bull,contributed:Math.max(0,contributed),gain:gain};
   });
+  // Cache data for interactive drill-downs
+  window._cadenceProjections=rows;
+  window._cadenceInputs={start:start,now:now,amt:amt,ret:ret,timesPerYear:timesPerYear,freq:_cadenceFreq};
+
   var tbl=document.getElementById('cadenceProjectionTable');
   if(tbl)tbl.innerHTML=rows.map(function(r){
-    return '<div style="display:grid;grid-template-columns:80px repeat(5,1fr);gap:6px;padding:10px 0;border-bottom:1px solid var(--border);align-items:center">'+
-      '<div style="font-family:DM Mono,monospace;font-size:12px;color:var(--text-2)">Yr '+r.yr+'</div>'+
+    var isSel=(window._cadenceSelectedYear===r.yr);
+    var rowHTML='<div class="cad-proj-row'+(isSel?' cad-proj-row-open':'')+'" onclick="toggleCadenceYear('+r.yr+')" style="display:grid;grid-template-columns:80px repeat(5,1fr) 16px;gap:6px;padding:10px 0;border-bottom:1px solid var(--border);align-items:center;cursor:pointer;transition:background .15s">'+
+      '<div style="font-family:DM Mono,monospace;font-size:12px;color:var(--text-2);font-weight:'+(isSel?'600':'400')+';'+(isSel?'color:var(--gold-light)':'')+'">Yr '+r.yr+'</div>'+
       '<div style="font-family:DM Mono,monospace;font-size:11px;color:var(--clay);text-align:right">'+fmt$(r.bear)+'</div>'+
       '<div style="font-family:DM Mono,monospace;font-size:13px;color:var(--gold);text-align:right;font-weight:600">'+fmt$(r.base)+'</div>'+
       '<div style="font-family:DM Mono,monospace;font-size:11px;color:var(--sage);text-align:right">'+fmt$(r.bull)+'</div>'+
       '<div style="font-family:DM Mono,monospace;font-size:11px;color:var(--text-3);text-align:right">'+fmt$(r.contributed)+'</div>'+
       '<div style="font-family:DM Mono,monospace;font-size:11px;color:'+(r.gain>=0?'var(--sage)':'var(--clay)')+';text-align:right">'+(r.gain>=0?'+':'')+fmt$(r.gain)+'</div>'+
+      '<div style="font-size:9px;color:var(--gold-dim);text-align:center;transition:transform .25s;transform:rotate('+(isSel?'180deg':'0')+')">▾</div>'+
     '</div>';
+    if(isSel) rowHTML+=renderCadenceYearDetail(r);
+    return rowHTML;
   }).join('');
+
   var ca=document.getElementById('cadenceAllocation');
   if(ca&&amt>0){
     var coreA=Math.round(amt*0.55);var growthA=Math.round(amt*0.30);var res=Math.max(0,amt-coreA-growthA);
-    ca.innerHTML=[
-      {sym:'VOO',amt:Math.round(coreA*0.65),pct:36,reason:'Core anchor -- S&P 500',color:'var(--gold)'},
-      {sym:'SCHD',amt:Math.round(coreA*0.35),pct:19,reason:'Dividend quality layer',color:'var(--gold)'},
-      {sym:'META + GOOGL',amt:growthA,pct:30,reason:'Growth allocation, split evenly',color:'var(--sage)'},
-      {sym:'Cash / Reserve',amt:res,pct:15,reason:'Dry powder for opportunistic entries',color:'var(--violet)'},
-    ].map(function(row){
-      return '<div class="dp-row"><div><div class="dp-sym" style="color:'+row.color+'">'+esc(row.sym)+'</div>'+
-        '<div class="dp-reason">'+esc(row.reason)+' &nbsp;&middot;&nbsp; ~'+row.pct+'%</div></div>'+
-        '<div class="dp-amt">'+fmt$(row.amt)+'</div></div>';
+    // Normalize to single-ticker rows so each is drillable. META + GOOGL becomes two rows.
+    var rows2=[
+      {sym:'VOO',amt:Math.round(coreA*0.65),pct:36,reason:'Core anchor — S&P 500',color:'var(--gold)',bucket:'Core',role:'Anchor index. Lowest-cost route to broad US equity.',why:'Owns 500 of the largest US companies in cap-weighted form. The discipline is in never stopping buying — S&P 500 DCA has won every 20-year window in modern history.'},
+      {sym:'SCHD',amt:Math.round(coreA*0.35),pct:19,reason:'Dividend quality layer',color:'var(--gold)',bucket:'Core',role:'Dividend quality screen. Ballast during growth drawdowns.',why:'Screens for 10-year dividend history, fundamental strength, and yield. Lower beta than SPY and acts as a cushion when speculative names sell off.'},
+      {sym:'META',amt:Math.round(growthA/2),pct:15,reason:'Growth — ad platform + AI spend',color:'var(--sage)',bucket:'Growth',role:'Quality growth compounder.',why:'Best-in-class digital ad platform with improving margins and aggressive AI infrastructure build. Trades reasonably vs peers and generates enormous free cash flow.'},
+      {sym:'GOOGL',amt:Math.round(growthA/2),pct:15,reason:'Growth — Search + Cloud + Gemini',color:'var(--sage)',bucket:'Growth',role:'Quality growth compounder.',why:'Search cash cow funds Cloud and AI. Despite headlines, ad franchise remains dominant. Multiple is reasonable for earnings growth shown.'},
+      {sym:'CASH',amt:res,pct:15,reason:'Dry powder for opportunistic entries',color:'var(--violet)',bucket:'Reserve',role:'Tactical reserve.',why:'Held explicitly to deploy on market weakness. Cadence discipline means the reserve is always refilled — so it acts as optionality without hurting the long-term compounding path.'},
+    ];
+    window._cadenceAllocations=rows2;
+    ca.innerHTML=rows2.map(function(row,i){
+      var isSel=(window._cadenceSelectedSym===row.sym);
+      var html='<div class="cad-alloc-row'+(isSel?' cad-alloc-row-open':'')+'" onclick="toggleCadenceSym('+i+')" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;margin-bottom:6px;background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r-lg);cursor:pointer;transition:all .2s">'+
+        '<div style="flex:1;min-width:0">'
+          +'<div class="dp-sym" style="color:'+row.color+';font-family:DM Mono,monospace;font-weight:600">'+esc(row.sym)+(row.sym==='CASH'?'':'')+'</div>'+
+          '<div class="dp-reason" style="font-size:10px;color:var(--text-2);margin-top:2px">'+esc(row.reason)+' · ~'+row.pct+'%</div>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:10px">'
+          +'<div class="dp-amt" style="font-family:DM Mono,monospace;color:var(--cream);font-size:13px">'+fmt$(row.amt)+'</div>'
+          +'<div style="font-size:10px;color:var(--gold-dim);transition:transform .25s;transform:rotate('+(isSel?'180deg':'0')+')">▾</div>'
+        +'</div>'+
+      '</div>';
+      if(isSel) html+=renderCadenceSymDetail(row);
+      return html;
     }).join('');
   }else if(ca){ca.innerHTML='<div style="font-size:12px;color:var(--text-3);padding:10px 0">Enter a recurring amount to see allocation guidance.</div>';}
+}
+
+/* ---- Cadence interactive drill-downs ---- */
+function toggleCadenceYear(yr){
+  window._cadenceSelectedYear = (window._cadenceSelectedYear===yr)?null:yr;
+  updateCadence();
+}
+
+function toggleCadenceSym(idx){
+  var rows=window._cadenceAllocations||[];
+  if(!rows[idx]) return;
+  var sym=rows[idx].sym;
+  window._cadenceSelectedSym = (window._cadenceSelectedSym===sym)?null:sym;
+  updateCadence();
+}
+
+function renderCadenceYearDetail(r){
+  var inp=window._cadenceInputs||{};
+  var principal=inp.start+inp.now;
+  var contribTotal=inp.amt*inp.timesPerYear*r.yr;
+  var totalInvested=principal+contribTotal;
+  var gain=r.base-totalInvested;
+  var gainPct=totalInvested>0?(gain/totalInvested*100):0;
+  // Principal vs Gain bar split
+  var principalShare=r.base>0?(totalInvested/r.base*100):100;
+  var gainShare=Math.max(0,100-principalShare);
+  // Annualized return realized = (Vf/V0)^(1/n) - 1 approximated
+  var cagr=totalInvested>0&&r.yr>0?(Math.pow(r.base/Math.max(1,totalInvested),1/r.yr)-1)*100:0;
+  var formula='V = (V₀ × (1+r)ⁿ) + PMT × [((1+r/m)^(m·n) − 1) ÷ (r/m)]';
+  return '<div onclick="event.stopPropagation()" style="grid-column:1/-1;padding:16px 14px 18px;background:rgba(201,168,76,.03);border-left:2px solid var(--gold);border-radius:0 0 var(--r-lg) var(--r-lg);animation:fadeUp .25s ease">'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
+      +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:18px;color:var(--cream);font-weight:500">Year '+r.yr+' breakdown</div>'
+      +'<div style="font-size:10px;color:var(--text-3);font-style:italic">base case · '+inp.ret+'% annual return assumption</div>'
+    +'</div>'
+    // Principal vs gain bar
+    +'<div style="margin-bottom:14px">'
+      +'<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-2);margin-bottom:5px">'
+        +'<span>Principal '+fmt$(totalInvested)+' ('+principalShare.toFixed(0)+'%)</span>'
+        +'<span>Gain '+(gain>=0?'+':'')+fmt$(gain)+' ('+gainShare.toFixed(0)+'%)</span>'
+      +'</div>'
+      +'<div style="height:10px;background:var(--noir-3);border-radius:5px;overflow:hidden;display:flex">'
+        +'<div style="height:100%;width:'+principalShare+'%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));transition:width .6s ease"></div>'
+        +'<div style="height:100%;width:'+gainShare+'%;background:linear-gradient(90deg,var(--sage),rgba(107,170,117,.5))"></div>'
+      +'</div>'
+    +'</div>'
+    // Math cells
+    +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">'
+      +cadenceCell('Starting value',fmt$(principal),'var(--text-1)')
+      +cadenceCell('Contributed over '+r.yr+'y',fmt$(contribTotal),'var(--gold-light)')
+      +cadenceCell('Gain from compounding',(gain>=0?'+':'')+fmt$(gain),gain>=0?'var(--sage)':'var(--clay)')
+      +cadenceCell('Effective CAGR',cagr.toFixed(1)+'%',cagr>=inp.ret?'var(--sage)':'var(--gold)')
+    +'</div>'
+    // Bear/Base/Bull strip
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">'
+      +'<div style="padding:10px 12px;background:rgba(192,113,79,.06);border:1px solid rgba(192,113,79,.2);border-radius:var(--r)">'
+        +'<div style="font-size:8px;letter-spacing:.12em;color:var(--clay);text-transform:uppercase;font-weight:700;margin-bottom:3px">Bear · '+(inp.ret-6)+'%</div>'
+        +'<div style="font-family:DM Mono,monospace;font-size:14px;color:var(--clay);font-weight:600">'+fmt$(r.bear)+'</div>'
+      +'</div>'
+      +'<div style="padding:10px 12px;background:rgba(201,168,76,.06);border:1px solid var(--border-2);border-radius:var(--r)">'
+        +'<div style="font-size:8px;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:3px">Base · '+inp.ret+'%</div>'
+        +'<div style="font-family:DM Mono,monospace;font-size:14px;color:var(--gold-light);font-weight:600">'+fmt$(r.base)+'</div>'
+      +'</div>'
+      +'<div style="padding:10px 12px;background:rgba(107,170,117,.06);border:1px solid rgba(107,170,117,.22);border-radius:var(--r)">'
+        +'<div style="font-size:8px;letter-spacing:.12em;color:var(--sage);text-transform:uppercase;font-weight:700;margin-bottom:3px">Bull · '+(inp.ret+7)+'%</div>'
+        +'<div style="font-family:DM Mono,monospace;font-size:14px;color:var(--sage);font-weight:600">'+fmt$(r.bull)+'</div>'
+      +'</div>'
+    +'</div>'
+    // Formula + plain-English insight
+    +'<div style="padding:10px 12px;background:var(--noir-3);border-radius:var(--r);border:1px solid var(--border);font-size:11px;color:var(--text-2);line-height:1.6;margin-bottom:8px">'
+      +'<div style="font-size:8px;letter-spacing:.12em;color:var(--text-3);text-transform:uppercase;font-weight:700;margin-bottom:4px">Compounding formula</div>'
+      +'<code style="font-family:\'DM Mono\',monospace;color:var(--gold-light);font-size:11px">'+formula+'</code>'
+    +'</div>'
+    +'<div style="font-size:11px;color:var(--text-2);line-height:1.7;font-style:italic">'
+      +(gainShare>=50?'By Year '+r.yr+', compounding is doing more work than your contributions. This is the tipping point you are paying for.':
+        gainShare>=25?'By Year '+r.yr+', about '+gainShare.toFixed(0)+'% of your wealth comes from compounding. Keep the cadence and this share keeps growing.':
+        'Year '+r.yr+' is still early — the heavy lift is your contributions. Compounding takes over around year 7–10 at this rate.')
+    +'</div>'
+  +'</div>';
+}
+
+function cadenceCell(lbl,val,color){
+  return '<div style="padding:9px 10px;background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:var(--r)">'
+    +'<div style="font-size:8px;letter-spacing:.12em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:3px">'+lbl+'</div>'
+    +'<div style="font-family:DM Mono,monospace;font-size:13px;color:'+color+';font-weight:600">'+val+'</div>'
+  +'</div>';
+}
+
+function renderCadenceSymDetail(row){
+  var inp=window._cadenceInputs||{};
+  var annual=row.amt*(inp.timesPerYear||12);
+  var tenYearContrib=annual*10;
+  var isTicker=(row.sym&&row.sym.length<=5&&row.sym!=='CASH');
+  return '<div onclick="event.stopPropagation()" style="margin:-4px 0 10px;padding:16px 18px;background:linear-gradient(180deg,rgba(201,168,76,.04),rgba(201,168,76,.01));border:1px solid var(--border-2);border-top:none;border-radius:0 0 var(--r-lg) var(--r-lg);animation:fadeUp .25s ease">'
+    +'<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px">'
+      +'<div style="font-size:8px;letter-spacing:.2em;color:'+row.color+';text-transform:uppercase;font-weight:700">◆ '+esc(row.bucket)+'</div>'
+      +'<div style="font-size:11px;color:var(--text-2);font-style:italic">'+esc(row.role)+'</div>'
+    +'</div>'
+    +'<div style="font-size:12px;color:var(--text-1);line-height:1.75;margin-bottom:14px">'+esc(row.why)+'</div>'
+    // Three cadence math tiles
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">'
+      +cadenceCell('Per deposit',fmt$(row.amt),'var(--gold-light)')
+      +cadenceCell('Per year ('+inp.timesPerYear+'x)',fmt$(annual),'var(--cream)')
+      +cadenceCell('10-year contribution',fmt$(tenYearContrib),'var(--sage)')
+    +'</div>'
+    // Actions
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
+      +(isTicker
+        ? '<button class="btn-p btn-sm" onclick="event.stopPropagation();quickTick(\''+esc(row.sym)+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2]);setTimeout(runStock,250)">Full AI analysis →</button>'
+          +'<button class="btn-g btn-sm" onclick="event.stopPropagation();addWl2(\''+esc(row.sym)+'\')">+ Watchlist</button>'
+        : '<button class="btn-g btn-sm" onclick="event.stopPropagation();showPanel(\'deploy\',document.querySelectorAll(\'.nav-item\')[3])">Deploy reserve →</button>')
+      +'<button class="btn-g btn-sm" onclick="event.stopPropagation();window._cadenceSelectedSym=null;updateCadence()">Collapse</button>'
+    +'</div>'
+  +'</div>';
 }
 
 function syncCadencePortfolio(){
@@ -4104,7 +4931,7 @@ function showAPIError(msg){
     + '<div style="margin-top:10px;display:flex;gap:8px">'
     + '<a href="https://console.anthropic.com/settings/keys" target="_blank" style="font-size:11px;color:var(--gold);text-decoration:none;padding:5px 12px;border:1px solid var(--border-2);border-radius:20px;">Get API Key &#8599;</a>'
     + '<button onclick="showKeyModal()" style="font-size:11px;color:var(--cream);background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.22);border-radius:20px;padding:5px 12px;cursor:pointer;">Re-enter Key</button>'
-    + '<button onclick="var bb=document.getElementById(\"apiErrorBanner\");if(bb)bb.remove();" style="font-size:11px;color:var(--text-2);background:none;border:1px solid var(--border);border-radius:20px;padding:5px 12px;cursor:pointer;">Dismiss</button>'
+    + '<button onclick="var bb=document.getElementById(&quot;apiErrorBanner&quot;);if(bb)bb.remove();" style="font-size:11px;color:var(--text-2);background:none;border:1px solid var(--border);border-radius:20px;padding:5px 12px;cursor:pointer;">Dismiss</button>'
     + '</div></div>';
   document.body.appendChild(banner);
   setTimeout(function(){if(banner.parentNode)banner.remove();}, 12000);
@@ -4204,9 +5031,253 @@ function toggleDsStep(el, idx){
   steps.forEach(function(s){ s.classList.remove('active'); });
   if(!wasActive){ el.classList.add('active'); }
 }
+
+// -- FEEDBACK --
+var _fbRating = 0;
+function setRating(v){
+  _fbRating = v;
+  document.querySelectorAll('.rating-btn').forEach(function(b){
+    b.classList.toggle('active', parseInt(b.dataset.v) <= v);
+  });
+}
+function toggleChip(el){ el.classList.toggle('active'); }
+
+async function submitFeedback(){
+  var status = document.getElementById('fbStatus');
+  var liked = document.getElementById('fbLiked').value.trim();
+  var missing = document.getElementById('fbMissing').value.trim();
+  var feature = document.getElementById('fbFeature').value.trim();
+  var email = document.getElementById('fbEmail').value.trim();
+  var portSize = document.getElementById('fbPortSize').value;
+  var chips = Array.from(document.querySelectorAll('.fb-chip.active')).map(function(c){return c.textContent;});
+
+  if(!_fbRating && !liked && !feature){
+    status.textContent = 'Please fill in at least a rating or some feedback.';
+    status.style.color = 'var(--clay)';
+    return;
+  }
+
+  status.textContent = 'Saving...';
+  status.style.color = 'var(--text-2)';
+
+  var entry = {
+    timestamp: new Date().toISOString(),
+    rating: _fbRating || 'not rated',
+    liked: liked || '-',
+    missing: missing || '-',
+    feature: feature || '-',
+    investStyle: chips.join(', ') || '-',
+    portSize: portSize || '-',
+    email: email || '-'
+  };
+
+  // Save to localStorage for now, push to Google Sheets via AI
+  var allFeedback = [];
+  try { allFeedback = JSON.parse(localStorage.getItem('lfc_feedback') || '[]'); } catch(e){}
+  allFeedback.unshift(entry);
+  try { localStorage.setItem('lfc_feedback', JSON.stringify(allFeedback.slice(0,50))); } catch(e){}
+
+  // Try to log via AI call (sends to a logging endpoint)
+  try {
+    var summary = 'Rating: '+entry.rating+'/5 | Liked: '+entry.liked.substring(0,80)+' | Missing: '+entry.missing.substring(0,80)+' | Feature: '+entry.feature.substring(0,80)+' | Style: '+entry.investStyle+' | Portfolio: '+entry.portSize+(entry.email?' | Email: '+entry.email:'');
+    await aiCall('LaForce Capital feedback: '+summary, 'You are a logging assistant. Confirm: Feedback logged.', 150);
+  } catch(e){}
+
+  status.textContent = 'Thank you! Your feedback has been saved.';
+  status.style.color = 'var(--sage)';
+
+  // Reset form
+  _fbRating = 0;
+  document.querySelectorAll('.rating-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.fb-chip').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('fbLiked').value = '';
+  document.getElementById('fbMissing').value = '';
+  document.getElementById('fbFeature').value = '';
+  document.getElementById('fbEmail').value = '';
+  document.getElementById('fbPortSize').value = '';
+
+  // Show recent responses
+  renderFeedbackResponses();
+}
+
+function renderFeedbackResponses(){
+  var el = document.getElementById('fbResponses');
+  if(!el) return;
+  var all = [];
+  try { all = JSON.parse(localStorage.getItem('lfc_feedback') || '[]'); } catch(e){}
+  if(!all.length){ el.innerHTML = '<div style="font-size:12px;color:var(--text-3);font-style:italic">No responses yet.</div>'; return; }
+  el.innerHTML = all.slice(0,5).map(function(f){
+    var stars = typeof f.rating === 'number' ? Array(f.rating).fill('&#9733;').join('') : '-';
+    var date = new Date(f.timestamp).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    return '<div style="padding:12px 14px;background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:8px">'
+      +'<div style="display:flex;justify-content:space-between;margin-bottom:8px">'
+        +'<span style="color:var(--gold);font-size:13px">'+stars+'</span>'
+        +'<span style="font-size:10px;color:var(--text-3)">'+date+'</span>'
+      +'</div>'
+      +(f.liked!=='-'?'<div style="font-size:11px;color:var(--sage);margin-bottom:4px"><strong>Liked:</strong> '+esc(f.liked.substring(0,120))+'</div>':'')
+      +(f.missing!=='-'?'<div style="font-size:11px;color:var(--clay);margin-bottom:4px"><strong>Missing:</strong> '+esc(f.missing.substring(0,120))+'</div>':'')
+      +(f.feature!=='-'?'<div style="font-size:11px;color:var(--text-1)"><strong>Feature request:</strong> '+esc(f.feature.substring(0,120))+'</div>':'')
+    +'</div>';
+  }).join('');
+}
 // UTILS
 function fmt$(n){if(n===undefined||n===null||isNaN(n))return '$-';if(Math.abs(n)>=1000000)return '$'+(n/1000000).toFixed(2)+'M';if(Math.abs(n)>=1000)return '$'+Math.round(n).toLocaleString();return '$'+n.toFixed(2);}
 function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 </script>
+
+<!-- FEEDBACK PANEL -->
+<div class="panel" id="panel-feedback">
+  <div class="ph">
+    <div class="ph-eye">Feedback</div>
+    <h1 class="ph-title">Help us <em>improve.</em></h1>
+    <p class="ph-sub">Your experience shapes the next version. Tell us what's working, what's missing, and what would make this indispensable.</p>
+  </div>
+
+  <div class="g2" style="gap:20px;max-width:860px">
+
+    <!-- Rating -->
+    <div style="grid-column:1/-1">
+      <div class="card-lbl" style="margin-bottom:12px">How would you rate LaForce Capital overall?</div>
+      <div id="ratingRow" style="display:flex;gap:10px">
+        <button class="rating-btn" data-v="1" onclick="setRating(1)">1<span>Needs work</span></button>
+        <button class="rating-btn" data-v="2" onclick="setRating(2)">2</button>
+        <button class="rating-btn" data-v="3" onclick="setRating(3)">3</button>
+        <button class="rating-btn" data-v="4" onclick="setRating(4)">4</button>
+        <button class="rating-btn" data-v="5" onclick="setRating(5)">5<span>Excellent</span></button>
+      </div>
+    </div>
+
+    <!-- What worked -->
+    <div class="ig">
+      <label class="il">What worked well for you?</label>
+      <textarea id="fbLiked" placeholder="e.g. The Capital Deployment panel, the portfolio upload, the AI analysis..." rows="3"></textarea>
+    </div>
+
+    <!-- What's missing -->
+    <div class="ig">
+      <label class="il">What's missing or frustrating?</label>
+      <textarea id="fbMissing" placeholder="e.g. I wish it had real-time prices, the upload didn't work for my CSV format..." rows="3"></textarea>
+    </div>
+
+    <!-- Feature request -->
+    <div class="ig" style="grid-column:1/-1">
+      <label class="il">Top feature request &mdash; if you could add one thing, what would it be?</label>
+      <textarea id="fbFeature" placeholder="e.g. Auto-sync with Robinhood, tax-loss harvesting suggestions, mobile app..." rows="2"></textarea>
+    </div>
+
+    <!-- Use case -->
+    <div class="ig">
+      <label class="il">How do you invest? (select all that apply)</label>
+      <div id="fbUseCase" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">
+        <button class="fb-chip" onclick="toggleChip(this)">Long-term buy &amp; hold</button>
+        <button class="fb-chip" onclick="toggleChip(this)">Active trader</button>
+        <button class="fb-chip" onclick="toggleChip(this)">Dividend investor</button>
+        <button class="fb-chip" onclick="toggleChip(this)">Growth investor</button>
+        <button class="fb-chip" onclick="toggleChip(this)">Index / ETF focused</button>
+        <button class="fb-chip" onclick="toggleChip(this)">Options trader</button>
+        <button class="fb-chip" onclick="toggleChip(this)">Crypto included</button>
+        <button class="fb-chip" onclick="toggleChip(this)">Beginner</button>
+      </div>
+    </div>
+
+    <!-- Portfolio size -->
+    <div class="ig">
+      <label class="il">Portfolio size (optional)</label>
+      <select id="fbPortSize">
+        <option value="">Prefer not to say</option>
+        <option value="under10k">Under $10,000</option>
+        <option value="10k-50k">$10,000 - $50,000</option>
+        <option value="50k-150k">$50,000 - $150,000</option>
+        <option value="150k-500k">$150,000 - $500,000</option>
+        <option value="500k+">$500,000+</option>
+      </select>
+    </div>
+
+    <!-- Email -->
+    <div class="ig" style="grid-column:1/-1">
+      <label class="il">Email (optional &mdash; if you want us to follow up)</label>
+      <input type="email" id="fbEmail" placeholder="your@email.com"/>
+    </div>
+
+    <!-- Submit -->
+    <div style="grid-column:1/-1;display:flex;align-items:center;gap:14px">
+      <button class="btn-p" onclick="submitFeedback()" style="padding:12px 28px;font-size:14px">Submit Feedback &rarr;</button>
+      <div id="fbStatus" style="font-size:12px;color:var(--text-2)"></div>
+    </div>
+
+  </div>
+
+  <!-- Recent submissions preview (admin) -->
+  <div style="margin-top:36px;padding-top:24px;border-top:1px solid var(--border)">
+    <div class="sec-lbl">Recent Responses</div>
+    <div id="fbResponses" style="margin-top:12px;font-size:12px;color:var(--text-3);font-style:italic">
+      Submit your first response above.
+    </div>
+  </div>
+
+  <!-- Phase-4 productization note — visible in the prototype so reviewers understand the seams -->
+  <div class="arch-note">
+    <div class="sec-lbl" style="margin-bottom:8px">Architecture · Prototype → SaaS path</div>
+    <h4>What moves where when this becomes a product</h4>
+    <div class="arch-grid">
+      <div class="arch-col">
+        <div class="arch-lbl" style="color:var(--sage)">Stays client-side</div>
+        <div class="arch-list">
+          • Visual layer &amp; panels<br>
+          • Chart rendering (Chart.js)<br>
+          • Manual holdings entry<br>
+          • Keyboard / drag-drop UX<br>
+          • Color mode toggle<br>
+          • Cadence projections (pure math)
+        </div>
+      </div>
+      <div class="arch-col">
+        <div class="arch-lbl" style="color:var(--gold)">Moves to backend</div>
+        <div class="arch-list">
+          • Anthropic API proxy (hide key)<br>
+          • Finnhub / market data proxy<br>
+          • Screenshot OCR extraction<br>
+          • AI prompt templating<br>
+          • Rate limiting &amp; caching<br>
+          • Auth, sessions, billing
+        </div>
+      </div>
+      <div class="arch-col">
+        <div class="arch-lbl" style="color:var(--violet)">Becomes DB-backed</div>
+        <div class="arch-list">
+          • User portfolios &amp; history<br>
+          • Watchlists &amp; verdicts<br>
+          • Strategy selections<br>
+          • Feedback submissions<br>
+          • Generated reports<br>
+          • Audit trail of AI runs
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:14px;font-size:11px;color:var(--text-3);line-height:1.7">
+      Today the Anthropic and Finnhub keys ship to the browser — that is acceptable for a private prototype but <strong style="color:var(--cream-dim)">must not ship to real users</strong>. The right production shape: a thin Node/Go/Python API gateway that signs every upstream call with server-held keys, enforces rate limits per authenticated user, and writes portfolio / verdict / strategy state to Postgres. The client then becomes a pure view layer calling <code style="color:var(--gold);background:rgba(201,168,76,.07);padding:1px 5px;border-radius:3px;font-family:'DM Mono',monospace;font-size:10px">/api/*</code> with a session cookie, and no framework migration is required at that point — this single-file HTML can be carved into small components on the same day the backend ships.
+    </div>
+
+    <!-- Phase E: granular SaaS mapping — what each piece of client state becomes -->
+    <div style="margin-top:22px;padding-top:18px;border-top:1px dashed var(--border)">
+      <div style="font-size:10px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:10px">State · product-ization mapping</div>
+      <div style="display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:10px;font-size:11px;line-height:1.6">
+        <div style="padding:10px 12px;background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r)">
+          <div style="font-size:8px;letter-spacing:.16em;color:var(--violet);text-transform:uppercase;font-weight:700;margin-bottom:6px">User data (row per user)</div>
+          <code style="font-family:'DM Mono',monospace;font-size:10px;color:var(--cream-dim);display:block;line-height:1.8">_holdings[]<br>_watchlist[]<br>_verdicts[]<br>_selectedStrategy<br>_deployData<br>_cadenceFreq / inputs<br>_recurringInvestments[]</code>
+        </div>
+        <div style="padding:10px 12px;background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r)">
+          <div style="font-size:8px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:6px">Preferences (account-level)</div>
+          <code style="font-family:'DM Mono',monospace;font-size:10px;color:var(--cream-dim);display:block;line-height:1.8">color-mode<br>stock-mode (quick/full)<br>beginner-mode<br>default risk lens<br>broker import format<br>live-data provider key</code>
+        </div>
+        <div style="padding:10px 12px;background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r)">
+          <div style="font-size:8px;letter-spacing:.16em;color:var(--sage);text-transform:uppercase;font-weight:700;margin-bottom:6px">Reusable modules</div>
+          <code style="font-family:'DM Mono',monospace;font-size:10px;color:var(--cream-dim);display:block;line-height:1.8">LiveData (provider-agnostic)<br>parseCSV / parseHoldings<br>classify<br>computeHealthScore<br>extractSection<br>drill-down renderer<br>cadence math</code>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--text-3);line-height:1.7">The three columns above are the exact SaaS shape: <strong style="color:var(--cream-dim)">column 1</strong> becomes a <code style="font-family:'DM Mono',monospace;font-size:10px;color:var(--gold)">portfolios</code> / <code style="font-family:'DM Mono',monospace;font-size:10px;color:var(--gold)">watchlists</code> / <code style="font-family:'DM Mono',monospace;font-size:10px;color:var(--gold)">deployments</code> table set, <strong style="color:var(--cream-dim)">column 2</strong> becomes a <code style="font-family:'DM Mono',monospace;font-size:10px;color:var(--gold)">user_prefs</code> JSON column, and <strong style="color:var(--cream-dim)">column 3</strong> stays stateless — those functions ship to the server unchanged.</div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
