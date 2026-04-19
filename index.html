@@ -418,10 +418,11 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .cd-seg-click:hover{stroke-width:38;filter:drop-shadow(0 0 10px currentColor)}
 .cd-seg-bg{fill:none;stroke:var(--noir-3);stroke-width:34}
 .cd-donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
-.cd-donut-lbl{font-size:9px;font-weight:700;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase;margin-bottom:6px}
-.cd-donut-val{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--cream);line-height:1;letter-spacing:-.02em}
-.cd-donut-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);margin-top:8px;letter-spacing:.05em}
-.cd-donut-orn{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:var(--text-2);margin-top:10px;max-width:180px;line-height:1.4}
+.cd-donut-lbl{font-size:10px;font-weight:700;letter-spacing:.22em;color:var(--cream-dim);text-transform:uppercase;margin-bottom:8px}
+.cd-donut-val{font-family:'DM Sans','system-ui',sans-serif;font-size:44px;font-weight:300;color:var(--cream);line-height:1;letter-spacing:-.02em;font-feature-settings:"tnum" 1}
+.cd-donut-val span{font-weight:400}
+.cd-donut-sub{font-family:'DM Sans','system-ui',sans-serif;font-size:13px;color:var(--cream);margin-top:10px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px}
+.cd-donut-orn{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:var(--cream-dim);margin-top:12px;max-width:210px;line-height:1.5}
 /* Alloc list */
 .cd-alloc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .cd-alloc-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--cream);display:flex;align-items:center;gap:10px}
@@ -879,6 +880,53 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .tf-row.open .tf-row-detail{display:block}
 .tf-row-expand{position:absolute;right:10px;top:10px;font-size:10px;color:var(--text-3);font-weight:700;transition:transform .2s}
 .tf-row.open .tf-row-expand{transform:rotate(180deg);color:var(--gold-light)}
+/* Highlighted rationale tokens — makes key phrases pop visually */
+.tf-hl-ticker{color:#E8CC7A;font-weight:700;font-family:'DM Mono',monospace;padding:1px 6px;background:rgba(232,204,122,.14);border-radius:3px;border:1px solid rgba(232,204,122,.3);letter-spacing:.03em;white-space:nowrap}
+.tf-hl-money{color:#6BAA75;font-weight:700;font-family:'DM Mono',monospace;padding:0 3px;background:rgba(107,170,117,.1);border-radius:3px;white-space:nowrap}
+.tf-hl-pct{color:#C9A84C;font-weight:800;font-family:'DM Mono',monospace}
+.tf-hl-time{color:#B8A882;font-weight:600;font-style:italic}
+.tf-hl-action{color:#C0714F;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:0 4px;background:rgba(192,113,79,.1);border-radius:3px}
+/* Donut ↔ allocation row bidirectional highlight */
+.cd-seg{transition:opacity .22s ease, filter .28s ease, stroke-width .2s ease;cursor:pointer}
+.cd-donut-wrap.has-hover .cd-seg:not(.cd-seg-highlight){opacity:.28}
+.cd-seg.cd-seg-highlight{opacity:1 !important;stroke-width:28}
+#cdSegCore.cd-seg-highlight{filter:drop-shadow(0 0 18px #C9A84C) brightness(1.12)}
+#cdSegGrowth.cd-seg-highlight{filter:drop-shadow(0 0 18px #6BAA75) brightness(1.12)}
+#cdSegTactical.cd-seg-highlight{filter:drop-shadow(0 0 18px #C0714F) brightness(1.12)}
+.cd-row{transition:background .18s ease, transform .18s ease, box-shadow .18s ease}
+.cd-row.cd-row-highlight{background:rgba(255,255,255,.055);transform:translateX(6px);box-shadow:inset 4px 0 0 var(--hl-c,var(--gold-light)),0 6px 16px rgba(0,0,0,.3)}
+.cd-row.cd-row-highlight .cd-ticker-sym{color:var(--gold-light)}
+.cd-row.cd-row-dim{opacity:.32}
+/* Risk & Bull card glow + highlighted text */
+.cd-card{transition:box-shadow .35s ease, transform .25s ease, border-color .25s ease}
+.cd-card.risk:hover{box-shadow:0 0 32px rgba(192,113,79,.35),0 8px 30px rgba(0,0,0,.3);border-color:rgba(192,113,79,.5);transform:translateY(-2px)}
+.cd-card.bull:hover{box-shadow:0 0 32px rgba(107,170,117,.3),0 8px 30px rgba(0,0,0,.3);border-color:rgba(107,170,117,.45);transform:translateY(-2px)}
+.cd-card .cd-card-body strong, .cd-card .cd-card-body .tf-hl-money, .cd-card .cd-card-body .tf-hl-pct, .cd-card .cd-card-body .tf-hl-ticker, .cd-card .cd-card-body .tf-hl-action{filter:saturate(1.1)}
+.cd-card-point-term{font-weight:700;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;margin-right:6px}
+.cd-card.risk .cd-card-point-term{color:#E8A089}
+.cd-card.bull .cd-card-point-term{color:#A8D8B0}
+/* Donut center bucket chips — clickable C / G / T */
+.cd-bucket-chip{display:inline-flex;align-items:baseline;gap:1px;padding:4px 10px;border-radius:7px;cursor:pointer;font-family:'DM Sans','system-ui',sans-serif;font-size:13px;font-weight:800;letter-spacing:.02em;transition:all .18s ease;border:1px solid transparent;pointer-events:auto;line-height:1.15}
+.cd-bucket-chip[data-cls="core"]{color:#F0D576;background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.25)}
+.cd-bucket-chip[data-cls="growth"]{color:#A8D4B0;background:rgba(107,170,117,.15);border-color:rgba(107,170,117,.25)}
+.cd-bucket-chip[data-cls="tactical"]{color:#E8A089;background:rgba(192,113,79,.15);border-color:rgba(192,113,79,.25)}
+.cd-bucket-chip:hover{transform:translateY(-1px);border-color:currentColor;box-shadow:0 0 12px currentColor}
+.cd-bucket-chip.cd-bucket-active{background:currentColor !important;color:#0E1414 !important;box-shadow:0 0 16px var(--hl-c,#C9A84C)}
+.cd-bucket-chip[data-cls="core"].cd-bucket-active{--hl-c:#C9A84C}
+.cd-bucket-chip[data-cls="growth"].cd-bucket-active{--hl-c:#6BAA75}
+.cd-bucket-chip[data-cls="tactical"].cd-bucket-active{--hl-c:#C0714F}
+.cd-donut-center{pointer-events:none}
+.cd-donut-sub{pointer-events:auto}
+/* Bucket explainer popover */
+.cd-bucket-explainer{margin:14px auto 0;max-width:380px;padding:14px 16px;background:linear-gradient(145deg,rgba(0,0,0,.55),rgba(0,0,0,.3));border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-lg);font-size:12px;color:var(--text-1);line-height:1.65;animation:fadeUp .25s ease}
+.cd-bucket-explainer .be-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.cd-bucket-explainer .be-letter{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;font-style:italic;line-height:1}
+.cd-bucket-explainer .be-name{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.cd-bucket-explainer .be-pct{margin-left:auto;font-family:'DM Mono',monospace;font-size:14px;font-weight:700;color:var(--gold-light)}
+.cd-bucket-explainer .be-tagline{font-style:italic;color:var(--cream-dim);font-size:11.5px;margin-bottom:8px}
+.cd-bucket-explainer .be-desc{font-size:12px;color:var(--text-2);line-height:1.7}
+.cd-bucket-explainer .be-meta{display:flex;gap:14px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:10px;color:var(--text-3);letter-spacing:.04em}
+.cd-bucket-explainer .be-meta strong{color:var(--gold-light);font-weight:600;display:block;margin-bottom:2px;font-size:9px;letter-spacing:.12em;text-transform:uppercase}
 .tf-timeline{position:relative;padding-left:4px}
 .tf-tl-step{position:relative;display:flex;gap:14px;padding:10px 0 10px 0;margin-left:16px;border-left:2px solid var(--border)}
 .tf-tl-step:first-child{padding-top:0}
@@ -3480,6 +3528,7 @@ function buildDeployPanel(d,cash,dateStr){
           +'<div class="cd-donut-orn" id="cdDonutOrn">&ldquo;Time in market beats timing the market.&rdquo;</div>'
         +'</div>'
       +'</div>'
+      +'<div id="cdBucketExplainer" style="grid-column:1/-1"></div>'
       +'<div>'
         +'<div class="cd-alloc-head">'
           +'<div class="cd-alloc-title">Target Allocation</div>'
@@ -3521,6 +3570,7 @@ function setDeployStrategy(name){
   var d=window._deployData; var cash=window._deployCash||0;
   if(!d) return;
   var s=d[name]; if(!s) return;
+  window._deployCurrent = name;
   var C=2*Math.PI*80;
   // Update tabs
   document.querySelectorAll('.cd-tab').forEach(function(t){t.classList.toggle('active',t.dataset.s===name);});
@@ -3532,7 +3582,15 @@ function setDeployStrategy(name){
   if(sg){sg.setAttribute('stroke-dasharray',gL.toFixed(1)+' '+(C-gL).toFixed(1));sg.setAttribute('stroke-dashoffset',(-cL).toFixed(1));}
   if(st){st.setAttribute('stroke-dasharray',tL.toFixed(1)+' '+(C-tL).toFixed(1));st.setAttribute('stroke-dashoffset',(-(cL+gL)).toFixed(1));}
   var lbl=document.getElementById('cdDonutLbl'); if(lbl) lbl.textContent=s.label||name;
-  var sub=document.getElementById('cdDonutSub'); if(sub) sub.innerHTML=core+'C &middot; '+growth+'G &middot; '+tactical+'T';
+  var sub=document.getElementById('cdDonutSub');
+  if(sub){
+    sub.innerHTML =
+      '<span class="cd-bucket-chip" data-cls="core" onclick="hlBucket(\'core\')" onmouseenter="hlBucket(\'core\')" onmouseleave="hlBucket(null)" title="Core — foundation positions, lowest volatility">'+core+'C</span>'
+      +' <span style="color:var(--text-3);margin:0 2px">·</span> '
+      +'<span class="cd-bucket-chip" data-cls="growth" onclick="hlBucket(\'growth\')" onmouseenter="hlBucket(\'growth\')" onmouseleave="hlBucket(null)" title="Growth — quality compounders, higher return potential">'+growth+'G</span>'
+      +' <span style="color:var(--text-3);margin:0 2px">·</span> '
+      +'<span class="cd-bucket-chip" data-cls="tactical" onclick="hlBucket(\'tactical\')" onmouseenter="hlBucket(\'tactical\')" onmouseleave="hlBucket(null)" title="Tactical — higher-beta, thematic or contrarian plays">'+tactical+'T</span>';
+  }
   var orn=document.getElementById('cdDonutOrn'); if(orn) orn.textContent=s.ornament||'';
   // Lens rationale strip — tells the user WHY this lens sizes the way it does
   var lensRat={
@@ -3559,7 +3617,7 @@ function setDeployStrategy(name){
       var p=a.pct||0; var barW=Math.min(100,p*2.2);
       var sz=sizingNote(p,name);
       var szColor=sz==='Over cap — size down'?'var(--clay)':sz==='Near cap — full size'?'var(--gold)':sz==='Core weight'?'var(--sage)':'var(--text-2)';
-      return '<div class="cd-row cd-row-clickable" onclick="drillDownStock(\''+esc(a.sym)+'\',\''+name+'\')" title="Click for AI analysis of '+esc(a.sym)+'">'
+      return '<div class="cd-row cd-row-clickable" data-cls="'+(a.cls||'growth')+'" onmouseenter="hlBucket(\''+(a.cls||'growth')+'\')" onmouseleave="hlBucket(null)" onclick="drillDownStock(\''+esc(a.sym)+'\',\''+name+'\')" title="Click for AI analysis of '+esc(a.sym)+'">'
         +'<div class="cd-ticker"><span class="cd-ticker-dot" style="background:'+a.color+';box-shadow:0 0 8px '+a.color+'40"></span><span class="cd-ticker-sym">'+esc(a.sym)+'</span>'
           +'<span style="display:block;font-size:9px;color:'+szColor+';letter-spacing:.05em;margin-top:2px;font-weight:500;font-family:\'DM Sans\',sans-serif">'+esc(sz)+'</span>'
         +'</div>'
@@ -3575,12 +3633,12 @@ function setDeployStrategy(name){
   // Update cards
   var rs=document.getElementById('cdRiskScore'); if(rs) rs.textContent=s.riskScore||'Risk';
   var bs=document.getElementById('cdBullScore'); if(bs) bs.textContent=s.upside||'Upside';
-  var rb=document.getElementById('cdRiskBody'); if(rb) rb.textContent=s.riskBody||'';
-  var bb=document.getElementById('cdBullBody'); if(bb) bb.textContent=s.bullBody||'';
+  var rb=document.getElementById('cdRiskBody'); if(rb) rb.innerHTML=tfHighlight(s.riskBody||'');
+  var bb=document.getElementById('cdBullBody'); if(bb) bb.innerHTML=tfHighlight(s.bullBody||'');
   var rp=document.getElementById('cdRiskPoints');
-  if(rp&&s.riskPoints) rp.innerHTML=s.riskPoints.map(function(p){return '<div class="cd-card-pt"><span><strong>'+esc(p[0])+'</strong> &mdash; '+esc(p[1])+'</span></div>';}).join('');
+  if(rp&&s.riskPoints) rp.innerHTML=s.riskPoints.map(function(p){return '<div class="cd-card-pt"><span><strong class="cd-card-point-term">'+esc(p[0])+'</strong> &mdash; '+tfHighlight(p[1])+'</span></div>';}).join('');
   var bp=document.getElementById('cdBullPoints');
-  if(bp&&s.bullPoints) bp.innerHTML=s.bullPoints.map(function(p){return '<div class="cd-card-pt"><span><strong>'+esc(p[0])+'</strong> &mdash; '+esc(p[1])+'</span></div>';}).join('');
+  if(bp&&s.bullPoints) bp.innerHTML=s.bullPoints.map(function(p){return '<div class="cd-card-pt"><span><strong class="cd-card-point-term">'+esc(p[0])+'</strong> &mdash; '+tfHighlight(p[1])+'</span></div>';}).join('');
   // Clear any open drill-down
   var dd=document.getElementById('cdDrillDown'); if(dd){dd.style.display='none'; dd.innerHTML='';}
   // Reset segment + row opacity (cleared from any prior segment click)
@@ -4736,7 +4794,7 @@ function tfRenderBulletRows(items, role, actionLabel){
         +'<span class="tf-row-action">'+esc(actionLabel)+'</span>'
       +'</div>'
       +'<div class="tf-row-summary">'+esc(summaryShort)+'</div>'
-      +(detailNeeded ? '<div class="tf-row-detail">'+esc(summary)+'</div>' : '')
+      +(detailNeeded ? '<div class="tf-row-detail">'+tfHighlight(summary)+'</div>' : '')
     +'</div>';
   }).join('');
 }
@@ -4751,12 +4809,12 @@ function tfActionTimeline(text){
     else if(steps.length && l.length > 4 && !/^[A-Z]{2,}:/.test(l)){ steps[steps.length-1].txt += ' ' + l; }
   });
   if(!steps.length){
-    return '<div style="font-size:12.5px;color:var(--text-1);line-height:1.75">'+esc(text).replace(/\n/g,'<br>')+'</div>';
+    return '<div style="font-size:12.5px;color:var(--text-1);line-height:1.75">'+tfHighlight(text).replace(/\n/g,'<br>')+'</div>';
   }
   return '<div class="tf-timeline">' + steps.map(function(s, i){
     return '<div class="tf-tl-step">'
       +'<div class="tf-tl-dot">'+s.n+'</div>'
-      +'<div class="tf-tl-body">'+esc(s.txt)+'</div>'
+      +'<div class="tf-tl-body">'+tfHighlight(s.txt)+'</div>'
     +'</div>';
   }).join('') + '</div>';
 }
@@ -5936,6 +5994,106 @@ function renderFeedbackResponses(){
 // UTILS
 function fmt$(n){if(n===undefined||n===null||isNaN(n))return '$-';if(Math.abs(n)>=1000000)return '$'+(n/1000000).toFixed(2)+'M';if(Math.abs(n)>=1000)return '$'+Math.round(n).toLocaleString();return '$'+n.toFixed(2);}
 function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// Highlight ticker/money/percentage/time/action tokens in AI rationale text
+function tfHighlight(text){
+  if(!text) return '';
+  var html = esc(text);
+  // Dollar amounts: $1,234 / $1,234.56 / $1K / $2.5M
+  html = html.replace(/\$[\d,]+(?:\.\d+)?[KMB]?/g, function(m){return '<span class="tf-hl-money">'+m+'</span>';});
+  // Percentages: 12% / 7.5%
+  html = html.replace(/\b\d+(?:\.\d+)?%/g, function(m){return '<span class="tf-hl-pct">'+m+'</span>';});
+  // Time phrases: "6 months", "next quarter", "1-6 months", "12 weeks"
+  html = html.replace(/\b\d+[-–]?\d*\s?(days?|weeks?|months?|quarters?|years?)\b/gi, function(m){return '<span class="tf-hl-time">'+m+'</span>';});
+  // Action verbs (standalone, all caps): BUY SELL TRIM EXIT ADD HOLD REBALANCE WAIT AVOID
+  html = html.replace(/\b(BUY|SELL|TRIM|EXIT|ADD|HOLD|REBALANCE|WAIT|AVOID|KEEP)\b(?!<)/g, function(m){return '<span class="tf-hl-action">'+m+'</span>';});
+  // Tickers — 2-6 uppercase, optional .X suffix — must not be already inside a span, must not be a common word
+  html = html.replace(/(?<![>\-])\b([A-Z]{2,6}(?:\.[A-Z])?)\b(?![<])/g, function(m, t){
+    if(/^(YOUR|THIS|THAT|THESE|THOSE|THE|WITH|FROM|INTO|AND|FOR|BUT|NOT|CORE|GROWTH|CASH|TICKER|NONE|ALL|ETF|IRA|USD|ROI|CAGR|GAP|MAX|MIN|TARGET|BULL|BEAR|UP|DOWN|HIGH|LOW|NOW|NEW|KEY|TOP|BIG|LOW|NEW|WHY|HOW|WHEN|WHO|ONE|TWO|AI|DCA|P\/E|EV|EPS|NVDA|AAPL|GOOG|MSFT|AMZN|TSLA|META|CRM|AMD)$/i.test(t)) {
+      // Keep tickers like NVDA/AAPL highlighted — they ARE tickers
+      if(/^(NVDA|AAPL|GOOG|GOOGL|MSFT|AMZN|TSLA|META|NFLX|CRM|AMD|SCHD|VOO|SPY|QQQ|PLTR|COIN|AVGO|CRWD|NIO|APRE|CMG|LKNCY|DIS|CCL|RCL|NCLH)$/.test(t)){
+        return '<span class="tf-hl-ticker">'+m+'</span>';
+      }
+      return m;
+    }
+    return '<span class="tf-hl-ticker">'+m+'</span>';
+  });
+  return html;
+}
+
+// Bucket explanation data
+var BUCKET_INFO = {
+  core: {
+    letter: 'C', name: 'Core', color: '#C9A84C',
+    tagline: 'The foundation. What holds value when everything else moves.',
+    desc: 'Broad market index funds and reliable dividend-payers. Lowest volatility. Provides steady compounding and holds value during market stress. Think VOO, SCHD, dividend aristocrats.',
+    risk: 'Low',
+    timeHorizon: 'Long-term (5y+)'
+  },
+  growth: {
+    letter: 'G', name: 'Growth', color: '#6BAA75',
+    tagline: 'Quality compounders growing faster than the market.',
+    desc: 'High-quality companies with durable competitive advantages and expanding earnings. Higher upside than Core, with more volatility. Think AI leaders, cloud platforms, secular winners.',
+    risk: 'Medium',
+    timeHorizon: 'Medium to long (3y+)'
+  },
+  tactical: {
+    letter: 'T', name: 'Tactical', color: '#C0714F',
+    tagline: 'Opportunistic, higher-beta bets on specific themes.',
+    desc: 'Concentrated conviction in a theme, sector rotation, or contrarian play. Highest upside AND highest drawdown risk. Size small. Think small-caps, commodities, crypto, single-name catalysts.',
+    risk: 'High',
+    timeHorizon: 'Shorter (6mo to 2y)'
+  }
+};
+
+// Bidirectional highlight: highlights donut segment + allocation rows + bucket chip for the given class
+// Pass null to clear all highlights.
+function hlBucket(cls){
+  // Clear everything first
+  document.querySelectorAll('.cd-seg-highlight').forEach(function(el){ el.classList.remove('cd-seg-highlight'); });
+  document.querySelectorAll('.cd-row-highlight,.cd-row-dim').forEach(function(el){ el.classList.remove('cd-row-highlight','cd-row-dim'); });
+  document.querySelectorAll('.cd-bucket-active').forEach(function(el){ el.classList.remove('cd-bucket-active'); });
+  var wrap = document.querySelector('.cd-donut-wrap');
+  if(wrap) wrap.classList.remove('has-hover');
+  if(!cls){ renderBucketExplainer(null); return; }
+  // Highlight matching donut segment
+  var segId = 'cdSeg'+cls.charAt(0).toUpperCase()+cls.slice(1);
+  var seg = document.getElementById(segId);
+  if(seg){ seg.classList.add('cd-seg-highlight'); if(wrap) wrap.classList.add('has-hover'); }
+  // Highlight matching bucket chip
+  document.querySelectorAll('.cd-bucket-chip[data-cls="'+cls+'"]').forEach(function(el){ el.classList.add('cd-bucket-active'); });
+  // Highlight matching allocation rows, dim non-matching
+  document.querySelectorAll('.cd-row[data-cls]').forEach(function(row){
+    if(row.dataset.cls === cls){ row.classList.add('cd-row-highlight'); }
+    else { row.classList.add('cd-row-dim'); }
+  });
+  // Show the bucket explainer
+  renderBucketExplainer(cls);
+}
+
+// Renders a bucket explainer below the donut
+function renderBucketExplainer(cls){
+  var slot = document.getElementById('cdBucketExplainer');
+  if(!slot) return;
+  if(!cls){ slot.innerHTML=''; return; }
+  var b = BUCKET_INFO[cls]; if(!b) return;
+  var d = window._deployData, s = d && d[window._deployCurrent||'balanced'];
+  var pct = 0;
+  if(s && s.totals) pct = s.totals[cls] || 0;
+  slot.innerHTML = '<div class="cd-bucket-explainer" style="border-left-color:'+b.color+'">'
+    +'<div class="be-head">'
+      +'<div class="be-letter" style="color:'+b.color+'">'+b.letter+'</div>'
+      +'<div class="be-name" style="color:'+b.color+'">'+b.name+'</div>'
+      +'<div class="be-pct">'+pct+'%</div>'
+    +'</div>'
+    +'<div class="be-tagline">'+b.tagline+'</div>'
+    +'<div class="be-desc">'+b.desc+'</div>'
+    +'<div class="be-meta">'
+      +'<div><strong>Volatility</strong> '+b.risk+'</div>'
+      +'<div><strong>Time horizon</strong> '+b.timeHorizon+'</div>'
+    +'</div>'
+  +'</div>';
+}
 </script>
 
 <!-- FEEDBACK PANEL -->
