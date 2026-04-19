@@ -34,10 +34,14 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
 #topbar::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,var(--gold-dim),transparent)}
 .logo{display:flex;align-items:center;gap:14px}
-.logo-name{font-family:"Cormorant Garamond",serif;font-size:24px;line-height:1;color:var(--cream)}
-.logo-name em{font-style:italic;color:var(--gold-light)}
-.logo-cap{font-size:7px;letter-spacing:4.5px;color:var(--gold);font-weight:600;font-family:"DM Mono",monospace;text-align:center}.logo-palm{width:34px;height:16px;color:var(--gold);filter:drop-shadow(0 1px 1.5px rgba(201,168,76,.35));display:block;margin:0 auto 2px}.logo-cap-line{display:flex;align-items:center;gap:6px;width:100%;margin-top:2px}.logo-bar{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);min-width:10px}
-.logo-sep{width:1px;height:26px;background:linear-gradient(180deg,transparent,var(--gold-dim),transparent)}
+.logo-stack{display:flex;flex-direction:column;align-items:center;line-height:1;gap:2px}
+.logo-palm{width:34px;height:16px;color:var(--gold);filter:drop-shadow(0 1px 1.5px rgba(201,168,76,.35))}
+.logo-name{font-family:"Cormorant Garamond",serif;font-size:22px;line-height:1;color:var(--cream);font-weight:500;letter-spacing:.005em}
+.logo-name em{font-style:italic;color:var(--gold-light);font-weight:600}
+.logo-cap-line{display:flex;align-items:center;gap:6px;width:100%;margin-top:1px}
+.logo-bar{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);min-width:8px}
+.logo-cap{font-size:7px;letter-spacing:4.5px;color:var(--gold);font-weight:600;font-family:"DM Mono",monospace}
+.logo-sep{width:1px;height:36px;background:linear-gradient(180deg,transparent,var(--gold-dim),transparent)}
 .logo-tag{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:12px;color:var(--text-2)}
 .idx-bar{display:flex}
 .idx-pill{padding:5px 12px;text-align:center;border-right:1px solid var(--border)}
@@ -515,9 +519,26 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 <!-- TOPBAR -->
 <div id="topbar">
   <div class="logo">
-    <div>
-      <svg class="logo-palm" viewBox="0 0 46 22" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M23 12 Q10 4 2 8"/><path d="M23 12 Q8 11 1 17"/><path d="M23 12 Q13 2 7 0.5"/><path d="M23 12 L23 1"/><path d="M23 12 Q33 2 39 0.5"/><path d="M23 12 Q38 4 44 8"/><path d="M23 12 Q38 11 45 17"/></g><path d="M23 12 L23 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="23" cy="12" r="1.1" fill="currentColor"/></svg><div class="logo-name">La<em>Force</em></div>
-      <div class="logo-cap-line"><span class="logo-bar"></span><span class="logo-cap">CAPITAL</span><span class="logo-bar"></span></div>
+    <div class="logo-stack">
+      <svg class="logo-palm" viewBox="0 0 46 22" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 12 Q10 4 2 8"/>
+          <path d="M23 12 Q8 11 1 17"/>
+          <path d="M23 12 Q13 2 7 0.5"/>
+          <path d="M23 12 L23 1"/>
+          <path d="M23 12 Q33 2 39 0.5"/>
+          <path d="M23 12 Q38 4 44 8"/>
+          <path d="M23 12 Q38 11 45 17"/>
+        </g>
+        <path d="M23 12 L23 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="23" cy="12" r="1.1" fill="currentColor"/>
+      </svg>
+      <div class="logo-name">La<em>Force</em></div>
+      <div class="logo-cap-line">
+        <span class="logo-bar"></span>
+        <span class="logo-cap">CAPITAL</span>
+        <span class="logo-bar"></span>
+      </div>
     </div>
     <div class="logo-sep"></div>
     <div class="logo-tag">Institutional Intelligence</div>
@@ -1631,6 +1652,7 @@ window.onunhandledrejection = function(e){
 
 // LAFORCE CAPITAL v2.0 -- INVESTMENT INTELLIGENCE OS
 
+var API_BASE='https://laforce-api.onrender.com';
 var _apiKey = '';
 var _holdings = [];
 var _watchlist = JSON.parse(localStorage.getItem('lfc_wl2') || '[]');
@@ -1692,7 +1714,7 @@ var LiveData = (function(){
   function clearKey(){
     try{sessionStorage.removeItem(LS_KEY);localStorage.removeItem(LS_KEY);}catch(e){}
   }
-  function isActive(){return !!getKey();}
+  function isActive(){return true;}
 
   function fromCache(sym){
     try{
@@ -1711,14 +1733,11 @@ var LiveData = (function(){
   async function quote(sym){
     var cached=fromCache(sym);
     if(cached) return cached;
-    var key=getKey(); if(!key) throw new Error('no-key');
-    var url='https://finnhub.io/api/v1/quote?symbol='+encodeURIComponent(sym)+'&token='+encodeURIComponent(key);
-    var r=await fetch(url);
+    var r=await fetch(API_BASE+'/api/market/quote?sym='+encodeURIComponent(sym));
+    if(r.status===404) throw new Error('no-data');
     if(!r.ok) throw new Error('HTTP '+r.status);
-    var j=await r.json();
-    if(j.c===0&&j.pc===0) throw new Error('no-data');
-    var chg=j.c-j.pc; var pct=j.pc?(chg/j.pc*100):0;
-    var q={symbol:sym,price:j.c,change:chg,changePct:pct,up:chg>=0,prevClose:j.pc,high:j.h,low:j.l,time:j.t};
+    var q=await r.json();
+    if(!q||q.symbol===undefined) throw new Error('no-data');
     toCache(sym,q);
     return q;
   }
@@ -1767,22 +1786,21 @@ var LiveData = (function(){
   }
 
   async function refreshTape(){
-    if(!isActive()){window._liveTape=null; return;}
     var syms=['SPY','QQQ','NVDA','AAPL','MSFT','GOOGL','AMZN','META','AVGO','TSLA','AMD','JPM','VOO','SCHD','COST','PLTR'];
-    // Include user holdings symbols if present
+    // Include top user holdings if present
     try{
       var h=(typeof _holdings!=='undefined'&&_holdings)?_holdings:[];
-      h.slice(0,8).forEach(function(x){if(x&&x.sym&&syms.indexOf(x.sym)<0)syms.push(x.sym);});
+      h.slice(0,4).forEach(function(x){if(x&&x.sym&&syms.indexOf(x.sym)<0)syms.push(x.sym);});
     }catch(e){}
-    var results=await Promise.allSettled(syms.map(quote));
-    var arr=[];
-    results.forEach(function(r,i){
-      if(r.status==='fulfilled'){
-        var q=r.value;
-        arr.push({sym:syms[i],px:fmtPx(q.price),chg:(q.changePct>=0?'+':'')+q.changePct.toFixed(1)+'%',up:q.up});
-      }
-    });
-    if(arr.length>=8){window._liveTape=arr; if(typeof buildTape==='function') buildTape();}
+    try{
+      var r=await fetch(API_BASE+'/api/market/batch?syms='+syms.join(','));
+      if(!r.ok) return;
+      var d=await r.json();
+      var arr=(d.quotes||[]).filter(Boolean).map(function(q){
+        return {sym:q.symbol,px:fmtPx(q.price),chg:(q.changePct>=0?'+':'')+q.changePct.toFixed(1)+'%',up:q.up};
+      });
+      if(arr.length>=8){window._liveTape=arr; if(typeof buildTape==='function') buildTape();}
+    }catch(e){ /* tape is decorative — silent fail preserves fallback demo data */ }
   }
 
   function suggestRegimeFromLive(){
@@ -1875,26 +1893,23 @@ function openLiveDataModal(){
 
 // API
 async function aiCall(prompt, sys, maxTok){
-  var key = getKey();
-  if(!key) throw new Error('No API key. Click Set API Key in the top bar.');
-  var r = await fetch('https://api.anthropic.com/v1/messages',{
+  var r = await fetch(API_BASE+'/api/ai/raw',{
     method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:maxTok||1200,system:sys||SYS,messages:[{role:'user',content:prompt}]})
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({prompt:prompt,sys:sys||SYS,maxTokens:maxTok||1200})
   });
   if(!r.ok){
-    var e=await r.json().catch(function(){return{error:{message:r.statusText}};});
-    var msg=(e.error&&e.error.message)||r.statusText;
-    var errType=e.error&&e.error.type;
-    if(r.status===401||errType==='authentication_error')msg='Invalid API key. Go to console.anthropic.com -&gt; API Keys -&gt; create a new key and paste it here.';
-    else if(r.status===403)msg='API key does not have permission. Make sure you are using an Anthropic API key from console.anthropic.com, not Claude.ai.';
-    else if(r.status===429)msg='Rate limit or billing issue. Add a payment method at console.anthropic.com -&gt; Billing to activate your free credits.';
-    else if(r.status===400&&msg.includes('model'))msg='Model error. Try refreshing the page.';
+    var e=await r.json().catch(function(){return{error:r.statusText};});
+    var msg=e.error||r.statusText;
+    if(r.status===429)msg='Rate limit reached. Wait 60 seconds and try again.';
+    else if(r.status===502)msg='AI service temporarily unavailable. Try again shortly.';
+    else if(r.status===504)msg='Analysis took too long. Try again or simplify the prompt.';
+    else if(r.status===0||!r.status)msg='Could not reach the LaForce backend. The free server may be spinning up — wait 30s and retry.';
     showAPIError(msg);
     throw new Error(msg);
   }
   var d = await r.json();
-  return d.content[0].text;
+  return d.text;
 }
 
 function getKey(){
@@ -2234,7 +2249,11 @@ function handleFileInput(files){
 
 async function queueImagesForExtraction(files){
   var status=document.getElementById('portExtractStatus');
-  status.innerHTML='<div class="thinking"><div class="spinner"></div>Reading '+files.length+' screenshot'+(files.length>1?'s':'')+' with AI...</div>';
+  // Screenshot extraction requires a multimodal backend endpoint not yet wired up.
+  // Show a friendly message pointing to the working paths until the endpoint ships.
+  status.innerHTML='<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Screenshot extraction coming soon</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">The backend doesn\'t yet support image uploads. For now: export your brokerage data as a <strong>CSV</strong> and drop it here, or <strong>paste</strong> holdings into the manual box below. Both paths work perfectly.</div></div>';
+  return;
+  // --- legacy direct-Anthropic code retained below for when the multimodal endpoint ships ---
   var key=getKey();
   if(!key){status.innerHTML='<div style="color:var(--clay);font-size:12px">API key required to extract from images. Set your key above.</div>';return;}
 
