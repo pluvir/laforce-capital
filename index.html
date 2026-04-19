@@ -4448,7 +4448,24 @@ async function runSectorAnalysis(){
 
 // ================================================================
 // STRATEGY ACTION HELPERS — clean named handlers (no nested-quote hell)
+// + document-level delegated listener as a bet-proof fallback
 // ================================================================
+document.addEventListener('click', function(e){
+  var target = e.target && e.target.closest && e.target.closest('#selectedStrategyPanel button');
+  if(!target) return;
+  var txt = (target.textContent || '').trim();
+  if(txt.indexOf('Run Full AI Study') === 0){
+    e.preventDefault(); e.stopPropagation();
+    runFullStudyForStrategy();
+  } else if(txt.indexOf('Build Cadence Plan') === 0){
+    e.preventDefault(); e.stopPropagation();
+    buildCadencePlanForStrategy();
+  } else if(txt === 'Change Strategy'){
+    e.preventDefault(); e.stopPropagation();
+    changeStrategy();
+  }
+}, true);
+
 function runFullStudyForStrategy(){
   showPanel('portfolio', document.querySelectorAll('.nav-item')[1]);
   setTimeout(function(){
