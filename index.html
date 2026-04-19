@@ -861,12 +861,24 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .tf-ticker-action{font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--text-3);opacity:.8}
 .tf-empty{font-size:11px;color:var(--text-3);font-style:italic;padding:8px;background:rgba(0,0,0,.15);border:1px dashed var(--border);border-radius:var(--r);text-align:center;grid-column:1/-1}
 .tf-col-body{font-size:11px;color:var(--text-2);line-height:1.55;padding-top:4px}
-.tf-bullets{display:flex;flex-direction:column;gap:10px;padding-top:2px}
-.tf-bullet-row{display:flex;align-items:flex-start;gap:8px;padding:10px;background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:var(--r);transition:all .2s}
-.tf-bullet-row:hover{background:rgba(0,0,0,.32);border-color:var(--border-2)}
-.tf-bullet-text{font-size:11.5px;color:var(--text-1);line-height:1.55;flex:1;min-width:0}
-.tf-ticker-chip{font-family:'DM Mono',monospace;font-size:11px;font-weight:700;padding:4px 9px;border-radius:14px;border:1px solid;cursor:pointer;letter-spacing:.04em;flex-shrink:0;transition:all .15s;white-space:nowrap}
-.tf-ticker-chip:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.4)}
+.tf-bullets{display:flex;flex-direction:column;gap:8px;padding-top:2px}
+/* Position action rows — redesigned for prominence + readability */
+.tf-row{display:block;padding:12px 12px 12px 14px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.06);border-radius:8px;border-left-width:3px;cursor:pointer;transition:all .18s;position:relative}
+.tf-row:hover{background:rgba(0,0,0,.48);border-color:rgba(255,255,255,.14);transform:translateX(2px)}
+.tf-row-keep{border-left-color:#6BAA75}
+.tf-row-trim{border-left-color:#C0714F}
+.tf-row-add{border-left-color:#E8CC7A}
+.tf-row-head{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.tf-chip{font-family:'DM Mono',monospace;font-size:12px;font-weight:800;padding:4px 11px;border-radius:6px;letter-spacing:.04em;white-space:nowrap;flex-shrink:0}
+.tf-chip-keep{background:#6BAA75;color:#0E1414}
+.tf-chip-trim{background:#C0714F;color:#140A07}
+.tf-chip-add{background:#E8CC7A;color:#1A1408}
+.tf-row-action{font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--text-3);margin-left:auto}
+.tf-row-summary{font-size:12px;color:var(--text-1);line-height:1.5;padding-left:2px}
+.tf-row-detail{display:none;margin-top:8px;padding:10px 12px;background:rgba(0,0,0,.35);border-radius:6px;font-size:11.5px;color:var(--text-2);line-height:1.6;border-top:1px solid rgba(255,255,255,.06)}
+.tf-row.open .tf-row-detail{display:block}
+.tf-row-expand{position:absolute;right:10px;top:10px;font-size:10px;color:var(--text-3);font-weight:700;transition:transform .2s}
+.tf-row.open .tf-row-expand{transform:rotate(180deg);color:var(--gold-light)}
 .tf-timeline{position:relative;padding-left:4px}
 .tf-tl-step{position:relative;display:flex;gap:14px;padding:10px 0 10px 0;margin-left:16px;border-left:2px solid var(--border)}
 .tf-tl-step:first-child{padding-top:0}
@@ -4612,14 +4624,15 @@ function tfBucketBars(buckets){
     var b = buckets[k];
     if(b.c === null || b.t === null) return;
     var gap = b.c - b.t;
-    var gapColor = Math.abs(gap) < 4 ? 'var(--sage)' : Math.abs(gap) < 12 ? 'var(--gold)' : 'var(--clay)';
+    var gapRgb = Math.abs(gap) < 4 ? '107,170,117' : Math.abs(gap) < 12 ? '201,168,76' : '192,113,79';
+    var gapColor = 'rgb('+gapRgb+')';
     var gapTxt = Math.abs(gap) < 1 ? 'on target' : gap > 0 ? '+'+gap.toFixed(0)+'% over' : gap.toFixed(0)+'% under';
     var barWidth = Math.min(100, b.c);
     var targetPos = Math.min(100, Math.max(0, b.t));
     html += '<div style="margin-bottom:14px">'
       +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
         +'<span style="font-size:12px;color:var(--cream);font-weight:600;letter-spacing:.02em">'+k+'</span>'
-        +'<span style="font-size:10px;color:'+gapColor+';font-weight:700;font-family:\'DM Mono\',monospace;padding:2px 8px;border-radius:10px;background:'+gapColor.replace(')',',0.1)').replace('var(','rgba(')+';border:1px solid '+gapColor.replace(')',',0.25)').replace('var(','rgba(')+'">'+gapTxt+'</span>'
+        +'<span style="font-size:10px;color:'+gapColor+';font-weight:700;font-family:\'DM Mono\',monospace;padding:2px 8px;border-radius:10px;background:rgba('+gapRgb+',0.12);border:1px solid rgba('+gapRgb+',0.3)">'+gapTxt+'</span>'
       +'</div>'
       +'<div style="position:relative;height:14px;background:var(--noir-3);border-radius:7px;border:1px solid var(--border)">'
         +'<div style="position:absolute;left:0;top:0;bottom:0;width:'+barWidth+'%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:7px;transition:width .6s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px rgba(201,168,76,.3)"></div>'
@@ -4681,14 +4694,28 @@ function tfParseBullets(text, maxItems){
   return items;
 }
 
-// Render the parsed bullets as clean rows (ticker chip + rationale text)
-function tfRenderBulletRows(items, color, actionLabel){
+// Render the parsed bullets as clickable rows with ticker pill + short summary + expandable detail
+function tfRenderBulletRows(items, role, actionLabel){
   if(!items || !items.length) return '<div class="tf-empty">None flagged</div>';
-  return items.map(function(it){
-    var chip = it.ticker ? '<button class="tf-ticker-chip" style="color:'+color+';border-color:'+color.replace(')',',0.35)').replace('var(','rgba(')+';background:'+color.replace(')',',0.08)').replace('var(','rgba(')+'" onclick="quickTick(\''+esc(it.ticker)+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2]);setTimeout(runStock,200)" title="Analyze '+esc(it.ticker)+'">'+esc(it.ticker)+' →</button>' : '';
-    return '<div class="tf-bullet-row">'
-      +(chip || '<div style="width:4px;height:4px;border-radius:50%;background:'+color+';margin-top:9px;flex-shrink:0"></div>')
-      +'<div class="tf-bullet-text">'+esc(it.text)+'</div>'
+  return items.map(function(it, idx){
+    var summary = it.text;
+    // Keep the headline ultra-short — one sentence or ~90 chars
+    var firstPeriod = summary.search(/[.!?]\s/);
+    var summaryShort = (firstPeriod > 10 && firstPeriod < 110) ? summary.substring(0, firstPeriod+1) : (summary.length > 100 ? summary.substring(0,97).replace(/[\s,.\-]+$/,'')+'…' : summary);
+    var detailNeeded = summary.length > summaryShort.length + 4;
+    var chipHtml = it.ticker
+      ? '<button class="tf-chip tf-chip-'+role+'" onclick="event.stopPropagation();quickTick(\''+esc(it.ticker)+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2]);setTimeout(runStock,200)" title="Analyze '+esc(it.ticker)+'">'+esc(it.ticker)+'</button>'
+      : '<span class="tf-chip tf-chip-'+role+'">•</span>';
+    var rowClass = 'tf-row tf-row-'+role;
+    var onclick = detailNeeded ? ' onclick="this.classList.toggle(\'open\')"' : '';
+    return '<div class="'+rowClass+'"'+onclick+'>'
+      +(detailNeeded ? '<span class="tf-row-expand">▾</span>' : '')
+      +'<div class="tf-row-head">'
+        +chipHtml
+        +'<span class="tf-row-action">'+esc(actionLabel)+'</span>'
+      +'</div>'
+      +'<div class="tf-row-summary">'+esc(summaryShort)+'</div>'
+      +(detailNeeded ? '<div class="tf-row-detail">'+esc(summary)+'</div>' : '')
     +'</div>';
   }).join('');
 }
@@ -4746,7 +4773,7 @@ async function runFeasibilityTunedToStrategy(){
     var targetAlloc = _selectedStrategy==='conservative'?'70% Core · 20% Quality Growth · 10% Cash/Tactical':
                       _selectedStrategy==='aggressive'?'30% Core · 55% Growth · 15% Tactical':
                       '55% Core · 35% Growth · 10% Tactical';
-    var prompt = 'STRATEGY-TUNED FEASIBILITY STUDY — '+stratName.toUpperCase()+' lens\n\nUser portfolio: $'+Math.round(total).toLocaleString()+' total.\nTop holdings: '+topHoldings+'\nMarket regime: '+regime+'\nStrategy target allocation: '+targetAlloc+'\n\nProduce a focused gap analysis. No markdown, no asterisks. Use EXACTLY these labels:\n\nSTRATEGY FIT SCORE: [1-10] - [one sentence on how well current portfolio matches the '+stratName+' target]\n\nGAP TO TARGET: [3-4 specific misalignments between current allocation and '+stratName+' target. Each on its own line starting with a hyphen. Be numeric: "Core at 32% vs 55% target = needs +$X into VOO/SCHD".]\n\nKEEP AS-IS: [2-3 specific positions from the user\'s actual holdings that already fit the '+stratName+' thesis. Name them and explain why.]\n\nTRIM OR EXIT: [2-3 specific positions from the user\'s holdings that do not fit the '+stratName+' lens. Name them and explain why.]\n\nADD IMMEDIATELY: [3-4 specific tickers with target weight and rationale for the '+stratName+' strategy.]\n\nSEQUENCED ACTION PLAN: [Numbered 1-5, specific dollar-moves to close the biggest gaps. Time-bound each.]\n\nBEHAVIORAL WARNING: [One specific behavioral risk given this strategy and these holdings.]\n\nCONFIDENCE: [1-10] - [one sentence on what drives the score]';
+    var prompt = 'STRATEGY-TUNED FEASIBILITY STUDY — '+stratName.toUpperCase()+' lens\n\nUser portfolio: $'+Math.round(total).toLocaleString()+' total.\nTop holdings: '+topHoldings+'\nMarket regime: '+regime+'\nStrategy target allocation: '+targetAlloc+'\n\nWRITING STYLE — CRITICAL:\n- Keep every rationale SHORT. Maximum 18 words per bullet.\n- NO paragraphs. NO long explanations. ONE punchy line per ticker.\n- Lead with the ticker: "TICKER at X% — [10-15 word reason]."\n- Use specific numbers, not adjectives.\n\nProduce a focused gap analysis. No markdown, no asterisks. Use EXACTLY these labels:\n\nSTRATEGY FIT SCORE: [1-10] - [one sentence, max 20 words]\n\nGAP TO TARGET: [3-4 misalignments, each on its own line starting with hyphen. Format: "- Core 32% vs 55% target = +$X into VOO". MAX 20 words per line.]\n\nKEEP AS-IS: [2-3 tickers the user ACTUALLY OWNS that fit. Each on own line starting with hyphen. Format: "- TICKER at X% — [12-word reason]".]\n\nTRIM OR EXIT: [2-3 tickers the user ACTUALLY OWNS that don\'t fit. Same ultra-short format.]\n\nADD IMMEDIATELY: [3-4 new tickers with target weight. Format: "- TICKER 8% — [12-word thesis]".]\n\nSEQUENCED ACTION PLAN: [Numbered 1-5. Each step ONE short sentence with dollar amount + timeframe. Max 20 words each.]\n\nBEHAVIORAL WARNING: [ONE sentence, max 25 words.]\n\nCONFIDENCE: [1-10] - [max 15 words]';
     var text = await aiCall(prompt, SYS, 1800);
     var S = {
       fit:      extractSection(text, 'STRATEGY FIT SCORE:'),
@@ -4809,16 +4836,16 @@ async function runFeasibilityTunedToStrategy(){
         +'<div style="font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:12px">◆ Position actions · tap any ticker to analyze</div>'
         +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">'
           +'<div class="tf-action-col">'
-            +'<div class="tf-col-head" style="color:var(--sage)">✓ KEEP AS-IS</div>'
-            +'<div class="tf-bullets">'+tfRenderBulletRows(tfParseBullets(S.keep,4),'var(--sage)','Hold')+'</div>'
+            +'<div class="tf-col-head" style="color:#6BAA75">✓ KEEP</div>'
+            +'<div class="tf-bullets">'+tfRenderBulletRows(tfParseBullets(S.keep,4),'keep','Hold')+'</div>'
           +'</div>'
           +'<div class="tf-action-col">'
-            +'<div class="tf-col-head" style="color:var(--clay)">✗ TRIM OR EXIT</div>'
-            +'<div class="tf-bullets">'+tfRenderBulletRows(tfParseBullets(S.trim,4),'var(--clay)','Trim')+'</div>'
+            +'<div class="tf-col-head" style="color:#C0714F">✗ TRIM / EXIT</div>'
+            +'<div class="tf-bullets">'+tfRenderBulletRows(tfParseBullets(S.trim,4),'trim','Sell')+'</div>'
           +'</div>'
           +'<div class="tf-action-col">'
-            +'<div class="tf-col-head" style="color:var(--gold-light)">+ ADD IMMEDIATELY</div>'
-            +'<div class="tf-bullets">'+tfRenderBulletRows(tfParseBullets(S.add,5),'var(--gold-light)','Add')+'</div>'
+            +'<div class="tf-col-head" style="color:#E8CC7A">+ ADD</div>'
+            +'<div class="tf-bullets">'+tfRenderBulletRows(tfParseBullets(S.add,5),'add','Buy')+'</div>'
           +'</div>'
         +'</div>'
       +'</div>'
