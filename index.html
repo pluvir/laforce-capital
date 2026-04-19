@@ -1007,6 +1007,15 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 </head>
 <body>
 
+<!-- Top: What this does + disclaimer -->
+<div style="max-width:1200px;margin:0 auto;padding:18px 24px 0;font-family:'DM Sans',system-ui,sans-serif">
+  <div style="padding:16px 20px;background:linear-gradient(145deg,rgba(201,168,76,.06),rgba(0,0,0,.2));border:1px solid rgba(201,168,76,.18);border-left:3px solid #C9A84C;border-radius:10px">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:#F0E8D0;font-weight:500;margin-bottom:6px;letter-spacing:.01em">LaForce Capital &mdash; <em style="color:#E8CC7A;font-style:italic;font-weight:400">AI-powered portfolio intelligence</em></div>
+    <div style="font-size:12px;color:#B8A882;line-height:1.65;margin-bottom:8px">Upload your portfolio <span style="color:#C9A84C">&rarr;</span> Get a diagnosis <span style="color:#C9A84C">&rarr;</span> See action paths <span style="color:#C9A84C">&rarr;</span> Drill into stocks</div>
+    <div style="font-size:10.5px;color:#8B7D68;letter-spacing:.04em;font-style:italic">AI-generated insights. Not financial advice. Use at your own discretion.</div>
+  </div>
+</div>
+
 <!-- Fixed AI-running toast (global) -->
 <div class="ai-toast" id="aiToast" role="status" aria-live="polite">
   <div class="ai-toast-spin"></div>
@@ -7736,5 +7745,25 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     </div>
   </div>
 </div>
+
+<!-- Bottom: Feedback -->
+<div style="max-width:1200px;margin:24px auto 32px;padding:0 24px;font-family:'DM Sans',system-ui,sans-serif">
+  <div style="padding:16px 20px;background:rgba(0,0,0,.25);border:1px solid rgba(201,168,76,.12);border-radius:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+      <div style="font-size:13px;color:#D4CAB8;font-weight:500">Was this helpful?</div>
+      <div style="display:flex;gap:8px">
+        <button type="button" onclick="this.style.background='rgba(107,170,117,.18)';this.style.borderColor='#6BAA75';this.style.color='#A8D4B0';this.textContent='\u2713 Thanks';setTimeout(function(){var el=document.getElementById('lfcFbMsg');if(el)el.focus();},200)" style="padding:7px 14px;background:rgba(0,0,0,.3);border:1px solid rgba(201,168,76,.2);border-radius:8px;color:#B8A882;font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s">&#128077; Yes</button>
+        <button type="button" onclick="this.style.background='rgba(192,113,79,.18)';this.style.borderColor='#C0714F';this.style.color='#E8A089';this.textContent='\u2717 Got it';setTimeout(function(){var el=document.getElementById('lfcFbMsg');if(el)el.focus();},200)" style="padding:7px 14px;background:rgba(0,0,0,.3);border:1px solid rgba(201,168,76,.2);border-radius:8px;color:#B8A882;font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s">&#128078; No</button>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <textarea id="lfcFbMsg" placeholder="What felt unclear or could be better?" rows="2" style="width:100%;padding:10px 12px;background:rgba(0,0,0,.35);border:1px solid rgba(201,168,76,.15);border-radius:8px;color:#F0E8D0;font-family:inherit;font-size:13px;line-height:1.5;resize:vertical;outline:none;box-sizing:border-box" onfocus="this.style.borderColor='#C9A84C'" onblur="this.style.borderColor='rgba(201,168,76,.15)'"></textarea>
+      <div style="display:flex;justify-content:flex-end;margin-top:8px">
+        <button type="button" onclick="var t=document.getElementById('lfcFbMsg').value.trim();if(!t){return;}var s='mailto:globalmastergroove@gmail.com?subject=LaForce%20feedback&body='+encodeURIComponent(t);window.location.href=s;this.textContent='Sent \u2713';this.style.color='#A8D4B0';" style="padding:7px 16px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);border-radius:8px;color:#E8CC7A;font-size:12px;font-weight:600;letter-spacing:.04em;cursor:pointer;font-family:inherit;transition:all .15s">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
