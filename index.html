@@ -2537,28 +2537,34 @@ async function runDeploy(){
   var cash=parseFloat(document.getElementById('cashAmt').value)||0;
   var style=document.getElementById('deployStyle').value;
   var notes=document.getElementById('deployNotes').value.trim();
-  if(!cash){alert('Enter a cash amount.');return;}
+  if(!cash){alert('Enter a cash amount to deploy.');return;}
   var out=document.getElementById('deployOutput');
-  out.innerHTML='<div class="thinking"><div class="spinner"></div>Structuring capital deployment for '+fmt$(cash)+'...</div>';
+  out.innerHTML='<div class="thinking"><div class="spinner"></div>Building your deployment plan for '+fmt$(cash)+'...</div>';
   var h=getHoldings();
-  var portCtx=h.length?h.map(function(x){return x.sym+'('+((x.mktVal/h.reduce(function(s,y){return s+y.mktVal;},0))*100).toFixed(0)+'%)';}).join(', '):'No portfolio loaded';
+  var portCtx=h.length?h.map(function(x){return x.sym+'('+(x.mktVal/h.reduce(function(s,y){return s+y.mktVal;},0)*100).toFixed(0)+'%)';}).join(', '):'No portfolio loaded';
   var now=new Date();
-  var dateStr=now.toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'})+' &middot; '+now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',timeZoneName:'short'});
-  var prompt='You are an elite institutional portfolio manager. Return ONLY valid JSON, zero markdown, zero explanation.\n\nDeploy $'+cash.toLocaleString()+' ('+style+' bias).\nExisting portfolio: '+portCtx+'\nMarket: '+_marketCtx.trend+' trend, VIX '+_marketCtx.vol+(notes?'\nGoals: '+notes:'')+'.\n\nReturn EXACTLY this JSON (all 3 strategies populated with 5-7 real tickers each):\n{"overview":"2-sentence strategy rationale","conservative":{"label":"Conservative","ornament":"a relevant investing quote","riskScore":"Risk &middot; X/10","upside":"Upside &middot; +X%","riskBody":"risk scenario 1-2 sentences","bullBody":"bull case 1-2 sentences","riskPoints":[["risk term","detail"],["risk term","detail"],["risk term","detail"]],"bullPoints":[["bull term","detail"],["bull term","detail"],["bull term","detail"]],"allocations":[{"sym":"TICKER","pct":0,"color":"#C9A84C","cls":"core"}],"totals":{"core":0,"growth":0,"tactical":0}},"balanced":{"label":"Balanced","ornament":"a relevant investing quote","riskScore":"Risk &middot; X/10","upside":"Upside &middot; +X%","riskBody":"risk scenario","bullBody":"bull case","riskPoints":[["term","detail"],["term","detail"],["term","detail"]],"bullPoints":[["term","detail"],["term","detail"],["term","detail"]],"allocations":[{"sym":"TICKER","pct":0,"color":"#C9A84C","cls":"core"}],"totals":{"core":0,"growth":0,"tactical":0}},"aggressive":{"label":"Aggressive","ornament":"a relevant investing quote","riskScore":"Risk &middot; X/10","upside":"Upside &middot; +X%","riskBody":"risk scenario","bullBody":"bull case","riskPoints":[["term","detail"],["term","detail"],["term","detail"]],"bullPoints":[["term","detail"],["term","detail"],["term","detail"]],"allocations":[{"sym":"TICKER","pct":0,"color":"#C9A84C","cls":"growth"}],"totals":{"core":0,"growth":0,"tactical":0}},"primary_risk":"main risk","upside_case":"bull case"}\n\nFor colors: core positions use #C9A84C, growth use #6BAA75, tactical/high-beta use #C0714F. Percentages must sum to 100 per strategy.';
+  var dateStr=now.toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'})+' - '+now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  var sysPrompt='You are an elite institutional portfolio manager. Respond with ONLY a valid JSON object. No markdown, no code fences, no explanation. Raw JSON only.';
+  var userPrompt='Deploy $'+cash.toLocaleString()+' with '+style+' risk.\nPortfolio: '+portCtx+'\nMarket: '+_marketCtx.trend+' trend, VIX '+_marketCtx.vol+(notes?'\nGoals: '+notes:'')+'.\n\nReturn ONLY this JSON with 5-7 real tickers per strategy, percentages sum to 100:\n{"overview":"2-sentence rationale","conservative":{"label":"Conservative","ornament":"quote","riskScore":"Risk 2/10","upside":"Upside +9%","riskBody":"risk 1-2 sentences","bullBody":"bull 1-2 sentences","riskPoints":[["Term","detail"],["Term","detail"],["Term","detail"]],"bullPoints":[["Term","detail"],["Term","detail"],["Term","detail"]],"allocations":[{"sym":"VOO","pct":55,"color":"#C9A84C","cls":"core"},{"sym":"SCHD","pct":25,"color":"#C9A84C","cls":"core"},{"sym":"AAPL","pct":10,"color":"#6BAA75","cls":"growth"},{"sym":"MSFT","pct":8,"color":"#6BAA75","cls":"growth"},{"sym":"GLD","pct":2,"color":"#C0714F","cls":"tactical"}],"totals":{"core":80,"growth":18,"tactical":2}},"balanced":{"label":"Balanced","ornament":"quote","riskScore":"Risk 4/10","upside":"Upside +18%","riskBody":"risk","bullBody":"bull","riskPoints":[["Term","d"],["Term","d"],["Term","d"]],"bullPoints":[["Term","d"],["Term","d"],["Term","d"]],"allocations":[{"sym":"VOO","pct":40,"color":"#C9A84C","cls":"core"},{"sym":"SCHD","pct":15,"color":"#C9A84C","cls":"core"},{"sym":"NVDA","pct":12,"color":"#6BAA75","cls":"growth"},{"sym":"AMZN","pct":10,"color":"#6BAA75","cls":"growth"},{"sym":"GOOGL","pct":8,"color":"#6BAA75","cls":"growth"},{"sym":"META","pct":7,"color":"#6BAA75","cls":"growth"},{"sym":"BTC","pct":8,"color":"#C0714F","cls":"tactical"}],"totals":{"core":55,"growth":37,"tactical":8}},"aggressive":{"label":"Aggressive","ornament":"quote","riskScore":"Risk 7/10","upside":"Upside +34%","riskBody":"risk","bullBody":"bull","riskPoints":[["Term","d"],["Term","d"],["Term","d"]],"bullPoints":[["Term","d"],["Term","d"],["Term","d"]],"allocations":[{"sym":"VOO","pct":25,"color":"#C9A84C","cls":"core"},{"sym":"NVDA","pct":20,"color":"#6BAA75","cls":"growth"},{"sym":"AMZN","pct":14,"color":"#6BAA75","cls":"growth"},{"sym":"GOOGL","pct":10,"color":"#6BAA75","cls":"growth"},{"sym":"META","pct":10,"color":"#6BAA75","cls":"growth"},{"sym":"BTC","pct":12,"color":"#C0714F","cls":"tactical"},{"sym":"IWM","pct":9,"color":"#C0714F","cls":"tactical"}],"totals":{"core":25,"growth":54,"tactical":21}}}';
   try{
-    var resp=await aiCall(prompt,SYS,2000);
+    var resp=await aiCall(userPrompt,sysPrompt,2400);
     var data;
     try{
-      var clean=resp.replace(/```json|```/g,'').trim();
-      var s=clean.indexOf('{');var e=clean.lastIndexOf('}');
-      if(s>-1&&e>s)clean=clean.substring(s,e+1);
+      var clean=resp.trim().replace(/^[sS]*?({)/,'$1').replace(/}[sS]*$/,'}'+'');
+      // Actually: find first { and last }
+      var fi=resp.indexOf('{');var li=resp.lastIndexOf('}');
+      if(fi>-1&&li>fi){clean=resp.substring(fi,li+1);}else{clean=resp;}
       data=JSON.parse(clean);
-    }catch(pe){out.innerHTML=renderDeployFallback(resp,cash);return;}
+    }catch(pe){
+      out.innerHTML=renderDeployFallback(resp,cash);
+      return;
+    }
     out.innerHTML=buildDeployPanel(data,cash,dateStr);
-    window._deployData=data;
-    window._deployCash=cash;
+    window._deployData=data;window._deployCash=cash;
     setDeployStrategy('balanced');
-  }catch(e){out.innerHTML='<div class="card" style="color:var(--clay);padding:20px">'+esc(e.message)+'</div>';}
+  }catch(e){
+    out.innerHTML='<div class="card" style="color:var(--clay);padding:20px">'+esc(e.message)+'</div>';
+  }
 }
 
 function buildDeployPanel(d,cash,dateStr){
@@ -2697,56 +2703,6 @@ function renderDeployFallback(text,cash){
 }
 
 
-async function runFeasibility(){
-  var h=getHoldings();if(!h.length){alert('Load holdings first');return;}
-  var fo=document.getElementById('feasOutput');var fc=document.getElementById('feasContent');
-  if(!fo||!fc)return;
-  fo.style.display='block';fc.innerHTML='<div class="thinking"><div class="spinner"></div>Running institutional portfolio feasibility analysis...</div>';
-  var total=h.reduce(function(s,x){return s+x.mktVal;},0);
-  var cost=h.reduce(function(s,x){return s+x.cost;},0);
-  var gain=total-cost;var pct=cost>0?(gain/cost*100):0;
-  var holdStr=h.sort(function(a,b){return b.mktVal-a.mktVal;}).slice(0,15).map(function(x){return x.sym+'('+x.pct.toFixed(1)+'%,$'+Math.round(x.mktVal/1000)+'k,'+(x.gain>=0?'+':'')+((x.gain/x.cost)*100).toFixed(0)+'%)';}).join(', ');
-  var recurringNote=_recurringInvestments.length?
-    'Recurring monthly investments: '+_recurringInvestments.map(function(r){return '$'+r.monthly+'/mo into '+r.sym;}).join(', ')+'. Factor this systematic DCA into the analysis and projections.'
-    :'No recurring investments detected.';
-  var prompt=[
-    'INSTITUTIONAL PORTFOLIO FEASIBILITY STUDY',
-    '',
-    'Portfolio: $'+Math.round(total).toLocaleString()+' total, $'+Math.round(cost).toLocaleString()+' invested, '+(gain>=0?'+':'')+pct.toFixed(1)+'% return.',
-    'Holdings: '+holdStr,
-    'Market: trend='+_marketCtx.trend+', vol='+_marketCtx.vol+', bias='+_marketCtx.bias,
-    recurringNote,
-    '',
-    'Write a comprehensive study with these exact sections:',
-    '',
-    'PORTFOLIO HEALTH',
-    'Grade this portfolio A+ to F. Explain grade in 2 sentences. List 3 strengths and 3 weaknesses.',
-    '',
-    'FRAMEWORK ANALYSIS',
-    'Assess Core (50-70%), Growth (20-40%), Tactical (0-20%) allocation. Show exact percentages. Flag gaps.',
-    '',
-    'GROWTH PROJECTIONS',
-    'Bear, base, bull case CAGR for 1, 3, 5 years. Project actual dollar values from $'+Math.round(total).toLocaleString()+'.',
-    'If recurring investments exist, show how the DCA compounds into the projection.',
-    '',
-    'ACTION PLAN',
-    '3 HIGH PRIORITY actions (30 days). 3 MEDIUM PRIORITY (90 days). 2 ONGOING habits.',
-    '',
-    'RECOMMENDED ADDITIONS',
-    '4-6 specific stocks/ETFs to add with allocation % and one-sentence reason each.',
-    '',
-    'BEHAVIORAL GUIDELINES',
-    '3 rules this investor should follow. 1 behavioral risk to watch.',
-    '',
-    'No markdown. No asterisks. Institutional prose.'
-  ].join('\n');
-  try{
-    var resp=await aiCall(prompt,SYS,2000);
-    renderFeasibility(resp,total,cost,gain,pct,h);
-    setTimeout(function(){buildStrategies(total);},300);
-  }catch(err){fc.innerHTML='<div class="thinking" style="border-color:var(--clay)">'+esc(err.message)+'</div>';}
-}
-
 function renderFeasibility(text,total,cost,gain,pct,h){
   var fc=document.getElementById('feasContent');
   var gradeMatch=text.match(/grade[d\s:]*([A-F][+-]?)/i);var grade=gradeMatch?gradeMatch[1]:'B';
@@ -2795,72 +2751,6 @@ function switchFeasTab(idx,btn){
 }
 
 // STRATEGIES
-async function buildStrategies(total){
-  var sp=document.getElementById('strategyPanel');if(!sp)return;
-  sp.style.display='block';
-  var profiles={
-    conservative:{rank:2,rec:false,color:'var(--sage)',bg:'rgba(107,170,117,.06)',border:'rgba(107,170,117,.25)',icon:'Shield',name:'Conservative',tag:'Protect & Grow Steadily',badge:'Ranked 2nd',cagr:{bear:2,base:6,bull:10},maxDD:15,alloc:{core:70,growth:20,tactical:10},
-      pros:['Lowest drawdown risk - survives any crash','Dividend income creates cash flow','Minimal emotional stress - sleep well','Outperforms in recessions','Ideal if portfolio is primary savings'],
-      cons:['Misses significant AI/tech bull market upside','Slower compounding','May barely beat inflation in flat markets','Frustrating watching growth names run','Sacrifices 8-15% annual upside vs aggressive'],
-      strategy:'Trim top positions to 15-18%. Deploy into VOO (20%) + SCHD (15%). Exit speculative. Target: 70% core, 20% quality growth, 10% tactical.',
-      bestFor:'Horizon under 7 years, primary savings, low risk tolerance, near major life event',
-      avoid:'Young investor with 15+ years - leaving significant wealth on the table'
-    },
-    balanced:{rank:1,rec:true,color:'var(--gold)',bg:'rgba(201,168,76,.06)',border:'rgba(201,168,76,.35)',icon:'Balance',name:'Balanced',tag:'Best Risk-Adjusted Returns',badge:'Recommended',cagr:{bear:4,base:12,bull:19},maxDD:28,alloc:{core:55,growth:35,tactical:10},
-      pros:['Best risk-adjusted returns over any 7-10 year period','Core foundation absorbs shocks - stay invested','Full AI/tech exposure without dangerous concentration','Framework-aligned with disciplined rebalancing','Automatic buy-low sell-high via rebalancing'],
-      cons:['25-30% drawdowns still possible in major corrections','Requires iron discipline to hold through volatility','Tech concentration remains moderate','Less upside than pure aggressive in extreme bull markets','Quarterly rebalancing required'],
-      strategy:'Trim top holding to 20%. Add VOO 20% + SCHD 10%. Keep NVDA, AMZN, MSFT, AAPL. Exit speculative names. DCA $500+/month into VOO on every dip.',
-      bestFor:'5-15 year horizon, can handle 25% temporary losses, stable income, systematic discipline',
-      avoid:'Need this money in under 5 years - keep larger cash allocation outside this account'
-    },
-    aggressive:{rank:3,rec:false,color:'var(--clay)',bg:'rgba(192,113,79,.06)',border:'rgba(192,113,79,.25)',icon:'Rocket',name:'Aggressive',tag:'Maximum Upside, Maximum Discipline',badge:'Ranked 3rd',cagr:{bear:-14,base:17,bull:30},maxDD:48,alloc:{core:30,growth:55,tactical:15},
-      pros:['Highest potential returns - doubles in 4-5 years','Maximum capture of AI revolution tailwinds','Asymmetric upside on NVDA, GOOGL, AMZN','Tactical sleeve allows high-conviction bets','Right if 10+ years and iron discipline'],
-      cons:['45-50% drawdown possible in 2008-style crash','All positions correlated - fall together','Zero income buffer from dividends','Behavioral risk is extreme - most panic sell lows','One bad year can set back 3 years of gains'],
-      strategy:'Hold growth core. Add NVDA on every 10%+ dip. Replace speculative with AVGO + AMD. 10% tactical for asymmetric bets. Strict no-sell rule for 24 months.',
-      bestFor:'10-20 year horizon, high income, proven emotional discipline, young accumulation phase',
-      avoid:'Emergency fund, retirement savings, or if you have ever panic-sold during a correction'
-    }
-  };
-  function projVal(cagr,years){var v=total;for(var m=0;m<years*12;m++)v*=(1+cagr/12/100);return v;}
-  var order=['conservative','balanced','aggressive'];
-  var gridHTML=order.map(function(key){
-    var p=profiles[key];
-    var y1={bear:projVal(p.cagr.bear,1),base:projVal(p.cagr.base,1),bull:projVal(p.cagr.bull,1)};
-    var y3={bear:projVal(p.cagr.bear,3),base:projVal(p.cagr.base,3),bull:projVal(p.cagr.bull,3)};
-    var y5={bear:projVal(p.cagr.bear,5),base:projVal(p.cagr.base,5),bull:projVal(p.cagr.bull,5)};
-    var btnStyle=p.rec?'background:'+p.color+';color:var(--noir);border-color:'+p.color+';':'color:'+p.color+';border-color:'+p.color+';background:transparent;';
-    return '<div class="sc2" data-strat-key="'+key+'" style="background:'+p.bg+';border-color:'+(p.rec?p.border:'rgba(201,168,76,.1)')+';'+(p.rec?'box-shadow:0 0 28px rgba(201,168,76,.06)':'')+'">'+
-      '<div class="sc2-badge" style="background:rgba(201,168,76,.1);color:'+p.color+'">'+p.badge+'</div>'+
-      '<div class="sc2-icon" style="color:'+p.color+'">&#9670;</div>'+
-      '<div class="sc2-name" style="color:'+p.color+'">'+p.name+'</div>'+
-      '<div class="sc2-tag">'+p.tag+'</div>'+
-      '<div class="sc2-abar"><div style="width:'+p.alloc.core+'%;background:'+p.color+';height:100%"></div><div style="width:'+p.alloc.growth+'%;background:'+p.color+';opacity:.5;height:100%"></div><div style="width:'+p.alloc.tactical+'%;background:'+p.color+';opacity:.25;height:100%"></div></div>'+
-      '<div style="font-size:9px;color:var(--text-3);margin-bottom:11px">Core '+p.alloc.core+'% &middot; Growth '+p.alloc.growth+'% &middot; Tactical '+p.alloc.tactical+'%</div>'+
-      '<div style="font-size:9px;letter-spacing:.1em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:7px">Projections from '+fmt$(total)+'</div>'+
-      '<div class="spg">'+[['1Y',y1],['3Y',y3],['5Y',y5]].map(function(yr){return '<div class="spgi"><div class="spgi-l">'+yr[0]+'</div><div class="spgi-v c-dn" style="font-size:10px">'+fmt$(yr[1].bear)+'</div><div class="spgi-v" style="font-size:11px;color:'+p.color+'">'+fmt$(yr[1].base)+'</div><div class="spgi-v c-up" style="font-size:10px">'+fmt$(yr[1].bull)+'</div></div>';}).join('')+'</div>'+
-      '<div style="padding:7px 9px;background:rgba(192,113,79,.08);border-radius:var(--r);margin-bottom:9px;font-size:11px"><span style="color:var(--clay);font-weight:600">Max drawdown '+p.maxDD+'%</span> - could drop to <strong style="color:var(--clay)">'+fmt$(total*(1-p.maxDD/100))+'</strong></div>'+
-      '<div class="pcg">'+
-        '<div class="pcb" style="background:rgba(107,170,117,.04)"><div class="pcb-l" style="color:var(--sage)">Pros</div>'+p.pros.map(function(x){return '<div class="pcitem" style="border-left-color:rgba(107,170,117,.3)">'+esc(x)+'</div>';}).join('')+'</div>'+
-        '<div class="pcb" style="background:rgba(192,113,79,.04)"><div class="pcb-l" style="color:var(--clay)">Cons</div>'+p.cons.map(function(x){return '<div class="pcitem" style="border-left-color:rgba(192,113,79,.3)">'+esc(x)+'</div>';}).join('')+'</div>'+
-      '</div>'+
-      '<div style="font-size:9px;letter-spacing:.1em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:5px">Execution Plan</div>'+
-      '<div style="font-size:11px;line-height:1.6;color:var(--text-1);margin-bottom:9px;padding:9px;background:rgba(0,0,0,.25);border-radius:var(--r)">'+esc(p.strategy)+'</div>'+
-      '<div class="g2" style="margin-bottom:11px">'+
-        '<div style="padding:7px;background:rgba(107,170,117,.04);border-radius:var(--r);border:1px solid rgba(107,170,117,.12)"><div style="font-size:8px;color:var(--sage);font-weight:700;text-transform:uppercase;margin-bottom:3px">Best for</div><div style="font-size:10px;color:var(--text-2);line-height:1.5">'+esc(p.bestFor)+'</div></div>'+
-        '<div style="padding:7px;background:rgba(192,113,79,.04);border-radius:var(--r);border:1px solid rgba(192,113,79,.12)"><div style="font-size:8px;color:var(--clay);font-weight:700;text-transform:uppercase;margin-bottom:3px">Avoid if</div><div style="font-size:10px;color:var(--text-2);line-height:1.5">'+esc(p.avoid)+'</div></div>'+
-      '</div>'+
-      '<button class="sc2-sbtn" style="'+btnStyle+'" onclick="selectStrategy(\''+key+'\')">'+
-        (p.rec?'Our Recommendation - Select':'Select This Strategy')+
-      '</button></div>';
-  }).join('');
-  document.getElementById('strategyGrid').innerHTML=gridHTML;
-  try{
-    var h=getHoldings();var holdStr2=h.slice(0,6).map(function(x){return x.sym+'('+x.pct.toFixed(0)+'%)';}).join(', ');
-    var aiRec=await aiCall('Portfolio: '+fmt$(total)+'. Holdings: '+holdStr2+'. Market: '+_marketCtx.trend+' trend.\n\nIn 3 sentences, explain why the Balanced strategy is the best choice for THIS specific portfolio right now. Mention specific numbers. End with one key behavioral warning. Be direct.',SYS,250);
-    var rb=document.getElementById('aiRecBanner');
-    if(rb)rb.innerHTML='<div class="card" style="background:rgba(201,168,76,.05);border-color:rgba(201,168,76,.22);margin-bottom:14px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:7px"><span style="font-size:13px">&#129302;</span><div style="font-size:9px;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;font-weight:700">AI Recommendation for Your Portfolio</div></div><div style="font-size:13px;line-height:1.75;color:var(--text-1)">'+esc(aiRec)+'</div></div>';
-  }catch(e){}
-}
 function selectStrategy(key){
   _selectedStrategy = key;
 
@@ -2996,38 +2886,6 @@ function selectStrategy(key){
 }
 
 // DEPLOY
-async function runDeploy(){
-  var cash=parseFloat(document.getElementById('cashAmt').value)||0;
-  var style=document.getElementById('deployStyle').value;
-  var holdings=document.getElementById('deployHoldings').value.trim();
-  var notes=document.getElementById('deployNotes').value.trim();
-  if(!cash){alert('Enter a cash amount to deploy.');return;}
-  var out=document.getElementById('deployOutput');
-  out.innerHTML='<div class="thinking"><div class="spinner"></div>Building capital deployment plan for '+fmt$(cash)+'...</div>';
-  var h=getHoldings();
-  var portCtx=h.length?h.map(function(x){return x.sym+'('+((x.mktVal/h.reduce(function(s,y){return s+y.mktVal;},0))*100).toFixed(0)+'%)';}).join(', '):'No portfolio loaded';
-  var prompt='You are an elite institutional portfolio manager. Return ONLY valid JSON -- no markdown, no explanation, no preamble.\n\nTask: Build a capital deployment plan.\nCash to deploy: $'+cash.toLocaleString()+'\nRisk style: '+style+'\nExisting portfolio: '+portCtx+'\nMarket regime: '+_marketCtx.trend+' trend, VIX '+_marketCtx.vol+(notes?'\nGoals: '+notes:'')+'\n\nReturn exactly this JSON (no extra fields):\n{"overview":"2-sentence strategy rationale","regime_note":"1-sentence current market context","conservative":{"allocations":[{"ticker":"X","amount":0,"reasoning":"thesis","risk":"Low","horizon":"3-6mo"}],"drawdown":"X%","thesis":"1 sentence"},"balanced":{"allocations":[{"ticker":"X","amount":0,"reasoning":"thesis","risk":"Med","horizon":"3-6mo"}],"drawdown":"X%","thesis":"1 sentence"},"aggressive":{"allocations":[{"ticker":"X","amount":0,"reasoning":"thesis","risk":"High","horizon":"3-12mo"}],"drawdown":"X%","thesis":"1 sentence"},"execution":{"timing":"when to buy","order_type":"Market or Limit","dca":"DCA schedule or N/A"},"primary_risk":"main risk in 1 sentence","upside_case":"bull case in 1 sentence"}';
-  try{
-    var resp=await aiCall(prompt,SYS,1800);
-    var data;
-    try{
-      var clean=resp.replace(/```json|```/g,'').trim();
-      // Find first { and last }
-      var s=clean.indexOf('{');var e=clean.lastIndexOf('}');
-      if(s>-1&&e>s)clean=clean.substring(s,e+1);
-      data=JSON.parse(clean);
-    }catch(pe){
-      out.innerHTML=renderDeployFallback(resp,cash);
-      return;
-    }
-    out.innerHTML=renderDeployVisual(data,cash);
-    // Init charts after render
-    setTimeout(function(){initDeployCharts(data,cash);},100);
-  }catch(e){
-    out.innerHTML='<div class="card" style="color:var(--clay);padding:20px">'+esc(e.message)+'</div>';
-  }
-}
-
 function renderDeployVisual(d,cash){
   var styles=['conservative','balanced','aggressive'];
   var styleNames=['Conservative','Balanced','Aggressive'];
@@ -3177,75 +3035,6 @@ function switchDeployTab(style){
   });
 }
 
-function renderDeployFallback(text,cash){
-  // Fallback renderer if JSON parse fails
-  var lines=text.split('\n');
-  return '<div class="card"><div style="margin-bottom:16px"><div style="font-size:9px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:8px">Capital Deployment -- '+fmt$(cash)+'</div></div>'
-    +lines.map(function(l){
-      var lt=l.trim();
-      if(!lt)return '<div style="height:8px"></div>';
-      if(/^\d+\.\s+[A-Z]/.test(lt))return '<div style="font-size:9px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;font-weight:700;margin:16px 0 8px;padding-top:14px;border-top:1px solid var(--border)">'+esc(lt)+'</div>';
-      var m=lt.match(/^([A-Z]{1,6})\s*[--]\s*(\$[\d,]+)\s*[--]\s*(\d+%)\s*[--]?\s*(.*)/);
-      if(m)return '<div style="display:flex;gap:12px;padding:10px 12px;margin-bottom:6px;background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg)">'
-        +'<div style="min-width:52px"><div style="font-family:DM Mono,monospace;font-size:14px;font-weight:600;color:var(--gold-light)">'+esc(m[1])+'</div>'
-        +'<div style="font-family:DM Mono,monospace;font-size:11px;color:var(--cream)">'+esc(m[2])+'</div>'
-        +'<div style="font-size:10px;color:var(--text-2)">'+esc(m[3])+'</div></div>'
-        +'<div style="font-size:12px;color:var(--text-1);line-height:1.6">'+esc(m[4])+'</div></div>';
-      return '<div style="font-size:13px;color:var(--text-1);line-height:1.7;margin-bottom:4px">'+esc(lt)+'</div>';
-    }).join('')+'</div>';
-}
-
-
-async function runFeasibility(){
-  var h=getHoldings();if(!h.length){alert('Load holdings first');return;}
-  var fo=document.getElementById('feasOutput');var fc=document.getElementById('feasContent');
-  if(!fo||!fc)return;
-  fo.style.display='block';fc.innerHTML='<div class="thinking"><div class="spinner"></div>Running institutional portfolio feasibility analysis...</div>';
-  var total=h.reduce(function(s,x){return s+x.mktVal;},0);
-  var cost=h.reduce(function(s,x){return s+x.cost;},0);
-  var gain=total-cost;var pct=cost>0?(gain/cost*100):0;
-  var holdStr=h.sort(function(a,b){return b.mktVal-a.mktVal;}).slice(0,15).map(function(x){return x.sym+'('+x.pct.toFixed(1)+'%,$'+Math.round(x.mktVal/1000)+'k,'+(x.gain>=0?'+':'')+((x.gain/x.cost)*100).toFixed(0)+'%)';}).join(', ');
-  var recurringNote=_recurringInvestments.length?
-    'Recurring monthly investments: '+_recurringInvestments.map(function(r){return '$'+r.monthly+'/mo into '+r.sym;}).join(', ')+'. Factor this systematic DCA into the analysis and projections.'
-    :'No recurring investments detected.';
-  var prompt=[
-    'INSTITUTIONAL PORTFOLIO FEASIBILITY STUDY',
-    '',
-    'Portfolio: $'+Math.round(total).toLocaleString()+' total, $'+Math.round(cost).toLocaleString()+' invested, '+(gain>=0?'+':'')+pct.toFixed(1)+'% return.',
-    'Holdings: '+holdStr,
-    'Market: trend='+_marketCtx.trend+', vol='+_marketCtx.vol+', bias='+_marketCtx.bias,
-    recurringNote,
-    '',
-    'Write a comprehensive study with these exact sections:',
-    '',
-    'PORTFOLIO HEALTH',
-    'Grade this portfolio A+ to F. Explain grade in 2 sentences. List 3 strengths and 3 weaknesses.',
-    '',
-    'FRAMEWORK ANALYSIS',
-    'Assess Core (50-70%), Growth (20-40%), Tactical (0-20%) allocation. Show exact percentages. Flag gaps.',
-    '',
-    'GROWTH PROJECTIONS',
-    'Bear, base, bull case CAGR for 1, 3, 5 years. Project actual dollar values from $'+Math.round(total).toLocaleString()+'.',
-    'If recurring investments exist, show how the DCA compounds into the projection.',
-    '',
-    'ACTION PLAN',
-    '3 HIGH PRIORITY actions (30 days). 3 MEDIUM PRIORITY (90 days). 2 ONGOING habits.',
-    '',
-    'RECOMMENDED ADDITIONS',
-    '4-6 specific stocks/ETFs to add with allocation % and one-sentence reason each.',
-    '',
-    'BEHAVIORAL GUIDELINES',
-    '3 rules this investor should follow. 1 behavioral risk to watch.',
-    '',
-    'No markdown. No asterisks. Institutional prose.'
-  ].join('\n');
-  try{
-    var resp=await aiCall(prompt,SYS,2000);
-    renderFeasibility(resp,total,cost,gain,pct,h);
-    setTimeout(function(){buildStrategies(total);},300);
-  }catch(err){fc.innerHTML='<div class="thinking" style="border-color:var(--clay)">'+esc(err.message)+'</div>';}
-}
-
 function renderFeasibility(text,total,cost,gain,pct,h){
   var fc=document.getElementById('feasContent');
   var gradeMatch=text.match(/grade[d\s:]*([A-F][+-]?)/i);var grade=gradeMatch?gradeMatch[1]:'B';
@@ -3294,72 +3083,6 @@ function switchFeasTab(idx,btn){
 }
 
 // STRATEGIES
-async function buildStrategies(total){
-  var sp=document.getElementById('strategyPanel');if(!sp)return;
-  sp.style.display='block';
-  var profiles={
-    conservative:{rank:2,rec:false,color:'var(--sage)',bg:'rgba(107,170,117,.06)',border:'rgba(107,170,117,.25)',icon:'Shield',name:'Conservative',tag:'Protect & Grow Steadily',badge:'Ranked 2nd',cagr:{bear:2,base:6,bull:10},maxDD:15,alloc:{core:70,growth:20,tactical:10},
-      pros:['Lowest drawdown risk - survives any crash','Dividend income creates cash flow','Minimal emotional stress - sleep well','Outperforms in recessions','Ideal if portfolio is primary savings'],
-      cons:['Misses significant AI/tech bull market upside','Slower compounding','May barely beat inflation in flat markets','Frustrating watching growth names run','Sacrifices 8-15% annual upside vs aggressive'],
-      strategy:'Trim top positions to 15-18%. Deploy into VOO (20%) + SCHD (15%). Exit speculative. Target: 70% core, 20% quality growth, 10% tactical.',
-      bestFor:'Horizon under 7 years, primary savings, low risk tolerance, near major life event',
-      avoid:'Young investor with 15+ years - leaving significant wealth on the table'
-    },
-    balanced:{rank:1,rec:true,color:'var(--gold)',bg:'rgba(201,168,76,.06)',border:'rgba(201,168,76,.35)',icon:'Balance',name:'Balanced',tag:'Best Risk-Adjusted Returns',badge:'Recommended',cagr:{bear:4,base:12,bull:19},maxDD:28,alloc:{core:55,growth:35,tactical:10},
-      pros:['Best risk-adjusted returns over any 7-10 year period','Core foundation absorbs shocks - stay invested','Full AI/tech exposure without dangerous concentration','Framework-aligned with disciplined rebalancing','Automatic buy-low sell-high via rebalancing'],
-      cons:['25-30% drawdowns still possible in major corrections','Requires iron discipline to hold through volatility','Tech concentration remains moderate','Less upside than pure aggressive in extreme bull markets','Quarterly rebalancing required'],
-      strategy:'Trim top holding to 20%. Add VOO 20% + SCHD 10%. Keep NVDA, AMZN, MSFT, AAPL. Exit speculative names. DCA $500+/month into VOO on every dip.',
-      bestFor:'5-15 year horizon, can handle 25% temporary losses, stable income, systematic discipline',
-      avoid:'Need this money in under 5 years - keep larger cash allocation outside this account'
-    },
-    aggressive:{rank:3,rec:false,color:'var(--clay)',bg:'rgba(192,113,79,.06)',border:'rgba(192,113,79,.25)',icon:'Rocket',name:'Aggressive',tag:'Maximum Upside, Maximum Discipline',badge:'Ranked 3rd',cagr:{bear:-14,base:17,bull:30},maxDD:48,alloc:{core:30,growth:55,tactical:15},
-      pros:['Highest potential returns - doubles in 4-5 years','Maximum capture of AI revolution tailwinds','Asymmetric upside on NVDA, GOOGL, AMZN','Tactical sleeve allows high-conviction bets','Right if 10+ years and iron discipline'],
-      cons:['45-50% drawdown possible in 2008-style crash','All positions correlated - fall together','Zero income buffer from dividends','Behavioral risk is extreme - most panic sell lows','One bad year can set back 3 years of gains'],
-      strategy:'Hold growth core. Add NVDA on every 10%+ dip. Replace speculative with AVGO + AMD. 10% tactical for asymmetric bets. Strict no-sell rule for 24 months.',
-      bestFor:'10-20 year horizon, high income, proven emotional discipline, young accumulation phase',
-      avoid:'Emergency fund, retirement savings, or if you have ever panic-sold during a correction'
-    }
-  };
-  function projVal(cagr,years){var v=total;for(var m=0;m<years*12;m++)v*=(1+cagr/12/100);return v;}
-  var order=['conservative','balanced','aggressive'];
-  var gridHTML=order.map(function(key){
-    var p=profiles[key];
-    var y1={bear:projVal(p.cagr.bear,1),base:projVal(p.cagr.base,1),bull:projVal(p.cagr.bull,1)};
-    var y3={bear:projVal(p.cagr.bear,3),base:projVal(p.cagr.base,3),bull:projVal(p.cagr.bull,3)};
-    var y5={bear:projVal(p.cagr.bear,5),base:projVal(p.cagr.base,5),bull:projVal(p.cagr.bull,5)};
-    var btnStyle=p.rec?'background:'+p.color+';color:var(--noir);border-color:'+p.color+';':'color:'+p.color+';border-color:'+p.color+';background:transparent;';
-    return '<div class="sc2" data-strat-key="'+key+'" style="background:'+p.bg+';border-color:'+(p.rec?p.border:'rgba(201,168,76,.1)')+';'+(p.rec?'box-shadow:0 0 28px rgba(201,168,76,.06)':'')+'">'+
-      '<div class="sc2-badge" style="background:rgba(201,168,76,.1);color:'+p.color+'">'+p.badge+'</div>'+
-      '<div class="sc2-icon" style="color:'+p.color+'">&#9670;</div>'+
-      '<div class="sc2-name" style="color:'+p.color+'">'+p.name+'</div>'+
-      '<div class="sc2-tag">'+p.tag+'</div>'+
-      '<div class="sc2-abar"><div style="width:'+p.alloc.core+'%;background:'+p.color+';height:100%"></div><div style="width:'+p.alloc.growth+'%;background:'+p.color+';opacity:.5;height:100%"></div><div style="width:'+p.alloc.tactical+'%;background:'+p.color+';opacity:.25;height:100%"></div></div>'+
-      '<div style="font-size:9px;color:var(--text-3);margin-bottom:11px">Core '+p.alloc.core+'% &middot; Growth '+p.alloc.growth+'% &middot; Tactical '+p.alloc.tactical+'%</div>'+
-      '<div style="font-size:9px;letter-spacing:.1em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:7px">Projections from '+fmt$(total)+'</div>'+
-      '<div class="spg">'+[['1Y',y1],['3Y',y3],['5Y',y5]].map(function(yr){return '<div class="spgi"><div class="spgi-l">'+yr[0]+'</div><div class="spgi-v c-dn" style="font-size:10px">'+fmt$(yr[1].bear)+'</div><div class="spgi-v" style="font-size:11px;color:'+p.color+'">'+fmt$(yr[1].base)+'</div><div class="spgi-v c-up" style="font-size:10px">'+fmt$(yr[1].bull)+'</div></div>';}).join('')+'</div>'+
-      '<div style="padding:7px 9px;background:rgba(192,113,79,.08);border-radius:var(--r);margin-bottom:9px;font-size:11px"><span style="color:var(--clay);font-weight:600">Max drawdown '+p.maxDD+'%</span> - could drop to <strong style="color:var(--clay)">'+fmt$(total*(1-p.maxDD/100))+'</strong></div>'+
-      '<div class="pcg">'+
-        '<div class="pcb" style="background:rgba(107,170,117,.04)"><div class="pcb-l" style="color:var(--sage)">Pros</div>'+p.pros.map(function(x){return '<div class="pcitem" style="border-left-color:rgba(107,170,117,.3)">'+esc(x)+'</div>';}).join('')+'</div>'+
-        '<div class="pcb" style="background:rgba(192,113,79,.04)"><div class="pcb-l" style="color:var(--clay)">Cons</div>'+p.cons.map(function(x){return '<div class="pcitem" style="border-left-color:rgba(192,113,79,.3)">'+esc(x)+'</div>';}).join('')+'</div>'+
-      '</div>'+
-      '<div style="font-size:9px;letter-spacing:.1em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:5px">Execution Plan</div>'+
-      '<div style="font-size:11px;line-height:1.6;color:var(--text-1);margin-bottom:9px;padding:9px;background:rgba(0,0,0,.25);border-radius:var(--r)">'+esc(p.strategy)+'</div>'+
-      '<div class="g2" style="margin-bottom:11px">'+
-        '<div style="padding:7px;background:rgba(107,170,117,.04);border-radius:var(--r);border:1px solid rgba(107,170,117,.12)"><div style="font-size:8px;color:var(--sage);font-weight:700;text-transform:uppercase;margin-bottom:3px">Best for</div><div style="font-size:10px;color:var(--text-2);line-height:1.5">'+esc(p.bestFor)+'</div></div>'+
-        '<div style="padding:7px;background:rgba(192,113,79,.04);border-radius:var(--r);border:1px solid rgba(192,113,79,.12)"><div style="font-size:8px;color:var(--clay);font-weight:700;text-transform:uppercase;margin-bottom:3px">Avoid if</div><div style="font-size:10px;color:var(--text-2);line-height:1.5">'+esc(p.avoid)+'</div></div>'+
-      '</div>'+
-      '<button class="sc2-sbtn" style="'+btnStyle+'" onclick="selectStrategy(\''+key+'\')">'+
-        (p.rec?'Our Recommendation - Select':'Select This Strategy')+
-      '</button></div>';
-  }).join('');
-  document.getElementById('strategyGrid').innerHTML=gridHTML;
-  try{
-    var h=getHoldings();var holdStr2=h.slice(0,6).map(function(x){return x.sym+'('+x.pct.toFixed(0)+'%)';}).join(', ');
-    var aiRec=await aiCall('Portfolio: '+fmt$(total)+'. Holdings: '+holdStr2+'. Market: '+_marketCtx.trend+' trend.\n\nIn 3 sentences, explain why the Balanced strategy is the best choice for THIS specific portfolio right now. Mention specific numbers. End with one key behavioral warning. Be direct.',SYS,250);
-    var rb=document.getElementById('aiRecBanner');
-    if(rb)rb.innerHTML='<div class="card" style="background:rgba(201,168,76,.05);border-color:rgba(201,168,76,.22);margin-bottom:14px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:7px"><span style="font-size:13px">&#129302;</span><div style="font-size:9px;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;font-weight:700">AI Recommendation for Your Portfolio</div></div><div style="font-size:13px;line-height:1.75;color:var(--text-1)">'+esc(aiRec)+'</div></div>';
-  }catch(e){}
-}
 function selectStrategy(key){
   _selectedStrategy = key;
 
@@ -3495,39 +3218,6 @@ function selectStrategy(key){
 }
 
 // DEPLOY
-async function runDeploy(){
-  var cash=parseFloat(document.getElementById('cashAmt').value)||0;
-  var style=document.getElementById('deployStyle').value;
-  var holdings=document.getElementById('deployHoldings').value.trim();
-  var notes=document.getElementById('deployNotes').value.trim();
-  if(!cash){alert('Enter cash amount');return;}
-  var out=document.getElementById('deployOutput');
-  out.innerHTML='<div class="thinking"><div class="spinner"></div>Building deployment plan for '+fmt$(cash)+'...</div>';
-
-  // Get portfolio context
-  var h=getHoldings();
-  var portCtx=h.length?h.map(function(x){return x.sym+'('+((x.mktVal/h.reduce(function(s,y){return s+y.mktVal;},0))*100).toFixed(0)+'%)';}).join(', '):'No portfolio loaded';
-
-  var prompt='You are an elite institutional portfolio manager. Return ONLY valid JSON, no other text.\n\nTask: Create a capital deployment plan.\n\nInputs:\n- Cash to deploy: $'+cash.toLocaleString()+'\n- Style: '+style+'\n- Existing portfolio: '+portCtx+'\n- Market regime: '+_marketCtx.trend+' trend, VIX '+_marketCtx.vol+'\n'+(holdings?'- Additional context: '+holdings+'\n':'')+(notes?'- Goals: '+notes+'\n':'')+'\nReturn this exact JSON structure:\n{\n  "overview": "2-sentence strategy rationale",\n  "regime_note": "1 sentence on current market conditions",\n  "allocations": [\n    {"ticker":"NVDA","amount":250,"pct":25,"action":"Buy","reasoning":"One sentence thesis","risk":"Low/Med/High","horizon":"3-6mo"}\n  ],\n  "execution": {\n    "timing": "When to execute",\n    "order_type": "Market/Limit",\n    "dca": "DCA schedule or N/A"\n  },\n  "max_drawdown": "Expected worst case %",\n  "primary_risk": "Main risk in one sentence",\n  "upside_case": "Bull case in one sentence"\n}';
-
-  try{
-    var resp=await aiCall(prompt,SYS,1400);
-    // Parse JSON from response
-    var data;
-    try{
-      var clean=resp.replace(/```json|```/g,'').trim();
-      data=JSON.parse(clean);
-    }catch(pe){
-      // Fallback: render as styled text
-      out.innerHTML=renderDeployText(resp,cash);
-      return;
-    }
-    out.innerHTML=renderDeployCard(data,cash);
-  }catch(e){
-    out.innerHTML='<div class="card" style="color:var(--clay)">'+esc(e.message)+'</div>';
-  }
-}
-
 function renderDeployCard(d,cash){
   var riskColor={'Low':'var(--sage)','Med':'var(--gold)','Medium':'var(--gold)','High':'var(--clay)','Very High':'var(--clay)'};
   var total=d.allocations?d.allocations.reduce(function(s,a){return s+(a.amount||0);},0):cash;
@@ -3630,56 +3320,6 @@ function renderDeployText(text,cash){
 }
 
 
-async function runFeasibility(){
-  var h=getHoldings();if(!h.length){alert('Load holdings first');return;}
-  var fo=document.getElementById('feasOutput');var fc=document.getElementById('feasContent');
-  if(!fo||!fc)return;
-  fo.style.display='block';fc.innerHTML='<div class="thinking"><div class="spinner"></div>Running institutional portfolio feasibility analysis...</div>';
-  var total=h.reduce(function(s,x){return s+x.mktVal;},0);
-  var cost=h.reduce(function(s,x){return s+x.cost;},0);
-  var gain=total-cost;var pct=cost>0?(gain/cost*100):0;
-  var holdStr=h.sort(function(a,b){return b.mktVal-a.mktVal;}).slice(0,15).map(function(x){return x.sym+'('+x.pct.toFixed(1)+'%,$'+Math.round(x.mktVal/1000)+'k,'+(x.gain>=0?'+':'')+((x.gain/x.cost)*100).toFixed(0)+'%)';}).join(', ');
-  var recurringNote=_recurringInvestments.length?
-    'Recurring monthly investments: '+_recurringInvestments.map(function(r){return '$'+r.monthly+'/mo into '+r.sym;}).join(', ')+'. Factor this systematic DCA into the analysis and projections.'
-    :'No recurring investments detected.';
-  var prompt=[
-    'INSTITUTIONAL PORTFOLIO FEASIBILITY STUDY',
-    '',
-    'Portfolio: $'+Math.round(total).toLocaleString()+' total, $'+Math.round(cost).toLocaleString()+' invested, '+(gain>=0?'+':'')+pct.toFixed(1)+'% return.',
-    'Holdings: '+holdStr,
-    'Market: trend='+_marketCtx.trend+', vol='+_marketCtx.vol+', bias='+_marketCtx.bias,
-    recurringNote,
-    '',
-    'Write a comprehensive study with these exact sections:',
-    '',
-    'PORTFOLIO HEALTH',
-    'Grade this portfolio A+ to F. Explain grade in 2 sentences. List 3 strengths and 3 weaknesses.',
-    '',
-    'FRAMEWORK ANALYSIS',
-    'Assess Core (50-70%), Growth (20-40%), Tactical (0-20%) allocation. Show exact percentages. Flag gaps.',
-    '',
-    'GROWTH PROJECTIONS',
-    'Bear, base, bull case CAGR for 1, 3, 5 years. Project actual dollar values from $'+Math.round(total).toLocaleString()+'.',
-    'If recurring investments exist, show how the DCA compounds into the projection.',
-    '',
-    'ACTION PLAN',
-    '3 HIGH PRIORITY actions (30 days). 3 MEDIUM PRIORITY (90 days). 2 ONGOING habits.',
-    '',
-    'RECOMMENDED ADDITIONS',
-    '4-6 specific stocks/ETFs to add with allocation % and one-sentence reason each.',
-    '',
-    'BEHAVIORAL GUIDELINES',
-    '3 rules this investor should follow. 1 behavioral risk to watch.',
-    '',
-    'No markdown. No asterisks. Institutional prose.'
-  ].join('\n');
-  try{
-    var resp=await aiCall(prompt,SYS,2000);
-    renderFeasibility(resp,total,cost,gain,pct,h);
-    setTimeout(function(){buildStrategies(total);},300);
-  }catch(err){fc.innerHTML='<div class="thinking" style="border-color:var(--clay)">'+esc(err.message)+'</div>';}
-}
-
 function renderFeasibility(text,total,cost,gain,pct,h){
   var fc=document.getElementById('feasContent');
   var gradeMatch=text.match(/grade[d\s:]*([A-F][+-]?)/i);var grade=gradeMatch?gradeMatch[1]:'B';
@@ -3728,72 +3368,6 @@ function switchFeasTab(idx,btn){
 }
 
 // STRATEGIES
-async function buildStrategies(total){
-  var sp=document.getElementById('strategyPanel');if(!sp)return;
-  sp.style.display='block';
-  var profiles={
-    conservative:{rank:2,rec:false,color:'var(--sage)',bg:'rgba(107,170,117,.06)',border:'rgba(107,170,117,.25)',icon:'Shield',name:'Conservative',tag:'Protect & Grow Steadily',badge:'Ranked 2nd',cagr:{bear:2,base:6,bull:10},maxDD:15,alloc:{core:70,growth:20,tactical:10},
-      pros:['Lowest drawdown risk - survives any crash','Dividend income creates cash flow','Minimal emotional stress - sleep well','Outperforms in recessions','Ideal if portfolio is primary savings'],
-      cons:['Misses significant AI/tech bull market upside','Slower compounding','May barely beat inflation in flat markets','Frustrating watching growth names run','Sacrifices 8-15% annual upside vs aggressive'],
-      strategy:'Trim top positions to 15-18%. Deploy into VOO (20%) + SCHD (15%). Exit speculative. Target: 70% core, 20% quality growth, 10% tactical.',
-      bestFor:'Horizon under 7 years, primary savings, low risk tolerance, near major life event',
-      avoid:'Young investor with 15+ years - leaving significant wealth on the table'
-    },
-    balanced:{rank:1,rec:true,color:'var(--gold)',bg:'rgba(201,168,76,.06)',border:'rgba(201,168,76,.35)',icon:'Balance',name:'Balanced',tag:'Best Risk-Adjusted Returns',badge:'Recommended',cagr:{bear:4,base:12,bull:19},maxDD:28,alloc:{core:55,growth:35,tactical:10},
-      pros:['Best risk-adjusted returns over any 7-10 year period','Core foundation absorbs shocks - stay invested','Full AI/tech exposure without dangerous concentration','Framework-aligned with disciplined rebalancing','Automatic buy-low sell-high via rebalancing'],
-      cons:['25-30% drawdowns still possible in major corrections','Requires iron discipline to hold through volatility','Tech concentration remains moderate','Less upside than pure aggressive in extreme bull markets','Quarterly rebalancing required'],
-      strategy:'Trim top holding to 20%. Add VOO 20% + SCHD 10%. Keep NVDA, AMZN, MSFT, AAPL. Exit speculative names. DCA $500+/month into VOO on every dip.',
-      bestFor:'5-15 year horizon, can handle 25% temporary losses, stable income, systematic discipline',
-      avoid:'Need this money in under 5 years - keep larger cash allocation outside this account'
-    },
-    aggressive:{rank:3,rec:false,color:'var(--clay)',bg:'rgba(192,113,79,.06)',border:'rgba(192,113,79,.25)',icon:'Rocket',name:'Aggressive',tag:'Maximum Upside, Maximum Discipline',badge:'Ranked 3rd',cagr:{bear:-14,base:17,bull:30},maxDD:48,alloc:{core:30,growth:55,tactical:15},
-      pros:['Highest potential returns - doubles in 4-5 years','Maximum capture of AI revolution tailwinds','Asymmetric upside on NVDA, GOOGL, AMZN','Tactical sleeve allows high-conviction bets','Right if 10+ years and iron discipline'],
-      cons:['45-50% drawdown possible in 2008-style crash','All positions correlated - fall together','Zero income buffer from dividends','Behavioral risk is extreme - most panic sell lows','One bad year can set back 3 years of gains'],
-      strategy:'Hold growth core. Add NVDA on every 10%+ dip. Replace speculative with AVGO + AMD. 10% tactical for asymmetric bets. Strict no-sell rule for 24 months.',
-      bestFor:'10-20 year horizon, high income, proven emotional discipline, young accumulation phase',
-      avoid:'Emergency fund, retirement savings, or if you have ever panic-sold during a correction'
-    }
-  };
-  function projVal(cagr,years){var v=total;for(var m=0;m<years*12;m++)v*=(1+cagr/12/100);return v;}
-  var order=['conservative','balanced','aggressive'];
-  var gridHTML=order.map(function(key){
-    var p=profiles[key];
-    var y1={bear:projVal(p.cagr.bear,1),base:projVal(p.cagr.base,1),bull:projVal(p.cagr.bull,1)};
-    var y3={bear:projVal(p.cagr.bear,3),base:projVal(p.cagr.base,3),bull:projVal(p.cagr.bull,3)};
-    var y5={bear:projVal(p.cagr.bear,5),base:projVal(p.cagr.base,5),bull:projVal(p.cagr.bull,5)};
-    var btnStyle=p.rec?'background:'+p.color+';color:var(--noir);border-color:'+p.color+';':'color:'+p.color+';border-color:'+p.color+';background:transparent;';
-    return '<div class="sc2" data-strat-key="'+key+'" style="background:'+p.bg+';border-color:'+(p.rec?p.border:'rgba(201,168,76,.1)')+';'+(p.rec?'box-shadow:0 0 28px rgba(201,168,76,.06)':'')+'">'+
-      '<div class="sc2-badge" style="background:rgba(201,168,76,.1);color:'+p.color+'">'+p.badge+'</div>'+
-      '<div class="sc2-icon" style="color:'+p.color+'">&#9670;</div>'+
-      '<div class="sc2-name" style="color:'+p.color+'">'+p.name+'</div>'+
-      '<div class="sc2-tag">'+p.tag+'</div>'+
-      '<div class="sc2-abar"><div style="width:'+p.alloc.core+'%;background:'+p.color+';height:100%"></div><div style="width:'+p.alloc.growth+'%;background:'+p.color+';opacity:.5;height:100%"></div><div style="width:'+p.alloc.tactical+'%;background:'+p.color+';opacity:.25;height:100%"></div></div>'+
-      '<div style="font-size:9px;color:var(--text-3);margin-bottom:11px">Core '+p.alloc.core+'% &middot; Growth '+p.alloc.growth+'% &middot; Tactical '+p.alloc.tactical+'%</div>'+
-      '<div style="font-size:9px;letter-spacing:.1em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:7px">Projections from '+fmt$(total)+'</div>'+
-      '<div class="spg">'+[['1Y',y1],['3Y',y3],['5Y',y5]].map(function(yr){return '<div class="spgi"><div class="spgi-l">'+yr[0]+'</div><div class="spgi-v c-dn" style="font-size:10px">'+fmt$(yr[1].bear)+'</div><div class="spgi-v" style="font-size:11px;color:'+p.color+'">'+fmt$(yr[1].base)+'</div><div class="spgi-v c-up" style="font-size:10px">'+fmt$(yr[1].bull)+'</div></div>';}).join('')+'</div>'+
-      '<div style="padding:7px 9px;background:rgba(192,113,79,.08);border-radius:var(--r);margin-bottom:9px;font-size:11px"><span style="color:var(--clay);font-weight:600">Max drawdown '+p.maxDD+'%</span> - could drop to <strong style="color:var(--clay)">'+fmt$(total*(1-p.maxDD/100))+'</strong></div>'+
-      '<div class="pcg">'+
-        '<div class="pcb" style="background:rgba(107,170,117,.04)"><div class="pcb-l" style="color:var(--sage)">Pros</div>'+p.pros.map(function(x){return '<div class="pcitem" style="border-left-color:rgba(107,170,117,.3)">'+esc(x)+'</div>';}).join('')+'</div>'+
-        '<div class="pcb" style="background:rgba(192,113,79,.04)"><div class="pcb-l" style="color:var(--clay)">Cons</div>'+p.cons.map(function(x){return '<div class="pcitem" style="border-left-color:rgba(192,113,79,.3)">'+esc(x)+'</div>';}).join('')+'</div>'+
-      '</div>'+
-      '<div style="font-size:9px;letter-spacing:.1em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:5px">Execution Plan</div>'+
-      '<div style="font-size:11px;line-height:1.6;color:var(--text-1);margin-bottom:9px;padding:9px;background:rgba(0,0,0,.25);border-radius:var(--r)">'+esc(p.strategy)+'</div>'+
-      '<div class="g2" style="margin-bottom:11px">'+
-        '<div style="padding:7px;background:rgba(107,170,117,.04);border-radius:var(--r);border:1px solid rgba(107,170,117,.12)"><div style="font-size:8px;color:var(--sage);font-weight:700;text-transform:uppercase;margin-bottom:3px">Best for</div><div style="font-size:10px;color:var(--text-2);line-height:1.5">'+esc(p.bestFor)+'</div></div>'+
-        '<div style="padding:7px;background:rgba(192,113,79,.04);border-radius:var(--r);border:1px solid rgba(192,113,79,.12)"><div style="font-size:8px;color:var(--clay);font-weight:700;text-transform:uppercase;margin-bottom:3px">Avoid if</div><div style="font-size:10px;color:var(--text-2);line-height:1.5">'+esc(p.avoid)+'</div></div>'+
-      '</div>'+
-      '<button class="sc2-sbtn" style="'+btnStyle+'" onclick="selectStrategy(\''+key+'\')">'+
-        (p.rec?'Our Recommendation - Select':'Select This Strategy')+
-      '</button></div>';
-  }).join('');
-  document.getElementById('strategyGrid').innerHTML=gridHTML;
-  try{
-    var h=getHoldings();var holdStr2=h.slice(0,6).map(function(x){return x.sym+'('+x.pct.toFixed(0)+'%)';}).join(', ');
-    var aiRec=await aiCall('Portfolio: '+fmt$(total)+'. Holdings: '+holdStr2+'. Market: '+_marketCtx.trend+' trend.\n\nIn 3 sentences, explain why the Balanced strategy is the best choice for THIS specific portfolio right now. Mention specific numbers. End with one key behavioral warning. Be direct.',SYS,250);
-    var rb=document.getElementById('aiRecBanner');
-    if(rb)rb.innerHTML='<div class="card" style="background:rgba(201,168,76,.05);border-color:rgba(201,168,76,.22);margin-bottom:14px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:7px"><span style="font-size:13px">&#129302;</span><div style="font-size:9px;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;font-weight:700">AI Recommendation for Your Portfolio</div></div><div style="font-size:13px;line-height:1.75;color:var(--text-1)">'+esc(aiRec)+'</div></div>';
-  }catch(e){}
-}
 function selectStrategy(key){
   _selectedStrategy = key;
 
@@ -3929,20 +3503,6 @@ function selectStrategy(key){
 }
 
 // DEPLOY
-async function runDeploy(){
-  var cash=parseFloat(document.getElementById('cashAmt').value)||0;
-  var style=document.getElementById('deployStyle').value;
-  var holdings=document.getElementById('deployHoldings').value.trim();
-  var notes=document.getElementById('deployNotes').value.trim();
-  if(!cash){alert('Enter cash amount');return;}
-  var out=document.getElementById('deployOutput');
-  out.innerHTML='<div class="thinking"><div class="spinner"></div>Building deployment plan for '+fmt$(cash)+'...</div>';
-  var prompt='CAPITAL DEPLOYMENT PLAN\n\nCash: $'+cash.toLocaleString()+'\nStyle: '+style+'\n'+(holdings?'Holdings: '+holdings+'\n':'')+(notes?'Goals: '+notes+'\n':'')+'\nMarket: '+_marketCtx.trend+' trend, VIX '+_marketCtx.vol+'.\n\n1. STRATEGY OVERVIEW: 2 sentences on the approach\n\n2. STRUCTURED ALLOCATION (allocate 100% of $'+cash.toLocaleString()+')\nFor each position: Ticker, Dollar amount, % of cash, Reason (1 sentence). Include 4-7 positions.\n\n3. AGGRESSIVE ALLOCATION\nAlternative higher-risk version. Same format.\n\n4. EXECUTION NOTES\nWhen to buy, order type, DCA schedule if applicable\n\n5. RISK NOTE: Main risk of this deployment\n\nNo markdown. Be specific and decisive.';
-  try{
-    var resp=await aiCall(prompt,SYS,1200);
-    out.innerHTML='<div class="card">'+resp.split('\n').map(function(l){var lt=l.trim();if(!lt)return '';if(/^\d+\.\s+[A-Z]/.test(lt))return '<div style="font-size:10px;letter-spacing:.12em;color:var(--text-2);text-transform:uppercase;font-weight:600;margin:15px 0 5px">'+esc(lt)+'</div>';return '<div style="font-size:13px;line-height:1.7;color:var(--text-1);margin-bottom:5px">'+esc(lt)+'</div>';}).join('')+'</div>';
-  }catch(err){out.innerHTML='<div class="thinking" style="border-color:var(--clay)">'+esc(err.message)+'</div>';}
-}
 function quickDeploy(amount,style){document.getElementById('cashAmt').value=amount;document.getElementById('deployStyle').value=style;runDeploy();}
 
 // MARKET
@@ -4490,7 +4050,7 @@ function generateReport(){
   var sec1='<div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:#C9A84C;border-bottom:1px solid #C9A84C;padding-bottom:6px;margin-bottom:16px">Part I &mdash; Executive Summary</div>';
   var sec2='<div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:#C9A84C;border-bottom:1px solid #C9A84C;padding-bottom:6px;margin-bottom:16px">Part II &mdash; In-Depth Analysis</div>';
   var g=gain>=0;var gColor=g?'#2a7a3a':'#9a1a1a';
-  var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>LaForce Capital - Private Wealth Intelligence</title><link href="'+fonts+'" rel="stylesheet"><style>'+css+'</style></head><body><div class="rp">'
+  var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>LaForce Capital - Private Wealth Intelligence</title><link href="'+fonts+'" rel="stylesheet"><style>'+css+'<\/style></head><body><div class="rp">'
     +'<div style="text-align:center;padding:44px 0;border-bottom:3px solid #C9A84C;margin-bottom:32px">'
     +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:38px;font-weight:300;margin-bottom:4px">La<em style="font-style:italic;color:#C9A84C">Force</em></div>'
     +'<div style="font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:#aaa;margin-bottom:22px">Capital &bull; Private Wealth Intelligence</div>'
