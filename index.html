@@ -2325,6 +2325,10 @@ function parseCSV(csv){
       var p = cleaned.split(d).map(function(s){return s.trim();}).filter(Boolean);
       if(p.length > parts.length) parts = p;
     });
+    // F. Fallback: if fewer than 2 parts, try single whitespace
+    if(parts.length<2){
+      parts = cleaned.split(/\s+/).map(function(s){return s.trim();}).filter(Boolean);
+    }
     if(parts.length<2)return;
     var sym=(parts[0]||'').toUpperCase().replace(/[^A-Z0-9.\-]/g,'').replace(/^\W+|\W+$/g,'');
     // Allow alphanumerics, dot, hyphen in symbols (BRK.B, BRK-B, NEE-B, etc.)
@@ -2336,20 +2340,31 @@ function parseCSV(csv){
       return m ? parseFloat(m[0]) : 0;
     });
     var shares = nums[0] || 0;
-    if(shares<=0)return;
+    // Allow zero shares with other data (change D: don't silently drop)
+    if(shares<0) return;
     var costPS = nums[1] || 0;
     var mktVal = nums[2] || 0;
-    // If only 2 numeric fields present, assume shares + mktVal (common in Robinhood)
-    if(nums.length === 2 && mktVal === 0 && costPS > 0) {
+
+    // A. If only 2 numeric fields, assume shares + MARKET_VALUE (Robinhood shows price not cost)
+    if(nums.length === 2 && costPS > 0) {
       mktVal = costPS; costPS = 0;
     }
-    // Skip bankrupt/worthless — no market value AND tiny price
-    if(mktVal===0 && costPS<0.01) return;
-    // Skip obviously-delisted (near-zero price with large share count)
-    if(mktVal<0.10 && shares>100) return;
-    if(!mktVal && costPS && shares) mktVal = costPS*shares;
+    // B. If 3+ fields, they are costPS + mktVal (already assigned above)
+
+    // C. If mktVal=0 but shares>0 and costPS>0, compute mktVal = costPS * shares
+    if(mktVal===0 && shares>0 && costPS>0) mktVal = costPS*shares;
+
+    // E. Remove the aggressive <0.10 && >100 filter entirely — only reject if BOTH are 0
+    // Skip ONLY if both market value AND cost-per-share are truly 0
+    if(mktVal<=0 && costPS<=0) {
+      // D. If everything is 0 except sym and shares, keep anyway with a flag
+      if(shares>0) {
+        // Allow unpriced position
+      } else {
+        return;
+      }
+    }
     var cost = costPS*shares;
-    if(mktVal<=0 && cost<=0) return;
     result.push({
       sym:sym, shares:shares, costPerShare:costPS,
       cost:cost, mktVal:mktVal||cost,
@@ -2605,7 +2620,7 @@ async function queueImagesForExtraction(files){
       stats.skipped=Math.max(0,rawLines-parsed.length);
       dedupeHoldings();saveHoldings();renderLabTable();renderDashboard();
 
-      status.innerHTML=renderExtractionReceipt(stats,recurring);
+      status.innerHTML=renderExtractionReceipt(stats,recurring,txt);
       if(recurring.length)renderRecurring(recurring,status);
     }else{
       // Show raw AI response so user can see exactly what Anthropic extracted
@@ -2626,7 +2641,12 @@ async function queueImagesForExtraction(files){
 }
 
 // Phase-3 trust: explicit post-upload receipt so user sees what AI did
-function renderExtractionReceipt(s,recurring){
+function renderExtractionReceipt(s,recurring,rawText){
+  var debugHTML='';
+  if(rawText){
+    var raw=(rawText||'').trim();
+    debugHTML='<details style="margin-top:12px"><summary style="cursor:pointer;font-size:10px;letter-spacing:.12em;color:var(--gold-light);text-transform:uppercase;font-weight:600;padding:4px 0">Debug: view raw AI response →</summary><pre style="margin-top:8px;padding:10px;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:var(--r);font-family:DM Mono,monospace;font-size:10px;color:var(--text-2);white-space:pre-wrap;max-height:320px;overflow-y:auto">'+esc(raw)+'</pre><div style="font-size:10px;color:var(--text-3);margin-top:6px;line-height:1.5">If count looks low, compare AI lines vs extracted positions. Paste into the manual box below to force-parse any missed rows.</div></details>';
+  }
   return '<div class="extract-receipt">'
     +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
       +'<div style="font-size:18px;color:var(--sage)">✓</div>'
@@ -2641,6 +2661,7 @@ function renderExtractionReceipt(s,recurring){
     +'</div>'
     +(recurring&&recurring.length?'<div style="font-size:11px;color:var(--sage);margin-bottom:4px">+ '+recurring.length+' recurring investment'+(recurring.length>1?'s':'')+' detected</div>':'')
     +'<div style="font-size:10px;color:var(--text-3);line-height:1.5">Merged = same ticker combined across files. Skipped = unreadable or zero-value rows (delisted / bankrupt positions).</div>'
+    +debugHTML
   +'</div>';
 }
 function receiptCell(lbl,val,color){
