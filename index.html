@@ -325,37 +325,37 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 @media(max-width:1100px){#app{grid-template-columns:180px 1fr 260px}}
 @media(max-width:900px){#app{grid-template-columns:1fr}#sidenav{height:auto;border-right:none;border-bottom:1px solid var(--border);flex-direction:row;overflow-x:auto;padding:0 14px}#rsidebar{display:none}.panel{padding:18px 14px}}
 
-/* ══ HEALTH SCORE RING ══ */
+/* ââ HEALTH SCORE RING ââ */
 .health-ring{position:relative;width:80px;height:80px;flex-shrink:0}
 .health-score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column}
 .health-score-val{font-family:"DM Mono",monospace;font-size:18px;font-weight:600;color:var(--gold)}
 .health-score-lbl{font-size:7px;letter-spacing:.1em;color:var(--text-3);text-transform:uppercase;margin-top:1px}
 .conf-bar{height:6px;border-radius:3px;background:var(--noir-3);overflow:hidden;margin:6px 0}
 .conf-fill{height:100%;border-radius:3px;transition:width .6s ease}
-/* ══ ALLOCATION BARS ══ */
+/* ââ ALLOCATION BARS ââ */
 .alloc-compare-row{margin-bottom:10px}
 .alloc-compare-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text-2);margin-bottom:4px}
 .alloc-compare-track{height:8px;background:var(--noir-3);border-radius:4px;position:relative;overflow:visible}
 .alloc-actual-bar{height:100%;border-radius:4px;transition:width .5s ease;position:relative}
 .alloc-target-line{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--cream-dim);border-radius:1px;opacity:.6}
-/* ══ REGIME BADGE ══ */
+/* ââ REGIME BADGE ââ */
 .regime-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-family:"DM Mono",monospace}
 .rb-on{background:rgba(107,170,117,.1);border:1px solid rgba(107,170,117,.3);color:var(--sage)}
 .rb-off{background:rgba(192,113,79,.1);border:1px solid rgba(192,113,79,.3);color:var(--clay)}
 .rb-neu{background:rgba(201,168,76,.08);border:1px solid var(--border-2);color:var(--gold)}
-/* ══ FLAG / ACTION ITEMS ══ */
+/* ââ FLAG / ACTION ITEMS ââ */
 .flag-item{display:flex;align-items:flex-start;gap:8px;padding:8px 12px;border-radius:var(--r);border:1px solid;margin-bottom:6px;font-size:12px;line-height:1.55}
 .flag-item:last-child{margin-bottom:0}
 .fi-warn{background:rgba(192,113,79,.06);border-color:rgba(192,113,79,.2);color:var(--text-1)}
 .fi-ok{background:rgba(107,170,117,.05);border-color:rgba(107,170,117,.15);color:var(--text-1)}
 .fi-icon{flex-shrink:0;font-size:11px;margin-top:1px}
-/* ══ DEPLOY PLAN ROWS ══ */
+/* ââ DEPLOY PLAN ROWS ââ */
 .dp-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:var(--r-lg);border:1px solid var(--border);background:rgba(0,0,0,.2);margin-bottom:6px}
 .dp-row:last-child{margin-bottom:0}
 .dp-sym{font-family:"DM Mono",monospace;font-size:14px;font-weight:600;color:var(--gold-light)}
 .dp-reason{font-size:10px;color:var(--text-2);margin-top:2px}
 .dp-amt{font-family:"DM Mono",monospace;font-size:14px;font-weight:600;color:var(--cream)}
-/* ══ CADENCE PANEL ══ */
+/* ââ CADENCE PANEL ââ */
 .cadence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
 .cadence-pill{padding:9px 12px;background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);cursor:pointer;transition:all .2s;text-align:center}
 .cadence-pill.active{background:var(--gold-muted);border-color:var(--gold-dim)}
@@ -368,7 +368,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .proj-lbl{font-size:11px;color:var(--text-2)}
 .proj-val{font-family:"DM Mono",monospace;font-size:12px;color:var(--cream);font-weight:500}
 .proj-gain{font-family:"DM Mono",monospace;font-size:11px;color:var(--sage)}
-/* ══ STOCK DECISION ══ */
+/* ââ STOCK DECISION ââ */
 .stock-verdict-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-family:"DM Mono",monospace;border:1px solid;margin-bottom:10px}
 .svb-acc{background:rgba(107,170,117,.1);border-color:rgba(107,170,117,.3);color:var(--sage)}
 .svb-buy{background:rgba(201,168,76,.08);border-color:var(--border-2);color:var(--gold)}
@@ -478,7 +478,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
         3. Click <strong style="color:var(--cream)">API Keys</strong> &rarr; <strong style="color:var(--cream)">Create Key</strong><br>
         4. Copy and paste it below
       </div>
-      <div style="font-size:10px;color:var(--text-3);margin-top:6px">&#9888; Use console.anthropic.com — not claude.ai</div>
+      <div style="font-size:10px;color:var(--text-3);margin-top:6px">&#9888; Use console.anthropic.com â not claude.ai</div>
     </div>
     <div class="ig">
       <input type="password" id="modalKeyInput" placeholder="sk-ant-api03-..." onkeydown="if(event.key==='Enter')saveKey()"/>
@@ -607,7 +607,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   </div>
 
 
-  <!-- DECISION SEQUENCE + ONBOARDING — from V2.1 design language -->
+  <!-- DECISION SEQUENCE + ONBOARDING â from V2.1 design language -->
   <div id="decisionSequence" style="display:block;margin-bottom:20px">
     <div style="display:grid;grid-template-columns:1.15fr .85fr;gap:16px">
       <!-- HOW TO USE -->
@@ -645,29 +645,88 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
       <div class="card">
         <div style="font-size:8px;letter-spacing:.26em;color:#8f7a45;text-transform:uppercase;font-weight:600;margin-bottom:6px">Product logic</div>
         <div style="font-family:Cormorant Garamond,serif;font-size:22px;color:var(--cream);font-weight:500;margin-bottom:14px">Decision sequence</div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;gap:12px;background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 14px;align-items:flex-start">
-            <div style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(201,168,76,.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--gold);flex-shrink:0">1</div>
-            <div style="font-size:12px;line-height:1.65;color:var(--text-1);padding-top:4px">Market regime detection first</div>
-          </div>
-          <div style="display:flex;gap:12px;background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 14px;align-items:flex-start">
-            <div style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(201,168,76,.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--gold);flex-shrink:0">2</div>
-            <div style="font-size:12px;line-height:1.65;color:var(--text-1);padding-top:4px">Then portfolio diagnosis &mdash; concentration, risk, classification</div>
-          </div>
-          <div style="display:flex;gap:12px;background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 14px;align-items:flex-start">
-            <div style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(201,168,76,.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--gold);flex-shrink:0">3</div>
-            <div style="font-size:12px;line-height:1.65;color:var(--text-1);padding-top:4px">Then clear action plans with specific tickers and allocations</div>
-          </div>
-          <div style="display:flex;gap:12px;background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 14px;align-items:flex-start">
-            <div style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(201,168,76,.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--gold);flex-shrink:0">4</div>
-            <div style="font-size:12px;line-height:1.65;color:var(--text-1);padding-top:4px">Then three ways forward &mdash; conservative, balanced, aggressive</div>
-          </div>
-          <div style="display:flex;gap:12px;background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 14px;align-items:flex-start">
-            <div style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(201,168,76,.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--gold);flex-shrink:0">5</div>
-            <div style="font-size:12px;line-height:1.65;color:var(--text-1);padding-top:4px">Then deep drill-down only when needed</div>
-          </div>
-        </div>
-      </div>
+        <div id="decisionSeq" style="display:flex;flex-direction:column;gap:0">
+
+<style>
+.ds-step{border:1px solid rgba(201,168,76,.08);border-radius:14px;margin-bottom:8px;overflow:hidden;transition:border-color .3s,box-shadow .3s;background:var(--noir-2);cursor:pointer}
+.ds-step:hover{border-color:rgba(201,168,76,.2)}
+.ds-step.active{border-color:rgba(201,168,76,.3);box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.ds-head{display:flex;align-items:center;gap:14px;padding:14px 16px;transition:background .2s}
+.ds-step.active .ds-head{background:rgba(201,168,76,.04)}
+.ds-num{width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(201,168,76,.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:rgba(201,168,76,.6);flex-shrink:0;transition:all .3s;font-family:"DM Mono",monospace}
+.ds-step.active .ds-num{border-color:#C9A84C;color:#C9A84C;box-shadow:0 0 12px rgba(201,168,76,.2)}
+.ds-title{font-size:13px;font-weight:600;color:var(--text-1);flex:1;transition:color .2s}
+.ds-step.active .ds-title{color:var(--cream)}
+.ds-chevron{font-size:10px;color:rgba(201,168,76,.4);transition:transform .3s,color .3s;flex-shrink:0}
+.ds-step.active .ds-chevron{transform:rotate(180deg);color:#C9A84C}
+.ds-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.ds-step.active .ds-body{max-height:300px}
+.ds-inner{padding:0 16px 16px 62px}
+.ds-desc{font-size:12px;color:var(--text-2);line-height:1.7;margin-bottom:12px}
+.ds-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.ds-tag{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:20px;font-family:"DM Mono",monospace}
+.ds-tag.gold{background:rgba(201,168,76,.1);color:#C9A84C;border:1px solid rgba(201,168,76,.2)}
+.ds-tag.sage{background:rgba(107,170,117,.1);color:#6BAA75;border:1px solid rgba(107,170,117,.2)}
+.ds-tag.clay{background:rgba(192,113,79,.1);color:#C0714F;border:1px solid rgba(192,113,79,.2)}
+.ds-action{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#C9A84C;font-weight:600;cursor:pointer;background:none;border:none;padding:0;font-family:"DM Sans",sans-serif}
+.ds-action:hover{color:#E8CC7A}
+.ds-progress{height:2px;background:rgba(201,168,76,.08);margin:0 16px 12px;border-radius:1px;overflow:hidden;display:none}
+.ds-step.active .ds-progress{display:block}
+.ds-prog-fill{height:100%;background:linear-gradient(90deg,#8B6914,#C9A84C);border-radius:1px;animation:dsPA .4s ease forwards}
+@keyframes dsPA{from{width:0}to{width:100%}}
+</style>
+
+<div class="ds-step active" onclick="toggleDsStep(this)">
+  <div class="ds-head"><div class="ds-num">1</div><div class="ds-title">Market regime detection first</div><div class="ds-chevron">&#9660;</div></div>
+  <div class="ds-progress"><div class="ds-prog-fill"></div></div>
+  <div class="ds-body"><div class="ds-inner">
+    <div class="ds-desc">Before any action, the system reads the current market environment. Trend direction, VIX level, and momentum bias are set. This context shapes every recommendation downstream &mdash; a bull regime gets different advice than a bear or neutral one.</div>
+    <div class="ds-tags"><span class="ds-tag gold">VIX Analysis</span><span class="ds-tag gold">Trend Detection</span><span class="ds-tag sage">Momentum Bias</span></div>
+    <button class="ds-action" onclick="event.stopPropagation();showPanel('market',document.querySelectorAll('.nav-item')[6])">Set market context &rarr;</button>
+  </div></div>
+</div>
+
+<div class="ds-step" onclick="toggleDsStep(this)">
+  <div class="ds-head"><div class="ds-num">2</div><div class="ds-title">Portfolio diagnosis &mdash; concentration, risk, classification</div><div class="ds-chevron">&#9660;</div></div>
+  <div class="ds-progress"><div class="ds-prog-fill"></div></div>
+  <div class="ds-body"><div class="ds-inner">
+    <div class="ds-desc">Your holdings are parsed and classified into Core, Growth, Tactical, and Speculative buckets. The system scores concentration risk, checks allocation against institutional targets, and flags positions that need attention before anything else moves.</div>
+    <div class="ds-tags"><span class="ds-tag gold">Health Score</span><span class="ds-tag clay">Risk Flags</span><span class="ds-tag sage">Classification</span><span class="ds-tag gold">Concentration</span></div>
+    <button class="ds-action" onclick="event.stopPropagation();showPanel('portfolio',document.querySelectorAll('.nav-item')[1])">Upload portfolio &rarr;</button>
+  </div></div>
+</div>
+
+<div class="ds-step" onclick="toggleDsStep(this)">
+  <div class="ds-head"><div class="ds-num">3</div><div class="ds-title">Clear action plans with specific tickers and allocations</div><div class="ds-chevron">&#9660;</div></div>
+  <div class="ds-progress"><div class="ds-prog-fill"></div></div>
+  <div class="ds-body"><div class="ds-inner">
+    <div class="ds-desc">The intelligence panel generates a concrete action plan: what to trim, what to add, target percentages, and the reasoning behind each move. Not vague guidance &mdash; specific tickers, specific weights, sequenced by priority.</div>
+    <div class="ds-tags"><span class="ds-tag sage">Buy Signals</span><span class="ds-tag clay">Trim Signals</span><span class="ds-tag gold">Target Weights</span></div>
+    <button class="ds-action" onclick="event.stopPropagation();showPanel('intelligence',document.querySelectorAll('.nav-item')[4])">View intelligence &rarr;</button>
+  </div></div>
+</div>
+
+<div class="ds-step" onclick="toggleDsStep(this)">
+  <div class="ds-head"><div class="ds-num">4</div><div class="ds-title">Three ways forward &mdash; conservative, balanced, aggressive</div><div class="ds-chevron">&#9660;</div></div>
+  <div class="ds-progress"><div class="ds-prog-fill"></div></div>
+  <div class="ds-body"><div class="ds-inner">
+    <div class="ds-desc">Every deployment plan comes in three risk postures. Conservative anchors in index and dividend positions. Balanced blends quality compounders with core holdings. Aggressive concentrates in high-conviction secular growth. Same analysis, three different conviction levels.</div>
+    <div class="ds-tags"><span class="ds-tag sage">Conservative</span><span class="ds-tag gold">Balanced</span><span class="ds-tag clay">Aggressive</span></div>
+    <button class="ds-action" onclick="event.stopPropagation();showPanel('deploy',document.querySelectorAll('.nav-item')[3])">Deploy capital &rarr;</button>
+  </div></div>
+</div>
+
+<div class="ds-step" onclick="toggleDsStep(this)">
+  <div class="ds-head"><div class="ds-num">5</div><div class="ds-title">Deep drill-down only when needed</div><div class="ds-chevron">&#9660;</div></div>
+  <div class="ds-progress"><div class="ds-prog-fill"></div></div>
+  <div class="ds-body"><div class="ds-inner">
+    <div class="ds-desc">Individual stock analysis, head-to-head comparisons, and watchlist verdicts are available on demand &mdash; not pushed at you constantly. When you need to go deep on a specific name, the full institutional-grade breakdown is one click away.</div>
+    <div class="ds-tags"><span class="ds-tag gold">Stock Analysis</span><span class="ds-tag gold">Compare</span><span class="ds-tag sage">Watchlist</span></div>
+    <button class="ds-action" onclick="event.stopPropagation();showPanel('stockcheck',document.querySelectorAll('.nav-item')[2])">Analyze a stock &rarr;</button>
+  </div></div>
+</div>
+
+</div>
     </div>
   </div>
 
@@ -794,7 +853,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
     </div>
     <input type="file" id="fileInput" style="display:none" accept=".csv,.png,.jpg,.jpeg,.webp,.txt"
       multiple onchange="showImagePreviews(this.files);handleFileInput(this.files)"/>
-    <!-- Image preview queue — shows thumbnails of dropped screenshots -->
+    <!-- Image preview queue â shows thumbnails of dropped screenshots -->
     <div id="imgPreviewQueue" style="display:none;margin-top:12px">
       <div style="font-size:9px;letter-spacing:.15em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:8px">Queued screenshots</div>
       <div id="imgPreviewList" style="display:flex;flex-wrap:wrap;gap:8px"></div>
@@ -1036,7 +1095,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 </div>
 
 
-<!-- INTELLIGENCE PANEL — merged from JSX logic -->
+<!-- INTELLIGENCE PANEL â merged from JSX logic -->
 <div class="panel" id="panel-intelligence">
   <div class="ph">
     <div class="ph-eye">Portfolio Intelligence</div>
@@ -1177,12 +1236,12 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
   </div>
 </div>
 
-<!-- CADENCE PLAN PANEL — new feature: investment frequency & projections -->
+<!-- CADENCE PLAN PANEL â new feature: investment frequency & projections -->
 <div class="panel" id="panel-cadence">
   <div class="ph">
     <div class="ph-eye">Cadence Plan</div>
     <h1 class="ph-title">How much, <em>how often.</em></h1>
-    <p class="ph-sub">Define your investment cadence — weekly, monthly, quarterly. See how consistent contributions compound into real wealth alongside your existing portfolio.</p>
+    <p class="ph-sub">Define your investment cadence â weekly, monthly, quarterly. See how consistent contributions compound into real wealth alongside your existing portfolio.</p>
   </div>
 
   <!-- Input section -->
@@ -1384,7 +1443,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
     </div>
   </div>
 
-  <!-- OPPORTUNITY LAYER — data-driven only, hidden until portfolio loaded -->
+  <!-- OPPORTUNITY LAYER â data-driven only, hidden until portfolio loaded -->
   <div class="sc" id="oppLayerCard" style="display:none">
     <div class="sc-hdr">
       <div class="sc-title"><div class="sc-dot" style="background:var(--violet)"></div>Opportunity Layer</div>
@@ -1403,7 +1462,7 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
     <div style="text-align:center;padding:14px 6px">
       <div style="font-size:22px;margin-bottom:8px;opacity:.2">&#9670;</div>
       <div style="font-size:11px;font-weight:600;color:var(--text-2);margin-bottom:5px">Upload portfolio to unlock</div>
-      <div style="font-size:10px;color:var(--text-3);line-height:1.6;margin-bottom:12px">Opportunities are generated from your actual holdings — gaps, missing layers, and overweights.</div>
+      <div style="font-size:10px;color:var(--text-3);line-height:1.6;margin-bottom:12px">Opportunities are generated from your actual holdings â gaps, missing layers, and overweights.</div>
       <button class="btn-g" style="font-size:10px;width:100%;padding:7px" onclick="showPanel("portfolio",document.querySelectorAll(".nav-item")[1])">Upload portfolio &rarr;</button>
     </div>
   </div>
@@ -4423,6 +4482,12 @@ function generateReport(){
   if(win){win.document.write(html);win.document.close();}
 }
 
+
+function toggleDsStep(el){
+  var wasActive=el.classList.contains('active');
+  document.querySelectorAll('.ds-step').forEach(function(s){s.classList.remove('active');});
+  if(!wasActive){el.classList.add('active');}
+}
 // UTILS
 function fmt$(n){if(n===undefined||n===null||isNaN(n))return '$-';if(Math.abs(n)>=1000000)return '$'+(n/1000000).toFixed(2)+'M';if(Math.abs(n)>=1000)return '$'+Math.round(n).toLocaleString();return '$'+n.toFixed(2);}
 function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
