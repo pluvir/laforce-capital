@@ -418,11 +418,10 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .cd-seg-click:hover{stroke-width:38;filter:drop-shadow(0 0 10px currentColor)}
 .cd-seg-bg{fill:none;stroke:var(--noir-3);stroke-width:34}
 .cd-donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
-.cd-donut-lbl{font-size:10px;font-weight:700;letter-spacing:.22em;color:var(--cream-dim);text-transform:uppercase;margin-bottom:8px}
-.cd-donut-val{font-family:'DM Sans','system-ui',sans-serif;font-size:44px;font-weight:300;color:var(--cream);line-height:1;letter-spacing:-.02em;font-feature-settings:"tnum" 1}
-.cd-donut-val span{font-weight:400}
-.cd-donut-sub{font-family:'DM Sans','system-ui',sans-serif;font-size:13px;color:var(--cream);margin-top:10px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px}
-.cd-donut-orn{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:var(--cream-dim);margin-top:12px;max-width:210px;line-height:1.5}
+.cd-donut-lbl{font-size:9px;font-weight:700;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase;margin-bottom:6px}
+.cd-donut-val{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--cream);line-height:1;letter-spacing:-.02em}
+.cd-donut-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);margin-top:8px;letter-spacing:.05em}
+.cd-donut-orn{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:var(--text-2);margin-top:10px;max-width:180px;line-height:1.4}
 /* Alloc list */
 .cd-alloc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .cd-alloc-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--cream);display:flex;align-items:center;gap:10px}
@@ -661,32 +660,29 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
         <div style="font-size:8px;letter-spacing:.26em;color:#8f7a45;text-transform:uppercase;font-weight:600;margin-bottom:6px">How to use this system</div>
         <div style="font-family:Cormorant Garamond,serif;font-size:22px;color:var(--cream);font-weight:500;margin-bottom:14px">Clear instructions for best results</div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
-          <div class="onboard-card" onclick="showPanel('portfolio',document.querySelectorAll('.nav-item')[1])" title="Jump to Portfolio Lab">
-            <div style="font-size:13px;font-weight:700;letter-spacing:.22em;color:var(--gold);margin-bottom:10px;font-family:'DM Mono',monospace">01</div>
-            <div style="font-size:14px;font-weight:700;color:var(--cream);margin-bottom:6px;letter-spacing:.01em">Add your portfolio</div>
-            <div style="font-size:11.5px;line-height:1.65;color:var(--text-2)">Upload a brokerage export, paste holdings, or use screenshots for portfolio diagnosis.</div>
-            <div class="onboard-cta">Open Portfolio Lab →</div>
+          <div style="background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.18em;color:var(--gold);margin-bottom:6px">01</div>
+            <div style="font-size:13px;font-weight:600;color:var(--cream);margin-bottom:5px">Add your portfolio</div>
+            <div style="font-size:11px;line-height:1.6;color:var(--text-2)">Upload a brokerage export, paste holdings, or use screenshots for portfolio diagnosis.</div>
           </div>
-          <div class="onboard-card" onclick="showPanel('market',document.querySelectorAll('.nav-item')[6])" title="Jump to Live Market">
-            <div style="font-size:13px;font-weight:700;letter-spacing:.22em;color:var(--gold);margin-bottom:10px;font-family:'DM Mono',monospace">02</div>
-            <div style="font-size:14px;font-weight:700;color:var(--cream);margin-bottom:6px;letter-spacing:.01em">Sync market context</div>
-            <div style="font-size:11.5px;line-height:1.65;color:var(--text-2)">Pull live market data so the system reads regime, volatility, and trend before advising.</div>
-            <div class="onboard-cta">Open Live Market →</div>
+          <div style="background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.18em;color:var(--gold);margin-bottom:6px">02</div>
+            <div style="font-size:13px;font-weight:600;color:var(--cream);margin-bottom:5px">Sync market context</div>
+            <div style="font-size:11px;line-height:1.6;color:var(--text-2)">Pull live market data so the system reads regime, volatility, and trend before advising.</div>
           </div>
-          <div class="onboard-card" onclick="showPanel('intelligence',document.querySelectorAll('.nav-item')[4])" title="Jump to Intelligence">
-            <div style="font-size:13px;font-weight:700;letter-spacing:.22em;color:var(--gold);margin-bottom:10px;font-family:'DM Mono',monospace">03</div>
-            <div style="font-size:14px;font-weight:700;color:var(--cream);margin-bottom:6px;letter-spacing:.01em">Get action paths</div>
-            <div style="font-size:11.5px;line-height:1.65;color:var(--text-2)">Clear action plan, three strategic approaches, and drill-down analysis only when needed.</div>
-            <div class="onboard-cta">Open Intelligence →</div>
+          <div style="background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.18em;color:var(--gold);margin-bottom:6px">03</div>
+            <div style="font-size:13px;font-weight:600;color:var(--cream);margin-bottom:5px">Get action paths</div>
+            <div style="font-size:11px;line-height:1.6;color:var(--text-2)">Clear action plan, three strategic approaches, and drill-down analysis only when needed.</div>
           </div>
         </div>
         <div style="background:linear-gradient(180deg,var(--noir-3),var(--noir-2));border:1px solid var(--border-2);border-radius:var(--r-lg);padding:14px">
           <div style="font-size:12px;font-weight:600;color:var(--gold-light);margin-bottom:10px">Documents &amp; inputs that unlock the strongest analysis</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
-            <div class="doc-pill" onclick="showPanel('portfolio',document.querySelectorAll('.nav-item')[1])" title="Go to Portfolio Lab to upload a CSV">Brokerage CSV or holdings export <span class="doc-pill-go">→</span></div>
-            <div class="doc-pill" onclick="showPanel('portfolio',document.querySelectorAll('.nav-item')[1])" title="Go to Portfolio Lab to drop screenshots">Portfolio screenshot for quick intake <span class="doc-pill-go">→</span></div>
-            <div class="doc-pill" onclick="showPanel('deploy',document.querySelectorAll('.nav-item')[3])" title="Go to Capital Deployment">Cash available to invest now <span class="doc-pill-go">→</span></div>
-            <div class="doc-pill" onclick="showPanel('cadence',document.querySelectorAll('.nav-item')[5])" title="Go to Cadence Plan">Optional: avg cost &amp; contribution plan <span class="doc-pill-go">→</span></div>
+            <div style="background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--text-1)">Brokerage CSV or holdings export</div>
+            <div style="background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--text-1)">Portfolio screenshot for quick intake</div>
+            <div style="background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--text-1)">Cash available to invest now</div>
+            <div style="background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--text-1)">Optional: avg cost &amp; contribution plan</div>
           </div>
         </div>
       </div>
@@ -776,187 +772,6 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .cad-proj-row-open{background:rgba(201,168,76,.06)!important}
 .cad-alloc-row:hover{border-color:var(--border-2)!important;background:var(--noir-3)!important;transform:translateX(2px)}
 .cad-alloc-row-open{border-color:var(--gold-dim)!important;background:rgba(201,168,76,.05)!important;border-radius:var(--r-lg) var(--r-lg) 0 0!important;margin-bottom:0!important;border-bottom:none!important}
-
-/* Interactive onboarding cards — elevated with always-visible CTA */
-.onboard-card{
-  position:relative;
-  background:linear-gradient(160deg,var(--noir-3) 0%,var(--noir-2) 100%);
-  border:1px solid var(--border-2);
-  border-radius:var(--r-lg);
-  padding:18px 16px 16px;
-  cursor:pointer;
-  transition:transform .25s cubic-bezier(.4,0,.2,1),border-color .2s,box-shadow .25s,background .2s;
-  box-shadow:0 2px 10px rgba(0,0,0,.25),inset 0 1px 0 rgba(201,168,76,.06);
-  overflow:hidden;
-}
-.onboard-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
-  opacity:.35;transition:opacity .25s;
-}
-.onboard-card::after{
-  content:'';position:absolute;bottom:-40px;right:-40px;width:120px;height:120px;border-radius:50%;
-  background:radial-gradient(circle,rgba(201,168,76,.08) 0%,transparent 70%);
-  pointer-events:none;transition:opacity .25s;opacity:0;
-}
-.onboard-card:hover{
-  transform:translateY(-4px);
-  border-color:var(--gold-dim);
-  background:linear-gradient(160deg,rgba(201,168,76,.08) 0%,var(--noir-2) 100%);
-  box-shadow:0 14px 36px rgba(0,0,0,.5),0 0 0 1px rgba(201,168,76,.2),inset 0 1px 0 rgba(201,168,76,.15);
-}
-.onboard-card:hover::before{opacity:1}
-.onboard-card:hover::after{opacity:1}
-.onboard-card:active{transform:translateY(-2px)}
-.onboard-card > div:first-child{font-family:'DM Mono',monospace}
-.onboard-cta{
-  display:inline-flex;align-items:center;gap:4px;
-  font-size:11px;color:var(--gold);font-weight:700;
-  margin-top:12px;padding-top:10px;border-top:1px dashed var(--border);
-  letter-spacing:.02em;
-  transition:color .2s,transform .2s;
-}
-.onboard-card:hover .onboard-cta{color:var(--gold-light);transform:translateX(3px)}
-
-/* Documents & inputs pills — more prominent, pulse on hover */
-.doc-pill{
-  background:linear-gradient(180deg,var(--noir-2),var(--noir-3));
-  border:1px solid var(--border-2);
-  border-radius:var(--r);
-  padding:11px 14px;
-  font-size:12px;
-  color:var(--cream-dim);
-  cursor:pointer;
-  transition:all .2s cubic-bezier(.4,0,.2,1);
-  display:flex;align-items:center;justify-content:space-between;gap:8px;
-  font-weight:500;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
-}
-.doc-pill:hover{
-  border-color:var(--gold);
-  background:linear-gradient(180deg,rgba(201,168,76,.1),rgba(201,168,76,.03));
-  color:var(--cream);
-  transform:translateX(3px);
-  box-shadow:0 4px 14px rgba(201,168,76,.12),inset 0 1px 0 rgba(201,168,76,.2);
-}
-.doc-pill-go{
-  color:var(--gold);font-weight:700;font-size:14px;
-  transition:transform .2s,color .2s;
-  transform:translateX(-4px);opacity:.5;
-}
-.doc-pill:hover .doc-pill-go{opacity:1;transform:translateX(0);color:var(--gold-light)}
-
-/* Sector focus */
-.sector-grid{display:flex;flex-wrap:wrap;gap:7px}
-.sector-chip{padding:8px 14px;font-size:12px;font-weight:500;background:var(--noir-3);border:1px solid var(--border);color:var(--text-2);border-radius:20px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
-.sector-chip:hover{border-color:var(--border-2);color:var(--cream);background:rgba(201,168,76,.04)}
-.sector-chip.active{background:linear-gradient(135deg,var(--gold),var(--gold-dim));color:var(--noir);border-color:var(--gold);font-weight:700}
-
-/* Tuned feasibility — visual components */
-.tf-action-col{display:flex;flex-direction:column;gap:10px}
-.tf-col-head{font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding-bottom:6px;border-bottom:1px solid var(--border)}
-.tf-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.tf-ticker-card{padding:9px 10px;border-radius:var(--r);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left}
-.tf-ticker-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
-.tf-ticker-sym{font-family:'DM Mono',monospace;font-size:14px;font-weight:700;letter-spacing:.02em}
-.tf-ticker-action{font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--text-3);opacity:.8}
-.tf-empty{font-size:11px;color:var(--text-3);font-style:italic;padding:8px;background:rgba(0,0,0,.15);border:1px dashed var(--border);border-radius:var(--r);text-align:center;grid-column:1/-1}
-.tf-col-body{font-size:11px;color:var(--text-2);line-height:1.55;padding-top:4px}
-.tf-bullets{display:flex;flex-direction:column;gap:8px;padding-top:2px}
-/* Position action rows — redesigned for prominence + readability */
-.tf-row{display:block;padding:12px 12px 12px 14px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.06);border-radius:8px;border-left-width:3px;cursor:pointer;transition:all .18s;position:relative}
-.tf-row:hover{background:rgba(0,0,0,.48);border-color:rgba(255,255,255,.14);transform:translateX(2px)}
-.tf-row-keep{border-left-color:#6BAA75}
-.tf-row-trim{border-left-color:#C0714F}
-.tf-row-add{border-left-color:#E8CC7A}
-.tf-row-head{display:flex;align-items:center;gap:10px;margin-bottom:4px}
-.tf-chip{font-family:'DM Mono',monospace;font-size:12px;font-weight:800;padding:4px 11px;border-radius:6px;letter-spacing:.04em;white-space:nowrap;flex-shrink:0}
-.tf-chip-keep{background:#6BAA75;color:#0E1414}
-.tf-chip-trim{background:#C0714F;color:#140A07}
-.tf-chip-add{background:#E8CC7A;color:#1A1408}
-.tf-row-action{font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--text-3);margin-left:auto}
-.tf-row-summary{font-size:12px;color:var(--text-1);line-height:1.5;padding-left:2px}
-.tf-row-detail{display:none;margin-top:8px;padding:10px 12px;background:rgba(0,0,0,.35);border-radius:6px;font-size:11.5px;color:var(--text-2);line-height:1.6;border-top:1px solid rgba(255,255,255,.06)}
-.tf-row.open .tf-row-detail{display:block}
-.tf-row-expand{position:absolute;right:10px;top:10px;font-size:10px;color:var(--text-3);font-weight:700;transition:transform .2s}
-.tf-row.open .tf-row-expand{transform:rotate(180deg);color:var(--gold-light)}
-/* Highlighted rationale tokens — makes key phrases pop visually */
-.tf-hl-ticker{color:#E8CC7A;font-weight:700;font-family:'DM Mono',monospace;padding:1px 6px;background:rgba(232,204,122,.14);border-radius:3px;border:1px solid rgba(232,204,122,.3);letter-spacing:.03em;white-space:nowrap}
-.tf-hl-money{color:#6BAA75;font-weight:700;font-family:'DM Mono',monospace;padding:0 3px;background:rgba(107,170,117,.1);border-radius:3px;white-space:nowrap}
-.tf-hl-pct{color:#C9A84C;font-weight:800;font-family:'DM Mono',monospace}
-.tf-hl-time{color:#B8A882;font-weight:600;font-style:italic}
-.tf-hl-action{color:#C0714F;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:0 4px;background:rgba(192,113,79,.1);border-radius:3px}
-/* Donut ↔ allocation row bidirectional highlight */
-.cd-seg{transition:opacity .22s ease, filter .28s ease, stroke-width .2s ease;cursor:pointer}
-.cd-donut-wrap.has-hover .cd-seg:not(.cd-seg-highlight){opacity:.28}
-.cd-seg.cd-seg-highlight{opacity:1 !important;stroke-width:28}
-#cdSegCore.cd-seg-highlight{filter:drop-shadow(0 0 18px #C9A84C) brightness(1.12)}
-#cdSegGrowth.cd-seg-highlight{filter:drop-shadow(0 0 18px #6BAA75) brightness(1.12)}
-#cdSegTactical.cd-seg-highlight{filter:drop-shadow(0 0 18px #C0714F) brightness(1.12)}
-.cd-row{transition:background .18s ease, transform .18s ease, box-shadow .18s ease}
-.cd-row.cd-row-highlight{background:rgba(255,255,255,.055);transform:translateX(6px);box-shadow:inset 4px 0 0 var(--hl-c,var(--gold-light)),0 6px 16px rgba(0,0,0,.3)}
-.cd-row.cd-row-highlight .cd-ticker-sym{color:var(--gold-light)}
-.cd-row.cd-row-dim{opacity:.32}
-/* Risk & Bull card glow + highlighted text */
-.cd-card{transition:box-shadow .35s ease, transform .25s ease, border-color .25s ease}
-.cd-card.risk:hover{box-shadow:0 0 32px rgba(192,113,79,.35),0 8px 30px rgba(0,0,0,.3);border-color:rgba(192,113,79,.5);transform:translateY(-2px)}
-.cd-card.bull:hover{box-shadow:0 0 32px rgba(107,170,117,.3),0 8px 30px rgba(0,0,0,.3);border-color:rgba(107,170,117,.45);transform:translateY(-2px)}
-.cd-card .cd-card-body strong, .cd-card .cd-card-body .tf-hl-money, .cd-card .cd-card-body .tf-hl-pct, .cd-card .cd-card-body .tf-hl-ticker, .cd-card .cd-card-body .tf-hl-action{filter:saturate(1.1)}
-.cd-card-point-term{font-weight:700;color:var(--cream);font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;margin-right:6px}
-.cd-card.risk .cd-card-point-term{color:#E8A089}
-.cd-card.bull .cd-card-point-term{color:#A8D8B0}
-/* Donut center bucket chips — clickable C / G / T */
-.cd-bucket-chip{display:inline-flex;align-items:baseline;gap:1px;padding:4px 10px;border-radius:7px;cursor:pointer;font-family:'DM Sans','system-ui',sans-serif;font-size:13px;font-weight:800;letter-spacing:.02em;transition:all .18s ease;border:1px solid transparent;pointer-events:auto;line-height:1.15}
-.cd-bucket-chip[data-cls="core"]{color:#F0D576;background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.25)}
-.cd-bucket-chip[data-cls="growth"]{color:#A8D4B0;background:rgba(107,170,117,.15);border-color:rgba(107,170,117,.25)}
-.cd-bucket-chip[data-cls="tactical"]{color:#E8A089;background:rgba(192,113,79,.15);border-color:rgba(192,113,79,.25)}
-.cd-bucket-chip:hover{transform:translateY(-1px);border-color:currentColor;box-shadow:0 0 12px currentColor}
-.cd-bucket-chip.cd-bucket-active{background:currentColor !important;color:#0E1414 !important;box-shadow:0 0 16px var(--hl-c,#C9A84C)}
-.cd-bucket-chip[data-cls="core"].cd-bucket-active{--hl-c:#C9A84C}
-.cd-bucket-chip[data-cls="growth"].cd-bucket-active{--hl-c:#6BAA75}
-.cd-bucket-chip[data-cls="tactical"].cd-bucket-active{--hl-c:#C0714F}
-.cd-donut-center{pointer-events:none}
-.cd-donut-sub{pointer-events:auto}
-/* Bucket explainer popover */
-.cd-bucket-explainer{margin:14px auto 0;max-width:380px;padding:14px 16px;background:linear-gradient(145deg,rgba(0,0,0,.55),rgba(0,0,0,.3));border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-lg);font-size:12px;color:var(--text-1);line-height:1.65;animation:fadeUp .25s ease}
-.cd-bucket-explainer .be-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.cd-bucket-explainer .be-letter{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;font-style:italic;line-height:1}
-.cd-bucket-explainer .be-name{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-.cd-bucket-explainer .be-pct{margin-left:auto;font-family:'DM Mono',monospace;font-size:14px;font-weight:700;color:var(--gold-light)}
-.cd-bucket-explainer .be-tagline{font-style:italic;color:var(--cream-dim);font-size:11.5px;margin-bottom:8px}
-.cd-bucket-explainer .be-desc{font-size:12px;color:var(--text-2);line-height:1.7}
-.cd-bucket-explainer .be-meta{display:flex;gap:14px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:10px;color:var(--text-3);letter-spacing:.04em}
-.cd-bucket-explainer .be-meta strong{color:var(--gold-light);font-weight:600;display:block;margin-bottom:2px;font-size:9px;letter-spacing:.12em;text-transform:uppercase}
-.tf-timeline{position:relative;padding-left:4px}
-.tf-tl-step{position:relative;display:flex;gap:14px;padding:10px 0 10px 0;margin-left:16px;border-left:2px solid var(--border)}
-.tf-tl-step:first-child{padding-top:0}
-.tf-tl-step:last-child{padding-bottom:0;border-left-color:transparent}
-.tf-tl-dot{position:absolute;left:-16px;top:8px;width:30px;height:30px;border-radius:50%;background:var(--noir-3);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;font-weight:700;color:var(--gold);box-shadow:0 0 10px rgba(201,168,76,.2)}
-.tf-tl-body{padding:6px 0 0 24px;font-size:12.5px;color:var(--text-1);line-height:1.7}
-
-@media(max-width:900px){
-  .tf-action-col{grid-column:1/-1!important}
-  #stratTunedFeas [style*="grid-template-columns:1fr 1fr 1fr"]{grid-template-columns:1fr!important}
-  .tf-card-grid{grid-template-columns:1fr 1fr 1fr}
-}
-
-/* Interactive strategy steps */
-.strat-step{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:6px;overflow:hidden;cursor:pointer;transition:all .2s}
-.strat-step:hover{border-color:var(--border-2);background:rgba(0,0,0,.32)}
-.strat-step.open{border-color:var(--gold-dim);background:rgba(201,168,76,.04)}
-.strat-step-head{display:flex;gap:12px;padding:10px 14px;align-items:center}
-.strat-step-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;line-height:1;min-width:20px;flex-shrink:0}
-.strat-step-text{flex:1;font-size:13px;color:var(--text-1);line-height:1.6}
-.strat-step-chev{font-size:10px;color:var(--text-3);transition:transform .25s;flex-shrink:0}
-.strat-step.open .strat-step-chev{transform:rotate(180deg);color:var(--gold)}
-.strat-step-body-wrap{display:none;padding:4px 14px 14px 46px;border-top:1px solid var(--border)}
-.strat-step.open .strat-step-body-wrap{display:block;animation:fadeUp .25s ease}
-.strat-step-sec{margin-bottom:10px;padding:9px 11px;background:rgba(0,0,0,.2);border-radius:var(--r);border-left:2px solid}
-.strat-step-lbl{font-size:8px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:4px}
-.strat-step-body-text{font-size:12px;color:var(--text-1);line-height:1.65}
-.strat-step-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-.strat-ticker-chip{padding:5px 12px;font-size:11px;font-family:'DM Mono',monospace;font-weight:600;background:var(--gold-muted);border:1px solid var(--border-2);color:var(--gold-light);border-radius:20px;cursor:pointer;transition:all .15s}
-.strat-ticker-chip:hover{background:var(--gold);color:var(--noir);border-color:var(--gold)}
 
 /* Phase-3 trust: architecture note styling */
 .arch-note{margin-top:28px;padding:20px 24px;border:1px dashed var(--border-2);border-radius:var(--r-lg);background:rgba(0,0,0,.15)}
@@ -1071,55 +886,6 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 
 </div>
     </div>
-  </div>
-
-  <!-- SECTOR FOCUS — pick a sector, get AI-tailored top picks + entry timing -->
-  <div id="sectorFocus" class="card" style="margin-bottom:20px">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px">
-      <div>
-        <div style="font-size:8px;letter-spacing:.26em;color:#8f7a45;text-transform:uppercase;font-weight:600;margin-bottom:6px">Thematic Focus</div>
-        <div style="font-family:Cormorant Garamond,serif;font-size:22px;color:var(--cream);font-weight:500;margin-bottom:4px">Pick a <em style="font-style:italic;color:var(--gold-light)">sector</em> to invest in</div>
-        <div style="font-size:12px;color:var(--text-2);line-height:1.6;max-width:560px">Select a sector you believe in. The AI returns the top 5 names to research, the current sector regime, entry timing, and what breaks the thesis — tailored to your portfolio.</div>
-      </div>
-    </div>
-    <div class="sector-grid" id="sectorGrid">
-      <button class="sector-chip" data-sec="Technology">◆ Technology</button>
-      <button class="sector-chip" data-sec="Artificial Intelligence / Semiconductors">◆ AI &amp; Semis</button>
-      <button class="sector-chip" data-sec="Healthcare / Biotech">◆ Healthcare</button>
-      <button class="sector-chip" data-sec="Financials">◆ Financials</button>
-      <button class="sector-chip" data-sec="Energy (traditional + renewable)">◆ Energy</button>
-      <button class="sector-chip" data-sec="Consumer Discretionary">◆ Consumer</button>
-      <button class="sector-chip" data-sec="Industrials / Defense">◆ Industrials</button>
-      <button class="sector-chip" data-sec="Real Estate / REITs">◆ Real Estate</button>
-      <button class="sector-chip" data-sec="Communication Services">◆ Comms</button>
-      <button class="sector-chip" data-sec="Utilities">◆ Utilities</button>
-      <button class="sector-chip" data-sec="Materials / Commodities">◆ Materials</button>
-      <button class="sector-chip" data-sec="Crypto / Digital Assets">◆ Crypto</button>
-    </div>
-    <div style="display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap">
-      <div style="flex:1;min-width:220px">
-        <label class="il">Horizon</label>
-        <select id="sectorHorizon" style="width:100%">
-          <option value="12 months">12 months</option>
-          <option value="3 years" selected>3 years</option>
-          <option value="5+ years">5+ years</option>
-        </select>
-      </div>
-      <div style="flex:1;min-width:220px">
-        <label class="il">Risk tolerance</label>
-        <select id="sectorRisk" style="width:100%">
-          <option value="conservative">Conservative</option>
-          <option value="balanced" selected>Balanced</option>
-          <option value="aggressive">Aggressive</option>
-        </select>
-      </div>
-      <div style="flex:1;min-width:220px">
-        <label class="il">Cash to allocate (optional)</label>
-        <input type="number" id="sectorCash" placeholder="e.g. 5000" min="0"/>
-      </div>
-      <button class="btn-p" id="sectorRunBtn" onclick="runSectorAnalysis()" disabled style="opacity:.6">Analyze sector →</button>
-    </div>
-    <div id="sectorOutput" style="margin-top:16px"></div>
   </div>
 
   <div id="portHero" style="display:none">
@@ -2117,7 +1883,6 @@ function openLiveDataModal(){
     if(typeof renderFlowIndicator==='function') renderFlowIndicator('dashboard');
     if(typeof renderNextStepFooter==='function') renderNextStepFooter('dashboard');
     if(typeof syncDecisionSequence==='function') syncDecisionSequence();
-    if(typeof initSectorFocus==='function') initSectorFocus();
   },100);
   updatePulseCells();
   try{
@@ -2352,89 +2117,129 @@ function parseHoldings(text){
   return result;
 }
 
+// parseCSV — dual-purpose parser. Backward-compatible: returns an Array of
+// holdings (so existing callers using .length / .concat keep working) with
+// metadata attached: .reportedCount, .parsedCount, .errors, .headers, .rows.
+// Supports screenshot-extraction output:
+//   COUNT:<n>
+//   SYMBOL,SHARES,COST_PER_SHARE,MKT_VAL
+// And still supports CSV/TXT uploads with headers, RECURRING: section,
+// N/A values, quoted fields, and 4-7 column exports.
 function parseCSV(csv){
-  var lines=csv.split('\n').filter(function(l){return l.trim();});
-  var result=[];var headerSkipped=false;
-  lines.forEach(function(line){
-    if(!line.trim())return;
-    // Skip section headers + Anthropic's new meta lines
-    if(/^RECURRING:/i.test(line.trim()))return;
-    if(/^COUNT\s*:/i.test(line.trim()))return;
-    if(/^NOTE\s*:/i.test(line.trim()))return;
-    if(/^(═|─|━)/.test(line.trim()))return;
-    if(/^(STEP|WORKED EXAMPLE|NOW DO)/i.test(line.trim()))return;
-    if(!headerSkipped&&/symbol|ticker|name|quantity/i.test(line)&&!/^[A-Z]{1,6}[\s,\t|]/.test(line)){headerSkipped=true;return;}
-    // Normalize: strip dollar signs, quotes, commas inside numbers, replace N/A
-    var cleaned=line.replace(/\bN\/A\b/gi,'0').replace(/["]/g,'').trim();
-    // Remove $ from numeric tokens only (keep in tickers if any weirdness)
-    cleaned=cleaned.replace(/\$/g,'');
-    // Remove thousands separators inside numbers: "1,234.56" → "1234.56"
-    cleaned=cleaned.replace(/(\d),(\d{3})/g,'$1$2').replace(/(\d),(\d{3})/g,'$1$2');
-    // Split on comma, tab, pipe, or multiple spaces — whichever produces the most tokens
-    var delimiters = [',','\t','|',/\s{2,}/];
-    var parts = [];
-    delimiters.forEach(function(d){
-      var p = cleaned.split(d).map(function(s){return s.trim();}).filter(Boolean);
-      if(p.length > parts.length) parts = p;
-    });
-    // F. Fallback: if fewer than 2 parts, try single whitespace
-    if(parts.length<2){
-      parts = cleaned.split(/\s+/).map(function(s){return s.trim();}).filter(Boolean);
-    }
-    if(parts.length<2)return;
-    var sym=(parts[0]||'').toUpperCase().replace(/[^A-Z0-9.\-]/g,'').replace(/^\W+|\W+$/g,'');
-    // Allow alphanumerics, dot, hyphen in symbols (BRK.B, BRK-B, NEE-B, etc.)
-    if(!sym||sym.length<1||sym.length>8)return;
-    if(/^(SYMBOL|TICKER|NAME|STOCK|DESC|EQUIT|TOTAL|SUBTOTAL|CASH)$/i.test(sym))return;
-    // Parse numeric fields — handle various orders by scanning for numbers
-    var nums = parts.slice(1).map(function(s){
-      var m = s.match(/-?\d+(\.\d+)?/);
-      return m ? parseFloat(m[0]) : 0;
-    });
-    var shares = nums[0] || 0;
-    // Allow zero shares with other data (change D: don't silently drop)
-    if(shares<0) return;
-    var costPS = nums[1] || 0;
-    var mktVal = nums[2] || 0;
+  var result=[];
+  result.headers=['sym','shares','costPerShare','mktVal'];
+  result.rows=[];
+  result.reportedCount=0;
+  result.parsedCount=0;
+  result.errors=[];
 
-    // A. If only 2 numeric fields, assume shares + MARKET_VALUE (Robinhood shows price not cost)
-    if(nums.length === 2 && costPS > 0) {
-      mktVal = costPS; costPS = 0;
-    }
-    // B. If 3+ fields, they are costPS + mktVal (already assigned above)
+  if(csv==null){ result.errors.push('empty input'); return result; }
 
-    // C. If mktVal=0 but shares>0 and costPS>0, compute mktVal = costPS * shares
-    if(mktVal===0 && shares>0 && costPS>0) mktVal = costPS*shares;
+  var text=String(csv).replace(/\r\n?/g,'\n').trim();
+  var lines=text.split('\n').map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
 
-    // E. Remove the aggressive <0.10 && >100 filter entirely — only reject if BOTH are 0
-    // Skip ONLY if both market value AND cost-per-share are truly 0
-    if(mktVal<=0 && costPS<=0) {
-      // D. If everything is 0 except sym and shares, keep anyway with a flag
-      if(shares>0) {
-        // Allow unpriced position
-      } else {
-        return;
-      }
+  // COUNT:N may appear in the first 3 lines (tolerates ':' or '=', any case).
+  var dataStart=0;
+  for(var ci=0; ci<Math.min(3,lines.length); ci++){
+    var cm=lines[ci].match(/^\s*COUNT\s*[:=]\s*(\d+)\s*$/i);
+    if(cm){ result.reportedCount=parseInt(cm[1],10); dataStart=ci+1; break; }
+  }
+
+  var headerSkipped=false;
+  var seen={};
+  for(var li=dataStart; li<lines.length; li++){
+    var line=lines[li];
+    if(!line)continue;
+    // Stop at RECURRING: — recurring investments are parsed separately upstream.
+    if(/^RECURRING:/i.test(line))break;
+    // Stray COUNT line or comment
+    if(/^\s*COUNT\s*[:=]/i.test(line))continue;
+    if(/^\s*#|^\s*\/\//.test(line))continue;
+
+    // Detect and skip a single header row.
+    if(!headerSkipped && /symbol|ticker|name|quantity/i.test(line) && !/^[A-Z]{1,6},/.test(line)){
+      headerSkipped=true;
+      var hdrs=splitCsvLine(line);
+      if(hdrs.length) result.headers=hdrs;
+      continue;
     }
-    var cost = costPS*shares;
+
+    // Handle N/A values and strip $ / quotes.
+    var cleaned=line.replace(/\bN\/A\b/gi,'0').replace(/["$]/g,'');
+    var parts=splitCsvLine(cleaned);
+    if(parts.length<2){ result.errors.push('line '+(li+1)+': too few fields: "'+line+'"'); continue; }
+
+    var sym=(parts[0]||'').toUpperCase().replace(/[^A-Z.]/g,'');
+    if(!sym||sym.length<1||sym.length>7){ result.errors.push('line '+(li+1)+': invalid symbol "'+parts[0]+'"'); continue; }
+    if(/^(SYMBOL|TICKER|NAME|STOCK|DESC|EQUIT)/i.test(sym))continue;
+
+    var shares=toNumber(parts[1]);
+    if(!isFinite(shares)||shares<=0){ result.errors.push('line '+(li+1)+': invalid shares "'+parts[1]+'" for '+sym); continue; }
+
+    var costPS=toNumber(parts[2]); if(!isFinite(costPS)) costPS=0;
+    var mktVal=toNumber(parts[3]); if(!isFinite(mktVal)) mktVal=0;
+
+    // Preserve existing bankrupt/worthless skips.
+    if(mktVal===0&&costPS<0.01){ result.errors.push('line '+(li+1)+': skipped worthless position '+sym); continue; }
+    if(mktVal<0.10&&shares>100){ result.errors.push('line '+(li+1)+': skipped delisted position '+sym); continue; }
+    if(!mktVal&&costPS&&shares)mktVal=costPS*shares;
+    var cost=costPS*shares;
+    if(mktVal<=0&&cost<=0){ result.errors.push('line '+(li+1)+': skipped zero-value position '+sym); continue; }
+
+    if(seen[sym]){ result.errors.push('line '+(li+1)+': duplicate symbol '+sym+' in extraction'); continue; }
+    seen[sym]=true;
+
+    // Raw 4-field row for new COUNT:N consumers.
+    result.rows.push({sym:sym,shares:shares,costPerShare:costPS,mktVal:(mktVal||cost)});
+
+    // Honor cost/gain/pct if the CSV export included them (cols 5-7); else compute.
+    var costField=parts.length>4?toNumber(parts[4]):NaN;
+    var gainField=parts.length>5?toNumber(parts[5]):NaN;
+    var pctField =parts.length>6?toNumber(parts[6]):NaN;
+    var finalCost=isFinite(costField)?costField:cost;
+    var finalMkt =mktVal||finalCost;
+    var finalGain=isFinite(gainField)?gainField:(finalMkt-finalCost);
+
     result.push({
       sym:sym, shares:shares, costPerShare:costPS,
-      cost:cost, mktVal:mktVal||cost,
-      gain:(mktVal||cost)-cost, pct:0
+      cost:finalCost, mktVal:finalMkt,
+      gain:finalGain, pct:isFinite(pctField)?pctField:0
     });
-  });
-  // Within-response dedupe: if AI returned same ticker twice (e.g. from multiple views
-  // of the same account), keep the row with the LARGEST market value and discard the rest.
-  // This prevents the "doubled/tripled total" bug.
-  var byTicker={};
-  result.forEach(function(h){
-    var existing=byTicker[h.sym];
-    if(!existing || h.mktVal > existing.mktVal){ byTicker[h.sym]=h; }
-  });
-  result=Object.keys(byTicker).map(function(k){return byTicker[k];});
+  }
+
+  // Compute % allocation if not supplied.
   var total=result.reduce(function(s,h){return s+h.mktVal;},0);
-  result.forEach(function(h){h.pct=total>0?(h.mktVal/total*100):0;});
+  result.forEach(function(h){ if(!h.pct) h.pct=total>0?(h.mktVal/total*100):0; });
+
+  result.parsedCount=result.rows.length;
   return result;
+}
+
+// Strict CSV line splitter — handles quoted fields and "" escapes.
+function splitCsvLine(line){
+  var out=[]; var cur=''; var inQ=false;
+  for(var i=0;i<line.length;i++){
+    var ch=line[i];
+    if(inQ){
+      if(ch==='"'){ if(line[i+1]==='"'){ cur+='"'; i++; } else { inQ=false; } }
+      else cur+=ch;
+    }else{
+      if(ch==='"') inQ=true;
+      else if(ch===','){ out.push(cur); cur=''; }
+      else cur+=ch;
+    }
+  }
+  out.push(cur);
+  return out.map(function(s){return s.trim();});
+}
+
+// Tolerant number parser — strips $, commas, whitespace; treats (x) as -x.
+function toNumber(raw){
+  if(raw==null) return NaN;
+  var s=String(raw).trim().replace(/[$,\s]/g,'').replace(/^\((.*)\)$/,'-$1');
+  if(s===''||s==='-') return NaN;
+  var n=parseFloat(s);
+  return isFinite(n)?n:NaN;
 }
 
 function loadManual(){
@@ -2532,158 +2337,106 @@ function handleFileInput(files){
 
 async function queueImagesForExtraction(files){
   var status=document.getElementById('portExtractStatus');
-
-  // Client-side preflight: validate file types and sizes
-  var allowedExts=['png','jpg','jpeg','webp','gif'];
-  var maxSingleFileSize=10_000_000; // 10MB per file (modern phone screenshots are 4-8MB)
-  var filesToProcess=[];
-  var rejectedFiles=[];
-
-  for(var i=0;i<files.length;i++){
-    var f=files[i];
-    var ext=f.name.split('.').pop().toLowerCase();
-    if(allowedExts.indexOf(ext)===-1){
-      rejectedFiles.push(f.name+' (invalid format, allowed: png, jpg, jpeg, webp, gif)');
-      continue;
-    }
-    if(f.size>maxSingleFileSize){
-      rejectedFiles.push(f.name+' is too large ('+Math.round(f.size/1000000)+'MB). Resize to under 10MB and retry (right-click → Export → smaller size on macOS Preview).');
-      continue;
-    }
-    filesToProcess.push(f);
-  }
-
-  // Show rejection errors if any
-  if(rejectedFiles.length>0){
-    status.innerHTML='<div class="extract-err">'
-      +'<div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">'+rejectedFiles.length+' file(s) rejected</div>'
-      +'<div style="font-size:11px;color:var(--text-2);line-height:1.6">'+rejectedFiles.map(function(f){return esc(f);}).join('<br/>')+'</div>'
-    +'</div>';
-    if(filesToProcess.length===0) return;
-    // If some files passed, continue with them
-  }
-
-  // Limit to first 10 files
-  var skippedCount=0;
-  if(filesToProcess.length>10){
-    skippedCount=filesToProcess.length-10;
-    filesToProcess=filesToProcess.slice(0,10);
-  }
-
-  status.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Reading '+filesToProcess.length+' screenshot'+(filesToProcess.length>1?'s':'')+' · AI takes 10–20 seconds for multi-image extraction</div><div class="cd-loader-sub">Uploading · parsing · merging positions · detecting recurring investments'+(skippedCount>0?' ('+skippedCount+' file'+(skippedCount>1?'s':'')+' skipped — max 10 per request)':'')+'</div></div></div>';
+  var key=getKey();
+  if(!key){status.innerHTML='<div style="color:var(--clay);font-size:12px">API key required to extract from images. Set your key above.</div>';return;}
 
   try{
-    // Convert each file to { mediaType, data (base64) }
-    var images=[];
-    for(var i=0;i<filesToProcess.length;i++){
-      var f=filesToProcess[i];
-      var b64=await new Promise(function(res,rej){
-        var r=new FileReader();
-        r.onload=function(e){ res(e.target.result.split(',')[1]); };
-        r.onerror=rej;
-        r.readAsDataURL(f);
-      });
-      var ext=f.name.split('.').pop().toLowerCase();
-      var mt='image/'+(ext==='jpg'?'jpeg':ext);
-      images.push({mediaType:mt,data:b64});
+    // Build content array -- one image block per file plus a combined instruction
+    var contentBlocks=[];
+    for(var i=0;i<files.length;i++){
+      var f=files[i];
+      var b64=await new Promise(function(res,rej){var r=new FileReader();r.onload=function(e){res(e.target.result.split(',')[1]);};r.onerror=rej;r.readAsDataURL(f);});
+      var mt='image/'+f.name.split('.').pop().toLowerCase().replace('jpg','jpeg');
+      contentBlocks.push({type:'image',source:{type:'base64',media_type:mt,data:b64}});
     }
 
-    var resp=await fetch(API_BASE+'/api/ai/extract-holdings',{
+    // Smart extraction prompt -- handles Robinhood, fractional shares, recurring investments, bankrupt positions.
+    // First line MUST be COUNT:<n> so the frontend can verify nothing was dropped.
+    var extractPrompt=[
+      'You are analyzing '+files.length+' brokerage screenshot(s). Extract ALL stock/ETF holdings from ALL images combined.',
+      '',
+      'Rules:',
+      '- Include fractional shares (e.g. 26.3771 shares)',
+      '- Skip bankrupt/delisted positions with N/A price (no market value)',
+      '- Skip positions with $0.0001 or near-zero price (likely worthless)',
+      '- If a position appears in multiple screenshots, combine the shares (they may be different accounts)',
+      '- If you see "Recurring Investments" (e.g. SCHD $15/month, VOO $40/month), note them separately at the END after a line that says RECURRING:',
+      '- Extract market value and cost basis when visible',
+      '',
+      'Return ONLY this format (no headers, no explanations). The FIRST line must be COUNT:<n> where <n> is the exact number of holdings rows that follow.',
+      'COUNT:<n>',
+      'SYMBOL,SHARES,COST_PER_SHARE,MARKET_VALUE',
+      '',
+      'Then if recurring investments found:',
+      'RECURRING:',
+      'SYMBOL,MONTHLY_AMOUNT',
+      '',
+      'Example:',
+      'COUNT:2',
+      'AAPL,26.3771,180.60,7127.88',
+      'NVDA,48,126.74,9680.64',
+      'RECURRING:',
+      'SCHD,15',
+      'VOO,40'
+    ].join('\n');
+
+    contentBlocks.push({type:'text',text:extractPrompt});
+
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({images:images})
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1200,messages:[{role:'user',content:contentBlocks}]})
     });
-    if(!resp.ok){
-      var er=await resp.json().catch(function(){return{error:resp.statusText};});
-      var emsg=er.error||resp.statusText;
-      if(resp.status===400) emsg=er.error||'Invalid request format';
-      else if(resp.status===413) emsg=er.error||'Total payload exceeds 20MB limit';
-      else if(resp.status===429) emsg='Rate limit reached — wait 60 seconds and try again.';
-      else if(resp.status===502||resp.status===504) emsg='AI service temporarily unavailable. Try again shortly.';
-      throw new Error(emsg);
-    }
+    if(!resp.ok){var er=await resp.json().catch(function(){return{};});throw new Error((er.error&&er.error.message)||resp.statusText);}
     var d=await resp.json();
-    var txt=d.text;
-    var declaredCount=d.declaredCount||null;
-    var aiUndercount=d.undercount===true;
-
-    // Handle no_holdings_found warning from backend
-    if(d.warning==='no_holdings_found'){
-      status.innerHTML='<div class="extract-err">'
-        +'<div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">AI couldn\'t read holdings from these images</div>'
-        +'<div style="font-size:11px;color:var(--text-2);line-height:1.6">Try clearer screenshots, or paste manually below.</div>'
-      +'</div>';
-      return;
-    }
+    var txt=d.content[0].text;
 
     // Split holdings vs recurring
     var parts=txt.split(/^RECURRING:/m);
     var holdingsText=parts[0];
     var recurringText=parts.length>1?parts[1]:'';
 
-    // Parse holdings
+    // Parse holdings (new parseCSV returns an Array with .reportedCount,
+    // .parsedCount, .errors, .rows attached — still iterable as holdings).
     var parsed=parseCSV(holdingsText);
     // Parse recurring investments
     var recurring=parseRecurring(recurringText);
 
     if(parsed.length){
       // Track merge stats for the user
-      var stats={found:parsed.length,files:filesToProcess.length,merged:0,new:0,replaced:0};
+      var stats={
+        found:parsed.length,
+        files:files.length,
+        merged:0,
+        new:0,
+        skipped:(parsed.errors&&parsed.errors.length)||0,
+        model:parsed.reportedCount||0,
+        parsed:parsed.parsedCount||parsed.length,
+        mismatch:(parsed.reportedCount>0 && parsed.reportedCount!==parsed.parsedCount),
+        errors:parsed.errors||[]
+      };
       if(_holdings.length){
-        // Detect if the user is re-uploading the SAME account (significant overlap with existing).
-        // This used to silently SUM shares → doubled/tripled portfolio bug.
-        var overlap=parsed.filter(function(p){return _holdings.some(function(h){return h.sym===p.sym;});}).length;
-        var overlapRatio=overlap/parsed.length;
-        // If >=60% of new holdings already exist, assume same account — REPLACE those, don't sum
-        if(overlapRatio>=0.6){
-          var confirmReplace=confirm(
-            overlap+' of '+parsed.length+' tickers match your existing portfolio.\n\n'+
-            'Looks like you re-uploaded the same account.\n\n'+
-            'OK = REPLACE matching positions with these fresher values (recommended)\n'+
-            'Cancel = ADD shares to existing (use only if this is a DIFFERENT account)'
-          );
-          parsed.forEach(function(newH){
-            var exists=_holdings.find(function(h){return h.sym===newH.sym;});
-            if(exists){
-              if(confirmReplace){
-                // REPLACE — overwrite with the new values
-                exists.shares=newH.shares;exists.mktVal=newH.mktVal;exists.cost=newH.cost;
-                exists.costPerShare=newH.costPerShare;exists.gain=exists.mktVal-exists.cost;
-                stats.replaced++;
-              } else {
-                // ADD — user explicitly said different account
-                exists.shares+=newH.shares;exists.mktVal+=newH.mktVal;exists.cost+=newH.cost;
-                exists.gain=exists.mktVal-exists.cost;stats.merged++;
-              }
-            }else{_holdings.push(newH);stats.new++;}
-          });
-        } else {
-          // Low overlap → different account, safe to add
-          parsed.forEach(function(newH){
-            var exists=_holdings.find(function(h){return h.sym===newH.sym;});
-            if(exists){
-              exists.shares+=newH.shares;exists.mktVal+=newH.mktVal;exists.cost+=newH.cost;
-              exists.gain=exists.mktVal-exists.cost;
-              stats.merged++;
-            }else{_holdings.push(newH);stats.new++;}
-          });
-        }
-      }else{_holdings=parsed; stats.new=parsed.length;}
-      // Count skipped lines visible in raw response
-      var rawLines=holdingsText.split('\n').filter(function(l){return l.trim()&&!/^symbol/i.test(l);}).length;
-      stats.skipped=Math.max(0,rawLines-parsed.length);
+        parsed.forEach(function(newH){
+          var exists=_holdings.find(function(h){return h.sym===newH.sym;});
+          if(exists){
+            exists.shares+=newH.shares;exists.mktVal+=newH.mktVal;exists.cost+=newH.cost;
+            exists.gain=exists.mktVal-exists.cost;
+            stats.merged++;
+          }else{_holdings.push(newH);stats.new++;}
+        });
+      }else{_holdings=parsed.slice(); stats.new=parsed.length;}
+
       dedupeHoldings();saveHoldings();renderLabTable();renderDashboard();
 
-      status.innerHTML=renderExtractionReceipt(stats,recurring,txt);
+      // Console-log the receipt diagnostics so you can spot COUNT/parsed mismatches.
+      try{console.log('[extract]',{model:stats.model,parsed:stats.parsed,found:stats.found,new:stats.new,merged:stats.merged,skipped:stats.skipped,mismatch:stats.mismatch,errors:stats.errors});}catch(e){}
+
+      status.innerHTML=renderExtractionReceipt(stats,recurring);
       if(recurring.length)renderRecurring(recurring,status);
     }else{
-      // Show raw AI response so user can see exactly what Anthropic extracted
-      var rawPreview=(txt||'').trim();
-      var rawHTML=rawPreview?'<details style="margin-top:10px"><summary style="cursor:pointer;font-size:10px;letter-spacing:.12em;color:var(--gold-light);text-transform:uppercase;font-weight:600;padding:4px 0">View what the AI read →</summary><pre style="margin-top:8px;padding:10px;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:var(--r);font-family:DM Mono,monospace;font-size:10px;color:var(--text-2);white-space:pre-wrap;max-height:280px;overflow-y:auto">'+esc(rawPreview)+'</pre><div style="font-size:10px;color:var(--text-3);margin-top:6px;line-height:1.5">If the AI saw holdings but the parser missed them, copy-paste the lines above into the manual box below — the parser accepts <code style="color:var(--gold-light);font-family:DM Mono,monospace">SYMBOL, SHARES, COST, VALUE</code> or tab-separated.</div></details>':'';
       status.innerHTML='<div class="extract-err">'
         +'<div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Could not extract any holdings</div>'
         +'<div style="font-size:11px;color:var(--text-2);line-height:1.6">Try: (1) a clearer screenshot, (2) make sure ticker/shares/value columns are visible, or (3) use the manual paste box below.</div>'
-        +rawHTML
       +'</div>';
     }
   }catch(err){
@@ -2695,27 +2448,20 @@ async function queueImagesForExtraction(files){
 }
 
 // Phase-3 trust: explicit post-upload receipt so user sees what AI did
-function renderExtractionReceipt(s,recurring,rawText){
-  var debugHTML='';
-  if(rawText){
-    var raw=(rawText||'').trim();
-    debugHTML='<details style="margin-top:12px"><summary style="cursor:pointer;font-size:10px;letter-spacing:.12em;color:var(--gold-light);text-transform:uppercase;font-weight:600;padding:4px 0">Debug: view raw AI response →</summary><pre style="margin-top:8px;padding:10px;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:var(--r);font-family:DM Mono,monospace;font-size:10px;color:var(--text-2);white-space:pre-wrap;max-height:320px;overflow-y:auto">'+esc(raw)+'</pre><div style="font-size:10px;color:var(--text-3);margin-top:6px;line-height:1.5">If count looks low, compare AI lines vs extracted positions. Paste into the manual box below to force-parse any missed rows.</div></details>';
-  }
+function renderExtractionReceipt(s,recurring){
   return '<div class="extract-receipt">'
     +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
       +'<div style="font-size:18px;color:var(--sage)">✓</div>'
       +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:16px;color:var(--cream);font-weight:500">Portfolio extracted</div>'
     +'</div>'
-    +'<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px">'
+    +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px">'
       +receiptCell('Found',s.found,'var(--gold-light)')
       +receiptCell('New',s.new,'var(--sage)')
-      +receiptCell('Replaced',s.replaced||0,(s.replaced||0)?'var(--gold-light)':'var(--text-3)')
       +receiptCell('Merged',s.merged,'var(--gold)')
       +receiptCell('Skipped',s.skipped||0,s.skipped?'var(--clay)':'var(--text-3)')
     +'</div>'
     +(recurring&&recurring.length?'<div style="font-size:11px;color:var(--sage);margin-bottom:4px">+ '+recurring.length+' recurring investment'+(recurring.length>1?'s':'')+' detected</div>':'')
     +'<div style="font-size:10px;color:var(--text-3);line-height:1.5">Merged = same ticker combined across files. Skipped = unreadable or zero-value rows (delisted / bankrupt positions).</div>'
-    +debugHTML
   +'</div>';
 }
 function receiptCell(lbl,val,color){
@@ -2998,7 +2744,10 @@ async function runStock(){
     if(out) out.innerHTML='<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Enter a ticker</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">Type a symbol like <code style="font-family:DM Mono,monospace;color:var(--gold-light)">NVDA</code> or pick one from the chips above.</div></div>';
     return;
   }
-  // Backend owns the AI key — no client-side gate
+  if(!getKey()){
+    if(out) out.innerHTML='<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Anthropic API key required</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">Click <strong style="color:var(--gold)">Set API Key</strong> in the top bar to unlock AI analysis. Free key at console.anthropic.com.</div></div>';
+    return;
+  }
   out.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Analyzing <strong style="color:var(--gold-light);font-family:DM Mono,monospace">'+esc(ticker)+'</strong></div><div class="cd-loader-sub">Reading market context · building verdict · scoring catalysts · sizing conviction</div></div></div>';
   var full=_currentMode==='full';var begin=_beginMode2;
   var holdCtx='';
@@ -3150,7 +2899,11 @@ async function runFeasibility(){
     fc.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">No portfolio loaded yet</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Add holdings above — upload a brokerage CSV, drop screenshots, or paste manually. The feasibility engine needs your actual positions to diagnose concentration, health, and strategy fit.</div></div>';
     return;
   }
-  // Backend owns the AI key — no client-side gate
+  if(!getKey()){
+    fo.style.display='block';
+    fc.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">AI key required for feasibility study</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Click <strong style="color:var(--gold)">Set API Key</strong> in the top bar. The study runs entirely against your holdings + market context — no data leaves your browser except the prompt itself.</div></div>';
+    return;
+  }
   fo.style.display='block';fc.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Running institutional portfolio feasibility study</div><div class="cd-loader-sub">Grading structure · mapping allocation · projecting paths · writing action plan</div></div></div>';
   var total=h.reduce(function(s,x){return s+x.mktVal;},0);
   var cost=h.reduce(function(s,x){return s+x.cost;},0);
@@ -3463,7 +3216,10 @@ async function runDeploy(){
     if(out) out.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">Enter cash to deploy</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Set a <strong>Cash Available ($)</strong> above. Or use a Quick Scenario button — the engine scales the plan to any amount.</div></div>';
     return;
   }
-  // Backend owns the AI key — no client-side gate
+  if(!getKey()){
+    if(out) out.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">Anthropic API key required</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Click <strong style="color:var(--gold)">Set API Key</strong> in the top bar to enable the deployment engine. The plan is generated fresh from your portfolio context + current market regime.</div></div>';
+    return;
+  }
   out.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Structuring deployment plan for <strong style="color:var(--gold-light);font-family:DM Mono,monospace">'+fmt$(cash)+'</strong></div><div class="cd-loader-sub">Reading regime · balancing lanes · ranking tickers · sizing tranches</div></div></div>';
   var h=getHoldings();
   var portCtx=h.length?h.map(function(x){return x.sym+'('+(x.mktVal/h.reduce(function(s,y){return s+y.mktVal;},0)*100).toFixed(0)+'%)';}).join(', '):'No portfolio loaded';
@@ -3534,7 +3290,6 @@ function buildDeployPanel(d,cash,dateStr){
           +'<div class="cd-donut-orn" id="cdDonutOrn">&ldquo;Time in market beats timing the market.&rdquo;</div>'
         +'</div>'
       +'</div>'
-      +'<div id="cdBucketExplainer" style="grid-column:1/-1"></div>'
       +'<div>'
         +'<div class="cd-alloc-head">'
           +'<div class="cd-alloc-title">Target Allocation</div>'
@@ -3576,7 +3331,6 @@ function setDeployStrategy(name){
   var d=window._deployData; var cash=window._deployCash||0;
   if(!d) return;
   var s=d[name]; if(!s) return;
-  window._deployCurrent = name;
   var C=2*Math.PI*80;
   // Update tabs
   document.querySelectorAll('.cd-tab').forEach(function(t){t.classList.toggle('active',t.dataset.s===name);});
@@ -3588,15 +3342,7 @@ function setDeployStrategy(name){
   if(sg){sg.setAttribute('stroke-dasharray',gL.toFixed(1)+' '+(C-gL).toFixed(1));sg.setAttribute('stroke-dashoffset',(-cL).toFixed(1));}
   if(st){st.setAttribute('stroke-dasharray',tL.toFixed(1)+' '+(C-tL).toFixed(1));st.setAttribute('stroke-dashoffset',(-(cL+gL)).toFixed(1));}
   var lbl=document.getElementById('cdDonutLbl'); if(lbl) lbl.textContent=s.label||name;
-  var sub=document.getElementById('cdDonutSub');
-  if(sub){
-    sub.innerHTML =
-      '<span class="cd-bucket-chip" data-cls="core" onclick="hlBucket(\'core\')" onmouseenter="hlBucket(\'core\')" onmouseleave="hlBucket(null)" title="Core — foundation positions, lowest volatility">'+core+'C</span>'
-      +' <span style="color:var(--text-3);margin:0 2px">·</span> '
-      +'<span class="cd-bucket-chip" data-cls="growth" onclick="hlBucket(\'growth\')" onmouseenter="hlBucket(\'growth\')" onmouseleave="hlBucket(null)" title="Growth — quality compounders, higher return potential">'+growth+'G</span>'
-      +' <span style="color:var(--text-3);margin:0 2px">·</span> '
-      +'<span class="cd-bucket-chip" data-cls="tactical" onclick="hlBucket(\'tactical\')" onmouseenter="hlBucket(\'tactical\')" onmouseleave="hlBucket(null)" title="Tactical — higher-beta, thematic or contrarian plays">'+tactical+'T</span>';
-  }
+  var sub=document.getElementById('cdDonutSub'); if(sub) sub.innerHTML=core+'C &middot; '+growth+'G &middot; '+tactical+'T';
   var orn=document.getElementById('cdDonutOrn'); if(orn) orn.textContent=s.ornament||'';
   // Lens rationale strip — tells the user WHY this lens sizes the way it does
   var lensRat={
@@ -3623,7 +3369,7 @@ function setDeployStrategy(name){
       var p=a.pct||0; var barW=Math.min(100,p*2.2);
       var sz=sizingNote(p,name);
       var szColor=sz==='Over cap — size down'?'var(--clay)':sz==='Near cap — full size'?'var(--gold)':sz==='Core weight'?'var(--sage)':'var(--text-2)';
-      return '<div class="cd-row cd-row-clickable" data-cls="'+(a.cls||'growth')+'" onmouseenter="hlBucket(\''+(a.cls||'growth')+'\')" onmouseleave="hlBucket(null)" onclick="drillDownStock(\''+esc(a.sym)+'\',\''+name+'\')" title="Click for AI analysis of '+esc(a.sym)+'">'
+      return '<div class="cd-row cd-row-clickable" onclick="drillDownStock(\''+esc(a.sym)+'\',\''+name+'\')" title="Click for AI analysis of '+esc(a.sym)+'">'
         +'<div class="cd-ticker"><span class="cd-ticker-dot" style="background:'+a.color+';box-shadow:0 0 8px '+a.color+'40"></span><span class="cd-ticker-sym">'+esc(a.sym)+'</span>'
           +'<span style="display:block;font-size:9px;color:'+szColor+';letter-spacing:.05em;margin-top:2px;font-weight:500;font-family:\'DM Sans\',sans-serif">'+esc(sz)+'</span>'
         +'</div>'
@@ -3639,12 +3385,12 @@ function setDeployStrategy(name){
   // Update cards
   var rs=document.getElementById('cdRiskScore'); if(rs) rs.textContent=s.riskScore||'Risk';
   var bs=document.getElementById('cdBullScore'); if(bs) bs.textContent=s.upside||'Upside';
-  var rb=document.getElementById('cdRiskBody'); if(rb) rb.innerHTML=tfHighlight(s.riskBody||'');
-  var bb=document.getElementById('cdBullBody'); if(bb) bb.innerHTML=tfHighlight(s.bullBody||'');
+  var rb=document.getElementById('cdRiskBody'); if(rb) rb.textContent=s.riskBody||'';
+  var bb=document.getElementById('cdBullBody'); if(bb) bb.textContent=s.bullBody||'';
   var rp=document.getElementById('cdRiskPoints');
-  if(rp&&s.riskPoints) rp.innerHTML=s.riskPoints.map(function(p){return '<div class="cd-card-pt"><span><strong class="cd-card-point-term">'+esc(p[0])+'</strong> &mdash; '+tfHighlight(p[1])+'</span></div>';}).join('');
+  if(rp&&s.riskPoints) rp.innerHTML=s.riskPoints.map(function(p){return '<div class="cd-card-pt"><span><strong>'+esc(p[0])+'</strong> &mdash; '+esc(p[1])+'</span></div>';}).join('');
   var bp=document.getElementById('cdBullPoints');
-  if(bp&&s.bullPoints) bp.innerHTML=s.bullPoints.map(function(p){return '<div class="cd-card-pt"><span><strong class="cd-card-point-term">'+esc(p[0])+'</strong> &mdash; '+tfHighlight(p[1])+'</span></div>';}).join('');
+  if(bp&&s.bullPoints) bp.innerHTML=s.bullPoints.map(function(p){return '<div class="cd-card-pt"><span><strong>'+esc(p[0])+'</strong> &mdash; '+esc(p[1])+'</span></div>';}).join('');
   // Clear any open drill-down
   var dd=document.getElementById('cdDrillDown'); if(dd){dd.style.display='none'; dd.innerHTML='';}
   // Reset segment + row opacity (cleared from any prior segment click)
@@ -4527,507 +4273,6 @@ function switchFeasTab(idx,btn){
   document.querySelectorAll('.fpane').forEach(function(p,i){p.classList.toggle('active',i===idx);});
 }
 
-// ================================================================
-// SECTOR FOCUS — pick a sector → AI returns top picks + regime + timing
-// ================================================================
-var _selectedSector = null;
-
-function initSectorFocus(){
-  var grid = document.getElementById('sectorGrid');
-  if(!grid) return;
-  grid.addEventListener('click', function(e){
-    var chip = e.target.closest('.sector-chip');
-    if(!chip) return;
-    document.querySelectorAll('.sector-chip').forEach(function(c){ c.classList.remove('active'); });
-    chip.classList.add('active');
-    _selectedSector = chip.dataset.sec;
-    var btn = document.getElementById('sectorRunBtn');
-    if(btn){ btn.disabled = false; btn.style.opacity = '1'; }
-  });
-}
-
-async function runSectorAnalysis(){
-  var out = document.getElementById('sectorOutput');
-  if(!_selectedSector){
-    out.innerHTML = '<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Pick a sector first</div><div style="font-size:11px;color:var(--text-2)">Click one of the sector chips above.</div></div>';
-    return;
-  }
-  var horizon = document.getElementById('sectorHorizon').value || '3 years';
-  var risk = document.getElementById('sectorRisk').value || 'balanced';
-  var cash = parseFloat(document.getElementById('sectorCash').value) || 0;
-  var h = getHoldings();
-  var holdStr = h.slice(0,10).map(function(x){return x.sym;}).join(', ') || 'no portfolio loaded';
-  var regime = (_marketCtx && _marketCtx.trend ? _marketCtx.trend : 'neutral') + ' trend, VIX ' + (_marketCtx && _marketCtx.vol ? _marketCtx.vol : 'normal');
-
-  out.innerHTML = '<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Analyzing <strong style="color:var(--gold-light)">'+esc(_selectedSector)+'</strong> sector</div><div class="cd-loader-sub">Reading regime · ranking names · sizing entry · flagging risks</div></div></div>';
-
-  var prompt = 'SECTOR INVESTMENT BRIEF: ' + _selectedSector + '\n\nUser context:\n- Current holdings: ' + holdStr + '\n- Risk tolerance: ' + risk + '\n- Time horizon: ' + horizon + '\n- Cash to allocate: ' + (cash ? '$'+cash.toLocaleString() : 'not specified') + '\n- Market regime: ' + regime + '\n\nRespond in EXACTLY this format, each label on its own line. No markdown, no asterisks.\n\nSECTOR REGIME: [Is this sector early-cycle, mid-cycle, late-cycle, or contracting? 2 sentences. Cite a recent driver.]\n\nWHY NOW: [2-3 sentences on why (or why not) this is the moment to add exposure. Be specific about catalysts in the next 3-6 months.]\n\nTOP 5 PICKS: [List 5 tickers with one line each. Format: "TICKER — one-sentence thesis + rough position weight (e.g. 4-6%)". Mix quality compounders with 1-2 asymmetric names.]\n\nAVOID IN THIS SECTOR: [2-3 tickers or subcategories to explicitly steer clear of, with reason]\n\nENTRY APPROACH: [Specific strategy given the '+risk+' risk tolerance — e.g. "DCA over 8 weeks", "Single entry on 5% pullback to $X", "Barbell: 60% ETF + 40% concentrated picks"]\n\nPORTFOLIO FIT: [One sentence on how this sector slots into the user\'s existing holdings — overlap, gap-filling, or diversification]\n\nWHAT BREAKS THE THESIS: [2 specific scenarios that would force a re-evaluation, with the indicator to watch]\n\nCONFIDENCE: [1-10, one sentence on what drives the score]';
-
-  try {
-    var text = await aiCall(prompt, SYS, 1800);
-    var S = {
-      regime:   extractSection(text, 'SECTOR REGIME:'),
-      whyNow:   extractSection(text, 'WHY NOW:'),
-      picks:    extractSection(text, 'TOP 5 PICKS:'),
-      avoid:    extractSection(text, 'AVOID IN THIS SECTOR:'),
-      entry:    extractSection(text, 'ENTRY APPROACH:'),
-      fit:      extractSection(text, 'PORTFOLIO FIT:'),
-      breaks:   extractSection(text, 'WHAT BREAKS THE THESIS:'),
-      conf:     extractSection(text, 'CONFIDENCE:')
-    };
-    var confMatch = (S.conf||'').match(/(\d+(?:\.\d+)?)/);
-    var confScore = confMatch ? parseFloat(confMatch[1]) : null;
-    var confColor = confScore===null?'var(--text-2)':confScore>=8?'var(--sage)':confScore>=6?'var(--gold)':confScore>=4?'var(--gold-dim)':'var(--clay)';
-    var confExplain = (S.conf||'').replace(/^\d+(?:\.\d+)?\s*[-—]?\s*/,'').trim();
-
-    // Extract tickers from the picks section so we can render chips
-    var pickTickers = (S.picks || '').match(/\b[A-Z]{1,5}\b/g) || [];
-    var skipWords = ['DCA','ETF','AI','NO','USD','IPO','M&A','PE','OK','CEO','CFO','CTO','EV','P/E','ROI','RSI'];
-    pickTickers = pickTickers.filter(function(t){ return t.length>=2 && skipWords.indexOf(t)<0; });
-    pickTickers = pickTickers.filter(function(t,i){ return pickTickers.indexOf(t)===i; }).slice(0,8);
-
-    function sec(lbl,color,body){
-      if(!body) return '';
-      return '<div style="margin-bottom:14px;padding:12px 14px;background:rgba(0,0,0,.22);border-left:2px solid '+color+';border-radius:var(--r)">'
-        +'<div style="font-size:9px;letter-spacing:.15em;color:'+color+';text-transform:uppercase;font-weight:700;margin-bottom:5px">'+esc(lbl)+'</div>'
-        +'<div style="font-size:12.5px;color:var(--text-1);line-height:1.75">'+esc(body).replace(/\n- /g,'<br>• ').replace(/\n/g,'<br>')+'</div>'
-      +'</div>';
-    }
-
-    var html = '<div style="background:linear-gradient(145deg,var(--noir-2),var(--noir-1));border:1px solid var(--border-2);border-radius:var(--r-xl);overflow:hidden;animation:fadeUp .3s ease">'
-      +'<div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>'
-      +'<div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">'
-        +'<div>'
-          +'<div style="font-size:9px;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase;font-weight:700;margin-bottom:3px">Sector Brief</div>'
-          +'<div style="font-family:Cormorant Garamond,serif;font-size:22px;color:var(--cream)">'+esc(_selectedSector)+'</div>'
-        +'</div>'
-        +(confScore!==null?'<div style="display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;font-family:DM Mono,monospace;background:rgba(0,0,0,.35);border:1px solid '+confColor+'40;color:'+confColor+'"><span style="letter-spacing:.1em;text-transform:uppercase;font-size:9px;color:var(--text-3)">Confidence</span> '+confScore+'/10</div>':'')
-      +'</div>'
-      +(confExplain?'<div style="padding:10px 20px;background:rgba(0,0,0,.2);font-size:11px;color:var(--text-2);font-style:italic;line-height:1.5;border-bottom:1px solid var(--border)">Confidence basis: '+esc(confExplain)+'</div>':'')
-      +'<div style="padding:18px 20px">'
-        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">'
-          +'<div>'
-            +sec('Sector regime','var(--gold)',S.regime)
-            +sec('Why now','var(--sage)',S.whyNow)
-            +sec('Top 5 picks','var(--gold-light)',S.picks)
-          +'</div>'
-          +'<div>'
-            +sec('Entry approach','var(--gold)',S.entry)
-            +sec('Portfolio fit','var(--sage)',S.fit)
-            +sec('Avoid in this sector','var(--clay)',S.avoid)
-            +sec('What breaks the thesis','var(--clay)',S.breaks)
-          +'</div>'
-        +'</div>'
-        +(pickTickers.length?'<div style="margin-top:10px;padding:12px 14px;background:rgba(201,168,76,.04);border:1px solid var(--border-2);border-radius:var(--r-lg)">'
-          +'<div style="font-size:9px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:8px">◆ Drill into any of these</div>'
-          +'<div class="strat-step-chips">'
-          +pickTickers.map(function(t){ return '<button class="strat-ticker-chip" onclick="quickTick(\''+t+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2]);setTimeout(runStock,200)">'+t+' →</button>'; }).join('')
-          +'</div>'
-        +'</div>':'')
-        +'<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">'
-          +(cash>0?'<button class="btn-p btn-sm" onclick="document.getElementById(\'cashAmt\').value='+cash+';document.getElementById(\'deployStyle\').value=\''+risk+'\';showPanel(\'deploy\',document.querySelectorAll(\'.nav-item\')[3]);setTimeout(runDeploy,300)">Deploy $'+cash.toLocaleString()+' into plan →</button>':'')
-          +'<button class="btn-g btn-sm" onclick="document.getElementById(\'sectorOutput\').innerHTML=\'\';_selectedSector=null;document.querySelectorAll(\'.sector-chip\').forEach(function(c){c.classList.remove(\'active\')});var b=document.getElementById(\'sectorRunBtn\');if(b){b.disabled=true;b.style.opacity=\'.6\'}">Reset</button>'
-        +'</div>'
-      +'</div>'
-    +'</div>';
-    out.innerHTML = html;
-  } catch(e) {
-    out.innerHTML = '<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Sector analysis failed</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">'+esc(e.message)+'</div></div>';
-  }
-}
-
-// ================================================================
-// STRATEGY ACTION HELPERS — clean named handlers (no nested-quote hell)
-// + document-level delegated listener as a bet-proof fallback
-// ================================================================
-document.addEventListener('click', function(e){
-  var target = e.target && e.target.closest && e.target.closest('#selectedStrategyPanel button');
-  if(!target) return;
-  var txt = (target.textContent || '').trim();
-  if(txt.indexOf('Tune Feasibility') === 0 || txt.indexOf('Run Full AI Study') === 0){
-    e.preventDefault(); e.stopPropagation();
-    runFullStudyForStrategy();
-  } else if(txt.indexOf('Build Cadence Plan') === 0){
-    e.preventDefault(); e.stopPropagation();
-    buildCadencePlanForStrategy();
-  } else if(txt === 'Change Strategy'){
-    e.preventDefault(); e.stopPropagation();
-    changeStrategy();
-  }
-}, true);
-
-function runFullStudyForStrategy(){
-  // Stay where you are — render the feasibility inline inside the strategy panel
-  // so the result appears right below the click, not at the top of Portfolio Lab.
-  var panel = document.getElementById('selectedStrategyPanel');
-  if(!panel){
-    // Fallback: no strategy selected, just run the standard feasibility
-    showPanel('portfolio', document.querySelectorAll('.nav-item')[1]);
-    setTimeout(function(){ if(typeof runFeasibility === 'function') runFeasibility(); }, 300);
-    return;
-  }
-  // Make sure we're on the Portfolio Lab panel (strategy panel lives there)
-  showPanel('portfolio', document.querySelectorAll('.nav-item')[1]);
-  // Give the panel-switch a beat, then run tuned feasibility inline
-  setTimeout(function(){ runFeasibilityTunedToStrategy(); }, 250);
-}
-
-// -- Visual helpers for the tuned feasibility render --
-function tfBucketParse(text){
-  var B = {Core:{c:null,t:null}, Growth:{c:null,t:null}, Tactical:{c:null,t:null}, Cash:{c:null,t:null}};
-  Object.keys(B).forEach(function(k){
-    var re = new RegExp(k + '[^\\d]{0,15}(\\d+(?:\\.\\d+)?)\\s*%?[^\\d]{0,10}(?:vs|versus|v\\.|\\/|to|→|target)[^\\d]{0,10}(\\d+(?:\\.\\d+)?)', 'i');
-    var m = text && text.match(re);
-    if(m){ B[k].c = parseFloat(m[1]); B[k].t = parseFloat(m[2]); }
-  });
-  return B;
-}
-function tfExtractTickers(text, max){
-  if(!text) return [];
-  var skip = ['DCA','ETF','AI','NO','USD','IPO','PE','EV','CEO','CFO','ROI','VIX','RSI','MA','YTD','CAGR','SPY','VOO','SCHD','AAPL','NVDA','MSFT','GOOGL','AMZN','META','TSLA','AMD','AVGO']; // keep the obvious tickers by NOT filtering them
-  // Above line: we do NOT filter common tickers. Only filter tiny non-ticker words.
-  var actualSkip = ['AI','NO','USD','IPO','PE','EV','CEO','CFO','ROI','VIX','RSI','MA','YTD','CAGR','OR','AT','IS','TO','DO','BY','IN','ON','OF','AS','BE','IF','IT','UP'];
-  var found = text.match(/\b[A-Z]{1,5}\b/g) || [];
-  var uniq = [];
-  found.forEach(function(t){ if(t.length >= 2 && actualSkip.indexOf(t) < 0 && uniq.indexOf(t) < 0) uniq.push(t); });
-  return uniq.slice(0, max || 8);
-}
-function tfRing(score, color){
-  var s = Math.max(0, Math.min(10, Number(score)||0));
-  var C = 2 * Math.PI * 34;
-  var filled = (s/10) * C;
-  return '<svg viewBox="0 0 90 90" style="width:92px;height:92px;flex-shrink:0">'
-    +'<circle cx="45" cy="45" r="34" fill="none" stroke="var(--noir-3)" stroke-width="7"/>'
-    +'<circle cx="45" cy="45" r="34" fill="none" stroke="'+color+'" stroke-width="7" stroke-dasharray="'+filled.toFixed(1)+' '+C.toFixed(1)+'" stroke-linecap="round" transform="rotate(-90 45 45)" style="filter:drop-shadow(0 0 6px '+color+'80)"/>'
-    +'<text x="45" y="49" text-anchor="middle" font-family="DM Mono, monospace" font-size="22" font-weight="700" fill="'+color+'">'+s.toFixed(1)+'</text>'
-    +'<text x="45" y="63" text-anchor="middle" font-size="7" fill="var(--text-3)" letter-spacing="2" font-weight="700">FIT</text>'
-  +'</svg>';
-}
-function tfBucketBars(buckets){
-  var html = '';
-  ['Core','Growth','Tactical','Cash'].forEach(function(k){
-    var b = buckets[k];
-    if(b.c === null || b.t === null) return;
-    var gap = b.c - b.t;
-    var gapRgb = Math.abs(gap) < 4 ? '107,170,117' : Math.abs(gap) < 12 ? '201,168,76' : '192,113,79';
-    var gapColor = 'rgb('+gapRgb+')';
-    var gapTxt = Math.abs(gap) < 1 ? 'on target' : gap > 0 ? '+'+gap.toFixed(0)+'% over' : gap.toFixed(0)+'% under';
-    var barWidth = Math.min(100, b.c);
-    var targetPos = Math.min(100, Math.max(0, b.t));
-    html += '<div style="margin-bottom:14px">'
-      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
-        +'<span style="font-size:12px;color:var(--cream);font-weight:600;letter-spacing:.02em">'+k+'</span>'
-        +'<span style="font-size:10px;color:'+gapColor+';font-weight:700;font-family:\'DM Mono\',monospace;padding:2px 8px;border-radius:10px;background:rgba('+gapRgb+',0.12);border:1px solid rgba('+gapRgb+',0.3)">'+gapTxt+'</span>'
-      +'</div>'
-      +'<div style="position:relative;height:14px;background:var(--noir-3);border-radius:7px;border:1px solid var(--border)">'
-        +'<div style="position:absolute;left:0;top:0;bottom:0;width:'+barWidth+'%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:7px;transition:width .6s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px rgba(201,168,76,.3)"></div>'
-        +'<div style="position:absolute;left:calc('+targetPos+'% - 1px);top:-4px;bottom:-4px;width:3px;background:var(--cream);border-radius:2px;box-shadow:0 0 6px rgba(240,232,208,.6)" title="Target '+b.t+'%"></div>'
-      +'</div>'
-      +'<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-3);margin-top:4px;font-family:\'DM Mono\',monospace">'
-        +'<span>Current <strong style="color:var(--gold-light)">'+b.c.toFixed(0)+'%</strong></span>'
-        +'<span>Target <strong style="color:var(--cream)">'+b.t.toFixed(0)+'%</strong></span>'
-      +'</div>'
-    +'</div>';
-  });
-  return html || '<div style="font-size:11px;color:var(--text-3);font-style:italic;padding:8px 0">Could not extract bucket percentages from AI response. See "Gap to target" section below.</div>';
-}
-function tfTickerCards(tickers, label, color){
-  if(!tickers.length) return '';
-  var alpha = color.replace(')',',0.08)').replace('var(','rgba(');
-  var alpha2 = color.replace(')',',0.35)').replace('var(','rgba(');
-  return tickers.map(function(t){
-    return '<button class="tf-ticker-card" style="background:'+alpha+';border:1px solid '+alpha2+';color:'+color+'" onclick="quickTick(\''+t+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2]);setTimeout(runStock,200)">'
-      +'<span class="tf-ticker-sym" style="color:'+color+'">'+t+'</span>'
-      +'<span class="tf-ticker-action">'+esc(label)+' →</span>'
-    +'</button>';
-  }).join('');
-}
-// Parse a section like "KEEP AS-IS" into readable per-ticker rows with a one-line rationale
-function tfParseBullets(text, maxItems){
-  if(!text) return [];
-  maxItems = maxItems || 6;
-  // First try to split on bullets/hyphens/numbered lines
-  var raw = text.trim();
-  var items = [];
-  // Split on newline-dash, newline-bullet, newline-number, or sentence-end followed by ticker
-  var rawItems = raw.split(/\n(?=\s*[-•*])|(?:\n\s*\d+[.):])|(?=\s-\s[A-Z]{2,6}\s)/).map(function(s){return s.replace(/^[\s\-•*\d.):]+/,'').trim();}).filter(Boolean);
-  if(rawItems.length<=1){
-    // Fallback: split on ". - " or period followed by uppercase ticker
-    rawItems = raw.split(/(?:\.\s+-\s+|\s-\s(?=[A-Z]{2,6}\s))/).map(function(s){return s.replace(/^[\s\-•*]+/,'').trim();}).filter(Boolean);
-  }
-  rawItems.slice(0,maxItems).forEach(function(item){
-    // Extract the first ticker-like token (2-6 uppercase letters)
-    var tm = item.match(/\b([A-Z]{2,6}(?:\.[A-Z])?)\b/);
-    var ticker = tm ? tm[1] : null;
-    // Skip obviously non-ticker words
-    if(ticker && /^(YOUR|THIS|THAT|THE|WITH|FROM|INTO|AND|FOR|BUT|NOT|NONE|CORE|GROWTH|CASH)$/.test(ticker)){
-      ticker = null;
-      var tm2 = item.substring(tm.index+tm[0].length).match(/\b([A-Z]{2,6}(?:\.[A-Z])?)\b/);
-      if(tm2) ticker = tm2[1];
-    }
-    // Clean rationale: keep a single clean sentence, trim to ~140 chars
-    var rationale = item.replace(/[\n\r]+/g,' ').replace(/\s+/g,' ').trim();
-    // Remove redundant ticker mention if it's at the start
-    if(ticker){
-      rationale = rationale.replace(new RegExp('^'+ticker+'\\s*[:\\-]?\\s*','i'),'');
-      rationale = rationale.replace(new RegExp('^'+ticker+'\\s+at\\s+','i'),'');
-    }
-    // Cap length so columns stay even
-    if(rationale.length > 180) rationale = rationale.substring(0,177).replace(/[\s,.\-]+$/,'')+'…';
-    if(rationale.length > 4) items.push({ticker: ticker, text: rationale});
-  });
-  return items;
-}
-
-// Render the parsed bullets as clickable rows with ticker pill + short summary + expandable detail
-function tfRenderBulletRows(items, role, actionLabel){
-  if(!items || !items.length) return '<div class="tf-empty">None flagged</div>';
-  return items.map(function(it, idx){
-    var summary = it.text;
-    // Keep the headline ultra-short — one sentence or ~90 chars
-    var firstPeriod = summary.search(/[.!?]\s/);
-    var summaryShort = (firstPeriod > 10 && firstPeriod < 110) ? summary.substring(0, firstPeriod+1) : (summary.length > 100 ? summary.substring(0,97).replace(/[\s,.\-]+$/,'')+'…' : summary);
-    var detailNeeded = summary.length > summaryShort.length + 4;
-    var chipHtml = it.ticker
-      ? '<button class="tf-chip tf-chip-'+role+'" onclick="event.stopPropagation();quickTick(\''+esc(it.ticker)+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2]);setTimeout(runStock,200)" title="Analyze '+esc(it.ticker)+'">'+esc(it.ticker)+'</button>'
-      : '<span class="tf-chip tf-chip-'+role+'">•</span>';
-    var rowClass = 'tf-row tf-row-'+role;
-    var onclick = detailNeeded ? ' onclick="this.classList.toggle(\'open\')"' : '';
-    return '<div class="'+rowClass+'"'+onclick+'>'
-      +(detailNeeded ? '<span class="tf-row-expand">▾</span>' : '')
-      +'<div class="tf-row-head">'
-        +chipHtml
-        +'<span class="tf-row-action">'+esc(actionLabel)+'</span>'
-      +'</div>'
-      +'<div class="tf-row-summary">'+esc(summaryShort)+'</div>'
-      +(detailNeeded ? '<div class="tf-row-detail">'+tfHighlight(summary)+'</div>' : '')
-    +'</div>';
-  }).join('');
-}
-
-function tfActionTimeline(text){
-  if(!text) return '';
-  var lines = text.split('\n').map(function(l){return l.trim();}).filter(function(l){return l;});
-  var steps = [];
-  lines.forEach(function(l){
-    var m = l.match(/^(\d+)[.):]?\s*(.+)/);
-    if(m){ steps.push({n: m[1], txt: m[2]}); }
-    else if(steps.length && l.length > 4 && !/^[A-Z]{2,}:/.test(l)){ steps[steps.length-1].txt += ' ' + l; }
-  });
-  if(!steps.length){
-    return '<div style="font-size:12.5px;color:var(--text-1);line-height:1.75">'+tfHighlight(text).replace(/\n/g,'<br>')+'</div>';
-  }
-  return '<div class="tf-timeline">' + steps.map(function(s, i){
-    return '<div class="tf-tl-step">'
-      +'<div class="tf-tl-dot">'+s.n+'</div>'
-      +'<div class="tf-tl-body">'+tfHighlight(s.txt)+'</div>'
-    +'</div>';
-  }).join('') + '</div>';
-}
-
-// Tuned version — runs a feasibility study through the lens of the selected strategy
-// and renders inline inside the strategy panel (not at the top of Portfolio Lab)
-async function runFeasibilityTunedToStrategy(){
-  var panel = document.getElementById('selectedStrategyPanel');
-  if(!panel){ if(typeof runFeasibility==='function') runFeasibility(); return; }
-
-  // Create (or reuse) an inline result slot at the bottom of the strategy panel
-  var slot = document.getElementById('stratTunedFeas');
-  if(!slot){
-    slot = document.createElement('div');
-    slot.id = 'stratTunedFeas';
-    slot.style.cssText = 'margin-top:18px;animation:fadeUp .3s ease';
-    panel.appendChild(slot);
-  }
-
-  var h = getHoldings();
-  if(!h.length){
-    slot.innerHTML = '<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">No portfolio loaded yet</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Upload a portfolio first (CSV, screenshot, or paste above). The tuned study compares your actual positions against the '+esc(_selectedStrategy||'selected')+' strategy targets.</div></div>';
-    slot.scrollIntoView({behavior:'smooth',block:'start'});
-    return;
-  }
-
-  var stratName = _selectedStrategy ? _selectedStrategy.charAt(0).toUpperCase()+_selectedStrategy.slice(1) : 'Selected';
-  slot.innerHTML = '<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Running feasibility tuned to your <strong style="color:var(--gold-light)">'+esc(stratName)+'</strong> strategy</div><div class="cd-loader-sub">Scoring gap to target · flagging mismatches · writing specific action steps</div></div></div>';
-  slot.scrollIntoView({behavior:'smooth',block:'center'});
-
-  try {
-    var total = h.reduce(function(s,x){return s+(x.mktVal||0);},0);
-    var topHoldings = h.slice().sort(function(a,b){return (b.mktVal||0)-(a.mktVal||0);}).slice(0,15).map(function(x){return x.sym+' ('+((x.mktVal/total)*100).toFixed(1)+'% · $'+Math.round(x.mktVal)+')';}).join(', ');
-    var regime = (_marketCtx && _marketCtx.trend ? _marketCtx.trend : 'neutral') + ' trend, VIX ' + (_marketCtx && _marketCtx.vol ? _marketCtx.vol : 'normal');
-    var targetAlloc = _selectedStrategy==='conservative'?'70% Core · 20% Quality Growth · 10% Cash/Tactical':
-                      _selectedStrategy==='aggressive'?'30% Core · 55% Growth · 15% Tactical':
-                      '55% Core · 35% Growth · 10% Tactical';
-    var prompt = 'STRATEGY-TUNED FEASIBILITY STUDY — '+stratName.toUpperCase()+' lens\n\nUser portfolio: $'+Math.round(total).toLocaleString()+' total.\nTop holdings: '+topHoldings+'\nMarket regime: '+regime+'\nStrategy target allocation: '+targetAlloc+'\n\nWRITING STYLE — CRITICAL:\n- Keep every rationale SHORT. Maximum 18 words per bullet.\n- NO paragraphs. NO long explanations. ONE punchy line per ticker.\n- Lead with the ticker: "TICKER at X% — [10-15 word reason]."\n- Use specific numbers, not adjectives.\n\nProduce a focused gap analysis. No markdown, no asterisks. Use EXACTLY these labels:\n\nSTRATEGY FIT SCORE: [1-10] - [one sentence, max 20 words]\n\nGAP TO TARGET: [3-4 misalignments, each on its own line starting with hyphen. Format: "- Core 32% vs 55% target = +$X into VOO". MAX 20 words per line.]\n\nKEEP AS-IS: [2-3 tickers the user ACTUALLY OWNS that fit. Each on own line starting with hyphen. Format: "- TICKER at X% — [12-word reason]".]\n\nTRIM OR EXIT: [2-3 tickers the user ACTUALLY OWNS that don\'t fit. Same ultra-short format.]\n\nADD IMMEDIATELY: [3-4 new tickers with target weight. Format: "- TICKER 8% — [12-word thesis]".]\n\nSEQUENCED ACTION PLAN: [Numbered 1-5. Each step ONE short sentence with dollar amount + timeframe. Max 20 words each.]\n\nBEHAVIORAL WARNING: [ONE sentence, max 25 words.]\n\nCONFIDENCE: [1-10] - [max 15 words]';
-    var text = await aiCall(prompt, SYS, 1800);
-    var S = {
-      fit:      extractSection(text, 'STRATEGY FIT SCORE:'),
-      gap:      extractSection(text, 'GAP TO TARGET:'),
-      keep:     extractSection(text, 'KEEP AS-IS:'),
-      trim:     extractSection(text, 'TRIM OR EXIT:'),
-      add:      extractSection(text, 'ADD IMMEDIATELY:'),
-      plan:     extractSection(text, 'SEQUENCED ACTION PLAN:'),
-      warning:  extractSection(text, 'BEHAVIORAL WARNING:'),
-      conf:     extractSection(text, 'CONFIDENCE:')
-    };
-    var fitMatch = (S.fit||'').match(/(\d+(?:\.\d+)?)/);
-    var fitScore = fitMatch ? parseFloat(fitMatch[1]) : null;
-    var fitColor = fitScore===null?'var(--text-2)':fitScore>=8?'var(--sage)':fitScore>=6?'var(--gold)':fitScore>=4?'var(--gold-dim)':'var(--clay)';
-    var fitSentence = (S.fit||'').replace(/^\d+(?:\.\d+)?\s*[-—]?\s*/,'').trim();
-    var confMatch = (S.conf||'').match(/(\d+(?:\.\d+)?)/);
-    var confScore = confMatch ? parseFloat(confMatch[1]) : null;
-    var confColor = confScore===null?'var(--text-2)':confScore>=8?'var(--sage)':confScore>=6?'var(--gold)':confScore>=4?'var(--gold-dim)':'var(--clay)';
-
-    function sec(lbl,color,body){
-      if(!body) return '';
-      return '<div style="margin-bottom:12px;padding:12px 14px;background:rgba(0,0,0,.22);border-left:2px solid '+color+';border-radius:var(--r)">'
-        +'<div style="font-size:9px;letter-spacing:.15em;color:'+color+';text-transform:uppercase;font-weight:700;margin-bottom:5px">'+esc(lbl)+'</div>'
-        +'<div style="font-size:12.5px;color:var(--text-1);line-height:1.75">'+esc(body).replace(/\n- /g,'<br>• ').replace(/\n/g,'<br>')+'</div>'
-      +'</div>';
-    }
-
-    // Extract visual data
-    var buckets = tfBucketParse(S.gap);
-    var keepTickers = tfExtractTickers(S.keep, 6);
-    var trimTickers = tfExtractTickers(S.trim, 6);
-    var addTickers  = tfExtractTickers(S.add, 8);
-
-    slot.innerHTML = '<div style="background:linear-gradient(145deg,var(--noir-2),var(--noir-1));border:1px solid var(--border-2);border-radius:var(--r-xl);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)">'
-      +'<div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>'
-
-      // HEADER — big fit ring + title + confidence chip
-      +'<div style="padding:22px 24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:20px;flex-wrap:wrap">'
-        +(fitScore!==null ? tfRing(fitScore, fitColor) : '')
-        +'<div style="flex:1;min-width:240px">'
-          +'<div style="font-size:9px;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase;font-weight:700;margin-bottom:4px">◆ Tuned feasibility</div>'
-          +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:22px;color:var(--cream);line-height:1.25;margin-bottom:6px">Your portfolio through the <em style="color:var(--gold-light);font-style:italic">'+esc(stratName)+'</em> lens</div>'
-          +(fitSentence?'<div style="font-size:12px;color:var(--cream-dim);line-height:1.55;font-style:italic">'+esc(fitSentence)+'</div>':'')
-        +'</div>'
-        +(confScore!==null?'<div style="padding:8px 14px;border-radius:20px;font-size:11px;font-weight:700;font-family:\'DM Mono\',monospace;background:rgba(0,0,0,.35);border:1px solid '+confColor+'40;color:'+confColor+';flex-shrink:0"><span style="letter-spacing:.1em;text-transform:uppercase;font-size:9px;color:var(--text-3)">Conf</span> '+confScore+'/10</div>':'')
-      +'</div>'
-
-      // GAP TO TARGET — horizontal bar chart with markers
-      +'<div style="padding:20px 24px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.12)">'
-        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">'
-          +'<div style="font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;font-weight:700">◆ Current vs '+esc(stratName)+' target</div>'
-          +'<div style="font-size:10px;color:var(--text-3);font-style:italic">Gold bar = current · White line = target</div>'
-        +'</div>'
-        +tfBucketBars(buckets)
-        +(S.gap?'<div style="margin-top:12px;padding:10px 12px;background:rgba(192,113,79,.06);border-left:2px solid var(--clay);border-radius:var(--r);font-size:12px;color:var(--text-1);line-height:1.6">'+esc(S.gap).replace(/\n- /g,'<br>• ').replace(/\n/g,'<br>')+'</div>':'')
-      +'</div>'
-
-      // KEEP / TRIM / ADD — color-coded ticker rows with one-line rationale (click ticker to analyze)
-      +'<div style="padding:20px 24px;border-bottom:1px solid var(--border)">'
-        +'<div style="font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:12px">◆ Position actions · tap any ticker to analyze</div>'
-        +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">'
-          +'<div class="tf-action-col">'
-            +'<div class="tf-col-head" style="color:#6BAA75">✓ KEEP</div>'
-            +'<div class="tf-bullets">'+tfRenderBulletRows(tfParseBullets(S.keep,4),'keep','Hold')+'</div>'
-          +'</div>'
-          +'<div class="tf-action-col">'
-            +'<div class="tf-col-head" style="color:#C0714F">✗ TRIM / EXIT</div>'
-            +'<div class="tf-bullets">'+tfRenderBulletRows(tfParseBullets(S.trim,4),'trim','Sell')+'</div>'
-          +'</div>'
-          +'<div class="tf-action-col">'
-            +'<div class="tf-col-head" style="color:#E8CC7A">+ ADD</div>'
-            +'<div class="tf-bullets">'+tfRenderBulletRows(tfParseBullets(S.add,5),'add','Buy')+'</div>'
-          +'</div>'
-        +'</div>'
-      +'</div>'
-
-      // ACTION PLAN — numbered timeline
-      +(S.plan?'<div style="padding:20px 24px;border-bottom:1px solid var(--border)">'
-        +'<div style="font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:14px">◆ Sequenced action plan</div>'
-        +tfActionTimeline(S.plan)
-      +'</div>':'')
-
-      // BEHAVIORAL WARNING — alert card
-      +(S.warning?'<div style="padding:16px 24px;background:rgba(201,168,76,.05);border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start">'
-        +'<div style="font-size:20px;line-height:1;flex-shrink:0">⚠</div>'
-        +'<div>'
-          +'<div style="font-size:10px;letter-spacing:.16em;color:var(--gold-dim);text-transform:uppercase;font-weight:700;margin-bottom:4px">Behavioral warning</div>'
-          +'<div style="font-size:12.5px;color:var(--text-1);line-height:1.65">'+esc(S.warning)+'</div>'
-        +'</div>'
-      +'</div>':'')
-
-      // FOOTER — actions
-      +'<div style="padding:14px 24px;display:flex;gap:8px;flex-wrap:wrap">'
-        +'<button class="btn-p btn-sm" onclick="showPanel(\'deploy\',document.querySelectorAll(\'.nav-item\')[3])">Go to Capital Deployment →</button>'
-        +'<button class="btn-g btn-sm" onclick="runFullStudyForStrategy()">Re-run analysis</button>'
-        +'<button class="btn-g btn-sm" onclick="var el=document.getElementById(\'stratTunedFeas\');if(el)el.remove();">Close study</button>'
-      +'</div>'
-    +'</div>';
-    slot.scrollIntoView({behavior:'smooth',block:'start'});
-  } catch(e) {
-    slot.innerHTML = '<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Tuned study failed</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">'+esc(e.message)+'</div></div>';
-  }
-}
-function buildCadencePlanForStrategy(){
-  showPanel('cadence', document.querySelectorAll('.nav-item')[5]);
-}
-function changeStrategy(){
-  var sp = document.getElementById('selectedStrategyPanel');
-  if(sp) sp.remove();
-  document.querySelectorAll('.sc2').forEach(function(el){
-    el.style.opacity = '1';
-    el.style.transform = '';
-    el.style.boxShadow = '';
-  });
-  _selectedStrategy = null;
-  var grid = document.getElementById('strategyGrid');
-  if(grid) grid.scrollIntoView({behavior:'smooth', block:'start'});
-}
-
-// Expand a strategy step on click — loads AI-generated deeper context once
-async function toggleStratStep(idx){
-  var stepEl = document.getElementById('strat-step-'+idx);
-  var body = document.getElementById('strat-step-body-'+idx);
-  if(!stepEl || !body) return;
-  var isOpen = stepEl.classList.contains('open');
-  if(isOpen){ stepEl.classList.remove('open'); return; }
-  stepEl.classList.add('open');
-  if(body.dataset.loaded === '1') return;
-
-  body.innerHTML = '<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Loading tailored context</div><div class="cd-loader-sub">AI is expanding the rationale for your portfolio</div></div></div>';
-
-  try {
-    var stepText = body.dataset.stepText || '';
-    var strategy = body.dataset.strategy || 'balanced';
-    var h = getHoldings();
-    var holdStr = h.slice(0,8).map(function(x){return x.sym;}).join(', ') || 'no portfolio loaded yet';
-    var regime = (_marketCtx && _marketCtx.trend ? _marketCtx.trend : 'neutral') + ' trend, VIX ' + (_marketCtx && _marketCtx.vol ? _marketCtx.vol : 'normal');
-    var prompt = 'Expand on this execution step from a ' + strategy.toUpperCase() + ' wealth strategy:\n"' + stepText + '"\n\nUser holdings: ' + holdStr + '.\nMarket: ' + regime + '.\n\nRespond in EXACTLY this format. Each label on its own line. No markdown.\n\nWHY IT MATTERS: [2-3 sentences on the discipline or alpha this step captures]\nHOW TO DO IT: [2-3 concrete actions or specific price/volume triggers — be specific, not vague]\nWATCH FOR: [1-2 signals that would accelerate or invalidate this step]\nFOR YOUR PORTFOLIO: [one sentence on how this applies to the user\'s actual holdings if any names overlap; otherwise write "Does not directly touch current holdings."]';
-    var text = await aiCall(prompt, SYS, 500);
-    var S = {
-      why:   extractSection(text, 'WHY IT MATTERS:'),
-      how:   extractSection(text, 'HOW TO DO IT:'),
-      watch: extractSection(text, 'WATCH FOR:'),
-      user:  extractSection(text, 'FOR YOUR PORTFOLIO:')
-    };
-    // Pull tickers from step text for clickable chips
-    var skipWords = ['NO','AI','DCA','ETF','CAGR','IRR','P/E','VIX'];
-    var tickers = (stepText.match(/\b[A-Z]{2,5}\b/g) || []).filter(function(t){ return skipWords.indexOf(t) < 0; });
-    tickers = tickers.filter(function(t, i){ return tickers.indexOf(t) === i; }); // unique
-
-    var html = '';
-    if(S.why)   html += '<div class="strat-step-sec" style="border-left-color:var(--gold)"><div class="strat-step-lbl" style="color:var(--gold)">Why it matters</div><div class="strat-step-body-text">' + esc(S.why) + '</div></div>';
-    if(S.how)   html += '<div class="strat-step-sec" style="border-left-color:var(--sage)"><div class="strat-step-lbl" style="color:var(--sage)">How to do it</div><div class="strat-step-body-text">' + esc(S.how) + '</div></div>';
-    if(S.watch) html += '<div class="strat-step-sec" style="border-left-color:var(--clay)"><div class="strat-step-lbl" style="color:var(--clay)">Watch for</div><div class="strat-step-body-text">' + esc(S.watch) + '</div></div>';
-    if(S.user)  html += '<div class="strat-step-sec" style="border-left-color:var(--gold-light)"><div class="strat-step-lbl" style="color:var(--gold-light)">For your portfolio</div><div class="strat-step-body-text">' + esc(S.user) + '</div></div>';
-    if(tickers.length){
-      html += '<div class="strat-step-sec" style="border-left-color:var(--text-2)"><div class="strat-step-lbl" style="color:var(--text-2)">Analyze any of these</div><div class="strat-step-chips">';
-      tickers.forEach(function(t){
-        html += '<button class="strat-ticker-chip" onclick="event.stopPropagation();quickTick(\''+t+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2]);setTimeout(runStock,200)">'+t+' →</button>';
-      });
-      html += '</div></div>';
-    }
-    body.innerHTML = html || '<div style="font-size:12px;color:var(--text-2);padding:8px">No additional context available.</div>';
-    body.dataset.loaded = '1';
-  } catch(e) {
-    body.innerHTML = '<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Could not load context</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">' + esc(e.message) + '</div></div>';
-  }
-}
-
 // STRATEGIES
 function selectStrategy(key){
   _selectedStrategy = key;
@@ -5045,7 +4290,7 @@ function selectStrategy(key){
   btns.forEach(function(btn){
     var card = btn.closest('.sc2');
     var isSelected = card && card.dataset.stratKey === key;
-    btn.textContent = isSelected ? '✓ Selected — Your Strategy' : 'Select This Strategy';
+    btn.textContent = isSelected ? '&#10003; Selected -- Your Strategy' : 'Select This Strategy';
     btn.style.background = isSelected ? 'linear-gradient(135deg,var(--gold),var(--gold-dim))' : '';
     btn.style.color      = isSelected ? 'var(--noir)' : '';
     btn.style.borderColor= isSelected ? 'var(--gold)' : '';
@@ -5065,8 +4310,8 @@ function selectStrategy(key){
       steps:[
         'Trim '+( h.length ? h.slice().sort(function(a,b){return b.mktVal-a.mktVal;})[0].sym : 'top position' )+' and any position above 18% to free up cash',
         'Deploy into VOO (20% of portfolio) + SCHD (15% of portfolio)',
-        'Exit all speculative/tactical positions — keep proceeds in cash or VOO',
-        'Set a quarterly rebalancing reminder — sell what grew above target, buy what fell below',
+        'Exit all speculative/tactical positions -- keep proceeds in cash or VOO',
+        'Set a quarterly rebalancing reminder -- sell what grew above target, buy what fell below',
         'Target: 70% Core · 20% Quality Growth · 10% Cash reserve'
       ],
       urgency:'30 days', risk:'Max drawdown: ~15% in worst case',
@@ -5076,28 +4321,28 @@ function selectStrategy(key){
       name:'Balanced', color:'var(--gold)',
       headline:'Best risk-adjusted returns over any 7-10 year period.',
       steps:[
-        'Trim largest holding to 20% maximum — sell the excess and hold cash temporarily',
+        'Trim largest holding to 20% maximum -- sell the excess and hold cash temporarily',
         'Add VOO to reach 20% of total portfolio (core anchor)',
         'Add SCHD to reach 10% (dividend ballast)',
         'Keep NVDA · AMZN · MSFT · AAPL — these are your growth engine',
         'Exit speculative names (LKNCY, NIO, APRE, any position with no clear thesis)',
         'DCA $500+ per month into VOO on every 5%+ dip in the market',
-        'Rebalance quarterly — the discipline is the strategy'
+        'Rebalance quarterly -- the discipline is the strategy'
       ],
       urgency:'30-60 days', risk:'Max drawdown: ~28% in major correction',
       suitable:'Best if you have a 5-15 year horizon, stable income, and can hold through 25% temporary drawdowns without panic selling.'
     },
     aggressive:{
       name:'Aggressive', color:'var(--clay)',
-      headline:'Maximum upside — requires iron discipline.',
+      headline:'Maximum upside -- requires iron discipline.',
       steps:[
         'Hold your entire growth core — NVDA · GOOGL · AMZN · MSFT · AAPL',
-        'Add NVDA on every 10%+ dip — this is your highest conviction position',
+        'Add NVDA on every 10%+ dip -- this is your highest conviction position',
         'Replace speculative names with AVGO + AMD (higher quality, same sector)',
-        'Keep 10% in a tactical sleeve — use for asymmetric opportunities only',
+        'Keep 10% in a tactical sleeve -- use for asymmetric opportunities only',
         'Set a hard rule: NO selling for 24 months regardless of drawdown',
-        'Add $500+ per month systematically — do not try to time the market',
-        'If the portfolio drops 30%, add more — do not exit'
+        'Add $500+ per month systematically -- do not try to time the market',
+        'If the portfolio drops 30%, add more -- do not exit'
       ],
       urgency:'Execute now, hold 24 months', risk:'Max drawdown: ~48% in a 2008-style crash',
       suitable:'Best if you have 10+ year horizon, high stable income, and have NEVER panic-sold during a market correction.'
@@ -5115,7 +4360,7 @@ function selectStrategy(key){
     '<div style="border-radius:var(--r-xl);border:1px solid '+p.color.replace(')',',0.4)').replace('var(','rgba(')+';background:linear-gradient(145deg,var(--noir-2),var(--noir-1));padding:24px;position:relative;overflow:hidden">' +
       '<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,'+p.color+',transparent)"></div>' +
       '<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">' +
-        '<div style="width:36px;height:36px;border-radius:50%;background:'+p.color+';display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">✓</div>' +
+        '<div style="width:36px;height:36px;border-radius:50%;background:'+p.color+';display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#10003;</div>' +
         '<div>' +
           '<div style="font-size:9px;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:3px">Selected Strategy</div>' +
           '<div style="font-family:Cormorant Garamond,serif;font-size:22px;color:var(--cream)">' + esc(p.name) + ' <em style="font-style:italic;color:'+p.color+'">Path</em></div>' +
@@ -5124,16 +4369,11 @@ function selectStrategy(key){
       '<div style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:16px;color:var(--cream-dim);margin-bottom:18px;line-height:1.6">' + esc(p.headline) + '</div>' +
 
       '<div style="margin-bottom:16px">' +
-        '<div style="font-size:9px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:10px">Your Execution Steps <span style="color:var(--gold);font-weight:500;text-transform:none;letter-spacing:0;margin-left:6px">· click any step for AI context</span></div>' +
+        '<div style="font-size:9px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:10px">Your Execution Steps</div>' +
         p.steps.map(function(step, i){
-          var safeStep = esc(step).replace(/"/g,'&quot;');
-          return '<div class="strat-step" id="strat-step-'+i+'" onclick="toggleStratStep('+i+')">' +
-            '<div class="strat-step-head">' +
-              '<div class="strat-step-num" style="color:'+p.color+'">' + (i+1) + '</div>' +
-              '<div class="strat-step-text">' + esc(step) + '</div>' +
-              '<div class="strat-step-chev">▾</div>' +
-            '</div>' +
-            '<div class="strat-step-body-wrap" id="strat-step-body-'+i+'" data-step-text="'+safeStep+'" data-strategy="'+key+'"></div>' +
+          return '<div style="display:flex;gap:12px;padding:10px 14px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:6px;align-items:flex-start">' +
+            '<div style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:18px;color:'+p.color+';line-height:1;min-width:20px;flex-shrink:0">' + (i+1) + '</div>' +
+            '<div style="font-size:13px;color:var(--text-1);line-height:1.6">' + esc(step) + '</div>' +
           '</div>';
         }).join('') +
       '</div>' +
@@ -5153,10 +4393,10 @@ function selectStrategy(key){
         '<strong style="color:var(--cream)">Is this right for you?</strong> ' + esc(p.suitable) +
       '</div>' +
 
-      '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
-        '<button class="btn-p" onclick="runFullStudyForStrategy()">Tune Feasibility to This Strategy →</button>' +
-        '<button class="btn-g" onclick="buildCadencePlanForStrategy()">Build Cadence Plan</button>' +
-        '<button class="btn-g" onclick="changeStrategy()">Change Strategy</button>' +
+      '<div style="display:flex;gap:8px">' +
+        '<button class="btn-p" onclick="showPanel(&quot;portfolio&quot;,document.querySelectorAll(&quot;.nav-item&quot;)[1]);setTimeout(runFeasibility,300)">Run Full AI Study with This Strategy &rarr;</button>' +
+        '<button class="btn-g" onclick="showPanel(&quot;cadence&quot;,document.querySelectorAll(&quot;.nav-item&quot;)[5])">Build Cadence Plan</button>' +
+        '<button class="btn-g" onclick="var sp=document.getElementById(&quot;selectedStrategyPanel&quot;);if(sp)sp.remove();document.querySelectorAll(&quot;.sc2&quot;).forEach(function(el){el.style.opacity=&quot;1&quot;;el.style.transform=&quot;&quot;;el.style.boxShadow=&quot;&quot;;});">Change Strategy</button>' +
       '</div>' +
     '</div>';
 
@@ -6000,106 +5240,6 @@ function renderFeedbackResponses(){
 // UTILS
 function fmt$(n){if(n===undefined||n===null||isNaN(n))return '$-';if(Math.abs(n)>=1000000)return '$'+(n/1000000).toFixed(2)+'M';if(Math.abs(n)>=1000)return '$'+Math.round(n).toLocaleString();return '$'+n.toFixed(2);}
 function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-
-// Highlight ticker/money/percentage/time/action tokens in AI rationale text
-function tfHighlight(text){
-  if(!text) return '';
-  var html = esc(text);
-  // Dollar amounts: $1,234 / $1,234.56 / $1K / $2.5M
-  html = html.replace(/\$[\d,]+(?:\.\d+)?[KMB]?/g, function(m){return '<span class="tf-hl-money">'+m+'</span>';});
-  // Percentages: 12% / 7.5%
-  html = html.replace(/\b\d+(?:\.\d+)?%/g, function(m){return '<span class="tf-hl-pct">'+m+'</span>';});
-  // Time phrases: "6 months", "next quarter", "1-6 months", "12 weeks"
-  html = html.replace(/\b\d+[-–]?\d*\s?(days?|weeks?|months?|quarters?|years?)\b/gi, function(m){return '<span class="tf-hl-time">'+m+'</span>';});
-  // Action verbs (standalone, all caps): BUY SELL TRIM EXIT ADD HOLD REBALANCE WAIT AVOID
-  html = html.replace(/\b(BUY|SELL|TRIM|EXIT|ADD|HOLD|REBALANCE|WAIT|AVOID|KEEP)\b(?!<)/g, function(m){return '<span class="tf-hl-action">'+m+'</span>';});
-  // Tickers — 2-6 uppercase, optional .X suffix — must not be already inside a span, must not be a common word
-  html = html.replace(/(?<![>\-])\b([A-Z]{2,6}(?:\.[A-Z])?)\b(?![<])/g, function(m, t){
-    if(/^(YOUR|THIS|THAT|THESE|THOSE|THE|WITH|FROM|INTO|AND|FOR|BUT|NOT|CORE|GROWTH|CASH|TICKER|NONE|ALL|ETF|IRA|USD|ROI|CAGR|GAP|MAX|MIN|TARGET|BULL|BEAR|UP|DOWN|HIGH|LOW|NOW|NEW|KEY|TOP|BIG|LOW|NEW|WHY|HOW|WHEN|WHO|ONE|TWO|AI|DCA|P\/E|EV|EPS|NVDA|AAPL|GOOG|MSFT|AMZN|TSLA|META|CRM|AMD)$/i.test(t)) {
-      // Keep tickers like NVDA/AAPL highlighted — they ARE tickers
-      if(/^(NVDA|AAPL|GOOG|GOOGL|MSFT|AMZN|TSLA|META|NFLX|CRM|AMD|SCHD|VOO|SPY|QQQ|PLTR|COIN|AVGO|CRWD|NIO|APRE|CMG|LKNCY|DIS|CCL|RCL|NCLH)$/.test(t)){
-        return '<span class="tf-hl-ticker">'+m+'</span>';
-      }
-      return m;
-    }
-    return '<span class="tf-hl-ticker">'+m+'</span>';
-  });
-  return html;
-}
-
-// Bucket explanation data
-var BUCKET_INFO = {
-  core: {
-    letter: 'C', name: 'Core', color: '#C9A84C',
-    tagline: 'The foundation. What holds value when everything else moves.',
-    desc: 'Broad market index funds and reliable dividend-payers. Lowest volatility. Provides steady compounding and holds value during market stress. Think VOO, SCHD, dividend aristocrats.',
-    risk: 'Low',
-    timeHorizon: 'Long-term (5y+)'
-  },
-  growth: {
-    letter: 'G', name: 'Growth', color: '#6BAA75',
-    tagline: 'Quality compounders growing faster than the market.',
-    desc: 'High-quality companies with durable competitive advantages and expanding earnings. Higher upside than Core, with more volatility. Think AI leaders, cloud platforms, secular winners.',
-    risk: 'Medium',
-    timeHorizon: 'Medium to long (3y+)'
-  },
-  tactical: {
-    letter: 'T', name: 'Tactical', color: '#C0714F',
-    tagline: 'Opportunistic, higher-beta bets on specific themes.',
-    desc: 'Concentrated conviction in a theme, sector rotation, or contrarian play. Highest upside AND highest drawdown risk. Size small. Think small-caps, commodities, crypto, single-name catalysts.',
-    risk: 'High',
-    timeHorizon: 'Shorter (6mo to 2y)'
-  }
-};
-
-// Bidirectional highlight: highlights donut segment + allocation rows + bucket chip for the given class
-// Pass null to clear all highlights.
-function hlBucket(cls){
-  // Clear everything first
-  document.querySelectorAll('.cd-seg-highlight').forEach(function(el){ el.classList.remove('cd-seg-highlight'); });
-  document.querySelectorAll('.cd-row-highlight,.cd-row-dim').forEach(function(el){ el.classList.remove('cd-row-highlight','cd-row-dim'); });
-  document.querySelectorAll('.cd-bucket-active').forEach(function(el){ el.classList.remove('cd-bucket-active'); });
-  var wrap = document.querySelector('.cd-donut-wrap');
-  if(wrap) wrap.classList.remove('has-hover');
-  if(!cls){ renderBucketExplainer(null); return; }
-  // Highlight matching donut segment
-  var segId = 'cdSeg'+cls.charAt(0).toUpperCase()+cls.slice(1);
-  var seg = document.getElementById(segId);
-  if(seg){ seg.classList.add('cd-seg-highlight'); if(wrap) wrap.classList.add('has-hover'); }
-  // Highlight matching bucket chip
-  document.querySelectorAll('.cd-bucket-chip[data-cls="'+cls+'"]').forEach(function(el){ el.classList.add('cd-bucket-active'); });
-  // Highlight matching allocation rows, dim non-matching
-  document.querySelectorAll('.cd-row[data-cls]').forEach(function(row){
-    if(row.dataset.cls === cls){ row.classList.add('cd-row-highlight'); }
-    else { row.classList.add('cd-row-dim'); }
-  });
-  // Show the bucket explainer
-  renderBucketExplainer(cls);
-}
-
-// Renders a bucket explainer below the donut
-function renderBucketExplainer(cls){
-  var slot = document.getElementById('cdBucketExplainer');
-  if(!slot) return;
-  if(!cls){ slot.innerHTML=''; return; }
-  var b = BUCKET_INFO[cls]; if(!b) return;
-  var d = window._deployData, s = d && d[window._deployCurrent||'balanced'];
-  var pct = 0;
-  if(s && s.totals) pct = s.totals[cls] || 0;
-  slot.innerHTML = '<div class="cd-bucket-explainer" style="border-left-color:'+b.color+'">'
-    +'<div class="be-head">'
-      +'<div class="be-letter" style="color:'+b.color+'">'+b.letter+'</div>'
-      +'<div class="be-name" style="color:'+b.color+'">'+b.name+'</div>'
-      +'<div class="be-pct">'+pct+'%</div>'
-    +'</div>'
-    +'<div class="be-tagline">'+b.tagline+'</div>'
-    +'<div class="be-desc">'+b.desc+'</div>'
-    +'<div class="be-meta">'
-      +'<div><strong>Volatility</strong> '+b.risk+'</div>'
-      +'<div><strong>Time horizon</strong> '+b.timeHorizon+'</div>'
-    +'</div>'
-  +'</div>';
-}
 </script>
 
 <!-- FEEDBACK PANEL -->
