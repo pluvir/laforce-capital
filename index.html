@@ -261,6 +261,69 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .alloc-tip-cta{font-size:9.5px;color:var(--gold);margin-top:8px;padding-top:7px;border-top:1px dashed rgba(201,168,76,.22);text-align:center;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
 @keyframes allocTipIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
+/* ===== Strategy Study output (#strategyStudyOutput) ===== */
+.ss-wrap{border-radius:14px;border:1px solid rgba(201,168,76,.3);background:linear-gradient(145deg,rgba(16,14,10,.98),rgba(10,8,6,.96));padding:22px;animation:ssIn .35s ease}
+@keyframes ssIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ss-hdr{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px dashed rgba(201,168,76,.15)}
+.ss-hdr-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;color:#0c0a08;font-weight:700;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.4)}
+.ss-hdr-eye{font-size:9.5px;letter-spacing:.17em;color:#8B7D68;text-transform:uppercase;font-weight:700;margin-bottom:3px}
+.ss-hdr-title{font-family:"Cormorant Garamond",serif;font-size:22px;color:#F2E6BD;font-weight:500;line-height:1.25}
+.ss-grid{display:grid;grid-template-columns:180px 1fr;gap:18px;margin-bottom:20px}
+.ss-card{padding:16px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);border-radius:12px}
+.ss-card-lbl{font-size:9px;letter-spacing:.14em;color:#8B7D68;text-transform:uppercase;font-weight:700;margin-bottom:10px}
+.ss-fit{display:flex;flex-direction:column;align-items:center;text-align:center}
+.ss-fit-sub{font-size:10px;color:#6B5E52;margin-top:8px;line-height:1.5;font-style:italic}
+.ss-narrative-body{font-size:13.5px;color:#E8D9B5;line-height:1.75;font-family:"Inter",-apple-system,sans-serif}
+.ss-section{margin-bottom:22px}
+.ss-section-hdr{font-size:11px;letter-spacing:.12em;color:#E8CC7A;text-transform:uppercase;font-weight:700;margin-bottom:10px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.ss-section-sub{font-size:10px;color:#6B5E52;font-weight:400;letter-spacing:.04em;text-transform:none;font-style:italic}
+/* Lane compare */
+.ss-lanes{display:flex;flex-direction:column;gap:14px}
+.ss-lane{padding:12px 14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.04);border-radius:10px}
+.ss-lane-hdr{display:flex;justify-content:space-between;gap:12px;margin-bottom:8px;font-size:12px;flex-wrap:wrap}
+.ss-lane-lbl{color:#F2E6BD;font-weight:600}
+.ss-lane-vals{color:#8B7D68;font-family:"DM Mono",monospace;font-size:11px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ss-lane-diff{font-weight:700}
+.ss-lane-bars{display:flex;flex-direction:column;gap:4px}
+.ss-lane-bar{height:8px;background:rgba(255,255,255,.03);border-radius:4px;overflow:hidden;position:relative}
+.ss-lane-bar.ss-tgt{height:6px;opacity:.85}
+.ss-lane-fill{height:100%;border-radius:4px;transition:width .6s ease}
+/* Position fit */
+.ss-pos{display:flex;flex-direction:column;gap:5px}
+.ss-pos-row{display:grid;grid-template-columns:60px 1fr 62px auto;gap:10px;align-items:center;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.04);border-radius:9px;padding:9px 12px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s;font-family:inherit;text-align:left;color:inherit}
+.ss-pos-row:hover{background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.28);transform:translateX(2px)}
+.ss-pos-sym{font-family:"DM Mono",monospace;font-weight:700;font-size:12px;color:#F2E6BD;letter-spacing:.03em}
+.ss-pos-bar{position:relative;height:9px;background:rgba(255,255,255,.04);border-radius:4px;overflow:visible}
+.ss-pos-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.ss-pos-cap{position:absolute;top:-3px;bottom:-3px;width:2px;background:rgba(255,255,255,.45);box-shadow:0 0 4px rgba(255,255,255,.35)}
+.ss-pos-pct{font-family:"DM Mono",monospace;font-size:11.5px;font-weight:600;text-align:right}
+.ss-pos-flag{font-size:9px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:3px 8px;border-radius:4px;background:rgba(192,113,79,.14);color:#E0947A;border:1px solid rgba(192,113,79,.3)}
+.ss-pos-flag.ok{background:rgba(107,170,117,.12);color:#9DD0A8;border-color:rgba(107,170,117,.28)}
+/* Action plan */
+.ss-actions{display:flex;flex-direction:column;gap:8px}
+.ss-action{display:flex;gap:13px;align-items:flex-start;padding:13px 15px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.05);border-radius:10px;transition:border-color .15s}
+.ss-action:hover{border-color:rgba(201,168,76,.25)}
+.ss-action-icon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#0c0a08;flex-shrink:0}
+.ss-action-kind{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:3px}
+.ss-action-note{font-size:12.5px;color:#B8A882;line-height:1.65}
+.ss-action-amt{font-family:"DM Mono",monospace;font-size:14px;font-weight:700;align-self:center;white-space:nowrap}
+.ss-action.ss-noop{border-color:rgba(107,170,117,.25);background:rgba(107,170,117,.04)}
+.ss-prose{font-size:13px;color:#C9B88C;line-height:1.85;padding:13px 15px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.04);border-radius:10px;font-family:"Inter",-apple-system,sans-serif}
+.ss-callout{display:flex;align-items:center;gap:14px;padding:14px 18px;background:linear-gradient(90deg,rgba(201,168,76,.1),rgba(201,168,76,.04));border:1px solid rgba(201,168,76,.32);border-radius:10px;margin-top:4px}
+.ss-callout-lbl{font-size:9px;letter-spacing:.16em;color:#C9A84C;text-transform:uppercase;font-weight:700;flex-shrink:0}
+.ss-callout-val{font-size:13px;color:#F2E6BD;line-height:1.6;font-family:"Inter",sans-serif}
+@media (max-width:720px){.ss-grid{grid-template-columns:1fr}.ss-pos-row{grid-template-columns:50px 1fr auto;}.ss-pos-flag{display:none}}
+
+/* ===== Deployment row: hover-revealed "why this allocation" panel ===== */
+.cd-row{position:relative;overflow:hidden}
+.cd-row-why{grid-column:1/-1;max-height:0;opacity:0;overflow:hidden;transition:max-height .28s ease,opacity .22s ease,padding .22s ease,margin-top .22s ease;padding:0;margin-top:0;font-size:11.5px;line-height:1.7;color:#B8A882;border-top:0 solid transparent}
+.cd-row:hover .cd-row-why,.cd-row:focus-visible .cd-row-why,.cd-row.cd-open .cd-row-why{max-height:180px;opacity:1;padding:10px 6px 4px;margin-top:8px;border-top:1px dashed rgba(201,168,76,.18)}
+.cd-row-why-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.cd-row-why-row{display:flex;gap:7px;align-items:flex-start}
+.cd-row-why-lbl{font-size:9px;letter-spacing:.12em;color:#8B7D68;text-transform:uppercase;font-weight:700;min-width:58px;margin-top:2px;flex-shrink:0}
+.cd-row-why-val{color:#E8D9B5;flex:1}
+.cd-row-why-cta{grid-column:1/-1;margin-top:5px;font-size:10px;color:#C9A84C;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+
 .cbox{background:linear-gradient(145deg,var(--noir-2),var(--noir-1));border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;position:relative;overflow:hidden}
 .cbox::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.18),transparent)}
 .cbox:hover{border-color:var(--border-2)}
@@ -466,10 +529,41 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .cd-seg-click:hover{stroke-width:38;filter:drop-shadow(0 0 10px currentColor)}
 .cd-seg-bg{fill:none;stroke:var(--noir-3);stroke-width:34}
 .cd-donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
-.cd-donut-lbl{font-size:9px;font-weight:700;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase;margin-bottom:6px}
-.cd-donut-val{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--cream);line-height:1;letter-spacing:-.02em}
-.cd-donut-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);margin-top:8px;letter-spacing:.05em}
-.cd-donut-orn{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:var(--text-2);margin-top:10px;max-width:180px;line-height:1.4}
+.cd-donut-lbl{font-size:10px;font-weight:700;letter-spacing:.2em;color:#C9A84C;text-transform:uppercase;margin-bottom:6px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.cd-donut-val{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:500;color:#F8EFD0;line-height:1;letter-spacing:-.015em;text-shadow:0 2px 6px rgba(0,0,0,.5)}
+.cd-donut-sub{display:flex;gap:5px;margin-top:10px;pointer-events:auto;flex-wrap:wrap;justify-content:center}
+.cd-donut-orn{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12.5px;color:#C0B594;margin-top:12px;max-width:185px;line-height:1.5}
+.cd-lane-chip{position:relative;font-family:'DM Mono',monospace;font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:5px;background:rgba(0,0,0,.45);border:1px solid currentColor;cursor:help;transition:transform .15s ease,box-shadow .15s ease;letter-spacing:.04em;line-height:1}
+.cd-lane-chip:hover{transform:translateY(-1px);box-shadow:0 0 10px currentColor}
+.cd-lane-chip[data-lane="core"]{color:#E8CC7A}
+.cd-lane-chip[data-lane="growth"]{color:#9DD0A8}
+.cd-lane-chip[data-lane="tactical"]{color:#E0947A}
+/* Lane chip floating tooltip */
+.cd-lane-tip{position:fixed;z-index:99998;display:none;pointer-events:none;background:linear-gradient(135deg,rgba(20,16,12,.97),rgba(35,28,18,.97));border:1px solid rgba(201,168,76,.42);border-radius:10px;padding:11px 14px;box-shadow:0 14px 40px rgba(0,0,0,.65);max-width:280px;backdrop-filter:blur(10px)}
+.cd-lane-tip.on{display:block;animation:allocTipIn .14s ease}
+.cd-lane-tip-hdr{font-family:"DM Mono",monospace;font-size:12px;font-weight:700;letter-spacing:.05em;margin-bottom:6px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.cd-lane-tip-pct{font-size:13px;color:#F2E6BD}
+.cd-lane-tip-body{font-size:11.5px;color:#C9B88C;line-height:1.65;margin-bottom:6px}
+.cd-lane-tip-syms{font-family:"DM Mono",monospace;font-size:11px;color:#E8CC7A;letter-spacing:.04em;border-top:1px dashed rgba(201,168,76,.22);padding-top:6px;margin-top:5px}
+/* Donut segment focus state */
+.cd-seg{transition:opacity .2s ease,filter .2s ease,stroke-width .15s ease}
+.cd-seg.cd-seg-focus{filter:drop-shadow(0 0 14px currentColor) brightness(1.2);stroke-width:24}
+.cd-seg.cd-seg-mute{opacity:.32}
+/* Allocation row focus state (when donut segment is hovered) */
+.cd-row.cd-row-focus{border-color:rgba(201,168,76,.55);background:rgba(201,168,76,.07);transform:translateX(4px);box-shadow:0 0 18px rgba(201,168,76,.12)}
+.cd-row.cd-row-mute{opacity:.4}
+/* Risk/Bull point cards — interactive expandable */
+.cd-card-pt{position:relative;cursor:pointer;outline:none;transition:background .18s,border-color .18s,transform .15s}
+.cd-card-pt:hover,.cd-card-pt:focus-visible{transform:translateX(2px)}
+.cd-card-pt::after{content:"▾";position:absolute;right:11px;top:9px;font-family:"DM Mono",monospace;font-size:10px;color:#8B7D68;transition:transform .25s ease,color .15s}
+.cd-card-pt.expanded::after{transform:rotate(180deg);color:#E8CC7A}
+.cd-card-pt-detail{display:none;margin-top:9px;padding-top:9px;border-top:1px dashed rgba(201,168,76,.18);font-size:11.5px;line-height:1.65;color:#C0B594;font-family:"Inter",-apple-system,sans-serif}
+.cd-card-pt.expanded .cd-card-pt-detail{display:block;animation:execIn .22s ease}
+.cd-card-pt-detail-row{display:flex;gap:10px;margin-bottom:6px;align-items:flex-start}
+.cd-card-pt-detail-icon{flex-shrink:0;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:"DM Mono",monospace;margin-top:1px;background:rgba(201,168,76,.15);color:#E8CC7A;border:1px solid rgba(201,168,76,.3)}
+.cd-card-pt-detail-icon.bull{background:rgba(107,170,117,.15);color:#9DD0A8;border-color:rgba(107,170,117,.32)}
+.cd-card-pt-detail-icon.risk{background:rgba(192,113,79,.15);color:#E0947A;border-color:rgba(192,113,79,.32)}
+.cd-card-pt-detail-text{color:#D8C9A8}
 /* Alloc list */
 .cd-alloc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .cd-alloc-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--cream);display:flex;align-items:center;gap:10px}
@@ -3360,6 +3454,253 @@ async function runFeasibility(){
   }
 }
 
+/* ========================================================================
+ * STRATEGY-LENS STUDY
+ * Different from runFeasibility: this analyzes the CURRENT portfolio THROUGH
+ * the lens of the SELECTED strategy. Renders into #strategyStudyOutput which
+ * lives inside the strategy panel, immediately below the action buttons.
+ * The generic feasibility output at #feasOutput is left untouched.
+ * ====================================================================== */
+function _strategyTargets(key){
+  // Target % for the 3 strategy lanes (must sum to 100)
+  if(key==='conservative') return {core:70,growth:20,tactical:10, maxPos:18, dd:15, name:'Conservative', color:'#6BAA75'};
+  if(key==='aggressive')   return {core:25,growth:55,tactical:20, maxPos:25, dd:48, name:'Aggressive',   color:'#C0714F'};
+  return                          {core:50,growth:38,tactical:12, maxPos:20, dd:28, name:'Balanced',     color:'#C9A84C'};
+}
+function _portfolioLanes(h){
+  // Same lane-classifier the rest of the app uses
+  var CORE=['VOO','SPY','VTI','SCHD','VYM','IVV','VIG','BND','BNDW','AGG'];
+  var TACT=['BTC','ETH','SOL','GLD','SLV','TLT','IWM','BIL','SGOV','MSTR','COIN','HOOD','SOUN','IONQ','NIO','APRE','LKNCY','RIVN','PLTR','LCID','GME'];
+  var laneOf=function(sym){
+    if(CORE.includes(sym))return 'core';
+    if(TACT.includes(sym))return 'tactical';
+    return 'growth';
+  };
+  var total=h.reduce(function(s,x){return s+(x.mktVal||0);},0)||1;
+  var lanes={core:0,growth:0,tactical:0};
+  h.forEach(function(x){lanes[laneOf(x.sym)]+=(x.mktVal||0);});
+  return {
+    pct:{core:lanes.core/total*100, growth:lanes.growth/total*100, tactical:lanes.tactical/total*100},
+    laneOf:laneOf, total:total
+  };
+}
+function _strategyFitScore(curPct,target,h,maxPos){
+  // 100 - sum(weighted lane drift) - over-cap penalty
+  var laneDrift = Math.abs(curPct.core-target.core) + Math.abs(curPct.growth-target.growth) + Math.abs(curPct.tactical-target.tactical);
+  var total=h.reduce(function(s,x){return s+(x.mktVal||0);},0)||1;
+  var overs=h.filter(function(x){return (x.mktVal/total*100)>maxPos;});
+  var overPenalty=overs.reduce(function(s,x){return s+((x.mktVal/total*100)-maxPos)*1.5;},0);
+  var score=Math.max(0,Math.min(100,Math.round(100 - laneDrift*0.55 - overPenalty)));
+  return {score:score, drift:laneDrift, overs:overs};
+}
+function _renderFitGauge(score,color){
+  var R=44, C=2*Math.PI*R, off=C-(score/100)*C;
+  var label = score>=85?'Excellent fit' : score>=70?'Good fit' : score>=50?'Partial fit' : score>=30?'Poor fit' : 'Misaligned';
+  return '<svg viewBox="0 0 120 120" style="width:140px;height:140px;display:block">'+
+    '<circle cx="60" cy="60" r="'+R+'" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="9"/>'+
+    '<circle cx="60" cy="60" r="'+R+'" fill="none" stroke="'+color+'" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+C.toFixed(2)+'" stroke-dashoffset="'+off.toFixed(2)+'" transform="rotate(-90 60 60)" style="transition:stroke-dashoffset .9s cubic-bezier(.2,.9,.3,1.1)"/>'+
+    '<text x="60" y="58" text-anchor="middle" fill="#F2E6BD" style="font-family:DM Mono,monospace;font-size:24px;font-weight:700">'+score+'</text>'+
+    '<text x="60" y="76" text-anchor="middle" fill="#8B7D68" style="font-family:Inter,sans-serif;font-size:8.5px;letter-spacing:.15em;text-transform:uppercase">'+esc(label)+'</text>'+
+  '</svg>';
+}
+function _renderLaneCompare(curPct,target){
+  function row(lbl,cur,tgt,color){
+    var max=Math.max(cur,tgt,1);
+    var cw=(cur/max*100).toFixed(1);
+    var tw=(tgt/max*100).toFixed(1);
+    var diff=cur-tgt;
+    var dColor = Math.abs(diff)<5?'#8B7D68' : (diff>0?'#C0714F':'#6BAA75');
+    var dLabel = (diff>0?'+':'')+diff.toFixed(1)+'%';
+    var hint = Math.abs(diff)<5 ? 'on target' : (diff>0?'overweight — trim':'underweight — add');
+    return '<div class="ss-lane">'+
+      '<div class="ss-lane-hdr"><span class="ss-lane-lbl">'+esc(lbl)+'</span>'+
+        '<span class="ss-lane-vals"><span style="color:#F2E6BD">'+cur.toFixed(1)+'%</span> <span style="color:#8B7D68">vs target '+tgt+'%</span> <span class="ss-lane-diff" style="color:'+dColor+'">'+dLabel+' · '+hint+'</span></span>'+
+      '</div>'+
+      '<div class="ss-lane-bars">'+
+        '<div class="ss-lane-bar" title="Current"><div class="ss-lane-fill" style="width:'+cw+'%;background:'+color+'"></div></div>'+
+        '<div class="ss-lane-bar ss-tgt" title="Target"><div class="ss-lane-fill" style="width:'+tw+'%;background:'+color+';opacity:.32;border:1px dashed '+color+'"></div></div>'+
+      '</div>'+
+    '</div>';
+  }
+  return '<div class="ss-lanes">'+
+    row('Core (index, dividend, bonds)', curPct.core, target.core, '#C9A84C')+
+    row('Growth (quality compounders)',  curPct.growth, target.growth, '#6BAA75')+
+    row('Tactical (asymmetric / specul.)', curPct.tactical, target.tactical, '#C0714F')+
+  '</div>';
+}
+function _renderPositionFit(h,target,maxPos){
+  if(!h||!h.length)return '';
+  var total=h.reduce(function(s,x){return s+(x.mktVal||0);},0)||1;
+  var rows=h.slice().sort(function(a,b){return (b.mktVal||0)-(a.mktVal||0);}).slice(0,12);
+  return '<div class="ss-pos">'+rows.map(function(x){
+    var p=x.mktVal/total*100;
+    var over = p > maxPos;
+    var w=Math.min(100,(p/Math.max(maxPos,p))*100);
+    var capW=(maxPos/Math.max(maxPos,p))*100;
+    var color=over?'#C0714F':'#6BAA75';
+    var sym=esc(x.sym);
+    return '<button class="ss-pos-row" onclick="_execAnalyze(\''+sym+'\')" title="Click to analyze '+sym+'">'+
+      '<span class="ss-pos-sym">'+sym+'</span>'+
+      '<div class="ss-pos-bar"><div class="ss-pos-fill" style="width:'+w.toFixed(2)+'%;background:'+color+'"></div>'+
+        '<div class="ss-pos-cap" style="left:'+capW.toFixed(2)+'%" title="Max position cap '+maxPos+'%"></div></div>'+
+      '<span class="ss-pos-pct" style="color:'+color+'">'+p.toFixed(1)+'%</span>'+
+      (over?'<span class="ss-pos-flag">Over '+maxPos+'% cap</span>':'<span class="ss-pos-flag ok">Within cap</span>')+
+    '</button>';
+  }).join('')+'</div>';
+}
+function _renderActionPlan(curPct,target,h,maxPos){
+  // Derive client-side BUY/SELL/HOLD lanes from drift
+  var total=h.reduce(function(s,x){return s+(x.mktVal||0);},0)||1;
+  var actions=[];
+  ['core','growth','tactical'].forEach(function(lane){
+    var diff=curPct[lane]-target[lane];
+    if(Math.abs(diff)<3) return;
+    var dollars=Math.abs(diff)/100*total;
+    actions.push({
+      kind: diff>0?'TRIM':'ADD',
+      lane:lane,
+      pct:Math.abs(diff),
+      dollars:dollars,
+      color: diff>0?'#C0714F':'#6BAA75',
+      note: diff>0
+        ? 'You\'re '+diff.toFixed(1)+'% over target. Sell about '+fmt$(dollars)+' from this lane.'
+        : 'You\'re '+Math.abs(diff).toFixed(1)+'% under target. Add about '+fmt$(dollars)+' to this lane.'
+    });
+  });
+  h.slice().sort(function(a,b){return (b.mktVal||0)-(a.mktVal||0);}).forEach(function(x){
+    var p=x.mktVal/total*100;
+    if(p>maxPos){
+      var trim=(p-maxPos)/100*total;
+      actions.push({kind:'TRIM',lane:x.sym,pct:(p-maxPos),dollars:trim,color:'#C0714F',
+        note:x.sym+' is '+p.toFixed(1)+'% of portfolio (max '+maxPos+'%). Trim about '+fmt$(trim)+' to come back in policy.'});
+    }
+  });
+  if(!actions.length){
+    return '<div class="ss-action ss-noop"><div class="ss-action-icon" style="background:#6BAA75">✓</div><div><div class="ss-action-kind" style="color:#9DD0A8">No reallocation needed</div><div class="ss-action-note">Your current portfolio already matches the target lanes within tolerance. Focus on systematic contributions and discipline.</div></div></div>';
+  }
+  return actions.map(function(a){
+    return '<div class="ss-action"><div class="ss-action-icon" style="background:'+a.color+'">'+(a.kind==='TRIM'?'−':'+')+'</div>'+
+      '<div style="flex:1"><div class="ss-action-kind" style="color:'+a.color+'">'+a.kind+' · '+esc(a.lane.toUpperCase())+'</div>'+
+      '<div class="ss-action-note">'+esc(a.note)+'</div></div>'+
+      '<div class="ss-action-amt" style="color:'+a.color+'">'+fmt$(a.dollars)+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+async function runStrategyStudy(){
+  var key=window._selectedStrategy;
+  if(!key){alert('Pick a strategy first.');return;}
+  var out=document.getElementById('strategyStudyOutput');
+  if(!out)return;
+  var h=getHoldings();
+  if(!h.length){
+    out.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">No portfolio loaded</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Add holdings first. The strategy study needs your actual positions to analyze fit, drift, and reallocation needs.</div></div>';
+    return;
+  }
+  var target=_strategyTargets(key);
+  var lanes=_portfolioLanes(h);
+  var fit=_strategyFitScore(lanes.pct,target,h,target.maxPos);
+
+  out.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Analyzing your portfolio through the <em style="color:'+target.color+'">'+esc(target.name)+'</em> lens</div><div class="cd-loader-sub">Scoring fit · mapping drift · sizing reallocation · writing narrative</div></div></div>';
+  showAiToast('Strategy study running…','Analyzing through '+target.name+' lens');
+  scrollToEl('strategyStudyOutput','start');
+
+  // Build narrative AI prompt focused on STRATEGY EXECUTION (not portfolio diagnosis)
+  var topHoldings=h.sort(function(a,b){return b.mktVal-a.mktVal;}).slice(0,10).map(function(x){return x.sym+'('+(x.mktVal/lanes.total*100).toFixed(1)+'%)';}).join(', ');
+  var prompt=[
+    'STRATEGY EXECUTION ANALYSIS — '+target.name.toUpperCase()+' LENS',
+    '',
+    'The investor has SELECTED the '+target.name+' strategy. Analyze their current portfolio through THIS strategy\'s lens specifically. Do NOT do a generic feasibility study.',
+    '',
+    'Portfolio: '+topHoldings,
+    'Current allocation: Core '+lanes.pct.core.toFixed(1)+'% · Growth '+lanes.pct.growth.toFixed(1)+'% · Tactical '+lanes.pct.tactical.toFixed(1)+'%',
+    'Target ('+target.name+'): Core '+target.core+'% · Growth '+target.growth+'% · Tactical '+target.tactical+'%',
+    'Strategy fit score (computed): '+fit.score+'/100',
+    'Max position cap: '+target.maxPos+'% — currently breached by: '+(fit.overs.length?fit.overs.map(function(x){return x.sym;}).join(', '):'none'),
+    '',
+    'Return EXACTLY this 4-section structure with these EXACT section headers:',
+    '',
+    'NARRATIVE',
+    '2-3 sentences explaining how well this portfolio fits the '+target.name+' strategy. Reference the actual fit score, drift, and concentration breaches. Be specific to THIS portfolio.',
+    '',
+    'KEY MOVES',
+    '3 specific reallocation moves to align with the '+target.name+' strategy. Each move = one sentence with ticker + dollar amount + rationale. Reference current holdings.',
+    '',
+    'BEHAVIORAL FIT',
+    '2 sentences: does this investor\'s setup support the '+target.name+' strategy? What is the #1 behavioral trap they will face under this strategy specifically?',
+    '',
+    'TIMELINE',
+    '1 sentence: when (in days/weeks) should they execute these moves and what is the expected timeline to reach target allocation.',
+    '',
+    'No markdown. No asterisks. Plain prose under each header.'
+  ].join('\n');
+
+  var SYS='You are an institutional portfolio strategist analyzing a portfolio THROUGH A SPECIFIC STRATEGY LENS, not doing a generic diagnosis. Be specific to the named strategy and the actual holdings provided.';
+
+  var narrative='';
+  try{
+    narrative=await aiCall(prompt,SYS,1200);
+  }catch(e){
+    narrative='NARRATIVE\nUnable to fetch AI narrative ('+e.message+'). The quantitative analysis below is still accurate.\n\nKEY MOVES\n(See action plan below — derived from your live portfolio data.)\n\nBEHAVIORAL FIT\n(Strategy fit score: '+fit.score+'/100.)\n\nTIMELINE\nExecute reallocation within 30 days.';
+  }
+
+  // Parse sections
+  var sections={NARRATIVE:'',KEY_MOVES:'',BEHAVIORAL_FIT:'',TIMELINE:''};
+  var current=null;
+  narrative.split('\n').forEach(function(line){
+    var t=line.trim();
+    if(/^NARRATIVE\b/i.test(t))      {current='NARRATIVE';return;}
+    if(/^KEY MOVES\b/i.test(t))      {current='KEY_MOVES';return;}
+    if(/^BEHAVIORAL FIT\b/i.test(t)) {current='BEHAVIORAL_FIT';return;}
+    if(/^TIMELINE\b/i.test(t))       {current='TIMELINE';return;}
+    if(current && t) sections[current]+=(sections[current]?'\n':'')+t;
+  });
+
+  out.innerHTML=
+    '<div class="ss-wrap" style="border-color:'+target.color.replace('#','#').slice(0,7)+'55">'+
+      '<div class="ss-hdr">'+
+        '<div class="ss-hdr-icon" style="background:'+target.color+'">⌬</div>'+
+        '<div>'+
+          '<div class="ss-hdr-eye">Strategy Study · '+esc(target.name)+' Lens</div>'+
+          '<div class="ss-hdr-title">How your portfolio fits the <em style="color:'+target.color+'">'+esc(target.name)+'</em> strategy</div>'+
+        '</div>'+
+      '</div>'+
+
+      '<div class="ss-grid">'+
+        '<div class="ss-card ss-fit">'+
+          '<div class="ss-card-lbl">Strategy Fit Score</div>'+
+          _renderFitGauge(fit.score,target.color)+
+          '<div class="ss-fit-sub">Based on lane drift, position caps, and concentration</div>'+
+        '</div>'+
+        '<div class="ss-card ss-narrative">'+
+          '<div class="ss-card-lbl">AI Read</div>'+
+          '<div class="ss-narrative-body">'+esc(sections.NARRATIVE||'No narrative available.')+'</div>'+
+        '</div>'+
+      '</div>'+
+
+      '<div class="ss-section">'+
+        '<div class="ss-section-hdr">Lane Alignment <span class="ss-section-sub">Current vs '+esc(target.name)+' target</span></div>'+
+        _renderLaneCompare(lanes.pct,target)+
+      '</div>'+
+
+      '<div class="ss-section">'+
+        '<div class="ss-section-hdr">Position-by-Position Fit <span class="ss-section-sub">Click any ticker to analyze · cap line at '+target.maxPos+'%</span></div>'+
+        _renderPositionFit(h,target,target.maxPos)+
+      '</div>'+
+
+      '<div class="ss-section">'+
+        '<div class="ss-section-hdr">Reallocation Action Plan <span class="ss-section-sub">Live numbers from your portfolio</span></div>'+
+        '<div class="ss-actions">'+_renderActionPlan(lanes.pct,target,h,target.maxPos)+'</div>'+
+      '</div>'+
+
+      (sections.KEY_MOVES?'<div class="ss-section"><div class="ss-section-hdr">Key Moves <span class="ss-section-sub">From AI strategist</span></div><div class="ss-prose">'+esc(sections.KEY_MOVES).replace(/\n/g,'<br>')+'</div></div>':'')+
+      (sections.BEHAVIORAL_FIT?'<div class="ss-section"><div class="ss-section-hdr">Behavioral Fit <span class="ss-section-sub">Discipline match</span></div><div class="ss-prose">'+esc(sections.BEHAVIORAL_FIT).replace(/\n/g,'<br>')+'</div></div>':'')+
+      (sections.TIMELINE?'<div class="ss-callout"><div class="ss-callout-lbl">Execute by</div><div class="ss-callout-val">'+esc(sections.TIMELINE)+'</div></div>':'')+
+    '</div>';
+
+  hideAiToast();
+}
+
 function renderFeasibility(text,total,cost,gain,pct,h){
   var fc=document.getElementById('feasContent');
   var gradeMatch=text.match(/grade[d\s:]*([A-F][+-]?)/i);var grade=gradeMatch?gradeMatch[1]:'B';
@@ -3583,11 +3924,12 @@ function selectStrategy(key){
         '<strong style="color:var(--cream)">Is this right for you?</strong> ' + esc(p.suitable) +
       '</div>' +
 
-      '<div style="display:flex;gap:8px">' +
-        '<button class="btn-p" onclick="showPanel(&quot;portfolio&quot;,document.querySelectorAll(&quot;.nav-item&quot;)[1]);setTimeout(runFeasibility,300)">Run Full AI Study with This Strategy &rarr;</button>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button class="btn-p" onclick="runStrategyStudy()">Run Full AI Study with This Strategy &rarr;</button>' +
         '<button class="btn-g" onclick="showPanel(&quot;cadence&quot;,document.querySelectorAll(&quot;.nav-item&quot;)[5])">Build Cadence Plan</button>' +
         '<button class="btn-g" onclick="var sp=document.getElementById(&quot;selectedStrategyPanel&quot;);if(sp)sp.remove();document.querySelectorAll(&quot;.sc2&quot;).forEach(function(el){el.style.opacity=&quot;1&quot;;el.style.transform=&quot;&quot;;el.style.boxShadow=&quot;&quot;;});">Change Strategy</button>' +
       '</div>' +
+      '<div id="strategyStudyOutput" style="margin-top:18px"></div>' +
     '</div>';
 
   // Insert after the strategy grid
@@ -3684,14 +4026,18 @@ function buildDeployPanel(d,cash,dateStr){
       +'<div class="cd-donut-wrap">'
         +'<svg class="cd-donut-svg" viewBox="0 0 200 200" id="cdDonutSvg">'
           +'<circle class="cd-seg-bg" cx="100" cy="100" r="80"></circle>'
-          +'<circle class="cd-seg cd-seg-click" id="cdSegCore" cx="100" cy="100" r="80" stroke="#C9A84C" stroke-dasharray="0 503" stroke-linecap="butt" onclick="drillDownSegment(\'core\')" style="cursor:pointer"></circle>'
-          +'<circle class="cd-seg cd-seg-click" id="cdSegGrowth" cx="100" cy="100" r="80" stroke="#6BAA75" stroke-dasharray="0 503" stroke-dashoffset="0" stroke-linecap="butt" onclick="drillDownSegment(\'growth\')" style="cursor:pointer"></circle>'
-          +'<circle class="cd-seg cd-seg-click" id="cdSegTactical" cx="100" cy="100" r="80" stroke="#C0714F" stroke-dasharray="0 503" stroke-dashoffset="0" stroke-linecap="butt" onclick="drillDownSegment(\'tactical\')" style="cursor:pointer"></circle>'
+          +'<circle class="cd-seg cd-seg-click" id="cdSegCore" cx="100" cy="100" r="80" stroke="#C9A84C" stroke-dasharray="0 503" stroke-linecap="butt" onclick="drillDownSegment(\'core\')" onmouseenter="_cdSegHover(\'core\',event)" onmouseleave="_cdSegLeave()" style="cursor:pointer"></circle>'
+          +'<circle class="cd-seg cd-seg-click" id="cdSegGrowth" cx="100" cy="100" r="80" stroke="#6BAA75" stroke-dasharray="0 503" stroke-dashoffset="0" stroke-linecap="butt" onclick="drillDownSegment(\'growth\')" onmouseenter="_cdSegHover(\'growth\',event)" onmouseleave="_cdSegLeave()" style="cursor:pointer"></circle>'
+          +'<circle class="cd-seg cd-seg-click" id="cdSegTactical" cx="100" cy="100" r="80" stroke="#C0714F" stroke-dasharray="0 503" stroke-dashoffset="0" stroke-linecap="butt" onclick="drillDownSegment(\'tactical\')" onmouseenter="_cdSegHover(\'tactical\',event)" onmouseleave="_cdSegLeave()" style="cursor:pointer"></circle>'
         +'</svg>'
         +'<div class="cd-donut-center">'
           +'<div class="cd-donut-lbl" id="cdDonutLbl">Balanced</div>'
-          +'<div class="cd-donut-val" id="cdDonutVal">100<span style="font-size:22px;opacity:.6">%</span></div>'
-          +'<div class="cd-donut-sub" id="cdDonutSub">55C &middot; 37G &middot; 8T</div>'
+          +'<div class="cd-donut-val" id="cdDonutVal">100<span style="font-size:24px;opacity:.65">%</span></div>'
+          +'<div class="cd-donut-sub" id="cdDonutSub">'
+            +'<span class="cd-lane-chip" data-lane="core" tabindex="0" onmouseenter="_cdLaneHover(this,\'core\',event)" onmouseleave="_cdLaneLeave()" onfocus="_cdLaneHover(this,\'core\',event)" onblur="_cdLaneLeave()" onclick="drillDownSegment(\'core\')">50<span style="opacity:.7">C</span></span>'
+            +'<span class="cd-lane-chip" data-lane="growth" tabindex="0" onmouseenter="_cdLaneHover(this,\'growth\',event)" onmouseleave="_cdLaneLeave()" onfocus="_cdLaneHover(this,\'growth\',event)" onblur="_cdLaneLeave()" onclick="drillDownSegment(\'growth\')">38<span style="opacity:.7">G</span></span>'
+            +'<span class="cd-lane-chip" data-lane="tactical" tabindex="0" onmouseenter="_cdLaneHover(this,\'tactical\',event)" onmouseleave="_cdLaneLeave()" onfocus="_cdLaneHover(this,\'tactical\',event)" onblur="_cdLaneLeave()" onclick="drillDownSegment(\'tactical\')">12<span style="opacity:.7">T</span></span>'
+          +'</div>'
           +'<div class="cd-donut-orn" id="cdDonutOrn">&ldquo;Time in market beats timing the market.&rdquo;</div>'
         +'</div>'
       +'</div>'
@@ -3732,6 +4078,154 @@ function buildDeployPanel(d,cash,dateStr){
   +'</div>';
 }
 
+/* ===== Donut + lane-chip + risk/bull interactivity helpers ===== */
+function _cdLaneTipEl(){
+  var t=document.getElementById('cdLaneTip');
+  if(t)return t;
+  t=document.createElement('div');t.id='cdLaneTip';t.className='cd-lane-tip';
+  document.body.appendChild(t);
+  return t;
+}
+function _cdHighlightLane(lane,on){
+  // Highlight matching donut segment
+  ['core','growth','tactical'].forEach(function(l){
+    var seg=document.getElementById('cdSeg'+l.charAt(0).toUpperCase()+l.slice(1));
+    if(!seg)return;
+    seg.classList.toggle('cd-seg-focus', on && l===lane);
+    seg.classList.toggle('cd-seg-mute',  on && l!==lane);
+  });
+  // Highlight matching allocation rows
+  var d=window._deployData; var style=window._currentDeployStyle||'balanced';
+  var allocs=(d&&d[style]&&d[style].allocations)||[];
+  var matchSyms={};
+  allocs.forEach(function(a){if((a.cls||'').toLowerCase()===lane) matchSyms[a.sym]=true;});
+  document.querySelectorAll('#cdAllocList .cd-row-clickable').forEach(function(r){
+    var symEl=r.querySelector('.cd-ticker-sym');
+    var sym=symEl?symEl.textContent.trim():'';
+    var match = on && matchSyms[sym];
+    r.classList.toggle('cd-row-focus', match);
+    r.classList.toggle('cd-row-mute',  on && !match);
+  });
+}
+function _cdLaneCopy(lane){
+  if(lane==='core')     return {label:'CORE',     name:'Core (Index & Dividend)',     body:'Your portfolio\'s shock absorber. Broad-market index funds (VOO, VTI, SCHD) provide low-volatility, diversified exposure. This is the bedrock that makes the rest of the strategy survivable through any cycle.'};
+  if(lane==='growth')   return {label:'GROWTH',   name:'Growth (Quality Compounders)', body:'Proven businesses with durable earnings power and competitive moats (NVDA, MSFT, GOOGL, META, AAPL). Where most of the long-run return comes from when held through market cycles.'};
+  if(lane==='tactical') return {label:'TACTICAL', name:'Tactical (Higher-beta / Specul.)',body:'Concentrated bets on asymmetric setups (BTC, IWM, single-name conviction plays). Pays off in good regimes, hurts the most when things break. Always sized small relative to total portfolio.'};
+  return {label:lane.toUpperCase(),name:lane,body:''};
+}
+function _cdLaneHover(el,lane,evt){
+  _cdHighlightLane(lane,true);
+  var info=_cdLaneCopy(lane);
+  var d=window._deployData; var style=window._currentDeployStyle||'balanced';
+  var s=(d&&d[style])||{}; var totals=s.totals||{};
+  var pct=totals[lane]||0;
+  var allocs=(s.allocations||[]).filter(function(a){return (a.cls||'').toLowerCase()===lane;});
+  var syms=allocs.map(function(a){return a.sym+' '+a.pct+'%';}).join(' · ');
+  var color = lane==='core'?'#E8CC7A':lane==='growth'?'#9DD0A8':'#E0947A';
+  var tip=_cdLaneTipEl();
+  tip.innerHTML=
+    '<div class="cd-lane-tip-hdr"><span style="color:'+color+'">'+info.label+'</span><span class="cd-lane-tip-pct">'+pct+'% of plan</span></div>'+
+    '<div class="cd-lane-tip-body">'+esc(info.body)+'</div>'+
+    (syms?'<div class="cd-lane-tip-syms">Holdings in this lane: '+esc(syms)+'</div>':'');
+  tip.classList.add('on');
+  var rect=el.getBoundingClientRect();
+  var w=tip.offsetWidth||260,h=tip.offsetHeight||120;
+  var L=Math.min(window.innerWidth-w-14,Math.max(14,rect.left+rect.width/2-w/2));
+  var T=Math.max(14,rect.top-h-12);
+  tip.style.left=L+'px';tip.style.top=T+'px';
+}
+function _cdLaneLeave(){
+  _cdHighlightLane(null,false);
+  var t=document.getElementById('cdLaneTip');if(t)t.classList.remove('on');
+}
+function _cdSegHover(lane,evt){
+  _cdHighlightLane(lane,true);
+  var info=_cdLaneCopy(lane);
+  var d=window._deployData; var style=window._currentDeployStyle||'balanced';
+  var s=(d&&d[style])||{}; var totals=s.totals||{};
+  var pct=totals[lane]||0;
+  var allocs=(s.allocations||[]).filter(function(a){return (a.cls||'').toLowerCase()===lane;});
+  var syms=allocs.map(function(a){return a.sym+' '+a.pct+'%';}).join(' · ');
+  var color = lane==='core'?'#E8CC7A':lane==='growth'?'#9DD0A8':'#E0947A';
+  var tip=_cdLaneTipEl();
+  tip.innerHTML=
+    '<div class="cd-lane-tip-hdr"><span style="color:'+color+'">'+info.label+'</span><span class="cd-lane-tip-pct">'+pct+'% of plan</span></div>'+
+    '<div class="cd-lane-tip-body">'+esc(info.body)+'</div>'+
+    (syms?'<div class="cd-lane-tip-syms">Holdings in this lane: '+esc(syms)+'</div>':'');
+  tip.classList.add('on');
+  var w=tip.offsetWidth||260,h=tip.offsetHeight||120;
+  var x=(evt&&evt.clientX)||window.innerWidth/2;
+  var y=(evt&&evt.clientY)||120;
+  var L=Math.min(window.innerWidth-w-14,Math.max(14,x+14));
+  var T=Math.max(14,y-h-14);
+  tip.style.left=L+'px';tip.style.top=T+'px';
+}
+function _cdSegLeave(){_cdLaneLeave();}
+
+/* Render Risk / Bull point as expandable card */
+function _renderCardPoints(points,kind){
+  if(!points||!points.length)return '';
+  return points.map(function(p,i){
+    var term=esc(p[0]||'');
+    var detail=esc(p[1]||'');
+    var iconCls = kind==='bull'?'bull':'risk';
+    var explainer = kind==='bull'
+      ? 'This is a tailwind for the strategy. The named factor reinforces the bull case and drives upside if it materializes.'
+      : 'This is a downside vector. If the named factor plays out, the strategy underperforms or takes outsized losses.';
+    return '<div class="cd-card-pt" tabindex="0" role="button" aria-expanded="false" onclick="_cdPtToggle(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_cdPtToggle(this)}">'+
+      '<span><strong>'+term+'</strong> &mdash; '+detail+'</span>'+
+      '<div class="cd-card-pt-detail">'+
+        '<div class="cd-card-pt-detail-row"><div class="cd-card-pt-detail-icon '+iconCls+'">'+(kind==='bull'?'+':'!')+'</div><div class="cd-card-pt-detail-text">'+esc(explainer)+'</div></div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+function _cdPtToggle(el){
+  var on=el.classList.toggle('expanded');
+  el.setAttribute('aria-expanded',on?'true':'false');
+}
+
+/* Build the hover-revealed "why this allocation" panel for a deploy row */
+function _cdWhyRow(a,lensName,p,sz,cash){
+  var lens={conservative:'Conservative',balanced:'Balanced',aggressive:'Aggressive'}[lensName]||lensName;
+  var lane=(a.cls||'').toLowerCase();
+  var roleMap={
+    core:'Index/dividend anchor — your portfolio\'s shock absorber. Low volatility, broad exposure, the bedrock that makes the rest of the strategy survivable.',
+    growth:'Quality compounder — proven business with durable earnings power. Where most of the long-run return comes from when held through cycles.',
+    tactical:'Higher-beta opportunity — concentrated bet on an asymmetric setup. Pays off in good regimes, hurts the most when things break.',
+    cash:'Dry powder reserve — earns risk-free yield (~5% in SGOV/BIL) while waiting for a better entry. Optionality, not laziness.'
+  };
+  var role=roleMap[lane]||'Strategic position sized to the '+lens+' lens.';
+  var existsHint='';
+  try{
+    var existing=(_holdings||[]).find(function(h){return h&&h.sym===a.sym;});
+    if(existing){
+      existsHint='Adding to existing position ('+(existing.shares||0).toLocaleString()+' shares · current value '+fmt$(existing.mktVal||0)+').';
+    } else if(a.sym && a.sym.toUpperCase()!=='CASH'){
+      existsHint='New position — not currently in your portfolio.';
+    } else {
+      existsHint='Held in a money-market or short-duration treasury vehicle.';
+    }
+  }catch(e){}
+  var sizingExplain={
+    'Over cap — size down':'Position breaches the lens cap. Reduce before adding more capital.',
+    'Near cap — full size':'Maxed for this lens. Conviction position — do not size up further.',
+    'Core weight':'Standard meaningful position. Real exposure without single-name fragility.',
+    'Starter position':'Small initial bite. Designed to be added to on dips, not capped.',
+    'Scout position':'Exploratory — too small to materially impact returns. Either build it or cut it.'
+  }[sz]||'Sized to your lens cap.';
+  var cashAmt=fmt$(cash*p/100);
+  return '<div class="cd-row-why">'+
+    '<div class="cd-row-why-grid">'+
+      '<div class="cd-row-why-row"><span class="cd-row-why-lbl">Role</span><span class="cd-row-why-val">'+esc(role)+'</span></div>'+
+      '<div class="cd-row-why-row"><span class="cd-row-why-lbl">Sizing</span><span class="cd-row-why-val">'+esc(sizingExplain)+'</span></div>'+
+      '<div class="cd-row-why-row"><span class="cd-row-why-lbl">Lens</span><span class="cd-row-why-val">'+esc(lens)+' lens · target '+p+'% · '+cashAmt+' of deployment</span></div>'+
+      '<div class="cd-row-why-row"><span class="cd-row-why-lbl">Status</span><span class="cd-row-why-val">'+esc(existsHint)+'</span></div>'+
+      (a.sym&&a.sym.toUpperCase()!=='CASH'?'<div class="cd-row-why-cta">Click for full AI deep-dive on '+esc(a.sym)+' →</div>':'')+
+    '</div>'+
+  '</div>';
+}
+
 function setDeployStrategy(name){
   var d=window._deployData; var cash=window._deployCash||0;
   if(!d) return;
@@ -3747,8 +4241,19 @@ function setDeployStrategy(name){
   if(sg){sg.setAttribute('stroke-dasharray',gL.toFixed(1)+' '+(C-gL).toFixed(1));sg.setAttribute('stroke-dashoffset',(-cL).toFixed(1));}
   if(st){st.setAttribute('stroke-dasharray',tL.toFixed(1)+' '+(C-tL).toFixed(1));st.setAttribute('stroke-dashoffset',(-(cL+gL)).toFixed(1));}
   var lbl=document.getElementById('cdDonutLbl'); if(lbl) lbl.textContent=s.label||name;
-  var sub=document.getElementById('cdDonutSub'); if(sub) sub.innerHTML=core+'C &middot; '+growth+'G &middot; '+tactical+'T';
+  // Update lane chip numbers — preserve the interactive chip structure
+  var sub=document.getElementById('cdDonutSub');
+  if(sub){
+    var coreChip=sub.querySelector('[data-lane="core"]');
+    var growthChip=sub.querySelector('[data-lane="growth"]');
+    var tacticalChip=sub.querySelector('[data-lane="tactical"]');
+    if(coreChip) coreChip.innerHTML=core+'<span style="opacity:.7">C</span>';
+    if(growthChip) growthChip.innerHTML=growth+'<span style="opacity:.7">G</span>';
+    if(tacticalChip) tacticalChip.innerHTML=tactical+'<span style="opacity:.7">T</span>';
+  }
   var orn=document.getElementById('cdDonutOrn'); if(orn) orn.textContent=s.ornament||'';
+  // Cache style for hover handlers
+  window._currentDeployStyle=name;
   // Lens rationale strip — tells the user WHY this lens sizes the way it does
   var lensRat={
     conservative:'Conservative lens · Max single-position cap 5% · Core-heavy for capital preservation · Only pay up for proven compounders',
@@ -3767,14 +4272,15 @@ function setDeployStrategy(name){
     return 'Scout position';
   }
 
-  // Render allocation rows — now with per-row sizing rationale visible at a glance
+  // Render allocation rows — hover reveals "why this allocation" detail inline
   var list=document.getElementById('cdAllocList');
   if(list&&s.allocations){
     list.innerHTML=s.allocations.map(function(a,i){
       var p=a.pct||0; var barW=Math.min(100,p*2.2);
       var sz=sizingNote(p,name);
       var szColor=sz==='Over cap — size down'?'var(--clay)':sz==='Near cap — full size'?'var(--gold)':sz==='Core weight'?'var(--sage)':'var(--text-2)';
-      return '<div class="cd-row cd-row-clickable" onclick="drillDownStock(\''+esc(a.sym)+'\',\''+name+'\')" title="Click for AI analysis of '+esc(a.sym)+'">'
+      var why=_cdWhyRow(a,name,p,sz,cash);
+      return '<div class="cd-row cd-row-clickable" tabindex="0" onclick="drillDownStock(\''+esc(a.sym)+'\',\''+name+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();drillDownStock(\''+esc(a.sym)+'\',\''+name+'\')}" title="Hover for allocation rationale · Click for deep AI analysis">'
         +'<div class="cd-ticker"><span class="cd-ticker-dot" style="background:'+a.color+';box-shadow:0 0 8px '+a.color+'40"></span><span class="cd-ticker-sym">'+esc(a.sym)+'</span>'
           +'<span style="display:block;font-size:9px;color:'+szColor+';letter-spacing:.05em;margin-top:2px;font-weight:500;font-family:\'DM Sans\',sans-serif">'+esc(sz)+'</span>'
         +'</div>'
@@ -3782,6 +4288,7 @@ function setDeployStrategy(name){
         +'<div class="cd-pct">'+p+'%</div>'
         +'<div class="cd-amt">'+fmt$(cash*p/100)+'</div>'
         +'<div class="cd-drill-hint">&#9432;</div>'
+        +why
       +'</div>';
     }).join('');
   }
@@ -3793,9 +4300,9 @@ function setDeployStrategy(name){
   var rb=document.getElementById('cdRiskBody'); if(rb) rb.textContent=s.riskBody||'';
   var bb=document.getElementById('cdBullBody'); if(bb) bb.textContent=s.bullBody||'';
   var rp=document.getElementById('cdRiskPoints');
-  if(rp&&s.riskPoints) rp.innerHTML=s.riskPoints.map(function(p){return '<div class="cd-card-pt"><span><strong>'+esc(p[0])+'</strong> &mdash; '+esc(p[1])+'</span></div>';}).join('');
+  if(rp&&s.riskPoints) rp.innerHTML=_renderCardPoints(s.riskPoints,'risk');
   var bp=document.getElementById('cdBullPoints');
-  if(bp&&s.bullPoints) bp.innerHTML=s.bullPoints.map(function(p){return '<div class="cd-card-pt"><span><strong>'+esc(p[0])+'</strong> &mdash; '+esc(p[1])+'</span></div>';}).join('');
+  if(bp&&s.bullPoints) bp.innerHTML=_renderCardPoints(s.bullPoints,'bull');
   // Clear any open drill-down
   var dd=document.getElementById('cdDrillDown'); if(dd){dd.style.display='none'; dd.innerHTML='';}
   // Reset segment + row opacity (cleared from any prior segment click)
@@ -4171,11 +4678,12 @@ function selectStrategy(key){
         '<strong style="color:var(--cream)">Is this right for you?</strong> ' + esc(p.suitable) +
       '</div>' +
 
-      '<div style="display:flex;gap:8px">' +
-        '<button class="btn-p" onclick="showPanel(&quot;portfolio&quot;,document.querySelectorAll(&quot;.nav-item&quot;)[1]);setTimeout(runFeasibility,300)">Run Full AI Study with This Strategy &rarr;</button>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button class="btn-p" onclick="runStrategyStudy()">Run Full AI Study with This Strategy &rarr;</button>' +
         '<button class="btn-g" onclick="showPanel(&quot;cadence&quot;,document.querySelectorAll(&quot;.nav-item&quot;)[5])">Build Cadence Plan</button>' +
         '<button class="btn-g" onclick="var sp=document.getElementById(&quot;selectedStrategyPanel&quot;);if(sp)sp.remove();document.querySelectorAll(&quot;.sc2&quot;).forEach(function(el){el.style.opacity=&quot;1&quot;;el.style.transform=&quot;&quot;;el.style.boxShadow=&quot;&quot;;});">Change Strategy</button>' +
       '</div>' +
+      '<div id="strategyStudyOutput" style="margin-top:18px"></div>' +
     '</div>';
 
   // Insert after the strategy grid
@@ -4493,11 +5001,12 @@ function selectStrategy(key){
         '<strong style="color:var(--cream)">Is this right for you?</strong> ' + esc(p.suitable) +
       '</div>' +
 
-      '<div style="display:flex;gap:8px">' +
-        '<button class="btn-p" onclick="showPanel(&quot;portfolio&quot;,document.querySelectorAll(&quot;.nav-item&quot;)[1]);setTimeout(runFeasibility,300)">Run Full AI Study with This Strategy &rarr;</button>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button class="btn-p" onclick="runStrategyStudy()">Run Full AI Study with This Strategy &rarr;</button>' +
         '<button class="btn-g" onclick="showPanel(&quot;cadence&quot;,document.querySelectorAll(&quot;.nav-item&quot;)[5])">Build Cadence Plan</button>' +
         '<button class="btn-g" onclick="var sp=document.getElementById(&quot;selectedStrategyPanel&quot;);if(sp)sp.remove();document.querySelectorAll(&quot;.sc2&quot;).forEach(function(el){el.style.opacity=&quot;1&quot;;el.style.transform=&quot;&quot;;el.style.boxShadow=&quot;&quot;;});">Change Strategy</button>' +
       '</div>' +
+      '<div id="strategyStudyOutput" style="margin-top:18px"></div>' +
     '</div>';
 
   // Insert after the strategy grid
@@ -4768,11 +5277,12 @@ function selectStrategy(key){
         '<strong style="color:var(--cream)">Is this right for you?</strong> ' + esc(p.suitable) +
       '</div>' +
 
-      '<div style="display:flex;gap:8px">' +
-        '<button class="btn-p" onclick="showPanel(&quot;portfolio&quot;,document.querySelectorAll(&quot;.nav-item&quot;)[1]);setTimeout(runFeasibility,300)">Run Full AI Study with This Strategy &rarr;</button>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button class="btn-p" onclick="runStrategyStudy()">Run Full AI Study with This Strategy &rarr;</button>' +
         '<button class="btn-g" onclick="showPanel(&quot;cadence&quot;,document.querySelectorAll(&quot;.nav-item&quot;)[5])">Build Cadence Plan</button>' +
         '<button class="btn-g" onclick="var sp=document.getElementById(&quot;selectedStrategyPanel&quot;);if(sp)sp.remove();document.querySelectorAll(&quot;.sc2&quot;).forEach(function(el){el.style.opacity=&quot;1&quot;;el.style.transform=&quot;&quot;;el.style.boxShadow=&quot;&quot;;});">Change Strategy</button>' +
       '</div>' +
+      '<div id="strategyStudyOutput" style="margin-top:18px"></div>' +
     '</div>';
 
   // Insert after the strategy grid
