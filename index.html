@@ -2624,10 +2624,7 @@ async function runStock(){
     if(out) out.innerHTML='<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Enter a ticker</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">Type a symbol like <code style="font-family:DM Mono,monospace;color:var(--gold-light)">NVDA</code> or pick one from the chips above.</div></div>';
     return;
   }
-  if(!getKey()){
-    if(out) out.innerHTML='<div class="extract-err"><div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Anthropic API key required</div><div style="font-size:11px;color:var(--text-2);line-height:1.6">Click <strong style="color:var(--gold)">Set API Key</strong> in the top bar to unlock AI analysis. Free key at console.anthropic.com.</div></div>';
-    return;
-  }
+  // Backend owns the AI key — no client-side gate
   out.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Analyzing <strong style="color:var(--gold-light);font-family:DM Mono,monospace">'+esc(ticker)+'</strong></div><div class="cd-loader-sub">Reading market context · building verdict · scoring catalysts · sizing conviction</div></div></div>';
   var full=_currentMode==='full';var begin=_beginMode2;
   var holdCtx='';
@@ -2779,11 +2776,7 @@ async function runFeasibility(){
     fc.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">No portfolio loaded yet</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Add holdings above — upload a brokerage CSV, drop screenshots, or paste manually. The feasibility engine needs your actual positions to diagnose concentration, health, and strategy fit.</div></div>';
     return;
   }
-  if(!getKey()){
-    fo.style.display='block';
-    fc.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">AI key required for feasibility study</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Click <strong style="color:var(--gold)">Set API Key</strong> in the top bar. The study runs entirely against your holdings + market context — no data leaves your browser except the prompt itself.</div></div>';
-    return;
-  }
+  // Backend owns the AI key — no client-side gate
   fo.style.display='block';fc.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Running institutional portfolio feasibility study</div><div class="cd-loader-sub">Grading structure · mapping allocation · projecting paths · writing action plan</div></div></div>';
   var total=h.reduce(function(s,x){return s+x.mktVal;},0);
   var cost=h.reduce(function(s,x){return s+x.cost;},0);
@@ -3096,10 +3089,7 @@ async function runDeploy(){
     if(out) out.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">Enter cash to deploy</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Set a <strong>Cash Available ($)</strong> above. Or use a Quick Scenario button — the engine scales the plan to any amount.</div></div>';
     return;
   }
-  if(!getKey()){
-    if(out) out.innerHTML='<div class="extract-err"><div style="font-size:13px;color:var(--clay);font-weight:600;margin-bottom:6px">Anthropic API key required</div><div style="font-size:12px;color:var(--text-2);line-height:1.7">Click <strong style="color:var(--gold)">Set API Key</strong> in the top bar to enable the deployment engine. The plan is generated fresh from your portfolio context + current market regime.</div></div>';
-    return;
-  }
+  // Backend owns the AI key — no client-side gate
   out.innerHTML='<div class="cd-loader"><div class="spinner"></div><div><div class="cd-loader-text">Structuring deployment plan for <strong style="color:var(--gold-light);font-family:DM Mono,monospace">'+fmt$(cash)+'</strong></div><div class="cd-loader-sub">Reading regime · balancing lanes · ranking tickers · sizing tranches</div></div></div>';
   var h=getHoldings();
   var portCtx=h.length?h.map(function(x){return x.sym+'('+(x.mktVal/h.reduce(function(s,y){return s+y.mktVal;},0)*100).toFixed(0)+'%)';}).join(', '):'No portfolio loaded';
