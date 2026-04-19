@@ -675,6 +675,13 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .ds-step.active .ds-progress{display:block}
 .ds-prog-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:1px;animation:dsProgAnim .4s ease forwards}
 @keyframes dsProgAnim{from{width:0}to{width:100%}}
+
+.cd-row-clickable{cursor:pointer;transition:all .2s}
+.cd-row-clickable:hover{border-color:rgba(201,168,76,.3)!important;background:var(--noir-3)!important;transform:translateX(3px)}
+.cd-row-selected{border-color:var(--gold)!important;background:rgba(201,168,76,.06)!important;box-shadow:0 0 0 1px rgba(201,168,76,.2)}
+.cd-drill-hint{font-size:11px;color:rgba(201,168,76,.35);flex-shrink:0;transition:color .2s;margin-left:4px}
+.cd-row-clickable:hover .cd-drill-hint{color:var(--gold)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 </style>
 
 <div class="ds-step active" onclick="toggleDsStep(this,0)">
@@ -2577,30 +2584,23 @@ async function runDeploy(){
 function buildDeployPanel(d,cash,dateStr){
   var C=2*Math.PI*80;
   return '<div class="cd-panel">'
-    // Header
-    +'<header class="cd-hdr">'
-      +'<div>'
-        +'<div class="cd-eyebrow">Deployment Engine &middot; Live</div>'
-        +'<h1 class="cd-h1">Capital <span class="cd-accent">Deployment</span></h1>'
-        +'<div class="cd-lede">Tactical allocation framework &mdash; three strategy lanes, one disciplined playbook.</div>'
-      +'</div>'
-      +'<div class="cd-right">'
-        +'<div class="cd-cash-lbl">Deployable Capital</div>'
-        +'<div class="cd-cash-val">'+fmt$(cash)+'</div>'
-        +'<div class="cd-cash-sub">'+esc(dateStr)+'</div>'
-      +'</div>'
-    +'</header>'
-    // Tabs
+    +'<header class="cd-hdr"><div>'
+      +'<div class="cd-eyebrow">&#9670; Deployment Engine &middot; Live</div>'
+      +'<h1 class="cd-h1">Capital <span class="cd-accent">Deployment</span></h1>'
+      +'<div class="cd-lede">Tactical allocation &mdash; three strategy lanes. <strong style="color:var(--gold-light)">Click any stock</strong> for deep AI analysis.</div>'
+    +'</div><div class="cd-right">'
+      +'<div class="cd-cash-lbl">Deployable Capital</div>'
+      +'<div class="cd-cash-val">'+fmt$(cash)+'</div>'
+      +'<div class="cd-cash-sub">'+esc(dateStr)+'</div>'
+    +'</div></header>'
     +'<div class="cd-tabs">'
-      +'<button class="cd-tab" data-s="conservative" onclick="setDeployStrategy(&quot;conservative&quot;)"><span class="cd-dot"></span>Conservative</button>'
-      +'<button class="cd-tab active" data-s="balanced" onclick="setDeployStrategy(&quot;balanced&quot;)"><span class="cd-dot"></span>Balanced</button>'
-      +'<button class="cd-tab" data-s="aggressive" onclick="setDeployStrategy(&quot;aggressive&quot;)"><span class="cd-dot"></span>Aggressive</button>'
+      +'<button class="cd-tab" data-s="conservative" onclick="setDeployStrategy(this.dataset.s)"><span class="cd-dot"></span>Conservative</button>'
+      +'<button class="cd-tab active" data-s="balanced" onclick="setDeployStrategy(this.dataset.s)"><span class="cd-dot"></span>Balanced</button>'
+      +'<button class="cd-tab" data-s="aggressive" onclick="setDeployStrategy(this.dataset.s)"><span class="cd-dot"></span>Aggressive</button>'
     +'</div>'
-    // Split
     +'<div class="cd-split">'
-      // Donut
       +'<div class="cd-donut-wrap">'
-        +'<svg class="cd-donut-svg" viewBox="0 0 200 200">'
+        +'<svg class="cd-donut-svg" viewBox="0 0 200 200" id="cdDonutSvg">'
           +'<circle class="cd-seg-bg" cx="100" cy="100" r="80"></circle>'
           +'<circle class="cd-seg" id="cdSegCore" cx="100" cy="100" r="80" stroke="#C9A84C" stroke-dasharray="0 503" stroke-linecap="butt"></circle>'
           +'<circle class="cd-seg" id="cdSegGrowth" cx="100" cy="100" r="80" stroke="#6BAA75" stroke-dasharray="0 503" stroke-dashoffset="0" stroke-linecap="butt"></circle>'
@@ -2608,16 +2608,15 @@ function buildDeployPanel(d,cash,dateStr){
         +'</svg>'
         +'<div class="cd-donut-center">'
           +'<div class="cd-donut-lbl" id="cdDonutLbl">Balanced</div>'
-          +'<div class="cd-donut-val">100<span style="font-size:24px;opacity:.6">%</span></div>'
-          +'<div class="cd-donut-sub" id="cdDonutSub">Core &middot; Growth &middot; Tactical</div>'
-          +'<div class="cd-donut-orn" id="cdDonutOrn">&ldquo;Time in market beats timing the market.&rdquo;</div>'
+          +'<div class="cd-donut-val" id="cdDonutVal">100<span style="font-size:22px;opacity:.6">%</span></div>'
+          +'<div class="cd-donut-sub" id="cdDonutSub">55C &middot; 37G &middot; 8T</div>'
+          +'<div class="cd-donut-orn" id="cdDonutOrn"></div>'
         +'</div>'
       +'</div>'
-      // Alloc list
       +'<div>'
         +'<div class="cd-alloc-head">'
           +'<div class="cd-alloc-title">Target Allocation</div>'
-          +'<div class="cd-alloc-meta" id="cdAllocMeta">7 positions &middot; rebalance quarterly</div>'
+          +'<div class="cd-alloc-meta" id="cdAllocMeta">positions &middot; rebalance quarterly</div>'
         +'</div>'
         +'<div id="cdAllocList"></div>'
         +'<div class="cd-legend">'
@@ -2627,88 +2626,186 @@ function buildDeployPanel(d,cash,dateStr){
         +'</div>'
       +'</div>'
     +'</div>'
-    // Bottom cards
     +'<div class="cd-cards">'
-      +'<div class="cd-card risk">'
-        +'<div class="cd-card-hdr">'
-          +'<div class="cd-card-eye"><span class="cd-card-bullet"></span>Risk Scenario</div>'
-          +'<div class="cd-card-score" id="cdRiskScore">Risk &middot; 4/10</div>'
-        +'</div>'
+      +'<div class="cd-card risk" id="cdRiskCard">'
+        +'<div class="cd-card-hdr"><div class="cd-card-eye"><span class="cd-card-bullet"></span>Risk Scenario</div><div class="cd-card-score" id="cdRiskScore">Risk &middot; 4/10</div></div>'
         +'<div class="cd-card-title">What breaks the <span class="cd-ca">thesis</span></div>'
-        +'<div class="cd-card-body" id="cdRiskBody"></div>'
+        +'<div class="cd-card-body" id="cdRiskBody">Select a stock below for specific risk analysis.</div>'
         +'<div class="cd-card-points" id="cdRiskPoints"></div>'
       +'</div>'
-      +'<div class="cd-card bull">'
-        +'<div class="cd-card-hdr">'
-          +'<div class="cd-card-eye"><span class="cd-card-bullet"></span>Bull Case</div>'
-          +'<div class="cd-card-score" id="cdBullScore">Upside &middot; +18%</div>'
-        +'</div>'
+      +'<div class="cd-card bull" id="cdBullCard">'
+        +'<div class="cd-card-hdr"><div class="cd-card-eye"><span class="cd-card-bullet"></span>Bull Case</div><div class="cd-card-score" id="cdBullScore">Upside &middot; +18%</div></div>'
         +'<div class="cd-card-title">Why this <span class="cd-ca">works</span></div>'
-        +'<div class="cd-card-body" id="cdBullBody"></div>'
+        +'<div class="cd-card-body" id="cdBullBody">Select a stock below for specific bull case.</div>'
         +'<div class="cd-card-points" id="cdBullPoints"></div>'
       +'</div>'
     +'</div>'
+    +'<div id="cdDrillDown" style="display:none;margin-top:20px;animation:fadeUp .35s ease"></div>'
     +'<div class="cd-foot">'
-      +'<div>Strategy framework &middot; Institutional-grade &middot; Rebalance alerts active</div>'
+      +'<div>&#9670; Strategy framework &middot; Institutional-grade &middot; Click any stock for AI analysis</div>'
       +'<div class="cd-foot-brand">LaForce Capital &middot; Private wealth intelligence</div>'
     +'</div>'
   +'</div>';
 }
 
 function setDeployStrategy(name){
-  var d=window._deployData;var cash=window._deployCash||0;
-  if(!d)return;
-  var s=d[name];if(!s)return;
+  var d=window._deployData; var cash=window._deployCash||0;
+  if(!d) return;
+  var s=d[name]; if(!s) return;
   var C=2*Math.PI*80;
-  // Tabs
-  document.querySelectorAll('.cd-tab').forEach(function(t){
-    t.classList.toggle('active',t.dataset.s===name);
-  });
-  // Donut segments
-  var core=s.totals?s.totals.core:55;
-  var growth=s.totals?s.totals.growth:37;
-  var tactical=s.totals?s.totals.tactical:8;
-  var cL=(core/100)*C;var gL=(growth/100)*C;var tL=(tactical/100)*C;
-  var sc=document.getElementById('cdSegCore');
-  var sg=document.getElementById('cdSegGrowth');
-  var st=document.getElementById('cdSegTactical');
-  if(sc){sc.setAttribute('stroke-dasharray',cL+' '+(C-cL));sc.setAttribute('stroke-dashoffset','0');}
-  if(sg){sg.setAttribute('stroke-dasharray',gL+' '+(C-gL));sg.setAttribute('stroke-dashoffset',-cL);}
-  if(st){st.setAttribute('stroke-dasharray',tL+' '+(C-tL));st.setAttribute('stroke-dashoffset',-(cL+gL));}
-  var lbl=document.getElementById('cdDonutLbl');if(lbl)lbl.textContent=s.label||name;
-  var sub=document.getElementById('cdDonutSub');if(sub)sub.innerHTML=core+'C &middot; '+growth+'G &middot; '+tactical+'T';
-  var orn=document.getElementById('cdDonutOrn');if(orn)orn.textContent=s.ornament||'';
-  // Alloc list
+  document.querySelectorAll('.cd-tab').forEach(function(t){t.classList.toggle('active',t.dataset.s===name);});
+  var core=s.totals?s.totals.core:55, growth=s.totals?s.totals.growth:37, tactical=s.totals?s.totals.tactical:8;
+  var cL=(core/100)*C, gL=(growth/100)*C, tL=(tactical/100)*C;
+  var sc=document.getElementById('cdSegCore'),sg=document.getElementById('cdSegGrowth'),st=document.getElementById('cdSegTactical');
+  if(sc){sc.setAttribute('stroke-dasharray',cL.toFixed(1)+' '+(C-cL).toFixed(1));sc.setAttribute('stroke-dashoffset','0');}
+  if(sg){sg.setAttribute('stroke-dasharray',gL.toFixed(1)+' '+(C-gL).toFixed(1));sg.setAttribute('stroke-dashoffset',(-cL).toFixed(1));}
+  if(st){st.setAttribute('stroke-dasharray',tL.toFixed(1)+' '+(C-tL).toFixed(1));st.setAttribute('stroke-dashoffset',(-(cL+gL)).toFixed(1));}
+  var lbl=document.getElementById('cdDonutLbl'); if(lbl) lbl.textContent=s.label||name;
+  var sub=document.getElementById('cdDonutSub'); if(sub) sub.innerHTML=core+'C &middot; '+growth+'G &middot; '+tactical+'T';
+  var orn=document.getElementById('cdDonutOrn'); if(orn) orn.textContent=s.ornament?'"'+s.ornament+'"':'';
   var list=document.getElementById('cdAllocList');
   if(list&&s.allocations){
     list.innerHTML=s.allocations.map(function(a){
-      var pct=a.pct||0;var barW=Math.min(100,pct*2.2);
-      return '<div class="cd-row">'
-        +'<div class="cd-ticker"><span class="cd-ticker-dot" style="background:'+esc(a.color)+';color:'+esc(a.color)+'"></span><span class="cd-ticker-sym">'+esc(a.sym)+'</span></div>'
-        +'<div class="cd-bar-wrap"><div class="cd-bar" style="width:'+barW+'%;background:linear-gradient(90deg,'+esc(a.color)+',rgba(255,255,255,.3));box-shadow:0 0 10px '+esc(a.color)+'40"></div></div>'
-        +'<div class="cd-pct">'+pct+'%</div>'
-        +'<div class="cd-amt">'+fmt$(cash*pct/100)+'</div>'
+      var p=a.pct||0; var barW=Math.min(100,p*2.5);
+      return '<div class="cd-row cd-row-clickable" onclick="drillDownStock(''+esc(a.sym)+'',''+name+'')" title="Click for AI analysis">'
+        +'<div class="cd-ticker"><span class="cd-ticker-dot" style="background:'+a.color+';box-shadow:0 0 8px '+a.color+'44"></span><span class="cd-ticker-sym">'+esc(a.sym)+'</span></div>'
+        +'<div class="cd-bar-wrap"><div class="cd-bar" style="width:'+barW+'%;background:linear-gradient(90deg,'+a.color+','+a.color+'66)"></div></div>'
+        +'<div class="cd-pct">'+p+'%</div>'
+        +'<div class="cd-amt">'+fmt$(cash*p/100)+'</div>'
+        +'<div class="cd-drill-hint">&#9432;</div>'
       +'</div>';
     }).join('');
-    var meta=document.getElementById('cdAllocMeta');
-    if(meta)meta.innerHTML=s.allocations.length+' positions &middot; rebalance quarterly';
   }
-  // Cards
-  var rs=document.getElementById('cdRiskScore');if(rs)rs.textContent=s.riskScore||'Risk';
-  var bs=document.getElementById('cdBullScore');if(bs)bs.textContent=s.upside||'Upside';
-  var rb=document.getElementById('cdRiskBody');if(rb)rb.textContent=s.riskBody||'';
-  var bb=document.getElementById('cdBullBody');if(bb)bb.textContent=s.bullBody||'';
+  var meta=document.getElementById('cdAllocMeta');
+  if(meta&&s.allocations) meta.innerHTML=s.allocations.length+' positions &middot; rebalance quarterly';
+  var rs=document.getElementById('cdRiskScore'); if(rs) rs.textContent=s.riskScore||'Risk';
+  var bs=document.getElementById('cdBullScore'); if(bs) bs.textContent=s.upside||'Upside';
+  var rb=document.getElementById('cdRiskBody'); if(rb) rb.textContent=s.riskBody||'Click any stock below for specific risk analysis.';
+  var bb=document.getElementById('cdBullBody'); if(bb) bb.textContent=s.bullBody||'Click any stock below for the bull case.';
   var rp=document.getElementById('cdRiskPoints');
-  if(rp&&s.riskPoints)rp.innerHTML=s.riskPoints.map(function(p){return '<div class="cd-card-pt"><span><strong>'+esc(p[0])+'</strong> &mdash; '+esc(p[1])+'</span></div>';}).join('');
+  if(rp&&s.riskPoints) rp.innerHTML=s.riskPoints.map(function(p){return '<div class="cd-card-pt"><span><strong>'+esc(p[0])+'</strong> &mdash; '+esc(p[1])+'</span></div>';}).join('');
   var bp=document.getElementById('cdBullPoints');
-  if(bp&&s.bullPoints)bp.innerHTML=s.bullPoints.map(function(p){return '<div class="cd-card-pt"><span><strong>'+esc(p[0])+'</strong> &mdash; '+esc(p[1])+'</span></div>';}).join('');
+  if(bp&&s.bullPoints) bp.innerHTML=s.bullPoints.map(function(p){return '<div class="cd-card-pt"><span><strong>'+esc(p[0])+'</strong> &mdash; '+esc(p[1])+'</span></div>';}).join('');
+  var dd=document.getElementById('cdDrillDown'); if(dd){dd.style.display='none';dd.innerHTML='';}
+  window._currentDeployStyle=name;
+}
+
+async function drillDownStock(sym,style){
+  document.querySelectorAll('.cd-row-clickable').forEach(function(r){r.classList.remove('cd-row-selected');});
+  document.querySelectorAll('.cd-row-clickable').forEach(function(r){
+    var s=r.querySelector('.cd-ticker-sym');
+    if(s&&s.textContent===sym) r.classList.add('cd-row-selected');
+  });
+  var dd=document.getElementById('cdDrillDown'); if(!dd) return;
+  dd.style.display='block';
+  dd.innerHTML='<div style="padding:20px;background:var(--noir-2);border:1px solid var(--border-2);border-radius:14px;display:flex;align-items:center;gap:14px"><div class="spinner"></div><div style="font-size:13px;color:var(--text-2)">Running AI deep-dive on <strong style="color:var(--gold-light)">'+esc(sym)+'</strong> &mdash; <em>'+esc(style)+'</em> lens...</div></div>';
+  var rb=document.getElementById('cdRiskBody'); if(rb) rb.textContent='Analyzing '+sym+' risk profile...';
+  var bb=document.getElementById('cdBullBody'); if(bb) bb.textContent='Building bull case for '+sym+'...';
+  var d=window._deployData; var cash=window._deployCash||0;
+  var s=d&&d[style]; var alloc=s&&s.allocations?s.allocations.find(function(a){return a.sym===sym;}):null;
+  var allocPct=alloc?alloc.pct:0; var allocAmt=fmt$(cash*allocPct/100);
+  var styleLens=style==='conservative'?'capital preservation first, downside protection essential':style==='balanced'?'risk-adjusted return, quality over pure momentum':'maximum upside with disciplined entry and exit';
+  var sysPrompt='You are an elite institutional equity analyst. Be specific, data-driven, and direct. No filler.';
+  var userPrompt='Deep-dive analysis of '+sym+' for a deployment plan.
+
+Context:
+- Strategy: '+style+' ('+styleLens+')
+- Allocation: '+allocPct+'% = '+allocAmt+'
+- Market: '+(_marketCtx?_marketCtx.trend+' trend, VIX '+_marketCtx.vol:'neutral')+'
+
+Use EXACTLY these section headers:
+
+VERDICT: [BUY/ADD/HOLD/TRIM/AVOID] - one punchy sentence
+
+WHY AI CHOSE THIS: 2-3 sentences on the specific thesis - earnings, valuation, catalyst, cycle position
+
+WHY IT FITS '+style.toUpperCase()+': 1-2 sentences on why this suits the '+style+' risk profile
+
+KEY RISKS:
+- Risk one
+- Risk two  
+- Risk three
+
+ENTRY APPROACH: Specific entry - order type, price level, timing
+
+POSITION SIZING: Comment on the '+allocPct+'% weight - is it right for this name
+
+TIME HORIZON: Specific timeframe and key milestones to watch
+
+IF NOT NOW: What price or condition makes this a better entry
+
+FINAL ACTION: One sentence - exactly what to do today';
+  try{
+    var resp=await aiCall(userPrompt,sysPrompt,1000);
+    function exSec(label){
+      var idx=resp.indexOf(label); if(idx<0) return '';
+      var start=idx+label.length;
+      var allLabels=['VERDICT:','WHY AI CHOSE THIS:','WHY IT FITS','KEY RISKS:','ENTRY APPROACH:','POSITION SIZING:','TIME HORIZON:','IF NOT NOW:','FINAL ACTION:'];
+      var end=resp.length;
+      allLabels.forEach(function(nl){if(nl!==label){var ni=resp.indexOf(nl,start);if(ni>-1&&ni<end)end=ni;}});
+      return resp.substring(start,end).trim();
+    }
+    var verdict=exSec('VERDICT:'), whyChosen=exSec('WHY AI CHOSE THIS:'), whyFits=exSec('WHY IT FITS '+style.toUpperCase()+':');
+    var risks=exSec('KEY RISKS:'), entry=exSec('ENTRY APPROACH:'), sizing=exSec('POSITION SIZING:');
+    var horizon=exSec('TIME HORIZON:'), ifNotNow=exSec('IF NOT NOW:'), finalAction=exSec('FINAL ACTION:');
+    var vUp=(verdict||'').toUpperCase();
+    var vColor=vUp.indexOf('BUY')>-1||vUp.indexOf('ADD')>-1?'var(--sage)':vUp.indexOf('TRIM')>-1||vUp.indexOf('AVOID')>-1?'var(--clay)':'var(--gold)';
+    var vWord=vUp.indexOf('STRONG BUY')>-1?'STRONG BUY':vUp.indexOf('BUY')>-1?'BUY':vUp.indexOf('ADD')>-1?'ADD':vUp.indexOf('TRIM')>-1?'TRIM':vUp.indexOf('AVOID')>-1?'AVOID':'HOLD';
+    // Update risk card
+    var rbEl=document.getElementById('cdRiskBody'); if(rbEl) rbEl.textContent=sizing||risks||'See drill-down.';
+    var rpEl=document.getElementById('cdRiskPoints');
+    if(rpEl&&risks){var rl=risks.split('\n').filter(function(l){return l.trim().startsWith('-');}); rpEl.innerHTML=rl.map(function(l){return '<div class="cd-card-pt"><span>'+esc(l.replace(/^-\s*/,''))+'</span></div>';}).join('');}
+    // Update bull card
+    var bbEl=document.getElementById('cdBullBody'); if(bbEl) bbEl.textContent=whyChosen||'';
+    var bpEl=document.getElementById('cdBullPoints');
+    if(bpEl) bpEl.innerHTML='<div class="cd-card-pt"><span><strong>Entry</strong> &mdash; '+esc(entry||'See below')+'</span></div><div class="cd-card-pt"><span><strong>Horizon</strong> &mdash; '+esc(horizon||'See below')+'</span></div>';
+    function sec(title,color,content){
+      if(!content) return '';
+      return '<div style="margin-bottom:16px"><div style="font-size:9px;letter-spacing:.13em;color:'+color+';text-transform:uppercase;font-weight:700;margin-bottom:5px">'+esc(title)+'</div><div style="font-size:12px;color:var(--text-1);line-height:1.75">'+esc(content).replace(/\n- /g,'<br>&bull; ').replace(/\n/g,'<br>')+'</div></div>';
+    }
+    dd.innerHTML='<div style="background:linear-gradient(145deg,var(--noir-2),var(--noir-1));border:1px solid var(--border-2);border-radius:16px;overflow:hidden">'
+      +'<div style="height:2px;background:linear-gradient(90deg,transparent,'+vColor+',transparent)"></div>'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 14px;border-bottom:1px solid var(--border)">'
+        +'<div style="display:flex;align-items:center;gap:12px">'
+          +'<div style="font-family:DM Mono,monospace;font-size:24px;font-weight:700;color:var(--gold-light)">'+esc(sym)+'</div>'
+          +'<div style="padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;font-family:DM Mono,monospace;color:'+vColor+';border:1px solid '+vColor+'40;background:'+vColor+'10">'+esc(vWord)+'</div>'
+          +'<div style="font-size:11px;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase">'+esc(style)+' lens</div>'
+        +'</div>'
+        +'<div style="display:flex;gap:8px">'
+          +'<button onclick="quickTick(''+esc(sym)+'')" style="padding:7px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--gold-light);font-family:DM Sans,sans-serif">Full Analysis &rarr;</button>'
+          +'<button onclick="addWl2(''+esc(sym)+'')" style="padding:7px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--text-2);font-family:DM Sans,sans-serif">+ Watchlist</button>'
+          +'<button onclick="this.closest('#cdDrillDown').style.display='none'" style="padding:7px 10px;border-radius:8px;font-size:13px;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--text-3);font-family:DM Sans,sans-serif">&times;</button>'
+        +'</div>'
+      +'</div>'
+      +(verdict?'<div style="padding:14px 20px;background:rgba(0,0,0,.2);border-bottom:1px solid var(--border)"><div style="font-size:9px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;margin-bottom:5px">AI Verdict</div><div style="font-size:14px;color:var(--cream);line-height:1.6;font-weight:500">'+esc(verdict.replace(/^(STRONG BUY|BUY|ADD|HOLD|TRIM|AVOID)\s*[-]\s*/i,''))+'</div></div>':'')
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)">'
+        +'<div style="padding:18px 20px;border-right:1px solid var(--border)">'
+          +sec('Why AI Chose This','var(--gold)',whyChosen)
+          +sec('Why It Fits '+style.charAt(0).toUpperCase()+style.slice(1),'var(--sage)',whyFits)
+          +sec('If Not Now','var(--text-2)',ifNotNow)
+        +'</div>'
+        +'<div style="padding:18px 20px">'
+          +sec('Entry Approach','var(--gold)',entry)
+          +sec('Position Sizing ('+allocPct+'%)','var(--cream-dim)',sizing)
+          +sec('Time Horizon','var(--text-2)',horizon)
+        +'</div>'
+      +'</div>'
+      +(finalAction?'<div style="padding:14px 20px;background:rgba(201,168,76,.04);display:flex;align-items:flex-start;gap:14px"><div style="font-size:9px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;font-weight:700;white-space:nowrap;margin-top:2px">Final Action</div><div style="font-size:13px;color:var(--cream);font-weight:500;line-height:1.6">'+esc(finalAction)+'</div></div>':'')
+    +'</div>';
+    dd.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }catch(e){dd.innerHTML='<div class="card" style="color:var(--clay);padding:16px">Analysis error: '+esc(e.message)+'</div>';}
 }
 
 function renderDeployFallback(text,cash){
   var lines=text.split('\n');
-  return '<div class="card">'+lines.map(function(l){var lt=l.trim();if(!lt)return '<div style="height:8px"></div>';var m=lt.match(/^([A-Z]{1,6})\s*[-]\s*(\$[\d,]+)\s*[-]\s*(\d+%)\s*[-]?\s*(.*)/);if(m)return '<div class="cd-row" style="grid-template-columns:100px 1fr 72px"><div class="cd-ticker"><span class="cd-ticker-dot" style="background:#C9A84C;color:#C9A84C"></span><span class="cd-ticker-sym">'+esc(m[1])+'</span></div><div style="font-size:12px;color:var(--text-1)">'+esc(m[4])+'</div><div class="cd-pct">'+esc(m[3])+'</div></div>';return '<div style="font-size:13px;color:var(--text-1);line-height:1.7;margin-bottom:4px">'+esc(lt)+'</div>';}).join('')+'</div>';
+  return '<div class="card">'+lines.map(function(l){
+    var lt=l.trim(); if(!lt) return '<div style="height:6px"></div>';
+    if(/^\d+\.\s+[A-Z]/.test(lt)) return '<div style="font-size:9px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;font-weight:700;margin:16px 0 8px;border-top:1px solid var(--border);padding-top:14px">'+esc(lt)+'</div>';
+    var m=lt.match(/^([A-Z]{1,6})\s*[-]\s*(\$[\d,]+)\s*[-]\s*(\d+%)\s*[-]?\s*(.*)/);
+    if(m) return '<div class="cd-row cd-row-clickable" onclick="drillDownStock(''+m[1]+'',window._currentDeployStyle||'balanced')"><div class="cd-ticker"><span class="cd-ticker-dot" style="background:#C9A84C"></span><span class="cd-ticker-sym">'+esc(m[1])+'</span></div><div style="font-size:12px;color:var(--text-1);flex:1">'+esc(m[4])+'</div><div class="cd-drill-hint">&#9432;</div></div>';
+    return '<div style="font-size:13px;color:var(--text-1);line-height:1.7;margin-bottom:4px">'+esc(lt)+'</div>';
+  }).join('')+'</div>';
 }
-
 
 function renderFeasibility(text,total,cost,gain,pct,h){
   var fc=document.getElementById('feasContent');
