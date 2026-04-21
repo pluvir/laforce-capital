@@ -969,6 +969,50 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .cd-lens-banner-clear:hover{color:#E8CC7A;border-color:rgba(201,168,76,.35);background:rgba(201,168,76,.06)}
 .cd-lens-banner-body{font-family:"Inter",sans-serif;font-size:12px;color:#C9B88C;line-height:1.65}
 .cd-lens-banner-warn{margin-top:8px;padding:6px 10px;border-radius:6px;background:rgba(192,113,79,.12);border:1px solid rgba(192,113,79,.32);font-size:11px;color:#E0947A;font-family:"DM Mono",monospace;letter-spacing:.04em}
+
+/* === REFINEMENTS: placement + readability + premium selected state === */
+/* Left column wrapper — donut on top, explainer below. Keeps banner off the rows. */
+.cd-split{align-items:flex-start}
+.cd-donut-col{display:flex;flex-direction:column;gap:18px;align-items:stretch;position:relative;z-index:1}
+.cd-donut-col .cd-donut-wrap{margin:0 auto}
+/* Kill the floating hover tooltip — it used to cover rows. Banner below donut replaces it. */
+.cd-lane-tip{display:none!important}
+/* Remove the question-mark cursor on lane chips + the info (ⓘ) drill hint next to rows */
+.cd-lane-chip{cursor:pointer!important}
+.cd-drill-hint{display:none!important}
+/* Larger, more readable lens banner (always-on, pinned under the donut) */
+.cd-lens-banner{display:block;opacity:.65;margin:0;padding:18px 20px 16px;font-size:13.5px;line-height:1.72;border-radius:12px;transition:opacity .25s ease,border-color .25s ease,background .25s ease,box-shadow .25s ease}
+.cd-lens-banner.on,.cd-lens-banner.cd-lens-banner-idle-on{display:block;opacity:1;animation:none}
+.cd-lens-banner-title{font-size:12px;letter-spacing:.14em;margin-bottom:10px}
+.cd-lens-banner-body{font-size:13.5px;line-height:1.72;color:#D8C9A8}
+.cd-lens-banner-holdings{margin-top:10px!important;padding-top:10px;border-top:1px dashed rgba(201,168,76,.16);font-size:12px!important;color:#E8CC7A!important;font-family:"DM Mono",monospace;letter-spacing:.04em;line-height:1.7!important}
+.cd-lens-banner-warn{margin-top:12px;padding:9px 12px;font-size:12px;line-height:1.55;border-radius:7px}
+/* Idle state — instructs the user what to click */
+.cd-lens-banner-idle{color:#B8A882}
+.cd-lens-banner-idle-title{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:18px;color:var(--cream);margin-bottom:6px;letter-spacing:.01em}
+.cd-lens-banner-idle-body{font-size:13px;line-height:1.7;color:#B8A882}
+.cd-lens-banner-idle-body strong{color:#E8CC7A;font-weight:600}
+/* Preview state (on hover, before click-lock) — soft, dashed, with hint */
+.cd-lens-banner.cd-lens-banner-preview{border-style:dashed;opacity:.92}
+.cd-lens-banner-hint{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#8B7D68;font-family:"Inter",sans-serif;font-weight:500;padding:2px 8px;border:1px dashed rgba(201,168,76,.28);border-radius:999px}
+.cd-lens-banner-clear{font-size:11px;padding:3px 10px}
+/* === Premium selected state (segment / chip / legend) === */
+.cd-seg.cd-seg-active{filter:drop-shadow(0 0 18px currentColor) brightness(1.22) saturate(1.1);stroke-width:28;opacity:1}
+.cd-seg.cd-seg-mute{opacity:.22}
+/* Lane chip active / muted — matches lens color */
+.cd-lane-chip{transition:transform .18s ease,box-shadow .18s ease,background .18s ease,opacity .22s ease}
+.cd-lane-chip.cd-chip-active{background:rgba(255,255,255,.06);box-shadow:0 0 14px currentColor,inset 0 0 0 1px currentColor;transform:translateY(-1px)}
+.cd-lane-chip.cd-chip-mute{opacity:.34}
+/* Legend active — gradient fill + left accent bar + scaled dot */
+.cd-leg-dot{transition:transform .2s ease,box-shadow .2s ease}
+.cd-leg-item.cd-leg-active{font-weight:600;position:relative}
+.cd-leg-item.cd-leg-active .cd-leg-dot{transform:scale(1.2);box-shadow:0 0 10px currentColor}
+.cd-leg-item.cd-leg-active[data-lens="core"]{background:linear-gradient(135deg,rgba(232,204,122,.14),rgba(232,204,122,.04));border-color:rgba(232,204,122,.55);box-shadow:0 0 22px rgba(232,204,122,.2),inset 0 1px 0 rgba(232,204,122,.22);color:#F2E1A8}
+.cd-leg-item.cd-leg-active[data-lens="growth"]{background:linear-gradient(135deg,rgba(157,208,168,.14),rgba(157,208,168,.04));border-color:rgba(157,208,168,.55);box-shadow:0 0 22px rgba(157,208,168,.2),inset 0 1px 0 rgba(157,208,168,.22);color:#BEEBC9}
+.cd-leg-item.cd-leg-active[data-lens="tactical"]{background:linear-gradient(135deg,rgba(224,148,122,.14),rgba(224,148,122,.04));border-color:rgba(224,148,122,.55);box-shadow:0 0 22px rgba(224,148,122,.2),inset 0 1px 0 rgba(224,148,122,.22);color:#F0B59D}
+.cd-leg-item.cd-leg-mute{opacity:.4}
+/* Responsive — below 880px, banner just continues to live under the (centered) donut */
+@media(max-width:880px){.cd-donut-col{align-items:center}.cd-lens-banner{width:100%;max-width:520px}}
 /* Risk/Bull point cards — interactive expandable */
 .cd-card-pt{position:relative;cursor:pointer;outline:none;transition:background .18s,border-color .18s,transform .15s}
 .cd-card-pt:hover,.cd-card-pt:focus-visible{transform:translateX(2px)}
@@ -5573,6 +5617,7 @@ function buildDeployPanel(d,cash,dateStr){
     +'</div>'
     +'<div id="cdLensRationale" style="font-size:11px;color:var(--text-2);margin:-10px 0 16px;padding:8px 14px;background:rgba(0,0,0,.22);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r);line-height:1.6;font-style:italic"></div>'
     +'<div class="cd-split">'
+      +'<div class="cd-donut-col">'
       +'<div class="cd-donut-wrap">'
         +'<svg class="cd-donut-svg" viewBox="0 0 200 200" id="cdDonutSvg">'
           +'<circle class="cd-seg-bg" cx="100" cy="100" r="80"></circle>'
@@ -5591,12 +5636,13 @@ function buildDeployPanel(d,cash,dateStr){
           +'<div class="cd-donut-orn" id="cdDonutOrn">&ldquo;Time in market beats timing the market.&rdquo;</div>'
         +'</div>'
       +'</div>'
+      +'<div id="cdLensBanner" class="cd-lens-banner" role="status" aria-live="polite"></div>'
+      +'</div>'  // /cd-donut-col
       +'<div>'
         +'<div class="cd-alloc-head">'
           +'<div class="cd-alloc-title">Target Allocation</div>'
           +'<div class="cd-alloc-meta" id="cdAllocMeta">7 positions &middot; rebalance quarterly</div>'
         +'</div>'
-        +'<div id="cdLensBanner" class="cd-lens-banner" role="status" aria-live="polite"></div>'
         +'<div id="cdAllocList"></div>'
         +'<div class="cd-legend" role="group" aria-label="Allocation lenses — click to filter">'
           +'<div class="cd-leg-item" data-lens="core" tabindex="0" role="button" aria-pressed="false" title="Click to filter Core positions" onclick="_cdLensClick(\'core\')" onmouseenter="_cdLensHover(\'core\',event,this)" onmouseleave="_cdLensLeave()" onfocus="_cdLensHover(\'core\',event,this)" onblur="_cdLensLeave()" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();_cdLensClick(\'core\')}"><span class="cd-leg-dot" style="background:#C9A84C"></span>Core &middot; Index &amp; dividend</div>'
@@ -5674,7 +5720,6 @@ function _cdLensClick(lens){
 }
 function _cdSetLens(lens){
   window._cdActiveLens=lens;
-  var capStr=lens.charAt(0).toUpperCase()+lens.slice(1);
   // Donut segments — matching = active, others = mute
   ['core','growth','tactical'].forEach(function(l){
     var seg=document.getElementById('cdSeg'+l.charAt(0).toUpperCase()+l.slice(1));
@@ -5684,22 +5729,29 @@ function _cdSetLens(lens){
     seg.classList.toggle('cd-seg-mute',   l!==lens);
     seg.style.opacity=''; seg.style.filter=''; // clear any legacy inline styles
   });
-  // Allocation rows — matching = focus (with lens color), others = mute
+  // Lane chips inside the donut — matching = active, others = muted
+  document.querySelectorAll('.cd-lane-chip[data-lane]').forEach(function(ch){
+    var on=ch.getAttribute('data-lane')===lens;
+    ch.classList.toggle('cd-chip-active', on);
+    ch.classList.toggle('cd-chip-mute', !on);
+  });
+  // Allocation rows — matching = focus (lens color), others = mute
   document.querySelectorAll('#cdAllocList .cd-row-clickable').forEach(function(r){
     var rowLens=(r.getAttribute('data-lens')||'').toLowerCase();
     r.style.opacity='';
     r.classList.toggle('cd-row-focus', rowLens===lens);
     r.classList.toggle('cd-row-mute',  rowLens!==lens);
   });
-  // Legend — matching gets active treatment
+  // Legend — matching = active, others = muted
   document.querySelectorAll('.cd-leg-item[data-lens]').forEach(function(li){
     var on=li.getAttribute('data-lens')===lens;
     li.classList.toggle('cd-leg-active', on);
+    li.classList.toggle('cd-leg-mute',  !on);
     li.classList.remove('cd-leg-preview');
     li.setAttribute('aria-pressed', on?'true':'false');
   });
-  // Show explainer banner above the rows
-  _cdShowLensBanner(lens);
+  // Explainer banner (pinned under donut — never floats over rows)
+  _cdShowLensBanner(lens,false);
 }
 function _cdClearLens(){
   window._cdActiveLens=null;
@@ -5709,18 +5761,31 @@ function _cdClearLens(){
     seg.classList.remove('cd-seg-active','cd-seg-mute','cd-seg-focus');
     seg.style.opacity=''; seg.style.filter='';
   });
+  document.querySelectorAll('.cd-lane-chip[data-lane]').forEach(function(ch){
+    ch.classList.remove('cd-chip-active','cd-chip-mute');
+  });
   document.querySelectorAll('#cdAllocList .cd-row-clickable').forEach(function(r){
     r.classList.remove('cd-row-focus','cd-row-mute');
     r.style.opacity='';
   });
   document.querySelectorAll('.cd-leg-item[data-lens]').forEach(function(li){
-    li.classList.remove('cd-leg-active','cd-leg-preview');
+    li.classList.remove('cd-leg-active','cd-leg-preview','cd-leg-mute');
     li.setAttribute('aria-pressed','false');
   });
-  var b=document.getElementById('cdLensBanner');
-  if(b){ b.classList.remove('on'); b.innerHTML=''; b.removeAttribute('data-lens'); }
+  _cdShowIdleBanner();
 }
-function _cdShowLensBanner(lens){
+function _cdShowIdleBanner(){
+  var b=document.getElementById('cdLensBanner'); if(!b) return;
+  b.removeAttribute('data-lens');
+  b.classList.remove('on','cd-lens-banner-preview');
+  b.classList.add('cd-lens-banner-idle-on');
+  b.innerHTML=
+    '<div class="cd-lens-banner-idle">'+
+      '<div class="cd-lens-banner-idle-title">Pick a lens to focus your plan.</div>'+
+      '<div class="cd-lens-banner-idle-body">Click <strong>Core</strong>, <strong>Growth</strong>, or <strong>Tactical</strong> — on the donut, on a chip, or in the legend — and the Target Allocation list filters to just those positions. Click the same one again to clear.</div>'+
+    '</div>';
+}
+function _cdShowLensBanner(lens,isPreview){
   var b=document.getElementById('cdLensBanner'); if(!b) return;
   var info=_cdLaneCopy(lens);
   var d=window._deployData; var style=window._currentDeployStyle||'balanced';
@@ -5736,26 +5801,29 @@ function _cdShowLensBanner(lens){
   });
   var symList=allocs.map(function(a){return a.sym+' '+a.pct+'%';}).join(' &middot; ');
   b.setAttribute('data-lens',lens);
+  b.classList.toggle('cd-lens-banner-preview', !!isPreview);
+  b.classList.remove('cd-lens-banner-idle-on');
   b.innerHTML=
     '<div class="cd-lens-banner-title"><span>'+esc(info.label)+' &middot; '+pct+'% of plan</span>'+
-      '<button type="button" class="cd-lens-banner-clear" onclick="_cdClearLens()" title="Clear filter (or click the segment again)">Clear filter &times;</button>'+
+      (isPreview
+        ? '<span class="cd-lens-banner-hint">Click to lock</span>'
+        : '<button type="button" class="cd-lens-banner-clear" onclick="_cdClearLens()" title="Clear filter (or click the same lens again)">Clear &times;</button>')+
     '</div>'+
     '<div class="cd-lens-banner-body">'+esc(info.body)+'</div>'+
-    (symList?'<div class="cd-lens-banner-body" style="margin-top:6px;font-family:\'DM Mono\',monospace;font-size:11px;color:#E8CC7A;letter-spacing:.04em">In this lens: '+symList+'</div>':'')+
+    (symList?'<div class="cd-lens-banner-body cd-lens-banner-holdings">In this lens: '+symList+'</div>':'')+
     (overCapSyms.length?'<div class="cd-lens-banner-warn">&#9888; '+overCapSyms.join(', ')+' &mdash; over cap, size down</div>':'');
   b.classList.add('on');
 }
-/* Hover preview wrappers — share a single code path */
+/* Hover preview — updates the pinned banner (NOT a floating tooltip over rows) */
 function _cdLensHover(lens,evt,el){
   if(window._cdActiveLens) return; // don't override lock
   _cdHighlightLane(lens,true);
-  // Reuse the floating lane tooltip for instant context
-  if(el && typeof _cdLaneHover==='function'){ _cdLaneHover(el,lens,evt); }
+  _cdShowLensBanner(lens,true);
 }
 function _cdLensLeave(){
   if(window._cdActiveLens) return; // keep lock visible
   _cdHighlightLane(null,false);
-  var t=document.getElementById('cdLaneTip'); if(t) t.classList.remove('on');
+  _cdShowIdleBanner();
 }
 function _cdLaneCopy(lane){
   if(lane==='core')     return {label:'CORE',     name:'Core (Index & Dividend)',     body:'Your portfolio\'s shock absorber. Broad-market index funds (VOO, VTI, SCHD) provide low-volatility, diversified exposure. This is the bedrock that makes the rest of the strategy survivable through any cycle.'};
@@ -5764,33 +5832,18 @@ function _cdLaneCopy(lane){
   return {label:lane.toUpperCase(),name:lane,body:''};
 }
 function _cdLaneHover(el,lane,evt){
-  _cdHighlightLane(lane,true);
-  var info=_cdLaneCopy(lane);
-  var d=window._deployData; var style=window._currentDeployStyle||'balanced';
-  var s=(d&&d[style])||{}; var totals=s.totals||{};
-  var pct=totals[lane]||0;
-  var allocs=(s.allocations||[]).filter(function(a){return (a.cls||'').toLowerCase()===lane;});
-  var syms=allocs.map(function(a){return a.sym+' '+a.pct+'%';}).join(' · ');
-  var color = lane==='core'?'#E8CC7A':lane==='growth'?'#9DD0A8':'#E0947A';
-  var tip=_cdLaneTipEl();
-  tip.innerHTML=
-    '<div class="cd-lane-tip-hdr"><span style="color:'+color+'">'+info.label+'</span><span class="cd-lane-tip-pct">'+pct+'% of plan</span></div>'+
-    '<div class="cd-lane-tip-body">'+esc(info.body)+'</div>'+
-    (syms?'<div class="cd-lane-tip-syms">Holdings in this lane: '+esc(syms)+'</div>':'');
-  tip.classList.add('on');
-  var rect=el.getBoundingClientRect();
-  var w=tip.offsetWidth||260,h=tip.offsetHeight||120;
-  var L=Math.min(window.innerWidth-w-14,Math.max(14,rect.left+rect.width/2-w/2));
-  var T=Math.max(14,rect.top-h-12);
-  tip.style.left=L+'px';tip.style.top=T+'px';
+  // Route chip hovers through the unified lens preview — writes to the pinned banner,
+  // never creates a floating tooltip over the rows.
+  _cdLensHover(lane,evt,el);
 }
-function _cdLaneLeave(){
-  if(window._cdActiveLens){ var t0=document.getElementById('cdLaneTip'); if(t0) t0.classList.remove('on'); return; }
-  _cdHighlightLane(null,false);
-  var t=document.getElementById('cdLaneTip');if(t)t.classList.remove('on');
-}
+function _cdLaneLeave(){ _cdLensLeave(); }
 function _cdSegHover(lane,evt){
   if(window._cdActiveLens) return; // lock takes priority
+  _cdHighlightLane(lane,true);
+  _cdShowLensBanner(lane,true);
+}
+function _cdSegHover_LEGACY_disabled(lane,evt){
+  if(window._cdActiveLens) return;
   _cdHighlightLane(lane,true);
   var info=_cdLaneCopy(lane);
   var d=window._deployData; var style=window._currentDeployStyle||'balanced';
