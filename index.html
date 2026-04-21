@@ -77,6 +77,45 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
 .ti-sym{font-family:"DM Mono",monospace;font-size:10px;font-weight:500;color:var(--gold);letter-spacing:.04em}
 .ti-px{font-family:"DM Mono",monospace;font-size:10px;color:var(--text-2)}
 .ti-chg{font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px}
+
+/* === Market intelligence popover (idx-pills + ticker tiles) ============== */
+/* Subtle clickable affordance — no layout change, no harsh hover */
+.idx-pill{cursor:pointer;transition:background .25s cubic-bezier(.4,0,.2,1)}
+.idx-pill:hover{background:rgba(201,168,76,.04)}
+.idx-pill:focus-visible{outline:none;box-shadow:inset 0 0 0 1px rgba(201,168,76,.45)}
+.ti{cursor:pointer;transition:background .25s cubic-bezier(.4,0,.2,1)}
+.ti:hover{background:rgba(201,168,76,.06)}
+.ti:focus-visible{outline:none;box-shadow:inset 0 0 0 1px rgba(201,168,76,.45)}
+/* Pause the tape while the popover is open so the anchor doesn't drift */
+body.mkt-popover-open .tape-track{animation-play-state:paused!important}
+
+#mktPopover{position:fixed;z-index:99997;display:none;opacity:0;transform:translateY(6px);
+  width:340px;max-width:calc(100vw - 24px);
+  background:linear-gradient(135deg,rgba(20,16,12,.97),rgba(35,28,18,.95));
+  border:1px solid rgba(201,168,76,.28);border-radius:12px;
+  box-shadow:0 18px 48px rgba(0,0,0,.55),0 0 28px rgba(201,168,76,.05);
+  padding:16px 18px 14px;backdrop-filter:blur(14px);
+  font-family:"Inter",sans-serif;color:#D8C9A8;
+  transition:opacity .22s cubic-bezier(.4,0,.2,1),transform .22s cubic-bezier(.4,0,.2,1)}
+#mktPopover.on{display:block;opacity:1;transform:translateY(0)}
+.mkt-pop-hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.mkt-pop-eye{font-size:9.5px;font-weight:700;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;display:inline-flex;align-items:center;gap:7px}
+.mkt-pop-eye::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;box-shadow:0 0 6px currentColor}
+.mkt-pop-close{background:transparent;border:1px solid transparent;color:#8B7D68;cursor:pointer;font-size:14px;line-height:1;padding:2px 7px;border-radius:6px;transition:all .2s}
+.mkt-pop-close:hover{color:#E8CC7A;border-color:rgba(201,168,76,.35);background:rgba(201,168,76,.06)}
+.mkt-pop-title{font-family:'Cormorant Garamond',serif;font-size:21px;color:var(--cream);line-height:1.2;margin-bottom:2px;letter-spacing:-.005em}
+.mkt-pop-title em{font-style:italic;font-weight:500;color:#E8CC7A;font-family:'DM Mono',monospace;font-size:14px;letter-spacing:.02em}
+.mkt-pop-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:#C0B594;line-height:1.45;margin-bottom:8px}
+.mkt-pop-section{margin-top:10px}
+.mkt-pop-lbl{font-size:9.5px;font-weight:700;letter-spacing:.14em;color:#8B7D68;text-transform:uppercase;margin-bottom:4px}
+.mkt-pop-body{font-size:12.5px;color:#D8C9A8;line-height:1.65}
+.mkt-pop-chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-family:"DM Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid currentColor;background:rgba(255,255,255,.04)}
+.mkt-pop-chip.calm,.mkt-pop-chip.bullish,.mkt-pop-chip.up{color:#9DD0A8}
+.mkt-pop-chip.steady{color:#E8CC7A}
+.mkt-pop-chip.elevated,.mkt-pop-chip.bearish,.mkt-pop-chip.down{color:#E0947A}
+.mkt-pop-impact{margin-top:10px;padding:9px 12px;border-radius:8px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.18);font-size:12px;color:#C9B88C;line-height:1.65}
+.mkt-pop-impact strong{color:#E8CC7A;font-weight:600}
+.mkt-pop-foot{margin-top:10px;padding-top:8px;border-top:1px dashed rgba(201,168,76,.14);font-size:10px;color:#8B7D68;font-family:"DM Mono",monospace;letter-spacing:.05em;display:flex;justify-content:space-between;gap:10px}
 .tu{background:rgba(107,170,117,.12);color:var(--sage)}.td{background:rgba(192,113,79,.12);color:var(--clay)}
 
 #app{display:grid;grid-template-columns:210px 1fr 285px;min-height:calc(100vh - 90px);position:relative;z-index:1}
@@ -1538,11 +1577,11 @@ select:focus, textarea:focus {
     <div class="logo-tag">Institutional Intelligence</div>
   </div>
   <div class="idx-bar">
-    <div class="idx-pill"><div class="idx-sym">S&amp;P 500</div><div class="idx-val" id="iSpx">5,421</div><div class="idx-chg c-up" id="iSpxC">+0.84%</div></div>
-    <div class="idx-pill"><div class="idx-sym">NASDAQ</div><div class="idx-val" id="iNdq">17,204</div><div class="idx-chg c-up" id="iNdqC">+1.12%</div></div>
-    <div class="idx-pill"><div class="idx-sym">VIX</div><div class="idx-val" id="iVix">18.4</div><div class="idx-chg c-dn" id="iVixC">-2.3%</div></div>
-    <div class="idx-pill"><div class="idx-sym">10Y</div><div class="idx-val" id="iTen">4.28%</div><div class="idx-chg c-dn" id="iTenC">-0.04</div></div>
-    <div class="idx-pill"><div class="idx-sym">GOLD</div><div class="idx-val" id="iGld">$2,384</div><div class="idx-chg c-up" id="iGldC">+0.6%</div></div>
+    <div class="idx-pill" data-metric="spx" tabindex="0" role="button" aria-label="S&amp;P 500 — open market read" title="Click for a plain-English read on this metric" onclick="openMetricPopover(this,'spx')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMetricPopover(this,'spx')}"><div class="idx-sym">S&amp;P 500</div><div class="idx-val" id="iSpx">5,421</div><div class="idx-chg c-up" id="iSpxC">+0.84%</div></div>
+    <div class="idx-pill" data-metric="ndq" tabindex="0" role="button" aria-label="NASDAQ — open market read" title="Click for a plain-English read on this metric" onclick="openMetricPopover(this,'ndq')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMetricPopover(this,'ndq')}"><div class="idx-sym">NASDAQ</div><div class="idx-val" id="iNdq">17,204</div><div class="idx-chg c-up" id="iNdqC">+1.12%</div></div>
+    <div class="idx-pill" data-metric="vix" tabindex="0" role="button" aria-label="VIX — open market read" title="Click for a plain-English read on this metric" onclick="openMetricPopover(this,'vix')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMetricPopover(this,'vix')}"><div class="idx-sym">VIX</div><div class="idx-val" id="iVix">18.4</div><div class="idx-chg c-dn" id="iVixC">-2.3%</div></div>
+    <div class="idx-pill" data-metric="ten" tabindex="0" role="button" aria-label="10-year Treasury yield — open market read" title="Click for a plain-English read on this metric" onclick="openMetricPopover(this,'ten')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMetricPopover(this,'ten')}"><div class="idx-sym">10Y</div><div class="idx-val" id="iTen">4.28%</div><div class="idx-chg c-dn" id="iTenC">-0.04</div></div>
+    <div class="idx-pill" data-metric="gld" tabindex="0" role="button" aria-label="Gold — open market read" title="Click for a plain-English read on this metric" onclick="openMetricPopover(this,'gld')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMetricPopover(this,'gld')}"><div class="idx-sym">GOLD</div><div class="idx-val" id="iGld">$2,384</div><div class="idx-chg c-up" id="iGldC">+0.6%</div></div>
   </div>
   <div class="topbar-right">
     <div class="ai-badge"><div class="ai-dot"></div>AI Online</div>
@@ -2731,10 +2770,230 @@ function buildTape(){
   var t=document.getElementById('tapeTrack');var html='';
   var data=(window._liveTape&&window._liveTape.length)?window._liveTape:TAPE_DATA;
   data.concat(data).forEach(function(d){
-    html+='<div class="ti"><span class="ti-sym">'+d.sym+'</span><span class="ti-px">'+d.px+'</span><span class="ti-chg '+(d.up?'tu':'td')+'">'+d.chg+'</span></div>';
+    html+='<div class="ti" data-sym="'+d.sym+'" tabindex="0" role="button" title="Click for a quick read on '+d.sym+'" onclick="openTickerPopover(this,\''+d.sym+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openTickerPopover(this,\''+d.sym+'\')}"><span class="ti-sym">'+d.sym+'</span><span class="ti-px">'+d.px+'</span><span class="ti-chg '+(d.up?'tu':'td')+'">'+d.chg+'</span></div>';
   });
   t.innerHTML=html;
 }
+
+/* =================================================================
+ * MARKET INTELLIGENCE POPOVER — idx pills + ticker tiles
+ * Beginner-friendly, plain-English read of S&P / NASDAQ / VIX / 10Y / GOLD
+ * and any ticker on the scrolling tape. Mock copy now; structure ready
+ * for real data later (swap _mktTickerCopy to a server call).
+ * ================================================================= */
+function _mktVal(id){var el=document.getElementById(id);return el?el.textContent.trim():'';}
+function _mktNum(id){var t=_mktVal(id).replace(/[^\d.\-]/g,'');var n=parseFloat(t);return isFinite(n)?n:null;}
+
+function _mktMetricCopy(key){
+  var map={
+    spx:{
+      title:'S&P 500', valEl:'iSpx', chgEl:'iSpxC',
+      sub:'The default scoreboard for U.S. stocks.',
+      what:'A basket of the 500 largest U.S. companies. When people say "the market is up," this is usually what they mean.',
+      reading:function(){
+        var c=_mktNum('iSpxC');
+        if(c==null)  return {chip:'steady',label:'Steady',body:'Trading near recent levels.'};
+        if(c>=1)     return {chip:'bullish',label:'Risk-on',body:'Broad market is having a strong day — investors are leaning into stocks.'};
+        if(c<=-1)    return {chip:'bearish',label:'Risk-off',body:'Broad market is selling off — investors are pulling back.'};
+        return {chip:'steady',label:'Stable',body:'Mild drift today. No strong directional signal.'};
+      },
+      impact:'Most of your portfolio (VOO + the mega-caps) tracks this closely. Up days lift you; down days hurt you. Your long horizon means you ride both.'
+    },
+    ndq:{
+      title:'NASDAQ', valEl:'iNdq', chgEl:'iNdqC',
+      sub:'The tech-heavy index — sets the pace for growth stocks.',
+      what:'A composite tilted toward technology and growth names (Apple, Microsoft, Nvidia, Google, Meta, Amazon, Tesla). More volatile than the S&P 500.',
+      reading:function(){
+        var c=_mktNum('iNdqC');
+        if(c==null)   return {chip:'steady',label:'Steady',body:'Trading near recent levels.'};
+        if(c>=1.2)    return {chip:'bullish',label:'Tech leading',body:'Tech names are outperforming — typical when investors are reaching for growth.'};
+        if(c<=-1.2)   return {chip:'bearish',label:'Tech under pressure',body:'Tech names are dragging — often happens when rates rise or AI sentiment cools.'};
+        return {chip:'steady',label:'Mixed',body:'Tech is moving with the broader market today.'};
+      },
+      impact:'Your <strong>Growth lane</strong> (NVDA, GOOGL, AMZN, META) is highly correlated to NASDAQ. When this index leads, your growth sleeve outperforms.'
+    },
+    vix:{
+      title:'VIX', valEl:'iVix', chgEl:'iVixC',
+      sub:'The market\'s fear gauge.',
+      what:'Measures expected volatility over the next 30 days. Low VIX = calm. High VIX = traders bracing for big moves (almost always to the downside).',
+      reading:function(){
+        var v=_mktNum('iVix');
+        if(v==null) return {chip:'steady',label:'Steady',body:'No unusual nervousness priced in.'};
+        if(v<15)    return {chip:'calm',label:'Calm',body:'Markets are unusually quiet. Good for staying invested; sometimes a sign of complacency before a surprise.'};
+        if(v<20)    return {chip:'calm',label:'Calm',body:'Below average. Markets are relaxed — a good environment for steady DCA.'};
+        if(v<25)    return {chip:'steady',label:'Normal',body:'Average level. Nothing unusual happening.'};
+        if(v<30)    return {chip:'elevated',label:'Cautious',body:'Above average. Investors are paying up for protection.'};
+        return {chip:'elevated',label:'Elevated risk',body:'High-fear regime. Bigger swings likely. Historically these are also the moments long-term buyers get rewarded.'};
+      },
+      impact:'When VIX spikes, expect bigger short-term swings in your account. Your DCA plan ($100 → $150 → $200/wk) actually <strong>benefits</strong> from these — you buy more shares while fear is up.'
+    },
+    ten:{
+      title:'10-Year Treasury', valEl:'iTen', chgEl:'iTenC',
+      sub:'The benchmark cost of money.',
+      what:'The yield (interest rate) on a 10-year U.S. government bond. Used as the "risk-free rate" everything else gets compared against.',
+      reading:function(){
+        var v=_mktNum('iTen');
+        if(v==null) return {chip:'steady',label:'Steady',body:'Rates are stable.'};
+        if(v<3)     return {chip:'calm',label:'Cheap money',body:'Low rates support stock valuations, especially growth.'};
+        if(v<4)     return {chip:'steady',label:'Moderate',body:'Rates are around historical average. Neutral for stocks.'};
+        if(v<4.5)   return {chip:'elevated',label:'Elevated',body:'Borrowing costs are above recent norms. Growth stocks tend to feel this first.'};
+        return {chip:'elevated',label:'High',body:'Rates are restrictive. Bonds compete with stocks for capital — pressure on valuations, especially long-duration growth names.'};
+      },
+      impact:'Higher 10Y = bigger headwind for your <strong>Growth lane</strong>. Lower 10Y = tailwind. Your <strong>Core lane</strong> (SCHD dividends) is less sensitive.'
+    },
+    gld:{
+      title:'Gold', valEl:'iGld', chgEl:'iGldC',
+      sub:'The classic hedge against uncertainty.',
+      what:'The price of an ounce of gold. Tends to rise when investors lose faith in currency, fear inflation, or seek safety from geopolitical risk.',
+      reading:function(){
+        var c=_mktNum('iGldC');
+        if(c==null) return {chip:'steady',label:'Steady',body:'Holding around recent levels.'};
+        if(c>=1)    return {chip:'elevated',label:'Bid for safety',body:'Gold is rallying — usually means investors are nervous about something (inflation, geopolitics, dollar weakness).'};
+        if(c<=-1)   return {chip:'calm',label:'Risk appetite up',body:'Gold is falling — investors are confident and rotating into riskier assets.'};
+        return {chip:'steady',label:'Drifting',body:'No major macro signal from gold today.'};
+      },
+      impact:'You don\'t directly hold gold yet. If you ever want a small <strong>Tactical</strong> hedge against systemic risk, GLD or IAU are the standard ETFs. Keep it small (≤5%).'
+    }
+  };
+  return map[key];
+}
+
+function _mktTickerCopy(sym){
+  /* Generic, beginner-friendly profile. Real-data hookup later: replace
+   * with a server call (/api/ticker/:sym) returning the same shape. */
+  var profiles={
+    SPY:  {kind:'index',   name:'S&P 500 ETF',                thesis:'Tracks the broad U.S. market — same exposure as VOO, just from a different issuer.'},
+    QQQ:  {kind:'index',   name:'NASDAQ-100 ETF',             thesis:'Tech-heavy index ETF. Mirrors the NASDAQ\'s tech tilt in one ticker.'},
+    VOO:  {kind:'index',   name:'Vanguard S&P 500 ETF',       thesis:'Your portfolio anchor. Lowest-cost broad-market exposure available.'},
+    SCHD: {kind:'income',  name:'Schwab U.S. Dividend ETF',   thesis:'High-quality dividend payers. Lower volatility, steady income, slower price growth.'},
+    NVDA: {kind:'growth',  name:'NVIDIA',                     thesis:'Dominant AI compute supplier. Growth and volatility both run high. Already in your portfolio.'},
+    AAPL: {kind:'growth',  name:'Apple',                      thesis:'Premium consumer electronics + services flywheel. Steady cash machine, slower growth than NVDA.'},
+    MSFT: {kind:'growth',  name:'Microsoft',                  thesis:'Cloud + AI + enterprise software trifecta. Most diversified mega-cap growth name.'},
+    GOOGL:{kind:'growth',  name:'Alphabet',                   thesis:'Search + YouTube + Cloud + AI. Already in your portfolio.'},
+    AMZN: {kind:'growth',  name:'Amazon',                     thesis:'E-commerce + AWS + ads. Three businesses in one. Already in your portfolio.'},
+    META: {kind:'growth',  name:'Meta',                       thesis:'Ads + AI + Reality Labs. On your watchlist.'},
+    AVGO: {kind:'growth',  name:'Broadcom',                   thesis:'Custom chips + software. AI-adjacent name with dividend support.'},
+    TSLA: {kind:'tactical',name:'Tesla',                      thesis:'EVs + energy + autonomy + robotics. Story stock — high beta, high range.'},
+    AMD:  {kind:'growth',  name:'AMD',                        thesis:'Number-two AI chip story. Higher upside if NVDA stumbles, more cyclical risk.'},
+    JPM:  {kind:'core',    name:'JPMorgan Chase',             thesis:'Top-tier U.S. bank. Pays a dividend, sensitive to rates.'},
+    COST: {kind:'core',    name:'Costco',                     thesis:'Membership-driven retail. Defensive growth — slower but extremely durable.'},
+    PLTR: {kind:'tactical',name:'Palantir',                   thesis:'Government + commercial AI software. High narrative, high volatility.'}
+  };
+  return profiles[sym] || {kind:'unknown',name:sym,thesis:'Generic ticker. No detailed read available yet — would normally pull from your stock-analysis layer.'};
+}
+
+function _mktImpactForTicker(p){
+  if(p.kind==='index')    return 'Index ETFs like this map to your <strong>Core lane</strong> — the lowest-volatility part of your plan.';
+  if(p.kind==='income')   return 'Dividend ETFs sit in the <strong>Core lane</strong>. Slow steady compounders, useful counterweight to your growth sleeve.';
+  if(p.kind==='growth')   return 'A <strong>Growth lane</strong> name. Sized normally up to the 12% Balanced cap (20% Aggressive). Your DCA plan is the cleanest way to add.';
+  if(p.kind==='tactical') return 'Belongs in the <strong>Tactical lane</strong> — small position only. Higher upside, higher swings.';
+  if(p.kind==='core')     return 'Fits the <strong>Core lane</strong> as a defensive holding — steady cash flow, lower beta.';
+  return 'Would map into one of your three lanes (Core / Growth / Tactical) once classified.';
+}
+
+function _mktPopEl(){
+  var p=document.getElementById('mktPopover');
+  if(p) return p;
+  p=document.createElement('div');
+  p.id='mktPopover'; p.setAttribute('role','dialog'); p.setAttribute('aria-hidden','true');
+  document.body.appendChild(p);
+  return p;
+}
+function _mktPosition(pop, anchor){
+  if(!anchor||!anchor.getBoundingClientRect) return;
+  var rect=anchor.getBoundingClientRect();
+  var w=pop.offsetWidth||340, h=pop.offsetHeight||220, pad=10;
+  var top=rect.bottom+pad;  if(top+h>window.innerHeight-12) top=Math.max(12, rect.top-h-pad);
+  var left=Math.min(window.innerWidth-w-12, Math.max(12, rect.left+rect.width/2-w/2));
+  pop.style.left=left+'px'; pop.style.top=top+'px';
+}
+
+function openMetricPopover(anchor, key){
+  var info=_mktMetricCopy(key); if(!info) return;
+  var rd=info.reading();
+  var valTxt=_mktVal(info.valEl), chgTxt=_mktVal(info.chgEl);
+  var pop=_mktPopEl();
+  pop.innerHTML=
+    '<div class="mkt-pop-hdr">'+
+      '<span class="mkt-pop-eye">Market Read</span>'+
+      '<button type="button" class="mkt-pop-close" onclick="closeMktPopover()" aria-label="Close">&times;</button>'+
+    '</div>'+
+    '<div class="mkt-pop-title">'+esc(info.title)+' <em>'+esc(valTxt)+'</em></div>'+
+    '<div class="mkt-pop-sub">'+esc(info.sub)+'</div>'+
+    '<div class="mkt-pop-section"><div class="mkt-pop-lbl">What it is</div><div class="mkt-pop-body">'+esc(info.what)+'</div></div>'+
+    '<div class="mkt-pop-section"><div class="mkt-pop-lbl">What today\'s reading suggests</div>'+
+      '<div class="mkt-pop-body" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:6px"><span class="mkt-pop-chip '+rd.chip+'">'+esc(rd.label)+'</span><span style="color:#8B7D68;font-family:\'DM Mono\',monospace;font-size:10.5px;letter-spacing:.04em">'+esc(chgTxt)+'</span></div>'+
+      '<div class="mkt-pop-body">'+esc(rd.body)+'</div>'+
+    '</div>'+
+    '<div class="mkt-pop-impact"><strong>Why it matters to you:</strong> '+info.impact+'</div>'+
+    '<div class="mkt-pop-foot"><span>Click outside to close</span><span>Esc</span></div>';
+  pop.classList.add('on');
+  pop.setAttribute('aria-hidden','false');
+  document.body.classList.add('mkt-popover-open');
+  window._mktPopAnchor=anchor;
+  requestAnimationFrame(function(){ _mktPosition(pop, anchor); });
+}
+
+function openTickerPopover(anchor, sym){
+  var p=_mktTickerCopy(sym);
+  var pxEl=anchor.querySelector('.ti-px'), chgEl=anchor.querySelector('.ti-chg');
+  var px=pxEl?pxEl.textContent.trim():'', chg=chgEl?chgEl.textContent.trim():'';
+  var up=chgEl && chgEl.classList.contains('tu');
+  var trendChip = up
+    ? '<span class="mkt-pop-chip up">&#9652; Trending up</span>'
+    : '<span class="mkt-pop-chip down">&#9662; Trending down</span>';
+  var driverCopy = up
+    ? 'Buyers are in control today. Could be earnings, sector tailwind, or broader risk-on flows. The single-day move tells you direction, not the why.'
+    : 'Sellers are in control today. Could be a sector pullback, profit-taking after a run, or just rotation out of names like this. One day rarely changes the long-term thesis.';
+  var pop=_mktPopEl();
+  pop.innerHTML=
+    '<div class="mkt-pop-hdr">'+
+      '<span class="mkt-pop-eye">Ticker Read</span>'+
+      '<button type="button" class="mkt-pop-close" onclick="closeMktPopover()" aria-label="Close">&times;</button>'+
+    '</div>'+
+    '<div class="mkt-pop-title">'+esc(sym)+' <em>'+esc(px)+'</em></div>'+
+    '<div class="mkt-pop-sub">'+esc(p.name)+'</div>'+
+    '<div class="mkt-pop-section"><div class="mkt-pop-lbl">What it is</div><div class="mkt-pop-body">'+esc(p.thesis)+'</div></div>'+
+    '<div class="mkt-pop-section"><div class="mkt-pop-lbl">Today\'s trend</div>'+
+      '<div class="mkt-pop-body" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:6px">'+trendChip+'<span style="color:#8B7D68;font-family:\'DM Mono\',monospace;font-size:10.5px;letter-spacing:.04em">'+esc(chg)+'</span></div>'+
+      '<div class="mkt-pop-body">'+esc(driverCopy)+'</div>'+
+    '</div>'+
+    '<div class="mkt-pop-impact"><strong>Portfolio fit:</strong> '+_mktImpactForTicker(p)+'</div>'+
+    '<div class="mkt-pop-foot"><span>Open Stock Analysis for a deep dive</span><span>Esc</span></div>';
+  pop.classList.add('on');
+  pop.setAttribute('aria-hidden','false');
+  document.body.classList.add('mkt-popover-open'); // pauses tape so anchor doesn't drift
+  window._mktPopAnchor=anchor;
+  requestAnimationFrame(function(){ _mktPosition(pop, anchor); });
+}
+
+function closeMktPopover(){
+  var pop=document.getElementById('mktPopover'); if(!pop) return;
+  pop.classList.remove('on');
+  pop.setAttribute('aria-hidden','true');
+  document.body.classList.remove('mkt-popover-open');
+  window._mktPopAnchor=null;
+}
+
+/* Outside-click + Escape close. Clicking a different pill/ticker swaps content
+ * (its own onclick fires) instead of closing — feels continuous, not modal. */
+document.addEventListener('click', function(e){
+  var pop=document.getElementById('mktPopover'); if(!pop || !pop.classList.contains('on')) return;
+  if(pop.contains(e.target)) return;
+  if(e.target.closest && (e.target.closest('.idx-pill') || e.target.closest('.ti'))) return;
+  closeMktPopover();
+}, true);
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape') closeMktPopover();
+});
+window.addEventListener('scroll', function(){
+  var pop=document.getElementById('mktPopover');
+  if(pop && pop.classList.contains('on') && window._mktPopAnchor) _mktPosition(pop, window._mktPopAnchor);
+}, true);
+window.addEventListener('resize', function(){
+  var pop=document.getElementById('mktPopover');
+  if(pop && pop.classList.contains('on') && window._mktPopAnchor) _mktPosition(pop, window._mktPopAnchor);
+});
 
 /* =================================================================
  * LIVE MARKET DATA MODULE — browser-safe prototype layer
