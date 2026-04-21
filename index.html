@@ -1013,6 +1013,53 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 .cd-leg-item.cd-leg-mute{opacity:.4}
 /* Responsive — below 880px, banner just continues to live under the (centered) donut */
 @media(max-width:880px){.cd-donut-col{align-items:center}.cd-lens-banner{width:100%;max-width:520px}}
+
+/* === POLISH PASS: smoother motion, softer dim, premium active state, beginner-friendly banner === */
+/* One easing curve everywhere so the system feels coherent */
+.cd-row,.cd-row-clickable{transition:opacity .35s cubic-bezier(.4,0,.2,1),background .35s cubic-bezier(.4,0,.2,1),border-color .35s cubic-bezier(.4,0,.2,1),transform .25s cubic-bezier(.4,0,.2,1),box-shadow .35s cubic-bezier(.4,0,.2,1),filter .35s cubic-bezier(.4,0,.2,1)}
+.cd-seg{transition:opacity .4s cubic-bezier(.4,0,.2,1),filter .4s cubic-bezier(.4,0,.2,1),stroke-width .3s cubic-bezier(.4,0,.2,1)}
+.cd-lane-chip,.cd-leg-item,.cd-leg-dot,.cd-tab{transition:transform .3s cubic-bezier(.4,0,.2,1),box-shadow .35s cubic-bezier(.4,0,.2,1),background .3s cubic-bezier(.4,0,.2,1),border-color .3s cubic-bezier(.4,0,.2,1),opacity .35s cubic-bezier(.4,0,.2,1),color .3s cubic-bezier(.4,0,.2,1)}
+
+/* Softer dim for non-matching rows — feels like a fade-back, not a knockout */
+.cd-row.cd-row-mute{opacity:.45!important;filter:saturate(.55);transform:none!important;background:var(--noir-2)!important;border-color:rgba(201,168,76,.05)!important;box-shadow:none!important}
+.cd-seg.cd-seg-mute{opacity:.32}
+.cd-lane-chip.cd-chip-mute{opacity:.42}
+.cd-leg-item.cd-leg-mute{opacity:.5}
+
+/* Refined active segment — softer glow, slightly thicker stroke, cohesive across lenses */
+.cd-seg.cd-seg-active{filter:drop-shadow(0 0 14px currentColor) brightness(1.18) saturate(1.05);stroke-width:30;opacity:1}
+
+/* Cohesion cue: focused row gets a thin lens-colored left edge tying it to the donut/legend */
+.cd-row.cd-row-focus{border-left-width:2px;padding-left:14px}
+.cd-row.cd-row-focus[data-lens="core"]{border-left-color:rgba(232,204,122,.85)}
+.cd-row.cd-row-focus[data-lens="growth"]{border-left-color:rgba(157,208,168,.85)}
+.cd-row.cd-row-focus[data-lens="tactical"]{border-left-color:rgba(224,148,122,.85)}
+
+/* Smoother row hover — small, premium lift */
+.cd-row:hover,.cd-row-clickable:hover{transform:translateX(3px) translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.25),0 0 12px rgba(201,168,76,.06)}
+.cd-lane-chip:hover{transform:translateY(-1.5px)}
+
+/* Restrained pulse on the locked legend chip — telegraphs "this is the active lens" */
+@keyframes cdLegPulseCore{0%,100%{box-shadow:0 0 22px rgba(232,204,122,.18),inset 0 1px 0 rgba(232,204,122,.22)}50%{box-shadow:0 0 30px rgba(232,204,122,.28),inset 0 1px 0 rgba(232,204,122,.3)}}
+@keyframes cdLegPulseGrowth{0%,100%{box-shadow:0 0 22px rgba(157,208,168,.18),inset 0 1px 0 rgba(157,208,168,.22)}50%{box-shadow:0 0 30px rgba(157,208,168,.28),inset 0 1px 0 rgba(157,208,168,.3)}}
+@keyframes cdLegPulseTactical{0%,100%{box-shadow:0 0 22px rgba(224,148,122,.18),inset 0 1px 0 rgba(224,148,122,.22)}50%{box-shadow:0 0 30px rgba(224,148,122,.28),inset 0 1px 0 rgba(224,148,122,.3)}}
+.cd-leg-item.cd-leg-active[data-lens="core"]{animation:cdLegPulseCore 3.4s ease-in-out infinite}
+.cd-leg-item.cd-leg-active[data-lens="growth"]{animation:cdLegPulseGrowth 3.4s ease-in-out infinite}
+.cd-leg-item.cd-leg-active[data-lens="tactical"]{animation:cdLegPulseTactical 3.4s ease-in-out infinite}
+
+/* Banner refinements — guidance, not warning */
+.cd-lens-banner{border-color:rgba(201,168,76,.16);background:linear-gradient(135deg,rgba(20,16,12,.7),rgba(35,28,18,.45))}
+.cd-lens-banner-subtitle{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15.5px;color:#E8D9B5;line-height:1.5;margin:-2px 0 10px;letter-spacing:.005em}
+.cd-lens-banner-tip{margin-top:12px;padding:10px 13px;border-radius:8px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.18);font-size:12.5px;color:#C9B88C;line-height:1.65;font-family:"Inter",sans-serif}
+.cd-lens-banner-tip strong{color:#E8CC7A;font-weight:600}
+/* Reframe over-cap warning as gentle guidance */
+.cd-lens-banner-warn{background:rgba(201,168,76,.06)!important;border-color:rgba(201,168,76,.2)!important;color:#D8C9A8!important;font-family:'Inter',sans-serif!important;letter-spacing:0!important;font-size:12.5px!important;line-height:1.65!important}
+.cd-lens-banner-warn strong{color:#E8CC7A;font-weight:600;letter-spacing:.02em}
+
+/* Idle legend strip — three dots + plain-English roles, helps beginners decode the lenses */
+.cd-lens-banner-idle-legend{display:flex;flex-wrap:wrap;gap:14px 18px;margin-top:12px;padding-top:12px;border-top:1px dashed rgba(201,168,76,.14)}
+.cd-lens-banner-idle-legend>span{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;color:#B8A882;font-family:"Inter",sans-serif;letter-spacing:.01em}
+.cd-lens-banner-idle-legend .cd-leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;box-shadow:0 0 6px currentColor;animation:none}
 /* Risk/Bull point cards — interactive expandable */
 .cd-card-pt{position:relative;cursor:pointer;outline:none;transition:background .18s,border-color .18s,transform .15s}
 .cd-card-pt:hover,.cd-card-pt:focus-visible{transform:translateX(2px)}
@@ -5781,8 +5828,13 @@ function _cdShowIdleBanner(){
   b.classList.add('cd-lens-banner-idle-on');
   b.innerHTML=
     '<div class="cd-lens-banner-idle">'+
-      '<div class="cd-lens-banner-idle-title">Pick a lens to focus your plan.</div>'+
-      '<div class="cd-lens-banner-idle-body">Click <strong>Core</strong>, <strong>Growth</strong>, or <strong>Tactical</strong> — on the donut, on a chip, or in the legend — and the Target Allocation list filters to just those positions. Click the same one again to clear.</div>'+
+      '<div class="cd-lens-banner-idle-title">Explore your plan by lens.</div>'+
+      '<div class="cd-lens-banner-idle-body">Tap <strong>Core</strong>, <strong>Growth</strong>, or <strong>Tactical</strong> — anywhere on the donut, the chips, or the legend — to see just those holdings and what they\'re for. Tap the same one again to see everything.</div>'+
+      '<div class="cd-lens-banner-idle-legend">'+
+        '<span><span class="cd-leg-dot" style="background:#C9A84C"></span>Steady foundation</span>'+
+        '<span><span class="cd-leg-dot" style="background:#6BAA75"></span>Long-term engine</span>'+
+        '<span><span class="cd-leg-dot" style="background:#C0714F"></span>Small high-upside bets</span>'+
+      '</div>'+
     '</div>';
 }
 function _cdShowLensBanner(lens,isPreview){
@@ -5809,9 +5861,11 @@ function _cdShowLensBanner(lens,isPreview){
         ? '<span class="cd-lens-banner-hint">Click to lock</span>'
         : '<button type="button" class="cd-lens-banner-clear" onclick="_cdClearLens()" title="Clear filter (or click the same lens again)">Clear &times;</button>')+
     '</div>'+
+    (info.subtitle?'<div class="cd-lens-banner-subtitle">'+esc(info.subtitle)+'</div>':'')+
     '<div class="cd-lens-banner-body">'+esc(info.body)+'</div>'+
     (symList?'<div class="cd-lens-banner-body cd-lens-banner-holdings">In this lens: '+symList+'</div>':'')+
-    (overCapSyms.length?'<div class="cd-lens-banner-warn">&#9888; '+overCapSyms.join(', ')+' &mdash; over cap, size down</div>':'');
+    (info.tip?'<div class="cd-lens-banner-tip">'+info.tip+'</div>':'')+
+    (overCapSyms.length?'<div class="cd-lens-banner-warn"><strong>Heads up:</strong> '+overCapSyms.join(', ')+(overCapSyms.length>1?' sit':' sits')+' a bit above the usual size for this lens. Consider trimming or shifting some capital into the other positions in this lane.</div>':'');
   b.classList.add('on');
 }
 /* Hover preview — updates the pinned banner (NOT a floating tooltip over rows) */
@@ -5826,10 +5880,28 @@ function _cdLensLeave(){
   _cdShowIdleBanner();
 }
 function _cdLaneCopy(lane){
-  if(lane==='core')     return {label:'CORE',     name:'Core (Index & Dividend)',     body:'Your portfolio\'s shock absorber. Broad-market index funds (VOO, VTI, SCHD) provide low-volatility, diversified exposure. This is the bedrock that makes the rest of the strategy survivable through any cycle.'};
-  if(lane==='growth')   return {label:'GROWTH',   name:'Growth (Quality Compounders)', body:'Proven businesses with durable earnings power and competitive moats (NVDA, MSFT, GOOGL, META, AAPL). Where most of the long-run return comes from when held through market cycles.'};
-  if(lane==='tactical') return {label:'TACTICAL', name:'Tactical (Higher-beta / Specul.)',body:'Concentrated bets on asymmetric setups (BTC, IWM, single-name conviction plays). Pays off in good regimes, hurts the most when things break. Always sized small relative to total portfolio.'};
-  return {label:lane.toUpperCase(),name:lane,body:''};
+  if(lane==='core')     return {
+    label:'CORE',
+    name:'Core (Index & Dividend)',
+    subtitle:'The steady foundation of your portfolio.',
+    body:'Broad index funds and dividend payers like VOO, VTI, and SCHD. They spread your money across hundreds of companies, move slowly, and rarely surprise you. This is what keeps your portfolio standing when markets get rough.',
+    tip:'Lean on <strong>Core</strong> when you want more stability and less day-to-day drama.'
+  };
+  if(lane==='growth')   return {
+    label:'GROWTH',
+    name:'Growth (Quality Compounders)',
+    subtitle:'Where most of your long-term return comes from.',
+    body:'Top-quality companies with strong businesses, loyal customers, and pricing power — names like NVDA, MSFT, GOOGL, AMZN, META. Held patiently across cycles, this lane is the engine of long-run wealth.',
+    tip:'Add to <strong>Growth</strong> when you want to lean into businesses you believe in for the long haul.'
+  };
+  if(lane==='tactical') return {
+    label:'TACTICAL',
+    name:'Tactical (Higher-Risk / Speculative)',
+    subtitle:'Small bets with bigger upside — and bigger swings.',
+    body:'Higher-risk, higher-reward positions like BTC, smaller-cap stocks, or single-name conviction plays. Kept intentionally small. When markets cooperate it accelerates returns; when they don\'t, the small size protects the rest of the plan.',
+    tip:'Use <strong>Tactical</strong> sparingly — only with capital you\'re comfortable seeing swing hard.'
+  };
+  return {label:lane.toUpperCase(),name:lane,subtitle:'',body:'',tip:''};
 }
 function _cdLaneHover(el,lane,evt){
   // Route chip hovers through the unified lens preview — writes to the pinned banner,
@@ -7623,7 +7695,12 @@ function renderIntelligencePanel(){
   var hg=document.getElementById('healthGrade');var hno=document.getElementById('healthNote');
   if(arc&&health.score){var dash=Math.round(201*(health.score/100));arc.setAttribute('stroke-dasharray',dash+' 201');
     arc.setAttribute('stroke',health.score>=80?'var(--sage)':health.score>=60?'var(--gold)':'var(--clay)');}
-  if(hn)hn.textContent=health.score||'-';if(hg)hg.textContent='Grade '+health.grade;if(hno)hno.textContent=health.note;
+  if(hn)hn.textContent=health.score||'-';if(hg)hg.textContent='Grade '+health.grade;
+  if(hno){
+    var _amx=health.actMix||{};
+    var _mxParts=['Core','Growth','Tactical','Cash'].filter(function(k){return (_amx[k]||0)>0;}).map(function(k){return '<span style="font-family:\'DM Mono\',monospace;color:var(--text-1)">'+k.charAt(0)+' '+(_amx[k]||0).toFixed(0)+'%</span>';}).join(' &middot; ');
+    hno.innerHTML=esc(health.note)+(_mxParts?'<div style="margin-top:4px;font-size:10px;color:var(--text-3);letter-spacing:.04em">'+_mxParts+'</div>':'');
+  }
 
   var cs=document.getElementById('confScore');var cb=document.getElementById('confBar');
   var cn=document.getElementById('confNote');var cw=document.getElementById('confWindow');
@@ -7650,7 +7727,9 @@ function renderIntelligencePanel(){
       var over=actual>target+3;var under=actual<target-3;
       var status=over?'Overweight':under?'Underweight':'Aligned';
       var sc=over?'var(--clay)':under?'var(--gold)':'var(--sage)';
-      return '<div style="margin-bottom:12px">'+
+      var _gapAbs=Math.abs(actual-target).toFixed(1);
+      var _tip=over?k+' is +'+_gapAbs+'% over target. Consider trimming back toward '+target+'%.':under?k+' is '+_gapAbs+'% under target. Consider adding to lift toward '+target+'%.':k+' aligned within ±3% of target. No action needed.';
+      return '<div style="margin-bottom:12px" title="'+esc(_tip)+'">'+
         '<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px"><span style="color:var(--cream);font-weight:600">'+k+'</span>'+
         '<span style="color:'+sc+'">'+actual.toFixed(1)+'% actual &nbsp;/&nbsp; '+target+'% target &nbsp;&middot;&nbsp; '+status+'</span></div>'+
         '<div style="height:10px;background:var(--noir-3);border-radius:5px;position:relative;overflow:visible">'+
@@ -7660,12 +7739,35 @@ function renderIntelligencePanel(){
     }).join('');}
 
   var rf=document.getElementById('riskFlagsEl');
-  if(rf)rf.innerHTML=flags.map(function(f){return '<div class="flag-item '+(f.type==='warn'?'fi-warn':'fi-ok')+'"><span class="fi-icon">'+(f.type==='warn'?'&#9888;':'&#10003;')+'</span>'+esc(f.txt)+'</div>';}).join('');
+  if(rf)rf.innerHTML=flags.map(function(f){var sev=f.type==='warn'?'Warning · review impact':'Healthy';return '<div class="flag-item '+(f.type==='warn'?'fi-warn':'fi-ok')+'" title="'+esc(sev)+'"><span class="fi-icon" style="color:'+(f.type==='warn'?'var(--clay)':'var(--sage)')+';font-size:13px">'+(f.type==='warn'?'&#9888;':'&#10003;')+'</span>'+esc(f.txt)+'</div>';}).join('');
   var ap=document.getElementById('actionPlanEl');
-  if(ap)ap.innerHTML=plan.map(function(a){return '<div class="flag-item fi-ok"><span class="fi-icon">-&gt;</span>'+esc(a)+'</div>';}).join('');
+  if(ap)ap.innerHTML=plan.map(function(a,i){var n=(i+1<10?'0'+(i+1):String(i+1));return '<div class="flag-item fi-ok" title="Action '+(i+1)+' &middot; click to copy" style="cursor:pointer" onclick="(function(b,t){try{navigator.clipboard&&navigator.clipboard.writeText(t);var o=b.style.borderColor;b.style.borderColor=\'rgba(107,170,117,.6)\';setTimeout(function(){b.style.borderColor=o;},700);}catch(e){}})(this,'+JSON.stringify(a)+')"><span class="fi-icon" style="color:var(--gold);font-family:\'DM Mono\',monospace;font-weight:700;font-size:9px;letter-spacing:.05em;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.22);padding:2px 5px;border-radius:4px;margin-top:0">'+n+'</span><span style="color:var(--gold);margin:0 4px 0 0">&rarr;</span>'+esc(a)+'</div>';}).join('');
 
   var dp=document.getElementById('deployPlanEl');
-  if(dp)dp.innerHTML=deploy.map(function(d){return '<div class="dp-row"><div><div class="dp-sym">'+esc(d.ticker)+'</div><div class="dp-reason">'+esc(d.reason)+'</div></div><div class="dp-amt">'+fmt$(d.amount)+'</div></div>';}).join('');
+  if(dp){
+    var _dpTotal=deploy.reduce(function(s,x){return s+(x.amount||0);},0);
+    dp.innerHTML=deploy.map(function(d){
+      var _t=(d.ticker||'').toUpperCase();
+      var _isCash=_t==='CASH'||_t==='RESERVE';
+      var _bClass=(_t==='VOO'||_t==='SPY'||_t==='VTI'||_t==='SCHD'||_t==='VYM')?'Core':_isCash?'Reserve':(typeof classify==='function'&&classify(_t)==='Speculative')?'Tactical':'Growth';
+      var _bColor=_bClass==='Core'?'var(--gold)':_bClass==='Reserve'?'var(--violet)':_bClass==='Tactical'?'var(--clay)':'var(--sage)';
+      var _dpPct=_dpTotal>0?Math.round((d.amount||0)/_dpTotal*100):0;
+      var _attrs=_isCash?'title="Reserve cash for opportunistic entries"':'title="Click to analyze '+esc(_t)+' in Stock Decision below" style="cursor:pointer" onclick="(function(s){var inp=document.getElementById(\'intelStockInput\');if(inp){inp.value=s;updateStockDecision();}var sde=document.getElementById(\'stockDecisionEl\');if(sde&&sde.scrollIntoView)sde.scrollIntoView({behavior:\'smooth\',block:\'center\'});})('+JSON.stringify(_t)+')"';
+      return '<div class="dp-row" '+_attrs+'>'
+        +'<div style="display:flex;align-items:center;gap:11px;flex:1;min-width:0">'
+          +'<span style="width:8px;height:8px;border-radius:2px;background:'+_bColor+';box-shadow:0 0 8px '+_bColor+';flex-shrink:0"></span>'
+          +'<div style="min-width:0">'
+            +'<div class="dp-sym">'+esc(d.ticker)+' <span style="font-family:\'DM Sans\',sans-serif;font-size:8.5px;color:'+_bColor+';letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin-left:4px">'+_bClass+'</span></div>'
+            +'<div class="dp-reason">'+esc(d.reason)+'</div>'
+          +'</div>'
+        +'</div>'
+        +'<div style="text-align:right;flex-shrink:0">'
+          +'<div class="dp-amt">'+fmt$(d.amount)+'</div>'
+          +'<div style="font-family:\'DM Mono\',monospace;font-size:9.5px;color:var(--text-3);margin-top:2px;letter-spacing:.04em">'+_dpPct+'% of cash</div>'
+        +'</div>'
+      +'</div>';
+    }).join('');
+  }
 
   updateStockDecision();
 }
@@ -7678,10 +7780,29 @@ function updateStockDecision(){
   var result=computeStockDecision(ticker, regime, _intelCtx);
   var el=document.getElementById('stockDecisionEl');if(!el)return;
   var vClass=result.verdict.includes('Accumulate')?'svb-acc':result.verdict.includes('Wait')||result.verdict.includes('Avoid')?'svb-wait':result.verdict.includes('Small')?'svb-small':'svb-buy';
-  el.innerHTML='<div class="stock-verdict-badge '+vClass+'">'+esc(result.verdict)+'</div>'+
-    '<div style="margin-bottom:10px"><div style="font-size:13px;color:var(--cream);margin-bottom:3px">'+esc(result.model.company)+'</div>'+
-    '<div style="font-size:11px;color:var(--text-2)">'+esc(result.model.role)+' &nbsp;&middot;&nbsp; Risk: '+esc(result.model.risk)+' &nbsp;&middot;&nbsp; Horizon: '+esc(result.model.horizon)+'</div></div>'+
-    '<div style="font-size:12px;line-height:1.7;color:var(--text-1);padding:10px 12px;background:rgba(0,0,0,.25);border-radius:var(--r-lg);border:1px solid var(--border)">'+esc(result.model.thesis)+'</div>';
+  var _alignMap={
+    'Accumulate':'Regime favors core/quality exposure — consistent buying preferred over timing.',
+    'Buy in Pieces':'Regime workable — scale in over multiple entries rather than a single lump.',
+    'Wait / Scale Slowly':'Regime softer for this bucket — sip in only on weakness.',
+    'Wait for Better Entry':'Momentum extended — wait for a controlled pullback before adding.',
+    'Keep Small -- Capped Sleeve':'Tactical sleeve capped at ~10%. Never size beyond cap, regardless of conviction.',
+    'Avoid / Exit':'Regime hostile to this bucket — preservation over participation.'
+  };
+  var _alignNote=_alignMap[result.verdict]||'';
+  el.innerHTML='<div class="stock-verdict-badge '+vClass+'" title="Verdict for current regime + ticker bucket">'+esc(result.verdict)+'</div>'+
+    '<div style="margin-bottom:12px">'+
+      '<div style="font-size:13px;color:var(--cream);margin-bottom:7px;font-weight:500">'+esc(result.model.company)+'</div>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:6px">'+
+        '<span title="Role in portfolio" style="font-size:9.5px;color:var(--gold);background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.22);padding:3px 9px;border-radius:999px;letter-spacing:.04em;font-family:\'DM Sans\',sans-serif">'+esc(result.model.role)+'</span>'+
+        '<span title="Risk profile" style="font-size:9.5px;color:var(--clay);background:rgba(192,113,79,.08);border:1px solid rgba(192,113,79,.22);padding:3px 9px;border-radius:999px;letter-spacing:.04em;font-family:\'DM Sans\',sans-serif">Risk &middot; '+esc(result.model.risk)+'</span>'+
+        '<span title="Investment horizon" style="font-size:9.5px;color:var(--sage);background:rgba(107,170,117,.08);border:1px solid rgba(107,170,117,.22);padding:3px 9px;border-radius:999px;letter-spacing:.04em;font-family:\'DM Sans\',sans-serif">'+esc(result.model.horizon)+'</span>'+
+      '</div>'+
+    '</div>'+
+    '<div style="font-size:12px;line-height:1.7;color:var(--text-1);padding:11px 13px;background:rgba(0,0,0,.25);border-radius:var(--r-lg);border:1px solid var(--border)">'+
+      '<div style="font-size:8px;letter-spacing:.18em;color:var(--text-3);text-transform:uppercase;font-weight:700;margin-bottom:5px">Thesis</div>'+
+      esc(result.model.thesis)+
+    '</div>'+
+    (_alignNote?'<div title="Why this verdict — given the current market regime" style="margin-top:8px;padding:8px 12px;border-radius:var(--r);background:rgba(201,168,76,.04);border-left:2px solid var(--gold-dim);font-size:11px;line-height:1.6;color:var(--cream-dim);font-style:italic">'+esc(_alignNote)+'</div>':'');
 }
 
 function setCadenceFreq(freq, el){
