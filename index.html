@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>LaForce Capital - Private Wealth Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root{
@@ -1003,6 +1004,355 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 }
 .fb-chip:hover{border-color:var(--border-2);color:var(--cream)}
 .fb-chip.active{background:var(--gold-muted);border-color:var(--gold-dim);color:var(--gold-light)}
+
+/* =============================================================
+   BOLD ELITE · DESIGN SYSTEM OVERRIDE LAYER
+   Additive-only. Retokens existing variables so every .card,
+   .nav-item, .panel, .sa-*, .ds-*, .cd-*, etc. reskins without
+   markup changes. Last-wins cascade beats the original :root.
+   Typography: Playfair Display (display) + Inter (UI) + DM Mono
+   (data — retained for ticker/price readability).
+   ============================================================= */
+:root{
+  /* Surface stack — warmer, deeper near-jet, more editorial */
+  --noir:#050507;
+  --noir-1:#0A0A0C;
+  --noir-2:#111114;
+  --noir-3:#17171B;
+  --noir-4:#1F1F25;
+
+  /* Gold — Bold Elite antique (slightly greener, higher luminance) */
+  --gold:#D9B64A;
+  --gold-light:#EBCB6E;
+  --gold-dim:#9A7E28;
+  --gold-muted:rgba(217,182,74,.12);
+
+  /* Accent hues — toned for calm */
+  --sage:#7CB58A;
+  --sage-dim:rgba(124,181,138,.14);
+  --clay:#CC8063;
+  --clay-dim:rgba(204,128,99,.14);
+
+  /* Ink — cooler, higher contrast cream; clearer hierarchy */
+  --cream:#F5EFDA;
+  --cream-dim:#C4B98E;
+  --text-1:#E6DEC7;
+  --text-2:#958970;
+  --text-3:#5A5241;
+
+  /* Borders — softer, more restrained */
+  --border:rgba(217,182,74,.10);
+  --border-2:rgba(217,182,74,.26);
+
+  /* Radii — modern product scale */
+  --r:10px;
+  --r-lg:14px;
+  --r-xl:20px;
+
+  /* Typography tokens */
+  --f-display:'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --f-ui:'Inter', 'DM Sans', system-ui, -apple-system, sans-serif;
+  --f-mono:'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+/* ----- Base typography swap: Inter UI + Playfair display ----- */
+html, body { font-family: var(--f-ui); font-feature-settings: 'ss01','cv11'; }
+button, input, select, textarea { font-family: var(--f-ui); }
+
+/* Every Cormorant Garamond usage → Playfair Display.
+   This preserves the original typographic INTENT (serif display)
+   while moving to the Bold Elite face. Italics preserved. */
+[style*="Cormorant"],
+[style*="cormorant"],
+.logo-name, .logo-tag,
+.mood-status,
+.ph-title, .ph-title em,
+.card-title,
+.port-total,
+.wh-title, .wh-title em,
+.grade-letter,
+.orn span {
+  font-family: var(--f-display) !important;
+}
+
+/* Soften Cormorant-era weights — Playfair reads heavier at same weight */
+.ph-title, .wh-title, .port-total { font-weight: 500; letter-spacing: -0.01em; }
+.card-title, .mood-status, .logo-tag { font-weight: 500; }
+
+/* ----- Global surface + backdrop refinement ----- */
+html, body { background: var(--noir); color: var(--cream); }
+/* Dial down the noise texture — Bold Elite wants cleaner surfaces */
+body::before { opacity: .22 !important; mix-blend-mode: overlay !important; }
+body::after { opacity: .8 !important; }
+
+/* ----- Topbar refinement ------------------------------------ */
+#topbar { height: 76px; padding: 0 32px; background: rgba(5,5,7,.94); }
+#topbar::after { background: linear-gradient(90deg, transparent, var(--border-2), transparent); }
+
+/* ----- Logo lockup: image-based, stronger presence ---------- */
+.logo { gap: 18px; }
+.logo-stack { display: none; } /* replaced by .lf-logo-img lockup */
+.logo-img-wrap {
+  position: relative;
+  width: 58px; height: 58px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.logo-img-wrap::before {
+  content: '';
+  position: absolute; inset: -18px;
+  background: radial-gradient(ellipse at 50% 45%,
+    rgba(217,182,74,0.16) 0%,
+    rgba(217,182,74,0.04) 40%,
+    transparent 70%);
+  pointer-events: none;
+}
+.logo-img {
+  position: relative; z-index: 1;
+  width: 100%; height: 100%;
+  display: block; object-fit: contain;
+  user-select: none; -webkit-user-drag: none;
+  filter: drop-shadow(0 1px 6px rgba(217,182,74,0.10));
+}
+.logo-sep { height: 44px; background: linear-gradient(180deg, transparent, var(--border-2), transparent); }
+.logo-wordmark {
+  display: flex; flex-direction: column; line-height: 1.1;
+}
+.logo-wordmark-name {
+  font-family: var(--f-display);
+  font-size: 22px; font-weight: 500;
+  color: var(--cream); letter-spacing: 0.002em;
+}
+.logo-wordmark-name em {
+  font-style: italic; color: var(--gold-light); font-weight: 500;
+}
+.logo-wordmark-cap {
+  font-family: var(--f-mono);
+  font-size: 8px; font-weight: 600;
+  letter-spacing: 0.38em; color: var(--gold);
+  margin-top: 3px;
+}
+.logo-tag {
+  font-family: var(--f-display); font-style: italic;
+  font-size: 13px; color: var(--text-2); letter-spacing: 0.005em;
+}
+
+/* ----- Index bar + topbar chips: calmer, more room ---------- */
+.idx-bar { gap: 0; }
+.idx-pill { padding: 6px 14px; }
+.idx-sym { font-family: var(--f-ui); letter-spacing: 0.14em; }
+.ai-badge, .key-btn { font-family: var(--f-ui); padding: 6px 12px; font-size: 11px; }
+#topbarKeyInput { padding: 7px 14px; font-size: 11.5px; }
+
+/* ----- Tape: quieter, gold less saturated ------------------- */
+.ti-sym { color: var(--gold-light); }
+
+/* ----- Sidenav: clearer hierarchy, more breathing room ------ */
+#sidenav { padding: 24px 0; background: rgba(5,5,7,.55); }
+.nav-sec { padding: 0 16px; margin-bottom: 22px; }
+.nav-sec-lbl {
+  font-family: var(--f-ui);
+  font-size: 9px; letter-spacing: 0.22em; color: var(--text-3);
+  padding: 0 10px; margin-bottom: 10px; font-weight: 600;
+}
+.nav-item {
+  font-family: var(--f-ui);
+  padding: 10px 14px; font-size: 13px; font-weight: 500;
+  color: var(--text-2); border-radius: var(--r);
+  margin-bottom: 3px; letter-spacing: 0.005em;
+  transition: color .15s, background .15s, border-color .15s;
+}
+.nav-item:hover { background: rgba(217,182,74,.06); color: var(--cream); }
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(217,182,74,.12), rgba(217,182,74,.04));
+  color: var(--gold-light);
+  border-color: rgba(217,182,74,.22);
+}
+.nav-icon { opacity: .6; font-size: 12px; }
+.nav-item.active .nav-icon { opacity: 1; color: var(--gold); }
+
+/* Mood card — more considered */
+.mood-card { padding: 14px; border-radius: var(--r-lg); }
+.mood-lbl { font-family: var(--f-ui); letter-spacing: 0.18em; }
+.mood-status { font-family: var(--f-display); font-size: 19px; font-weight: 500; }
+
+/* ----- Panel shell: more room, calmer rhythm ---------------- */
+.panel { padding: 34px 40px; }
+@media (max-width: 1100px) { .panel { padding: 28px 28px; } }
+
+/* Page headers — more editorial, stronger hierarchy */
+.ph { margin-bottom: 32px; }
+.ph-eye {
+  font-family: var(--f-ui);
+  font-size: 10px; letter-spacing: 0.24em;
+  color: var(--gold-dim); margin-bottom: 10px;
+}
+.ph-title {
+  font-family: var(--f-display); font-weight: 500;
+  font-size: 42px; letter-spacing: -0.015em; line-height: 1.05;
+  margin-bottom: 10px; color: var(--cream);
+}
+.ph-title em { font-style: italic; color: var(--gold-light); font-weight: 500; }
+.ph-sub {
+  font-family: var(--f-ui);
+  font-size: 14px; line-height: 1.65; color: var(--text-2);
+  max-width: 620px;
+}
+
+/* ----- Cards: cleaner surfaces, softer elevation ------------ */
+.card {
+  background: linear-gradient(160deg, var(--noir-2) 0%, var(--noir-1) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.02) inset;
+  transition: border-color .25s, transform .25s;
+}
+.card:hover { border-color: var(--border-2); }
+.card::before {
+  background: linear-gradient(90deg, transparent, rgba(217,182,74,.22), transparent);
+}
+.card-lbl { font-family: var(--f-ui); letter-spacing: 0.18em; }
+.card-title { font-size: 16px; margin-bottom: 16px; }
+
+/* Stat cells — bigger, clearer */
+.stat { padding: 14px 16px; border-radius: var(--r); }
+.stat-lbl { font-family: var(--f-ui); letter-spacing: 0.14em; }
+.stat-val { font-size: 18px; color: var(--gold-light); }
+.stat-sub { font-size: 10.5px; color: var(--text-2); }
+
+/* ----- Buttons: refined, product-grade ---------------------- */
+.btn-p {
+  font-family: var(--f-ui); font-weight: 600;
+  font-size: 13px; letter-spacing: 0.03em;
+  padding: 12px 22px; border-radius: var(--r);
+  background: linear-gradient(135deg, var(--gold) 0%, #B8932F 100%);
+  color: #0A0A0C;
+  box-shadow:
+    0 6px 20px -6px rgba(217,182,74,.35),
+    inset 0 1px 0 rgba(255,235,180,.28);
+}
+.btn-p:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 10px 28px -8px rgba(217,182,74,.45),
+    inset 0 1px 0 rgba(255,235,180,.35);
+}
+.btn-s {
+  font-family: var(--f-ui); font-weight: 500;
+  padding: 11px 20px; border-radius: var(--r);
+  border-color: var(--border-2);
+}
+.btn-g { font-family: var(--f-ui); }
+.btn-d { font-family: var(--f-ui); }
+
+/* ----- Inputs: calmer, clearer ------------------------------ */
+input:not([type=range]):not(#topbarKeyInput),
+select, textarea {
+  font-family: var(--f-ui);
+  font-size: 13.5px;
+  padding: 11px 14px;
+  background: var(--noir-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--cream);
+  transition: border-color .18s, background .18s, box-shadow .18s;
+}
+input:not([type=range]):not(#topbarKeyInput):focus,
+select:focus, textarea:focus {
+  border-color: var(--gold-dim);
+  background: var(--noir-2);
+  box-shadow: 0 0 0 3px rgba(217,182,74,.08);
+}
+.il { font-family: var(--f-ui); letter-spacing: 0.12em; font-size: 10px; }
+.ig { margin-bottom: 16px; }
+
+/* ----- Portfolio hero: larger, more editorial --------------- */
+.port-hero { padding: 32px 36px; margin-bottom: 22px; }
+.port-lbl { font-family: var(--f-ui); letter-spacing: 0.2em; }
+.port-total {
+  font-family: var(--f-display);
+  font-size: 58px; font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.port-delta { font-size: 13.5px; }
+
+/* ----- Welcome hero — calmer, Copilot-like, guided ---------- */
+.wh, #welcomeHero { padding: 6px 0 10px; margin-bottom: 28px; }
+.wh-eye {
+  font-family: var(--f-ui);
+  font-size: 10px; letter-spacing: 0.3em;
+  color: var(--gold-dim); font-weight: 600;
+  margin-bottom: 14px;
+}
+.wh-title {
+  font-family: var(--f-display); font-weight: 500;
+  font-size: 56px; line-height: 1.02; letter-spacing: -0.02em;
+  color: var(--cream); margin-bottom: 16px;
+}
+.wh-title em { font-style: italic; color: var(--gold-light); font-weight: 500; }
+.wh-lede {
+  font-family: var(--f-ui);
+  font-size: 15px; line-height: 1.65; color: var(--text-2);
+  max-width: 640px; margin-bottom: 22px;
+}
+.wsteps {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 14px; margin-top: 28px;
+}
+.wstep {
+  padding: 20px; border-radius: var(--r-lg);
+  background: linear-gradient(160deg, var(--noir-2), var(--noir-1));
+  border: 1px solid var(--border);
+  cursor: pointer; transition: border-color .2s, transform .2s;
+}
+.wstep:hover { border-color: var(--border-2); transform: translateY(-1px); }
+.wstep-n {
+  font-family: var(--f-display); font-style: italic;
+  font-size: 22px; color: var(--gold); font-weight: 500;
+  margin-bottom: 8px;
+}
+.wstep-t {
+  font-family: var(--f-ui); font-weight: 600;
+  font-size: 14px; color: var(--cream); margin-bottom: 6px;
+  letter-spacing: 0.005em;
+}
+.wstep-d {
+  font-family: var(--f-ui);
+  font-size: 12.5px; line-height: 1.6; color: var(--text-2);
+}
+
+/* ----- Right sidebar: same cleanup -------------------------- */
+#rsidebar { padding: 22px 18px; gap: 16px; background: rgba(5,5,7,.45); }
+.sc { padding: 16px; border-radius: var(--r-lg); }
+.sc-title { font-family: var(--f-ui); letter-spacing: 0.16em; }
+.ins-lbl, .vbadge, .pc-lbl, .wlsym, .vsym { font-family: var(--f-ui); }
+.ins-txt, .vth { font-family: var(--f-ui); }
+.pc-val, .vsym, .wlsym { font-family: var(--f-mono); }
+
+/* ----- Mobile header collapse ------------------------------- */
+@media (max-width: 1100px) {
+  #topbar { padding: 0 20px; height: 68px; }
+  .idx-bar { display: none; }
+}
+@media (max-width: 720px) {
+  #topbar { height: 60px; padding: 0 16px; gap: 12px; }
+  .logo { gap: 12px; }
+  .logo-img-wrap { width: 42px; height: 42px; }
+  .logo-sep, .logo-tag { display: none; }
+  .logo-wordmark-name { font-size: 17px; }
+  .logo-wordmark-cap { font-size: 7px; letter-spacing: 0.32em; }
+  .topbar-right #topbarKeyInput { display: none; }
+  .panel { padding: 22px 18px; }
+  .wh-title { font-size: 40px; }
+  .ph-title { font-size: 32px; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .tape-track { animation: none !important; }
+  .card, .wstep, .nav-item { transition: none !important; }
+}
 </style>
 </head>
 <body>
@@ -1051,26 +1401,12 @@ textarea{resize:vertical;min-height:76px;line-height:1.6}
 <!-- TOPBAR -->
 <div id="topbar">
   <div class="logo" onclick="openAboutLaForce()" style="cursor:pointer" title="About LaForce Capital">
-    <div class="logo-stack">
-      <svg class="logo-palm" viewBox="0 0 46 22" aria-hidden="true">
-        <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M23 12 Q10 4 2 8"/>
-          <path d="M23 12 Q8 11 1 17"/>
-          <path d="M23 12 Q13 2 7 0.5"/>
-          <path d="M23 12 L23 1"/>
-          <path d="M23 12 Q33 2 39 0.5"/>
-          <path d="M23 12 Q38 4 44 8"/>
-          <path d="M23 12 Q38 11 45 17"/>
-        </g>
-        <path d="M23 12 L23 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        <circle cx="23" cy="12" r="1.1" fill="currentColor"/>
-      </svg>
-      <div class="logo-name">La<em>Force</em></div>
-      <div class="logo-cap-line">
-        <span class="logo-bar"></span>
-        <span class="logo-cap">CAPITAL</span>
-        <span class="logo-bar"></span>
-      </div>
+    <div class="logo-img-wrap">
+      <img class="logo-img" src="assets/laforce-logo-cutout.png" alt="LaForce Capital" />
+    </div>
+    <div class="logo-wordmark">
+      <div class="logo-wordmark-name">La<em>Force</em></div>
+      <div class="logo-wordmark-cap">CAPITAL</div>
     </div>
     <div class="logo-sep"></div>
     <div class="logo-tag">Institutional Intelligence</div>
