@@ -2664,30 +2664,41 @@ select:focus, textarea:focus {
       <div class="sc-title"><div class="sc-dot"></div>Color Mode</div>
     </div>
     <div style="display:flex;flex-direction:column;gap:6px">
-      <div onclick="setColorMode('luxury')" style="display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);border:1px solid var(--border-2);background:rgba(201,168,76,.05);cursor:pointer">
+      <div data-color-mode="luxury" onclick="setColorMode('luxury')" style="display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);border:1px solid var(--border-2);background:rgba(201,168,76,.05);cursor:pointer">
         <div style="display:flex;gap:3px">
           <div style="width:12px;height:12px;border-radius:3px;background:#0B0F0E"></div>
           <div style="width:12px;height:12px;border-radius:3px;background:#D4AF37"></div>
           <div style="width:12px;height:12px;border-radius:3px;background:#EDE7D9"></div>
         </div>
-        <span style="font-size:10px;color:var(--gold);font-weight:600">Conservative Luxury</span>
-        <span style="font-size:8px;color:var(--gold);margin-left:auto">&#9679;</span>
+        <span data-mode-lbl style="font-size:10px;color:var(--gold);font-weight:600">Conservative Luxury</span>
+        <span data-mode-dot style="font-size:8px;color:var(--gold);margin-left:auto;visibility:visible">&#9679;</span>
       </div>
-      <div onclick="setColorMode('institutional')" style="display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);border:1px solid var(--border);cursor:pointer">
+      <div data-color-mode="institutional" onclick="setColorMode('institutional')" style="display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);border:1px solid var(--border);cursor:pointer">
         <div style="display:flex;gap:3px">
           <div style="width:12px;height:12px;border-radius:3px;background:#0A0D14"></div>
           <div style="width:12px;height:12px;border-radius:3px;background:#3B82F6"></div>
           <div style="width:12px;height:12px;border-radius:3px;background:#E5E7EB"></div>
         </div>
-        <span style="font-size:10px;color:var(--text-2)">Modern Institutional</span>
+        <span data-mode-lbl style="font-size:10px;color:var(--text-2)">Modern Institutional</span>
+        <span data-mode-dot style="font-size:8px;color:var(--gold);margin-left:auto;visibility:hidden">&#9679;</span>
       </div>
-      <div onclick="setColorMode('elite')" style="display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);border:1px solid var(--border);cursor:pointer">
+      <div data-color-mode="elite" onclick="setColorMode('elite')" style="display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);border:1px solid var(--border);cursor:pointer">
         <div style="display:flex;gap:3px">
           <div style="width:12px;height:12px;border-radius:3px;background:#050505"></div>
           <div style="width:12px;height:12px;border-radius:3px;background:#00FF88"></div>
           <div style="width:12px;height:12px;border-radius:3px;background:#FFD700"></div>
         </div>
-        <span style="font-size:10px;color:var(--text-2)">Bold Elite</span>
+        <span data-mode-lbl style="font-size:10px;color:var(--text-2)">Bold Elite</span>
+        <span data-mode-dot style="font-size:8px;color:var(--gold);margin-left:auto;visibility:hidden">&#9679;</span>
+      </div>
+      <div data-color-mode="crimson" onclick="setColorMode('crimson')" style="display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);border:1px solid var(--border);cursor:pointer">
+        <div style="display:flex;gap:3px">
+          <div style="width:12px;height:12px;border-radius:3px;background:#3E0C12"></div>
+          <div style="width:12px;height:12px;border-radius:3px;background:#7A1E26"></div>
+          <div style="width:12px;height:12px;border-radius:3px;background:#C39455"></div>
+        </div>
+        <span data-mode-lbl style="font-size:10px;color:var(--text-2)">Crimson Apex</span>
+        <span data-mode-dot style="font-size:8px;color:var(--gold);margin-left:auto;visibility:hidden">&#9679;</span>
       </div>
     </div>
   </div>
@@ -7634,6 +7645,21 @@ function _saToggle(el){
 // COLOR MODES
 function setColorMode(mode){
   var root=document.documentElement;
+  // Update selector active state (border-2 + gold-muted bg + gold dot) without disturbing layout
+  try{
+    var sel=document.querySelectorAll('[data-color-mode]');
+    if(sel && sel.length){
+      sel.forEach(function(el){
+        var isOn=el.getAttribute('data-color-mode')===mode;
+        el.style.border='1px solid '+(isOn?'var(--border-2)':'var(--border)');
+        el.style.background=isOn?'rgba(201,168,76,.05)':'transparent';
+        var lbl=el.querySelector('[data-mode-lbl]');
+        if(lbl) lbl.style.color=isOn?'var(--gold)':'var(--text-2)';
+        var dot=el.querySelector('[data-mode-dot]');
+        if(dot) dot.style.visibility=isOn?'visible':'hidden';
+      });
+    }
+  }catch(_e){}
   if(mode==='institutional'){
     root.style.setProperty('--noir','#0A0D14');root.style.setProperty('--noir-1','#0d1220');
     root.style.setProperty('--noir-2','#111827');root.style.setProperty('--noir-3','#1f2937');
@@ -7648,7 +7674,16 @@ function setColorMode(mode){
     root.style.setProperty('--gold-dim','#00cc6a');root.style.setProperty('--gold-muted','rgba(0,255,136,.1)');
     root.style.setProperty('--cream','#FFD700');root.style.setProperty('--cream-dim','#d4af37');
     root.style.setProperty('--text-1','#d4d4d4');root.style.setProperty('--text-2','#737373');
+  }else if(mode==='crimson'){
+    // Crimson Apex — darker, blood-red-over-burgundy with antique bronze accent
+    root.style.setProperty('--noir','#1A0608');root.style.setProperty('--noir-1','#22080C');
+    root.style.setProperty('--noir-2','#2B0B12');root.style.setProperty('--noir-3','#3E0C12');
+    root.style.setProperty('--gold','#7A1E26');root.style.setProperty('--gold-light','#C39455');
+    root.style.setProperty('--gold-dim','#5A1620');root.style.setProperty('--gold-muted','rgba(122,30,38,.14)');
+    root.style.setProperty('--cream','#E8D8C0');root.style.setProperty('--cream-dim','#B8A080');
+    root.style.setProperty('--text-1','#D8C8B0');root.style.setProperty('--text-2','#8B7D68');
   }else{
+    // Conservative Luxury (default)
     root.style.setProperty('--noir','#060508');root.style.setProperty('--noir-1','#0c0a10');
     root.style.setProperty('--noir-2','#131118');root.style.setProperty('--noir-3','#1a1820');
     root.style.setProperty('--gold','#C9A84C');root.style.setProperty('--gold-light','#E8CC7A');
@@ -7656,6 +7691,7 @@ function setColorMode(mode){
     root.style.setProperty('--cream','#F0E8D0');root.style.setProperty('--cream-dim','#B8A882');
     root.style.setProperty('--text-1','#D4CAB8');root.style.setProperty('--text-2','#8B7D68');
   }
+  try{ window._colorMode=mode; }catch(_e){}
 }
 
 
