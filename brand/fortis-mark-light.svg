@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Fortis Wealth Management icon">
+  <title>Fortis — Mark (Light)</title>
+  <rect width="240" height="240" fill="#F5F2EA"/>
+
+  <defs>
+    <linearGradient id="fortisInk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1C1A22"/>
+      <stop offset="100%" stop-color="#0A0A0C"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer diamond frame -->
+  <path d="M120 24 L216 120 L120 216 L24 120 Z"
+        fill="none" stroke="url(#fortisInk)" stroke-width="2.4" stroke-linejoin="miter"/>
+
+  <!-- Inner diamond -->
+  <path d="M120 44 L196 120 L120 196 L44 120 Z"
+        fill="none" stroke="#0A0A0C" stroke-width="0.9" stroke-linejoin="miter" opacity="0.35"/>
+
+  <!-- Abstract F monogram -->
+  <g fill="url(#fortisInk)">
+    <rect x="88" y="76" width="13" height="90"/>
+    <rect x="88" y="76" width="62" height="13"/>
+    <rect x="88" y="116" width="44" height="11"/>
+  </g>
+
+  <g stroke="#0A0A0C" stroke-width="1.1" opacity="0.55">
+    <line x1="120" y1="30" x2="120" y2="40"/>
+    <line x1="120" y1="200" x2="120" y2="210"/>
+  </g>
+</svg>
