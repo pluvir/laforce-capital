@@ -1506,6 +1506,46 @@ body::after { opacity: .8 !important; }
 .nav-icon { opacity: .6; font-size: 12px; }
 .nav-item.active .nav-icon { opacity: 1; color: var(--gold); }
 
+/* ==========================================================
+   Market Pulse card (right sidebar) — spacing fix only.
+   Component (gauge/arch/needle/pills) is unchanged; this
+   widens its padding, gives the SVG breathing room on top
+   and bottom, and guarantees no clipping of the MODERATE /
+   Low / High labels or the Trend / VIX / Bias pills.
+   ========================================================== */
+#rsidebar .sc:has(#gaugeNeedle) {
+  padding: 18px 16px 16px;
+  min-height: 240px;
+  overflow: visible;
+  display: flex; flex-direction: column;
+}
+#rsidebar .sc:has(#gaugeNeedle) .sc-hdr {
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 2;
+}
+#rsidebar .sc:has(#gaugeNeedle) > svg {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 240 / 120;
+  margin: 6px 0 4px;
+  overflow: hidden;   /* arc now lives inside the shifted viewBox — no bleed over the header */
+  display: block;
+}
+#rsidebar .sc:has(#gaugeNeedle) #riskScoreLbl {
+  margin: 6px 0 14px !important;
+  line-height: 1.4;
+}
+#rsidebar .sc:has(#gaugeNeedle) .pcells {
+  gap: 6px;
+}
+#rsidebar .sc:has(#gaugeNeedle) .pc {
+  padding: 9px 6px;
+  overflow: visible;
+}
+#rsidebar .sc:has(#gaugeNeedle) .pc-lbl { margin-bottom: 4px; line-height: 1.2; }
+#rsidebar .sc:has(#gaugeNeedle) .pc-val { line-height: 1.3; }
+
 /* Mood card — Market Pulse: full component visible (top area + arch + labels + spacing) */
 .mood-card {
   padding: 22px 16px 16px;
@@ -2354,6 +2394,89 @@ select:focus, textarea:focus {
     <p class="ph-sub">Upload any portfolio file. AI extracts holdings, runs a feasibility study, and builds your action plan.</p>
   </div>
 
+  <!-- INPUT GUIDANCE — expandable "What gives you the best analysis?" -->
+  <style>
+    details.pf-guide { margin-bottom:16px; background:linear-gradient(145deg,var(--noir-2),var(--noir-1)); border:1px solid rgba(201,168,76,.22); border-radius:var(--r-lg); overflow:hidden; transition:border-color .25s ease; }
+    details.pf-guide[open] { border-color:rgba(201,168,76,.35); }
+    details.pf-guide > summary { list-style:none; cursor:pointer; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; user-select:none; }
+    details.pf-guide > summary::-webkit-details-marker { display:none; }
+    details.pf-guide .pf-guide-ti { display:flex; align-items:center; gap:10px; }
+    details.pf-guide .pf-guide-ti::before { content:''; width:3px; height:16px; background:linear-gradient(180deg,var(--gold),var(--gold-dim)); border-radius:2px; }
+    details.pf-guide .pf-guide-ti-txt { font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:500; color:var(--cream); letter-spacing:.002em; }
+    details.pf-guide .pf-guide-meta { font-size:10.5px; color:var(--text-3); letter-spacing:.08em; text-transform:uppercase; font-weight:600; display:flex; align-items:center; gap:8px; }
+    details.pf-guide .pf-guide-chev { font-family:'DM Mono',monospace; font-size:11px; color:var(--gold-dim); transition:transform .25s ease, color .2s ease; }
+    details.pf-guide[open] > summary .pf-guide-chev { transform:rotate(180deg); color:var(--gold); }
+    details.pf-guide[open] > summary:hover .pf-guide-chev,
+    details.pf-guide > summary:hover .pf-guide-chev { color:var(--gold); }
+    details.pf-guide .pf-guide-body { padding:0 20px 18px; animation:fadeUp .22s ease; }
+    .pf-tier-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin-bottom:12px; }
+    .pf-tier { background:var(--noir-3); border:1px solid var(--border); border-radius:var(--r); padding:14px; position:relative; }
+    .pf-tier.best      { border-color:rgba(107,170,117,.32); }
+    .pf-tier.good      { border-color:rgba(201,168,76,.28); }
+    .pf-tier.optional  { border-color:rgba(155,143,192,.28); }
+    .pf-tier.minimum   { border-color:var(--border); border-style:dashed; }
+    .pf-tier-badge { font-size:9.5px; letter-spacing:.15em; text-transform:uppercase; font-weight:700; padding:3px 9px; border-radius:999px; border:1px solid currentColor; background:rgba(255,255,255,.03); display:inline-flex; margin-bottom:8px; }
+    .pf-tier.best     .pf-tier-badge { color:var(--sage); }
+    .pf-tier.good     .pf-tier-badge { color:var(--gold); }
+    .pf-tier.optional .pf-tier-badge { color:var(--violet); }
+    .pf-tier.minimum  .pf-tier-badge { color:var(--text-2); }
+    .pf-tier-name { font-size:12.5px; color:var(--cream); font-weight:500; margin-bottom:6px; line-height:1.3; }
+    .pf-tier ul { list-style:none; padding:0; margin:0; font-size:11.5px; color:var(--text-2); line-height:1.65; }
+    .pf-tier li { padding-left:12px; position:relative; margin-bottom:4px; }
+    .pf-tier li::before { content:'·'; position:absolute; left:3px; top:-2px; color:var(--gold-dim); font-weight:700; font-size:14px; }
+    .pf-disclaimer { margin-top:4px; padding:10px 13px; background:rgba(192,113,79,.05); border:1px solid rgba(192,113,79,.22); border-left:3px solid var(--clay); border-radius:var(--r); font-size:11.5px; color:var(--cream-dim); line-height:1.6; font-style:italic; }
+  </style>
+  <details class="pf-guide" open>
+    <summary aria-label="Toggle upload guide">
+      <div class="pf-guide-ti">
+        <span class="pf-guide-ti-txt">What gives you the best analysis?</span>
+      </div>
+      <div class="pf-guide-meta">
+        <span>Upload guide</span>
+        <span class="pf-guide-chev" aria-hidden="true">▾</span>
+      </div>
+    </summary>
+    <div class="pf-guide-body">
+      <div style="font-size:11.5px;color:var(--text-2);line-height:1.65;margin-bottom:12px">All four paths work. Each one unlocks more depth.</div>
+      <div class="pf-tier-grid">
+        <div class="pf-tier best" title="Cleanest input — full transparency on cost basis, gains, and concentration">
+          <span class="pf-tier-badge">Best</span>
+          <div class="pf-tier-name">Full brokerage CSV</div>
+          <ul>
+            <li>Ticker, shares, cost basis, current value</li>
+            <li>Cash available to deploy</li>
+          </ul>
+        </div>
+        <div class="pf-tier good" title="Fast path — multi-screen screenshots are supported and merged automatically">
+          <span class="pf-tier-badge">Good</span>
+          <div class="pf-tier-name">Screenshot of portfolio</div>
+          <ul>
+            <li>Robinhood, Schwab, Fidelity, IBKR — all supported</li>
+            <li>Or a plain holdings list</li>
+          </ul>
+        </div>
+        <div class="pf-tier optional" title="Optional context — turns the analysis into a tailored plan">
+          <span class="pf-tier-badge">Optional</span>
+          <div class="pf-tier-name">Add context to tailor the plan</div>
+          <ul>
+            <li>Monthly contribution</li>
+            <li>Goals (retirement, house, etc.)</li>
+            <li>Time horizon</li>
+          </ul>
+        </div>
+        <div class="pf-tier minimum" title="Minimum viable input — still useful, less precise">
+          <span class="pf-tier-badge">Minimum</span>
+          <div class="pf-tier-name">Just tickers + approximate amounts</div>
+          <ul>
+            <li>No cost basis? Still works</li>
+            <li>Or <span style="color:var(--gold-light);cursor:pointer;text-decoration:underline" onclick="event.stopPropagation();showPanel('stockcheck',document.querySelectorAll('.nav-item')[2])">analyze a single ticker</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="pf-disclaimer">This is AI-generated analysis for informational purposes only. Not financial advice.</div>
+    </div>
+  </details>
+
   <div class="card" style="margin-bottom:16px">
     <div class="card-title">Upload Holdings</div>
     <div class="dz" id="dropzone" onclick="document.getElementById('fileInput').click()"
@@ -2385,6 +2508,182 @@ select:focus, textarea:focus {
       <button class="btn-d" onclick="clearAll()">Clear All</button>
     </div>
   </div>
+
+  <!-- PROCESSING STATE — shown while AI is analyzing. Minimal hook: pfSetProcessing(true|false) -->
+  <style>
+    #pfProcessing { display:none; padding:22px 24px; background:linear-gradient(145deg,var(--noir-2),var(--noir-1)); border:1px solid rgba(201,168,76,.22); border-radius:var(--r-lg); margin-bottom:16px; align-items:center; gap:16px; }
+    #pfProcessing.on { display:flex; animation:fadeUp .22s ease; }
+    #pfProcessing .pf-spin { width:28px; height:28px; border-radius:50%; border:2px solid rgba(201,168,76,.18); border-top-color:var(--gold); animation:spin 1s linear infinite; flex-shrink:0; }
+    #pfProcessing .pf-proc-title { font-family:'Cormorant Garamond',serif; font-size:18px; color:var(--cream); font-weight:500; margin-bottom:3px; }
+    #pfProcessing .pf-proc-sub { font-size:11.5px; color:var(--text-2); line-height:1.6; }
+    /* OUTPUT SUMMARY — surfaces the 7 sections inline; View details links route to full panels */
+    #pfOutputSummary { display:none; margin-bottom:16px; }
+    #pfOutputSummary.on { display:block; animation:fadeUp .25s ease; }
+    .pf-out-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:14px; flex-wrap:wrap; }
+    .pf-out-title { font-family:'Cormorant Garamond',serif; font-size:24px; color:var(--cream); font-weight:500; line-height:1.1; }
+    .pf-out-title em { font-style:italic; color:var(--gold-light); }
+    .pf-out-sub { font-size:11.5px; color:var(--text-2); line-height:1.6; max-width:520px; margin-top:4px; }
+    .pf-sections { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
+    .pf-sec { background:var(--noir-2); border:1px solid var(--border); border-radius:var(--r-lg); padding:14px 16px; cursor:pointer; transition:border-color .2s,background .2s,transform .15s; position:relative; overflow:hidden; }
+    .pf-sec:hover { border-color:var(--border-2); background:var(--noir-3); transform:translateY(-1px); }
+    .pf-sec::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:currentColor; opacity:.6; }
+    .pf-sec.health    { color:var(--gold); }
+    .pf-sec.risk      { color:var(--clay); }
+    .pf-sec.alloc     { color:var(--sage); }
+    .pf-sec.conc      { color:var(--clay); }
+    .pf-sec.market    { color:var(--violet); }
+    .pf-sec.action    { color:var(--gold-light); }
+    .pf-sec.deploy    { color:var(--sage); }
+    .pf-sec-lbl { font-size:9px; letter-spacing:.2em; color:var(--text-3); text-transform:uppercase; font-weight:700; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; }
+    .pf-sec-lbl-num { font-family:'DM Mono',monospace; color:currentColor; font-weight:700; letter-spacing:.08em; }
+    .pf-sec-val { font-family:'DM Mono',monospace; font-size:22px; font-weight:500; color:var(--cream); line-height:1.1; margin-bottom:4px; letter-spacing:-.005em; }
+    .pf-sec-note { font-size:11px; color:var(--text-2); line-height:1.5; }
+    .pf-sec-cta { margin-top:9px; font-size:10px; letter-spacing:.1em; text-transform:uppercase; font-weight:600; color:currentColor; opacity:.85; display:inline-flex; align-items:center; gap:4px; }
+    .pf-sec-cta::after { content:'→'; transition:transform .2s ease; }
+    .pf-sec:hover .pf-sec-cta::after { transform:translateX(3px); }
+    .pf-out-disclaim { margin-top:16px; padding:11px 14px; background:rgba(192,113,79,.05); border:1px solid rgba(192,113,79,.22); border-left:3px solid var(--clay); border-radius:var(--r); font-size:11.5px; color:var(--cream-dim); line-height:1.6; font-style:italic; }
+  </style>
+  <div id="pfProcessing" role="status" aria-live="polite" aria-busy="false">
+    <div class="pf-spin" aria-hidden="true"></div>
+    <div>
+      <div class="pf-proc-title">Analyzing your portfolio…</div>
+      <div class="pf-proc-sub">Reading holdings · scoring health · detecting concentration · building your action plan. This usually takes 10–25 seconds.</div>
+    </div>
+  </div>
+  <div id="pfOutputSummary" aria-live="polite">
+    <div class="pf-out-head">
+      <div>
+        <div style="font-size:9px;letter-spacing:.22em;color:var(--gold-dim);text-transform:uppercase;font-weight:600;margin-bottom:6px">Analysis summary</div>
+        <div class="pf-out-title">Your portfolio, <em>read.</em></div>
+        <div class="pf-out-sub">Top-line numbers below — click any section to dig into the full breakdown.</div>
+      </div>
+    </div>
+    <div class="pf-sections">
+      <div class="pf-sec health" tabindex="0" role="button" title="Open Portfolio Intelligence" onclick="showPanel('intelligence',document.querySelectorAll('.nav-item')[4])">
+        <div class="pf-sec-lbl"><span>Portfolio Health</span><span class="pf-sec-lbl-num" id="pfOutHealthNum">—</span></div>
+        <div class="pf-sec-val" id="pfOutHealthGrade">—</div>
+        <div class="pf-sec-note" id="pfOutHealthNote">Load a portfolio to score health.</div>
+        <div class="pf-sec-cta">View health panel</div>
+      </div>
+      <div class="pf-sec risk" tabindex="0" role="button" title="Open Market Pulse context" onclick="showPanel('market',document.querySelectorAll('.nav-item')[6])">
+        <div class="pf-sec-lbl"><span>Risk Score</span><span class="pf-sec-lbl-num" id="pfOutRiskBadge">—/10</span></div>
+        <div class="pf-sec-val" id="pfOutRiskVal">—</div>
+        <div class="pf-sec-note" id="pfOutRiskNote">Composite risk read from VIX, regime, and your mix.</div>
+        <div class="pf-sec-cta">View market context</div>
+      </div>
+      <div class="pf-sec alloc" tabindex="0" role="button" title="Open allocation diagnosis" onclick="showPanel('intelligence',document.querySelectorAll('.nav-item')[4])">
+        <div class="pf-sec-lbl"><span>Allocation Breakdown</span></div>
+        <div class="pf-sec-val" id="pfOutAllocVal" style="font-size:14px;letter-spacing:.02em">Core — · Growth — · Tactical — · Cash —</div>
+        <div class="pf-sec-note" id="pfOutAllocNote">Actual vs ideal target per lane.</div>
+        <div class="pf-sec-cta">View full diagnosis</div>
+      </div>
+      <div class="pf-sec conc" tabindex="0" role="button" title="Open risk flags" onclick="showPanel('intelligence',document.querySelectorAll('.nav-item')[4])">
+        <div class="pf-sec-lbl"><span>Concentration Warnings</span><span class="pf-sec-lbl-num" id="pfOutConcCount">0</span></div>
+        <div class="pf-sec-val" id="pfOutConcTop" style="font-size:15px">—</div>
+        <div class="pf-sec-note" id="pfOutConcNote">Single-name, sector, and factor concentration checks.</div>
+        <div class="pf-sec-cta">View risk flags</div>
+      </div>
+      <div class="pf-sec market" tabindex="0" role="button" title="Open Market Pulse" onclick="showPanel('market',document.querySelectorAll('.nav-item')[6])">
+        <div class="pf-sec-lbl"><span>Market Context</span></div>
+        <div class="pf-sec-val" id="pfOutRegime" style="font-size:15px;letter-spacing:.01em">Neutral / Selective</div>
+        <div class="pf-sec-note" id="pfOutRegimeNote">Tied to your Market Pulse — Trend, VIX, and Bias.</div>
+        <div class="pf-sec-cta">View Market Pulse</div>
+      </div>
+      <div class="pf-sec action" tabindex="0" role="button" title="Open action plan" onclick="showPanel('intelligence',document.querySelectorAll('.nav-item')[4])">
+        <div class="pf-sec-lbl"><span>Action Plan</span><span class="pf-sec-lbl-num" id="pfOutActionCount">0 steps</span></div>
+        <div class="pf-sec-val" id="pfOutActionTop" style="font-size:14px;line-height:1.35">—</div>
+        <div class="pf-sec-note" id="pfOutActionNote">Plain-English next moves.</div>
+        <div class="pf-sec-cta">View all steps</div>
+      </div>
+      <div class="pf-sec deploy" tabindex="0" role="button" title="Open Capital Deployment" onclick="showPanel('deploy',document.querySelectorAll('.nav-item')[3])">
+        <div class="pf-sec-lbl"><span>Capital Deployment</span><span class="pf-sec-lbl-num" id="pfOutDeployCash">$—</span></div>
+        <div class="pf-sec-val" id="pfOutDeployTop" style="font-size:14px">—</div>
+        <div class="pf-sec-note" id="pfOutDeployNote">Lens-aware allocation for your next contribution.</div>
+        <div class="pf-sec-cta">Open deployment</div>
+      </div>
+    </div>
+    <div class="pf-out-disclaim">This is AI-generated analysis for informational purposes only. Not financial advice.</div>
+  </div>
+  <script>
+    /* Minimal hooks — kept tiny so heavier analysis can stay in existing runFeasibility / renderIntelligencePanel */
+    window.pfSetProcessing = function(on){
+      var p=document.getElementById('pfProcessing'); if(!p) return;
+      p.classList.toggle('on',!!on);
+      p.setAttribute('aria-busy', on?'true':'false');
+    };
+    window.pfShowSummary = function(show){
+      var s=document.getElementById('pfOutputSummary'); if(!s) return;
+      s.classList.toggle('on', show!==false);
+    };
+    /* Reads whatever the Intelligence engine has already computed and mirrors it here.
+       Safe to call multiple times; if data isn't ready yet, fields stay as placeholders. */
+    window.pfRefreshSummary = function(){
+      try {
+        // Health
+        var hn=document.getElementById('healthNum'), hg=document.getElementById('healthGrade'), hno=document.getElementById('healthNote');
+        if(hn && document.getElementById('pfOutHealthNum'))  document.getElementById('pfOutHealthNum').textContent = hn.textContent || '—';
+        if(hg && document.getElementById('pfOutHealthGrade')) document.getElementById('pfOutHealthGrade').textContent = hg.textContent || '—';
+        if(hno && document.getElementById('pfOutHealthNote')) document.getElementById('pfOutHealthNote').textContent = (hno.textContent||'').split('\n')[0] || '—';
+        // Risk (composite — pulls VIX / regime / health side)
+        var v=document.getElementById('sideVix'), r=document.getElementById('sideTrend'), b=document.getElementById('sideBias');
+        var rv=document.getElementById('pfOutRiskVal'), rn=document.getElementById('pfOutRiskNote');
+        if(rv){ rv.textContent = (r && r.textContent && r.textContent.trim()!=='-') ? r.textContent.trim() : 'Neutral'; }
+        if(rn){ rn.textContent = 'VIX ' + ((v&&v.textContent)||'—') + ' · Bias ' + ((b&&b.textContent)||'—'); }
+        var rb=document.getElementById('pfOutRiskBadge'); var cs=document.getElementById('confScore');
+        if(rb && cs) rb.textContent = (cs.textContent||'—') + '/10';
+        // Allocation — reads text summary from hno (health mix breakdown renders there)
+        var mx=document.getElementById('pfOutAllocVal');
+        if(mx && hno){
+          var lines = hno.innerHTML.match(/>([A-Z])\s+(\d+(?:\.\d+)?)%</g) || [];
+          if(lines.length){
+            mx.textContent = lines.map(function(l){ return l.replace(/^>|<$/g,''); }).join(' · ');
+          }
+        }
+        // Concentration — surfaces conc label
+        var conc=document.getElementById('concentrationLbl');
+        if(conc && document.getElementById('pfOutConcTop')) document.getElementById('pfOutConcTop').textContent = conc.textContent || '—';
+        var rf=document.getElementById('riskFlagsEl'); var cnt=rf?rf.querySelectorAll('.fi-warn').length:0;
+        var cc=document.getElementById('pfOutConcCount');
+        if(cc) cc.textContent = cnt + (cnt===1?' flag':' flags');
+        // Market context
+        var rb2=document.getElementById('regimeBadge'); var pf_reg=document.getElementById('pfOutRegime');
+        if(rb2 && pf_reg) pf_reg.textContent = rb2.textContent || 'Neutral / Selective';
+        // Action plan — top step
+        var ap=document.getElementById('actionPlanEl');
+        if(ap){
+          var steps = ap.querySelectorAll('.flag-item'); var n=steps.length;
+          var topEl=steps[0];
+          var ac=document.getElementById('pfOutActionCount'); if(ac) ac.textContent = n + (n===1?' step':' steps');
+          var at=document.getElementById('pfOutActionTop'); if(at) at.textContent = topEl ? (topEl.textContent||'').replace(/^\s*\d+\s*→\s*/,'').trim() : '—';
+        }
+        // Deployment
+        var dp=document.getElementById('deployPlanEl'); var cash=document.getElementById('intelCashInput');
+        var dc=document.getElementById('pfOutDeployCash'); if(dc && cash) dc.textContent = '$' + (parseInt(cash.value,10)||0).toLocaleString();
+        if(dp){
+          var first = dp.querySelector('.dp-sym');
+          var dt=document.getElementById('pfOutDeployTop');
+          if(dt) dt.textContent = first ? first.textContent.trim() + ' leads this round' : '—';
+        }
+      } catch(e) { /* graceful — summary stays at placeholders */ }
+    };
+    /* Wrap the existing runFeasibility so processing + summary refresh happen automatically.
+       Non-destructive: original function is preserved; we only add pre/post hooks. */
+    (function(){
+      if(typeof window.runFeasibility !== 'function') return;
+      if(window.runFeasibility.__pfWrapped) return;
+      var orig = window.runFeasibility;
+      window.runFeasibility = async function(){
+        try { pfSetProcessing(true); pfShowSummary(false); } catch(_){}
+        try {
+          var r = await orig.apply(this, arguments);
+          return r;
+        } finally {
+          try { pfSetProcessing(false); pfRefreshSummary(); pfShowSummary(true); } catch(_){}
+        }
+      };
+      window.runFeasibility.__pfWrapped = true;
+    })();
+  </script>
 
   <div id="labHoldingsWrap" style="display:none">
     <div class="card" style="margin-bottom:16px">
@@ -2936,7 +3235,7 @@ select:focus, textarea:focus {
       <div class="sc-title"><div class="sc-dot"></div>Market Pulse</div>
       <button class="sc-act" onclick="showPanel('market',document.querySelectorAll('.nav-item')[6])">Update</button>
     </div>
-    <svg width="100%" height="68" viewBox="0 0 240 68">
+    <svg width="100%" height="120" viewBox="0 -50 240 120" preserveAspectRatio="xMidYMid meet">
       <defs><linearGradient id="gaugeG" x1="0%" y1="0%" x2="100%" y2="0%">
         <stop offset="0%" stop-color="#6BAA75"/><stop offset="50%" stop-color="#C9A84C"/><stop offset="100%" stop-color="#C0714F"/>
       </linearGradient></defs>
