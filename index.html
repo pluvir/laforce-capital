@@ -1991,6 +1991,81 @@ select:focus, textarea:focus {
     </div>
     <div id="discContent">
       <div class="disc-pane active" data-disc-pane="now">
+        <style>
+          /* Today's Pulse — editorial-brief summary card */
+          .disc-pulse { padding:18px 22px; border-radius:12px; background:linear-gradient(135deg,rgba(20,16,12,.7),rgba(35,28,18,.45)); border:1px solid rgba(201,168,76,.22); border-left:3px solid var(--gold); margin-bottom:14px; position:relative; overflow:hidden; }
+          .disc-pulse::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,.28),transparent); pointer-events:none; }
+          .disc-pulse-eye { font-size:9.5px; letter-spacing:.18em; color:var(--gold); text-transform:uppercase; font-weight:700; margin-bottom:8px; display:inline-flex; align-items:center; gap:8px; }
+          .disc-pulse-eye::before { content:''; width:5px; height:5px; border-radius:50%; background:currentColor; box-shadow:0 0 6px currentColor; }
+          .disc-pulse-tone { margin-left:8px; font-size:9px; letter-spacing:.14em; padding:2px 8px; border-radius:999px; font-weight:700; border:1px solid currentColor; }
+          .disc-pulse-tone.risk-on { color:var(--sage); }
+          .disc-pulse-tone.risk-off { color:var(--clay); }
+          .disc-pulse-tone.mixed { color:var(--gold); }
+          .disc-pulse-body { font-family:'Cormorant Garamond',serif; font-size:16.5px; color:var(--cream); line-height:1.55; font-weight:400; letter-spacing:.005em; max-width:780px; }
+          .disc-pulse-body em { font-style:italic; color:var(--gold-light); }
+          .disc-pulse-foot { margin-top:10px; display:flex; flex-wrap:wrap; gap:6px; }
+          .disc-pulse-tag { font-family:'DM Mono',monospace; font-size:9.5px; padding:2px 8px; border-radius:4px; background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--text-2); letter-spacing:.04em; }
+          /* News cards — magazine layout, breathing room, larger headlines */
+          .disc-news { display:flex; flex-direction:column; gap:10px; }
+          .disc-news-row { padding:16px 20px; border:1px solid var(--border); border-radius:12px; background:linear-gradient(180deg,rgba(20,16,12,.5),rgba(10,8,6,.3)); transition:border-color .25s,background .25s,transform .15s; position:relative; }
+          .disc-news-row:hover { border-color:var(--border-2); background:linear-gradient(180deg,rgba(25,20,14,.55),rgba(15,12,8,.35)); transform:translateY(-1px); }
+          .disc-news-meta-row { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+          .disc-news-src-pill { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:999px; font-family:'DM Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:.06em; color:var(--gold); background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.22); }
+          .disc-news-src-pill::before { content:''; width:4px; height:4px; border-radius:50%; background:currentColor; }
+          .disc-news-time { font-family:'DM Mono',monospace; font-size:9.5px; color:var(--text-3); letter-spacing:.04em; }
+          .disc-news-head { font-family:'Cormorant Garamond',serif; font-size:19px; font-weight:500; color:var(--cream); line-height:1.32; letter-spacing:.001em; margin-bottom:8px; }
+          .disc-news-summary { font-size:12.5px; color:var(--text-1); line-height:1.62; margin-bottom:12px; max-width:760px; }
+          .disc-news-impact { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding-top:10px; border-top:1px dashed rgba(201,168,76,.12); }
+          .disc-impact-col { display:flex; flex-direction:column; gap:6px; }
+          .disc-impact-lbl { font-size:9px; letter-spacing:.18em; text-transform:uppercase; font-weight:700; opacity:.95; display:inline-flex; align-items:center; gap:6px; }
+          .disc-impact-col.up .disc-impact-lbl { color:var(--sage); }
+          .disc-impact-col.dn .disc-impact-lbl { color:var(--clay); }
+          .disc-impact-syms { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+          .disc-impact-chip { font-family:'DM Mono',monospace; font-size:11px; font-weight:600; padding:4px 9px; border-radius:6px; background:rgba(255,255,255,.03); border:1px solid currentColor; cursor:pointer; transition:transform .15s,background .15s,box-shadow .15s; outline:none; }
+          .disc-impact-col.up .disc-impact-chip { color:var(--sage); }
+          .disc-impact-col.dn .disc-impact-chip { color:var(--clay); }
+          .disc-impact-chip:hover,.disc-impact-chip:focus-visible { transform:translateY(-1px); background:rgba(255,255,255,.06); box-shadow:0 0 8px currentColor; }
+          .disc-impact-more { font-family:'DM Mono',monospace; font-size:10px; color:var(--text-3); padding:4px 6px; letter-spacing:.04em; cursor:default; }
+          .disc-news-foot { margin-top:10px; padding:8px 12px; font-size:9.5px; color:var(--text-3); line-height:1.55; font-style:italic; border-top:1px dashed rgba(201,168,76,.14); padding-top:10px; }
+          @media (max-width:640px){ .disc-news-impact { grid-template-columns:1fr; } .disc-news-head { font-size:17px; } .disc-pulse-body { font-size:14.5px; } }
+        </style>
+<parameter name="new_string">        <style>
+          /* Market Intelligence Brief — interactive graphics */
+          .brief-regime { display:flex; align-items:center; gap:8px; padding:8px 12px; margin-bottom:12px; border-radius:8px; background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.18); border-left:3px solid var(--gold); font-size:11.5px; color:var(--cream-dim); font-style:italic; line-height:1.5; }
+          .brief-regime-dot { width:6px; height:6px; border-radius:50%; background:var(--gold); box-shadow:0 0 6px var(--gold); flex-shrink:0; }
+          .brief-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:10px; }
+          .brief-block { background:rgba(0,0,0,.22); border:1px solid var(--border); border-radius:var(--r); padding:12px 13px; }
+          .brief-block-hdr { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
+          .brief-block-hdr > span:first-child { font-size:9.5px; letter-spacing:.16em; color:var(--text-3); text-transform:uppercase; font-weight:700; }
+          .brief-block-sub { font-size:9px; color:var(--text-3); letter-spacing:.04em; font-style:italic; }
+          .brief-sec-row { margin-bottom:8px; }
+          .brief-sec-row:last-child { margin-bottom:0; }
+          .brief-sec-lbl { font-size:9px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; margin-bottom:5px; }
+          .brief-sec-lbl.up { color:var(--sage); }
+          .brief-sec-lbl.dn { color:var(--clay); }
+          .brief-sec-list { display:flex; flex-wrap:wrap; gap:5px; }
+          .brief-sec { display:inline-flex; align-items:center; gap:6px; padding:5px 9px; border-radius:6px; font-size:11px; font-weight:500; cursor:pointer; transition:transform .15s,background .15s,border-color .15s; outline:none; border:1px solid currentColor; }
+          .brief-sec:hover,.brief-sec:focus-visible { transform:translateY(-1px); background:rgba(255,255,255,.04); }
+          .brief-sec-fav { color:var(--sage); background:rgba(107,170,117,.06); }
+          .brief-sec-avo { color:var(--clay); background:rgba(192,113,79,.06); }
+          .brief-sec-sym { font-family:'DM Mono',monospace; font-size:9.5px; opacity:.75; letter-spacing:.04em; }
+          .brief-risk { margin-bottom:10px; }
+          .brief-risk:last-child { margin-bottom:0; }
+          .brief-risk-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px; }
+          .brief-risk-lbl { font-size:11.5px; color:var(--cream); font-weight:500; }
+          .brief-risk-pct { font-family:'DM Mono',monospace; font-size:11.5px; font-weight:700; }
+          .brief-risk-bar { height:5px; background:var(--noir-3); border-radius:3px; overflow:hidden; margin-bottom:4px; }
+          .brief-risk-bar-fill { height:100%; border-radius:3px; transition:width 1s cubic-bezier(.4,0,.2,1); }
+          .brief-risk-impact { font-size:10.5px; color:var(--text-2); line-height:1.5; font-style:italic; }
+          .brief-factor { margin-bottom:11px; }
+          .brief-factor:last-child { margin-bottom:0; }
+          .brief-factor-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px; font-family:'DM Mono',monospace; font-size:10.5px; }
+          .brief-factor-a { color:var(--gold-light); font-weight:600; }
+          .brief-factor-b { color:var(--text-2); }
+          .brief-factor-bar { height:5px; background:var(--noir-3); border-radius:3px; overflow:hidden; position:relative; margin-bottom:4px; }
+          .brief-factor-fill { height:100%; background:linear-gradient(90deg,var(--gold-dim),var(--gold-light)); border-radius:3px; transition:width 1s cubic-bezier(.4,0,.2,1); box-shadow:0 0 8px rgba(201,168,76,.18); }
+          .brief-factor-note { font-size:10.5px; color:var(--text-2); line-height:1.5; font-style:italic; }
+        </style>
         <div class="disc-sec">
           <div class="disc-sec-hdr"><span>Top Movers</span><span class="disc-sec-cnt">Click to analyze</span></div>
           <div class="disc-movers" id="discMoversNow"></div>
@@ -1998,6 +2073,15 @@ select:focus, textarea:focus {
         <div class="disc-sec">
           <div class="disc-sec-hdr"><span>Earnings Today</span><span class="disc-sec-cnt">Beat / miss · EPS · reaction</span></div>
           <div class="disc-earnings" id="discEarnings"></div>
+        </div>
+        <div class="disc-sec">
+          <div class="disc-sec-hdr"><span>Market Intelligence Brief</span><span class="disc-sec-cnt">Interactive — hover bars · click sectors</span></div>
+          <div id="discBrief"></div>
+        </div>
+        <div class="disc-sec">
+          <div class="disc-sec-hdr"><span>Top Financial News &amp; Stock Impact</span><span class="disc-sec-cnt">Trusted sources · click any ticker to analyze</span></div>
+          <div class="disc-news" id="discNews"></div>
+          <div class="disc-news-foot">Sources: Bloomberg, Reuters, WSJ, FT, CNBC, AP, Federal Reserve. Impact estimates are AI-generated based on the news content + sector exposure — directional only, not financial advice.</div>
         </div>
       </div>
       <div class="disc-pane" data-disc-pane="macro">
@@ -2016,7 +2100,7 @@ select:focus, textarea:focus {
   </div>
   <script>
     (function(){
-      var _discMovers=[{sym:'NVDA',chg:'+3.42%',up:true},{sym:'AAPL',chg:'+1.22%',up:true},{sym:'TSLA',chg:'-2.14%',up:false},{sym:'META',chg:'+1.85%',up:true},{sym:'AMZN',chg:'-0.84%',up:false},{sym:'MSFT',chg:'+0.92%',up:true},{sym:'GOOGL',chg:'+0.68%',up:true},{sym:'AMD',chg:'+2.15%',up:true}];
+      var _discMovers=[{sym:'NVDA',chg:'+3.42%',up:true},{sym:'AAPL',chg:'+1.22%',up:true},{sym:'TSLA',chg:'-2.14%',up:false},{sym:'META',chg:'+1.85%',up:true},{sym:'AMZN',chg:'-0.84%',up:false},{sym:'MSFT',chg:'+0.92%',up:true},{sym:'GOOGL',chg:'+0.68%',up:true},{sym:'AMD',chg:'+2.15%',up:true},{sym:'AVGO',chg:'+1.42%',up:true},{sym:'PLTR',chg:'+4.18%',up:true},{sym:'NFLX',chg:'-1.34%',up:false},{sym:'COST',chg:'+0.54%',up:true},{sym:'JPM',chg:'-0.62%',up:false},{sym:'V',chg:'+0.78%',up:true}];
       var _discSectors=[{n:'Technology',c:'+1.42%',up:true},{n:'Financials',c:'+0.54%',up:true},{n:'Healthcare',c:'-0.23%',up:false},{n:'Energy',c:'+1.12%',up:true},{n:'Utilities',c:'-0.42%',up:false},{n:'Consumer Disc.',c:'+0.28%',up:true},{n:'Real Estate',c:'-0.68%',up:false},{n:'Industrials',c:'+0.81%',up:true},{n:'Materials',c:'+0.45%',up:true},{n:'Staples',c:'-0.12%',up:false}];
       var _discEarnings=[{sym:'NFLX',beat:'beat',eps:'$5.42',chg:'+4.2%',up:true},{sym:'TSLA',beat:'miss',eps:'$0.72',chg:'-3.1%',up:false},{sym:'JPM',beat:'beat',eps:'$4.81',chg:'+1.2%',up:true},{sym:'BAC',beat:'beat',eps:'$0.92',chg:'+0.8%',up:true}];
       var _discCrypto=[{sym:'BTC',chg:'+2.14%',up:true},{sym:'ETH',chg:'+1.85%',up:true},{sym:'SOL',chg:'+4.32%',up:true},{sym:'XRP',chg:'-1.22%',up:false},{sym:'ADA',chg:'+0.68%',up:true},{sym:'DOGE',chg:'+3.12%',up:true}];
@@ -2027,7 +2111,129 @@ select:focus, textarea:focus {
       window.discSetTab=function(t,el){try{document.querySelectorAll('.disc-tab').forEach(function(b){b.classList.remove('active');b.setAttribute('aria-selected','false');});if(el){el.classList.add('active');el.setAttribute('aria-selected','true');}document.querySelectorAll('.disc-pane').forEach(function(p){p.classList.toggle('active',p.getAttribute('data-disc-pane')===t);});}catch(e){}};
       window.discOpenSym=function(sym){sym=String(sym||'').toUpperCase().trim();if(!sym)return;try{var inp=document.getElementById('stockTicker')||document.getElementById('intelStockInput')||document.getElementById('compA');if(inp){inp.value=sym;}if(typeof updateStockDecision==='function') updateStockDecision();if(typeof showPanel==='function'){var items=document.querySelectorAll('.nav-item');showPanel('stockcheck',items&&items[2]?items[2]:null);}}catch(e){}};
       window.discSearch=function(q){q=String(q||'').trim();if(!q)return;var sym=q.toUpperCase().replace(/[^A-Z0-9.]/g,'');if(sym)window.discOpenSym(sym);};
-      function paint(){var m=document.getElementById('discMoversNow');if(m)m.innerHTML=movHTML(_discMovers);var s=document.getElementById('discSectors');if(s)s.innerHTML=secHTML(_discSectors);var e=document.getElementById('discEarnings');if(e)e.innerHTML=earnHTML(_discEarnings);var c=document.getElementById('discMoversCrypto');if(c)c.innerHTML=movHTML(_discCrypto);}
+      // Today's Pulse — editorial summary written to wrap the day's news into one read
+      var _discPulse={
+        tone:'risk-on',
+        toneLbl:'Risk-on',
+        body:'Markets opened <em>risk-on</em> as the Fed signaled one more cut into Q1 and tighter oil supply lifted energy names. Tech and long-duration growth lead — banks and transports feel the squeeze. A hotter Core PCE print is the yellow flag worth watching late-week.',
+        tags:['Tech leading','Energy bid','Banks pressured','Inflation watch']
+      };
+      // News + impact (mock; structured for /api/news swap later)
+      var _discNews=[
+        {head:'Fed signals one more rate cut in Q1; lower-for-longer rate path priced in', src:'Reuters', when:'2h ago',
+         summary:'The cut path supports growth multiples and long-duration assets, while compressing net interest margins for banks. Markets are reading this as a clear risk-on signal for tech.',
+         winners:[{sym:'NVDA',chg:'+2.1%'},{sym:'META',chg:'+1.8%'},{sym:'AMZN',chg:'+1.5%'}],
+         losers:[{sym:'JPM',chg:'-1.4%'},{sym:'BAC',chg:'-1.2%'},{sym:'KRE',chg:'-1.6%'}],
+         winnersExtra:2, losersExtra:2},
+        {head:'OPEC+ extends production cuts through Q2; oil prices climb 3%', src:'Bloomberg', when:'4h ago',
+         summary:'Tighter supply lifts energy names broadly. Airlines, freight, and consumer discretionary outside mega-cap feel margin pressure as fuel costs rise into peak travel season.',
+         winners:[{sym:'XOM',chg:'+2.4%'},{sym:'CVX',chg:'+2.1%'},{sym:'XLE',chg:'+2.6%'}],
+         losers:[{sym:'UAL',chg:'-2.4%'},{sym:'DAL',chg:'-2.2%'},{sym:'TSLA',chg:'-1.4%'}],
+         winnersExtra:2, losersExtra:2},
+        {head:'NVIDIA AI infrastructure spend guidance raised by hyperscalers', src:'WSJ', when:'6h ago',
+         summary:'Microsoft and Meta both raised datacenter capex, reinforcing an 18–24 month runway for AI compute leaders. Equipment makers and chip-design suppliers benefit downstream.',
+         winners:[{sym:'NVDA',chg:'+3.2%'},{sym:'AVGO',chg:'+2.4%'},{sym:'ASML',chg:'+1.7%'}],
+         losers:[{sym:'INTC',chg:'-1.2%'},{sym:'IBM',chg:'-0.6%'},{sym:'WDC',chg:'-0.5%'}],
+         winnersExtra:2, losersExtra:2},
+        {head:'Core PCE comes in hotter than expected; services inflation sticky', src:'Federal Reserve / CNBC', when:'1d ago',
+         summary:'Reaccelerating inflation could force a hawkish pivot. Long-duration growth is most exposed if rate cuts get pushed back; defensives and quality-yield names are catching a bid.',
+         winners:[{sym:'XLU',chg:'+0.9%'},{sym:'XLV',chg:'+0.7%'},{sym:'SCHD',chg:'+0.5%'}],
+         losers:[{sym:'TSLA',chg:'-2.4%'},{sym:'PLTR',chg:'-3.1%'},{sym:'ARKK',chg:'-2.8%'}],
+         winnersExtra:2, losersExtra:2}
+      ];
+      function pulseHTML(p){
+        if(!p) return '';
+        var d=new Date(); var dayLbl=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()];
+        var tags=(p.tags||[]).map(function(t){return '<span class="disc-pulse-tag">'+_escd(t)+'</span>';}).join('');
+        return '<div class="disc-pulse">'
+          +'<div class="disc-pulse-eye">Today\'s Pulse · '+dayLbl+'<span class="disc-pulse-tone '+_escd(p.tone||'mixed')+'">'+_escd(p.toneLbl||'Mixed')+'</span></div>'
+          +'<div class="disc-pulse-body">'+p.body+'</div>'
+          +(tags?'<div class="disc-pulse-foot">'+tags+'</div>':'')
+        +'</div>';
+      }
+      function newsHTML(rows){
+        function chip(x,sideClass){
+          return '<span class="disc-impact-chip" tabindex="0" role="button" onclick="discOpenSym(\''+_escd(x.sym)+'\')" onkeydown="if(event.key===&quot;Enter&quot;||event.key===&quot; &quot;){event.preventDefault();discOpenSym(\''+_escd(x.sym)+'\')}" title="Analyze '+_escd(x.sym)+'">'+_escd(x.sym)+' '+_escd(x.chg)+'</span>';
+        }
+        var pulse = pulseHTML(_discPulse);
+        return pulse + rows.map(function(n){
+          var winChips=n.winners.map(function(w){return chip(w,'up');}).join('') + (n.winnersExtra?'<span class="disc-impact-more">+'+n.winnersExtra+' more</span>':'');
+          var loseChips=n.losers.map(function(l){return chip(l,'dn');}).join('')  + (n.losersExtra ?'<span class="disc-impact-more">+'+n.losersExtra +' more</span>':'');
+          return '<div class="disc-news-row">'
+            +'<div class="disc-news-meta-row"><span class="disc-news-src-pill">'+_escd(n.src)+'</span><span class="disc-news-time">'+_escd(n.when)+'</span></div>'
+            +'<div class="disc-news-head">'+_escd(n.head)+'</div>'
+            +'<div class="disc-news-summary">'+_escd(n.summary)+'</div>'
+            +'<div class="disc-news-impact">'
+              +'<div class="disc-impact-col up"><div class="disc-impact-lbl">▲ Helps</div><div class="disc-impact-syms">'+winChips+'</div></div>'
+              +'<div class="disc-impact-col dn"><div class="disc-impact-lbl">▼ Hurts</div><div class="disc-impact-syms">'+loseChips+'</div></div>'
+            +'</div>'
+          +'</div>';
+        }).join('');
+      }
+
+      // Market Intelligence Brief — interactive graphics (sector tilts + risk probabilities + factor scales)
+      var _discBrief={
+        regime:'Mid-cycle consolidation · neutral signals · stock-picker\'s tape',
+        sectors:{
+          favored:[{name:'Technology',sym:'XLK',note:'AI infra + cloud earnings resilience'},{name:'Healthcare',sym:'XLV',note:'Defensive growth optionality'},{name:'Utilities',sym:'XLU',note:'Volatility ballast'}],
+          avoided:[{name:'Regional Banks',sym:'KRE',note:'Deposit pressure + CRE exposure'},{name:'Consumer Discretionary',sym:'XLY',note:'Excess savings depleted (ex mega-caps)'},{name:'Energy',sym:'XLE',note:'No directional catalyst'}]
+        },
+        risks:[
+          {label:'Inflation reacceleration',pct:35,impact:'Hawkish Fed pivot — compress growth multiples'},
+          {label:'Earnings disappointment',pct:30,impact:'Tech mega-caps face tougher comps'},
+          {label:'Geopolitical escalation',pct:25,impact:'Energy spike + supply chain pressure'}
+        ],
+        factors:[
+          {a:'Growth',b:'Value',tilt:0.62,note:'Quality growth still leads, spread compressed not reversed'},
+          {a:'Large Cap',b:'Small Cap',tilt:0.78,note:'Small caps need real Fed easing — not here yet'},
+          {a:'Domestic',b:'International',tilt:0.66,note:'US exceptionalism near-term; EFA at 12x looks tempting longer-term'}
+        ]
+      };
+      function briefHTML(b){
+        var fav=b.sectors.favored.map(function(s){return '<span class="brief-sec brief-sec-fav" tabindex="0" role="button" onclick="discOpenSym(\''+_escd(s.sym)+'\')" title="'+_escd(s.note)+' · click to analyze '+_escd(s.sym)+'">'+_escd(s.name)+' <span class="brief-sec-sym">'+_escd(s.sym)+'</span></span>';}).join('');
+        var avo=b.sectors.avoided.map(function(s){return '<span class="brief-sec brief-sec-avo" tabindex="0" role="button" onclick="discOpenSym(\''+_escd(s.sym)+'\')" title="'+_escd(s.note)+' · click to analyze '+_escd(s.sym)+'">'+_escd(s.name)+' <span class="brief-sec-sym">'+_escd(s.sym)+'</span></span>';}).join('');
+        var risks=b.risks.map(function(r){
+          var color=r.pct>=33?'var(--clay)':r.pct>=20?'var(--gold)':'var(--sage)';
+          return '<div class="brief-risk" title="'+_escd(r.impact)+'">'
+            +'<div class="brief-risk-row"><span class="brief-risk-lbl">'+_escd(r.label)+'</span><span class="brief-risk-pct" style="color:'+color+'">'+r.pct+'%</span></div>'
+            +'<div class="brief-risk-bar"><div class="brief-risk-bar-fill" style="width:'+r.pct+'%;background:linear-gradient(90deg,'+color+',rgba(255,255,255,.18))"></div></div>'
+            +'<div class="brief-risk-impact">'+_escd(r.impact)+'</div>'
+          +'</div>';
+        }).join('');
+        var factors=b.factors.map(function(f){
+          var pctA=Math.round(f.tilt*100), pctB=100-pctA;
+          return '<div class="brief-factor" title="'+_escd(f.note)+'">'
+            +'<div class="brief-factor-row"><span class="brief-factor-a">'+_escd(f.a)+' '+pctA+'%</span><span class="brief-factor-b">'+pctB+'% '+_escd(f.b)+'</span></div>'
+            +'<div class="brief-factor-bar"><div class="brief-factor-fill" style="width:'+pctA+'%"></div></div>'
+            +'<div class="brief-factor-note">'+_escd(f.note)+'</div>'
+          +'</div>';
+        }).join('');
+        return ''
+          +'<div class="brief-regime"><span class="brief-regime-dot"></span>'+_escd(b.regime)+'</div>'
+          +'<div class="brief-grid">'
+            +'<div class="brief-block">'
+              +'<div class="brief-block-hdr"><span>Sector Rotation</span><span class="brief-block-sub">Click any sector to analyze the ETF</span></div>'
+              +'<div class="brief-sec-row"><div class="brief-sec-lbl up">Favored</div><div class="brief-sec-list">'+fav+'</div></div>'
+              +'<div class="brief-sec-row"><div class="brief-sec-lbl dn">Avoided</div><div class="brief-sec-list">'+avo+'</div></div>'
+            +'</div>'
+            +'<div class="brief-block">'
+              +'<div class="brief-block-hdr"><span>Risk Factor Probabilities</span><span class="brief-block-sub">Hover for impact</span></div>'
+              +risks
+            +'</div>'
+            +'<div class="brief-block">'
+              +'<div class="brief-block-hdr"><span>Factor Tilts</span><span class="brief-block-sub">Where the regime is leaning</span></div>'
+              +factors
+            +'</div>'
+          +'</div>';
+      }
+      function paint(){
+        var m=document.getElementById('discMoversNow');if(m)m.innerHTML=movHTML(_discMovers);
+        var s=document.getElementById('discSectors');if(s)s.innerHTML=secHTML(_discSectors);
+        var e=document.getElementById('discEarnings');if(e)e.innerHTML=earnHTML(_discEarnings);
+        var c=document.getElementById('discMoversCrypto');if(c)c.innerHTML=movHTML(_discCrypto);
+        var nw=document.getElementById('discNews');if(nw)nw.innerHTML=newsHTML(_discNews);
+        var br=document.getElementById('discBrief');if(br)br.innerHTML=briefHTML(_discBrief);
+      }
       if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',paint); else paint();
     })();
   </script>
@@ -2037,8 +2243,7 @@ select:focus, textarea:focus {
     <div style="display:grid;grid-template-columns:1.15fr .85fr;gap:16px">
       <!-- HOW TO USE -->
       <div class="card">
-        <div style="font-size:8px;letter-spacing:.26em;color:#8f7a45;text-transform:uppercase;font-weight:600;margin-bottom:6px">How to use this system</div>
-        <div style="font-family:Cormorant Garamond,serif;font-size:22px;color:var(--cream);font-weight:500;margin-bottom:14px">Clear instructions for best results</div>
+        <div style="font-size:8px;letter-spacing:.26em;color:#8f7a45;text-transform:uppercase;font-weight:600;margin-bottom:14px">How to use this system</div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
           <div style="background:var(--noir-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px">
             <div style="font-size:11px;font-weight:600;letter-spacing:.18em;color:var(--gold);margin-bottom:6px">01</div>
@@ -2056,13 +2261,94 @@ select:focus, textarea:focus {
             <div style="font-size:11px;line-height:1.6;color:var(--text-2)">Clear action plan, three strategic approaches, and drill-down analysis only when needed.</div>
           </div>
         </div>
+        <style>
+          .doc-input-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+          .doc-input { background:var(--noir-2); border:1px solid var(--border); border-radius:var(--r); overflow:hidden; transition:border-color .2s; }
+          .doc-input[open] { border-color:var(--border-2); }
+          .doc-input > summary { list-style:none; cursor:pointer; padding:9px 12px; font-size:11px; color:var(--text-1); display:flex; align-items:center; justify-content:space-between; gap:10px; user-select:none; transition:background .15s, color .15s; }
+          .doc-input > summary::-webkit-details-marker { display:none; }
+          .doc-input > summary:hover { background:var(--noir-3); color:var(--cream); }
+          .doc-input > summary .doc-chev { font-family:'DM Mono',monospace; font-size:10px; color:var(--gold-dim); transition:transform .25s ease, color .15s; flex-shrink:0; }
+          .doc-input[open] > summary .doc-chev { transform:rotate(180deg); color:var(--gold); }
+          .doc-input-body { padding:0 12px 12px; font-size:11px; line-height:1.65; color:var(--text-2); animation:fadeUp .2s ease; }
+          .doc-input-body strong { color:var(--cream-dim); font-weight:600; }
+        </style>
         <div style="background:linear-gradient(180deg,var(--noir-3),var(--noir-2));border:1px solid var(--border-2);border-radius:var(--r-lg);padding:14px">
-          <div style="font-size:12px;font-weight:600;color:var(--gold-light);margin-bottom:10px">Documents &amp; inputs that unlock the strongest analysis</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
-            <div style="background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--text-1)">Brokerage CSV or holdings export</div>
-            <div style="background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--text-1)">Portfolio screenshot for quick intake</div>
-            <div style="background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--text-1)">Cash available to invest now</div>
-            <div style="background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--text-1)">Optional: avg cost &amp; contribution plan</div>
+          <div style="font-size:12px;font-weight:600;color:var(--gold-light);margin-bottom:10px">Documents &amp; inputs that unlock the strongest analysis <span style="font-size:10px;font-weight:500;color:var(--text-3);font-style:italic;margin-left:4px">— click any to learn why</span></div>
+          <div class="doc-input-grid">
+            <details class="doc-input">
+              <summary><span>Brokerage CSV or holdings export</span><span class="doc-chev">▾</span></summary>
+              <div class="doc-input-body"><strong>Why it matters:</strong> A CSV with ticker, shares, cost basis, and current value gives the AI complete transparency. It can spot exactly where you're up, where you're underwater, and which positions to trim or hold for tax efficiency. This is the cleanest input.</div>
+            </details>
+            <details class="doc-input">
+              <summary><span>Portfolio screenshot for quick intake</span><span class="doc-chev">▾</span></summary>
+              <div class="doc-input-body"><strong>Why it matters:</strong> No CSV? Drop a screenshot from Robinhood, Schwab, Fidelity, or IBKR. The AI extracts holdings via vision — multi-screen supported, fractional shares handled. Faster than typing, slightly less precise than CSV (no cost-basis line).</div>
+            </details>
+            <details class="doc-input">
+              <summary><span>Cash available to invest now</span><span class="doc-chev">▾</span></summary>
+              <div class="doc-input-body"><strong>Why it matters:</strong> Without a cash number, deployment plans stay generic. Tell the engine you have $1,000 / $5,000 / $25,000 to deploy and it returns specific dollar allocations per ticker, sized to your lens cap (Conservative 5% · Balanced 12% · Aggressive 20%).</div>
+            </details>
+            <details class="doc-input">
+              <summary><span>Optional: avg cost &amp; contribution plan</span><span class="doc-chev">▾</span></summary>
+              <div class="doc-input-body"><strong>Why it matters:</strong> Average cost lets the AI distinguish a long-term winner from a recently-entered position. Your weekly/monthly contribution plan turns the analysis into a live cadence — what to buy on each scheduled deposit and when to scale up.</div>
+            </details>
+          </div>
+        </div>
+
+        <!-- News snapshot — fills the empty footer space, mirrors Discovery without duplicating it -->
+        <style>
+          .miniwire { margin-top:14px; padding:14px 16px; border-radius:var(--r-lg); background:linear-gradient(180deg,var(--noir-3),var(--noir-2)); border:1px solid rgba(201,168,76,.18); }
+          .miniwire-hdr { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+          .miniwire-eye { font-size:9.5px; letter-spacing:.18em; color:var(--gold); text-transform:uppercase; font-weight:700; display:inline-flex; align-items:center; gap:7px; }
+          .miniwire-eye::before { content:''; width:5px; height:5px; border-radius:50%; background:currentColor; box-shadow:0 0 6px currentColor; }
+          .miniwire-tone { font-size:9px; letter-spacing:.14em; padding:2px 8px; border-radius:999px; font-weight:700; border:1px solid currentColor; font-family:'DM Mono',monospace; }
+          .miniwire-tone.risk-on { color:var(--sage); }
+          .miniwire-tone.risk-off { color:var(--clay); }
+          .miniwire-tone.mixed { color:var(--gold); }
+          .miniwire-pulse { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:13.5px; line-height:1.55; color:var(--cream-dim); margin-bottom:10px; max-width:560px; }
+          .miniwire-pulse em { font-style:italic; color:var(--gold-light); font-weight:500; }
+          .miniwire-list { display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+          .miniwire-row { display:flex; align-items:flex-start; gap:10px; padding:7px 10px; border-radius:var(--r); background:rgba(0,0,0,.22); border:1px solid var(--border); cursor:pointer; transition:border-color .2s,background .2s; }
+          .miniwire-row:hover { border-color:var(--border-2); background:rgba(0,0,0,.32); }
+          .miniwire-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+          .miniwire-dot.up { background:var(--sage); box-shadow:0 0 6px var(--sage); }
+          .miniwire-dot.dn { background:var(--clay); box-shadow:0 0 6px var(--clay); }
+          .miniwire-dot.mid { background:var(--gold); box-shadow:0 0 6px var(--gold); }
+          .miniwire-text { flex:1; min-width:0; }
+          .miniwire-head { font-size:11.5px; color:var(--cream); line-height:1.4; font-weight:500; }
+          .miniwire-meta { font-family:'DM Mono',monospace; font-size:9.5px; color:var(--text-3); letter-spacing:.04em; margin-top:3px; }
+          .miniwire-meta b { color:var(--gold); font-weight:700; }
+          .miniwire-cta { font-family:'DM Mono',monospace; font-size:10px; color:var(--gold); letter-spacing:.06em; text-transform:uppercase; font-weight:600; cursor:pointer; background:transparent; border:1px solid rgba(201,168,76,.32); padding:6px 12px; border-radius:6px; transition:background .15s,border-color .15s; }
+          .miniwire-cta:hover { background:rgba(201,168,76,.08); border-color:var(--gold-dim); }
+        </style>
+        <div class="miniwire">
+          <div class="miniwire-hdr">
+            <div class="miniwire-eye">Today's Pulse · Snapshot<span class="miniwire-tone risk-on">Risk-on</span></div>
+            <button type="button" class="miniwire-cta" onclick="document.getElementById('discoveryLayer')?.scrollIntoView({behavior:'smooth',block:'start'});var t=document.querySelector('.disc-tab[data-disc-tab=&quot;now&quot;]');if(t)discSetTab('now',t);">Open Discovery →</button>
+          </div>
+          <div class="miniwire-pulse">Markets are <em>risk-on</em> as the Fed signals one more cut and tighter oil supply lifts energy. Tech leads, banks lag, sticky inflation is the late-week wildcard.</div>
+          <div class="miniwire-list">
+            <div class="miniwire-row" onclick="document.getElementById('discoveryLayer')?.scrollIntoView({behavior:'smooth',block:'start'});var t=document.querySelector('.disc-tab[data-disc-tab=&quot;now&quot;]');if(t)discSetTab('now',t);">
+              <span class="miniwire-dot up"></span>
+              <div class="miniwire-text">
+                <div class="miniwire-head">Fed signals one more rate cut in Q1; lower-for-longer path priced in</div>
+                <div class="miniwire-meta"><b>Reuters</b> · 2h ago · helps NVDA META AMZN · hurts JPM BAC</div>
+              </div>
+            </div>
+            <div class="miniwire-row" onclick="document.getElementById('discoveryLayer')?.scrollIntoView({behavior:'smooth',block:'start'});var t=document.querySelector('.disc-tab[data-disc-tab=&quot;now&quot;]');if(t)discSetTab('now',t);">
+              <span class="miniwire-dot up"></span>
+              <div class="miniwire-text">
+                <div class="miniwire-head">OPEC+ extends production cuts through Q2; oil prices climb 3%</div>
+                <div class="miniwire-meta"><b>Bloomberg</b> · 4h ago · helps XOM CVX XLE · hurts UAL DAL</div>
+              </div>
+            </div>
+            <div class="miniwire-row" onclick="document.getElementById('discoveryLayer')?.scrollIntoView({behavior:'smooth',block:'start'});var t=document.querySelector('.disc-tab[data-disc-tab=&quot;now&quot;]');if(t)discSetTab('now',t);">
+              <span class="miniwire-dot mid"></span>
+              <div class="miniwire-text">
+                <div class="miniwire-head">Core PCE comes in hotter than expected; services inflation sticky</div>
+                <div class="miniwire-meta"><b>Federal Reserve / CNBC</b> · 1d ago · helps XLU XLV SCHD · hurts TSLA PLTR</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -3299,9 +3585,9 @@ select:focus, textarea:focus {
       </div>
       <div data-color-mode="crimson" onclick="setColorMode('crimson')" style="display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);border:1px solid var(--border);cursor:pointer">
         <div style="display:flex;gap:3px">
-          <div style="width:12px;height:12px;border-radius:3px;background:#050506"></div>
-          <div style="width:12px;height:12px;border-radius:3px;background:#7A1E26"></div>
-          <div style="width:12px;height:12px;border-radius:3px;background:#C39455"></div>
+          <div style="width:12px;height:12px;border-radius:3px;background:#08070A"></div>
+          <div style="width:12px;height:12px;border-radius:3px;background:#A0282E"></div>
+          <div style="width:12px;height:12px;border-radius:3px;background:#D4A574"></div>
         </div>
         <span data-mode-lbl style="font-size:10px;color:var(--text-2)">Crimson Apex</span>
         <span data-mode-dot style="font-size:8px;color:var(--gold);margin-left:auto;visibility:hidden">&#9679;</span>
@@ -8283,13 +8569,22 @@ function setColorMode(mode){
     root.style.setProperty('--cream','#FFD700');root.style.setProperty('--cream-dim','#d4af37');
     root.style.setProperty('--text-1','#d4d4d4');root.style.setProperty('--text-2','#737373');
   }else if(mode==='crimson'){
-    // Crimson Apex — BLACK-first surfaces, crimson as accent only, brass/gold secondary
-    root.style.setProperty('--noir','#050506');root.style.setProperty('--noir-1','#0A0A0B');
-    root.style.setProperty('--noir-2','#101012');root.style.setProperty('--noir-3','#16161A');
-    root.style.setProperty('--gold','#7A1E26');root.style.setProperty('--gold-light','#C39455');
-    root.style.setProperty('--gold-dim','#5A1620');root.style.setProperty('--gold-muted','rgba(122,30,38,.10)');
-    root.style.setProperty('--cream','#E8D8C0');root.style.setProperty('--cream-dim','#A89888');
-    root.style.setProperty('--text-1','#D0C0A8');root.style.setProperty('--text-2','#7A6E5A');
+    // Crimson Apex — Copilot / Monarch-style refinement:
+    // black-first surfaces, balanced deep-ruby PRIMARY + warm antique gold SECONDARY.
+    // Crimson is a strong accent but not a wash; gold carries equal weight for premium feel.
+    root.style.setProperty('--noir','#08070A');root.style.setProperty('--noir-1','#0E0C10');
+    root.style.setProperty('--noir-2','#15131A');root.style.setProperty('--noir-3','#1E1B24');
+    root.style.setProperty('--gold','#A0282E');          /* refined deep-ruby primary */
+    root.style.setProperty('--gold-light','#D4A574');    /* warm antique gold — secondary */
+    root.style.setProperty('--gold-dim','#681A22');      /* deep crimson */
+    root.style.setProperty('--gold-muted','rgba(160,40,46,.10)'); /* subtle red glow */
+    root.style.setProperty('--cream','#F0E0C8');
+    root.style.setProperty('--cream-dim','#B8A088');
+    root.style.setProperty('--text-1','#D8C8B0');
+    root.style.setProperty('--text-2','#8A7A66');
+    /* Borders read warm + faintly crimson — restrained, not red-heavy */
+    root.style.setProperty('--border','rgba(160,40,46,.10)');
+    root.style.setProperty('--border-2','rgba(212,165,116,.30)');
   }else{
     // Conservative Luxury (default)
     root.style.setProperty('--noir','#060508');root.style.setProperty('--noir-1','#0c0a10');
