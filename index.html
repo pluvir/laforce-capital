@@ -1259,11 +1259,13 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       <div class="key-dot" id="liveStatusDot" style="background:var(--text-3)"></div>
       <span id="liveStatusTxt">Demo data</span>
     </div>
-    <div class="key-btn" onclick="showKeyModal()">
+    <!-- Beta: API key UI hidden — AI Diagnosis routes through backend aiCall() and does not require a user key.
+         Elements kept in DOM (display:none) so getKey/saveKey/clearKey and other legacy paths can still reference them safely. -->
+    <div class="key-btn" onclick="showKeyModal()" style="display:none" aria-hidden="true">
       <div class="key-dot" id="keyDot"></div>
       <span id="keyChipTxt">Set API Key</span>
     </div>
-    <input type="password" id="topbarKeyInput" placeholder="Paste key, press Enter"
+    <input type="password" id="topbarKeyInput" placeholder="Paste key, press Enter" style="display:none" aria-hidden="true" tabindex="-1"
       onkeydown="if(event.key==='Enter'){_apiKey=this.value.trim();try{sessionStorage.setItem('lfc_key',this.value.trim());localStorage.setItem('inv_engine_key',this.value.trim());}catch(e){}updateKeyBanner();this.blur();}"/>
   </div>
 </div>
@@ -3545,8 +3547,8 @@ function getKey(){
 // KEY
 function updateKeyBanner(){
   var k=getKey();var dot=document.getElementById('keyDot');var txt=document.getElementById('keyChipTxt');
-  if(k&&k.length>10){dot.classList.add('on');if(txt)txt.textContent='Key Active';}
-  else{dot.classList.remove('on');if(txt)txt.textContent='Set API Key';}
+  if(k&&k.length>10){if(dot)dot.classList.add('on');if(txt)txt.textContent='Key Active';}
+  else{if(dot)dot.classList.remove('on');if(txt)txt.textContent='Set API Key';}
 }
 function showKeyModal(){document.getElementById('apiModal').classList.add('open');}
 function saveKey(){
