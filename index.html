@@ -128,6 +128,35 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
 [data-color-mode="crimson"] .disc-driver.is-active{box-shadow:0 0 0 1px currentColor inset,0 0 18px currentColor;background:rgba(155,27,48,.10)}
 /* Focus ring uses crimson at full presence */
 [data-color-mode="crimson"] :focus-visible{outline-color:var(--gold) !important}
+/* ── Beta onboarding — minimal "Start here" highlight on Health card.
+   No layout shift (absolute positioning), no popups, no click capture
+   (pointer-events:none on both glow + label). Auto-fades ~6.5s via CSS. */
+.health-start{position:relative}
+.health-start::after{
+  content:'';position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;
+  border:1px solid rgba(201,168,76,.45);
+  box-shadow:0 0 18px rgba(201,168,76,.22), inset 0 0 14px rgba(201,168,76,.07);
+  animation:healthStartGlow 6.5s ease forwards;
+  z-index:1;
+}
+.health-start-lbl{
+  position:absolute;top:8px;right:12px;z-index:2;pointer-events:none;
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.22em;
+  text-transform:uppercase;font-weight:700;color:#0d0a08;
+  background:linear-gradient(90deg,var(--gold-light),var(--gold));
+  padding:3px 9px;border-radius:999px;
+  box-shadow:0 3px 10px rgba(201,168,76,.32);
+  animation:healthStartLblFade 6.5s ease forwards;
+}
+@keyframes healthStartGlow{
+  0%,70%{opacity:1}
+  100%{opacity:0}
+}
+@keyframes healthStartLblFade{
+  0%{opacity:0;transform:translateY(-3px)}
+  6%,72%{opacity:1;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-2px)}
+}
 /* ── Pilot B — AI Diagnosis preview (secondary to score, mock JSON only) */
 .ai-dx{margin-top:10px;padding:9px 11px;border-radius:var(--r);border:1px solid var(--border);border-left:2px solid var(--gold-dim);background:rgba(0,0,0,.18);display:flex;flex-direction:column;gap:5px}
 .ai-dx[hidden]{display:none}
@@ -2511,7 +2540,8 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
 
   <!-- ROW 1: Health + Confidence + Regime -->
   <div class="g3" style="margin-bottom:14px">
-    <div class="card" style="display:flex;align-items:center;gap:16px">
+    <div class="card health-start" style="display:flex;align-items:center;gap:16px">
+      <span class="health-start-lbl" aria-hidden="true">Start here</span>
       <div class="health-ring">
         <svg width="80" height="80" viewBox="0 0 80 80">
           <circle cx="40" cy="40" r="32" fill="none" stroke="var(--noir-3)" stroke-width="6"/>
