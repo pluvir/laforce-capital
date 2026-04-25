@@ -128,14 +128,29 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
 [data-color-mode="crimson"] .disc-driver.is-active{box-shadow:0 0 0 1px currentColor inset,0 0 18px currentColor;background:rgba(155,27,48,.10)}
 /* Focus ring uses crimson at full presence */
 [data-color-mode="crimson"] :focus-visible{outline-color:var(--gold) !important}
+/* ── Pilot B — AI Diagnosis preview (secondary to score, mock JSON only) */
+.ai-dx{margin-top:10px;padding:9px 11px;border-radius:var(--r);border:1px solid var(--border);border-left:2px solid var(--gold-dim);background:rgba(0,0,0,.18);display:flex;flex-direction:column;gap:5px}
+.ai-dx[hidden]{display:none}
+.ai-dx-eye{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--text-3)}
+.ai-dx-eye::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--gold);box-shadow:0 0 4px var(--gold)}
+.ai-dx-headline{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--cream);line-height:1.45}
+.ai-dx-summary{font-size:11px;line-height:1.5;color:var(--text-1)}
+.ai-dx-row{display:flex;gap:8px;align-items:flex-start;font-size:10.5px;line-height:1.45}
+.ai-dx-lbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);font-weight:700;min-width:62px;padding-top:2px;flex-shrink:0}
+.ai-dx-val{flex:1;color:var(--cream-dim)}
+.ai-dx-drivers{display:flex;flex-wrap:wrap;gap:4px}
+.ai-dx-drv{font-size:9.5px;padding:1.5px 7px;border-radius:999px;border:1px solid var(--border-2);background:rgba(201,168,76,.05);color:var(--gold-light);font-family:'DM Mono',monospace;letter-spacing:.04em}
+.ai-dx-q{font-size:10.5px;color:var(--gold-light);font-style:italic;line-height:1.45;padding-top:4px;border-top:1px dashed rgba(201,168,76,.14)}
 /* ── Phase 3 — Strategy Paths cards ────────────────────────────────── */
 .sp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 @media (max-width:900px){.sp-grid{grid-template-columns:1fr}}
 .sp-card{padding:13px 14px;border-radius:var(--r);border:1px solid var(--border);background:rgba(0,0,0,.22);display:flex;flex-direction:column;gap:8px;transition:border-color .18s ease,transform .18s ease,box-shadow .22s ease;outline:none;min-width:0}
 .sp-card:hover,.sp-card:focus-visible{border-color:var(--border-2);transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.28)}
-.sp-card.sp-def{border-left:3px solid var(--violet,#9B8FC0)}
+.sp-card.sp-cons{border-left:3px solid var(--violet,#9B8FC0)}
 .sp-card.sp-bal{border-left:3px solid var(--gold)}
 .sp-card.sp-agg{border-left:3px solid var(--sage)}
+.sp-edu{font-size:9.5px;color:var(--text-3);font-style:italic;letter-spacing:.02em;margin-top:6px;padding-top:7px;border-top:1px dashed rgba(201,168,76,.14);line-height:1.4}
+.sp-edu-shared{font-size:10px;color:var(--text-3);font-style:italic;margin-top:10px;line-height:1.45;opacity:.8}
 .sp-eye{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);font-weight:700}
 .sp-head{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--gold-light);line-height:1.4;letter-spacing:.005em}
 .sp-changes{display:flex;flex-direction:column;gap:5px;margin:2px 0 4px}
@@ -2510,6 +2525,8 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
         <div style="font-size:8px;letter-spacing:.15em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:4px">Portfolio Health</div>
         <div style="font-family:Cormorant Garamond,serif;font-size:18px;color:var(--cream);margin-bottom:6px" id="healthGrade">-</div>
         <div style="font-size:11px;color:var(--text-2)" id="healthNote">Load portfolio to analyze</div>
+        <!-- Pilot B — AI Diagnosis preview surface (mock JSON, no API call yet) -->
+        <div id="aiDiagnosisEl" class="ai-dx" hidden></div>
       </div>
     </div>
 
@@ -2992,7 +3009,7 @@ function _initialPortfolioState(){
     },
     actionPlan: [],
     deployment: [],
-    strategyPaths: null, /* Phase 3 — { defensive, balanced, aggressive } educational frames */
+    strategyPaths: null, /* Phase 3 — { conservative, balanced, aggressive } educational frames */
     stockAnalysis: null,
     feasibility: null, /* { text, total, cost, gain, pct, when } */
     /* derivatives consumed only by the dashboard hero — kept off meta on purpose */
@@ -3178,19 +3195,21 @@ function computeStrategyPaths(ps){
   var topSym  = conc.topSym || null;
   var topPct  = conc.topPct ? Math.round(conc.topPct) : 0;
   var topPhrase = (topSym && topPct) ? (topSym + ' (' + topPct + '%)') : 'top-weighted name';
-  var growthPhrase = growth ? growth.toFixed(0) + '%' : 'current weight';
+  var growthPhrase = growth ? growth.toFixed(0) + '%' : 'current portfolio mix';
 
   return {
-    defensive: {
-      id: 'defensive',
-      label: 'Defensive',
+    conservative: {
+      id: 'conservative',
+      label: 'Conservative',
       headline: 'Lower volatility. Tighter core anchor.',
       structuralChanges: [
         topPct > 25
           ? 'Top concentration trimmed from ' + topPhrase + ' toward a sub-20% weight'
           : 'Single-name cap held at 20% across the book',
         core < 50
-          ? 'Core index allocation lifted from ' + (core ? core.toFixed(0) + '%' : 'current') + ' toward ~60%'
+          ? (core
+              ? 'Core index allocation lifted from ' + core.toFixed(0) + '% toward ~60%'
+              : 'Core index allocation lifted toward ~60% from current portfolio mix')
           : 'Core index allocation maintained near 60%',
         '5–10% cash buffer held for drawdown re-entry flexibility'
       ],
@@ -3231,7 +3250,9 @@ function computeStrategyPaths(ps){
   };
 }
 
-/* Project ps.strategyPaths into the DOM. Empty state shows a quiet hint. */
+/* Project ps.strategyPaths into the DOM. Empty state shows a quiet hint.
+   Each card carries a short educational note + aria-describedby so it reads
+   as an evaluation frame, never a recommendation. */
 function renderStrategyPaths(){
   var el = document.getElementById('strategyPathsEl'); if (!el) return;
   var ps = window.portfolioState || {};
@@ -3240,20 +3261,23 @@ function renderStrategyPaths(){
     el.innerHTML = '<div style="font-size:11px;color:var(--text-3);padding:6px 0">Strategy paths appear once a portfolio is loaded.</div>';
     return;
   }
-  var order = ['defensive','balanced','aggressive'];
-  var cls = { defensive:'sp-def', balanced:'sp-bal', aggressive:'sp-agg' };
+  var order = ['conservative','balanced','aggressive'];
+  var cls = { conservative:'sp-cons', balanced:'sp-bal', aggressive:'sp-agg' };
+  var noteId = 'spEduNote';
   var html = '<div class="sp-grid">' + order.map(function(k){
     var p = paths[k]; if (!p) return '';
     var changesHtml = (p.structuralChanges||[]).map(function(c){return '<div class="sp-change">'+esc(c)+'</div>';}).join('');
-    return '<div class="sp-card '+cls[k]+'" tabindex="0" role="group" aria-label="'+esc(p.label)+' strategy path">'+
+    return '<div class="sp-card '+cls[k]+'" tabindex="0" role="group" aria-label="'+esc(p.label)+' strategy path" aria-describedby="'+noteId+'">'+
       '<div class="sp-eye">'+esc(p.label)+'</div>'+
       '<div class="sp-head">'+esc(p.headline)+'</div>'+
       '<div class="sp-changes">'+changesHtml+'</div>'+
       '<div class="sp-row"><span class="sp-row-lbl">Improves</span><span class="sp-row-val sp-improve">'+esc(p.improves)+'</span></div>'+
       '<div class="sp-row"><span class="sp-row-lbl">Tradeoff</span><span class="sp-row-val sp-trade">'+esc(p.tradeoff)+'</span></div>'+
       '<div class="sp-row"><span class="sp-row-lbl">Timeframe</span><span class="sp-row-val sp-time">'+esc(p.timeframe)+'</span></div>'+
+      '<div class="sp-edu">Educational frame · evaluate, do not execute.</div>'+
       '</div>';
-  }).join('') + '</div>';
+  }).join('') + '</div>'+
+    '<div id="'+noteId+'" class="sp-edu-shared">Each path is an educational frame derived from the diagnosis — not a recommendation.</div>';
   el.innerHTML = html;
 }
 
@@ -5332,7 +5356,7 @@ async function runSectorAnalysis(){
         card('regime','Sector Regime',    secs.SECTOR_REGIME,    'Where this sector sits in its cycle right now. Cycle stage dictates whether you accumulate aggressively, deploy with discipline, or stand aside.')+
         card('entry', 'Entry Approach',   secs.ENTRY_APPROACH,   'The specific mechanics of getting capital in: tranche size, pullback triggers, timing windows. Execution detail — not theory.')+
         card('why',   'Why Now',          secs.WHY_NOW,          'The specific catalysts that make the next window different. If none, wait.')+
-        card('thesis','What Breaks Thesis',secs.THESIS_BREAK,    'The single factor you should watch for exit. If this trips, the idea was wrong — exit fast, not slow.')+
+        card('thesis','What Breaks Thesis',secs.THESIS_BREAK,    'Key thesis-break factor to monitor. If this condition appears, the original thesis may need to be re-evaluated quickly.')+
       '</div>'+
       (namesHTML?'<div style="font-size:10.5px;letter-spacing:.14em;color:#E8CC7A;text-transform:uppercase;font-weight:700;margin-bottom:9px">Top 5 Names to Research</div>'+namesHTML:'')+
       (secs.PORTFOLIO_FIT?card('fit','Portfolio Fit',secs.PORTFOLIO_FIT,'How these names interact with what you already hold. Complement, overlap, or new exposure — this determines position sizing.'):'')+
@@ -7694,7 +7718,7 @@ function computeRiskFlags(actMix, ctx){
   if(actMix.Core<TARGET_MIX.Core-8)flags.push({type:'warn',txt:'Core '+actMix.Core.toFixed(0)+'% -- well below '+TARGET_MIX.Core+'% stability target. Portfolio unanchored.'});
   if(actMix.Cash<TARGET_MIX.Cash-2)flags.push({type:'warn',txt:'No cash buffer. Zero dry powder for opportunities or market dislocations.'});
   if(actMix.Tactical>TARGET_MIX.Tactical+5)flags.push({type:'warn',txt:'Tactical/speculative '+actMix.Tactical.toFixed(0)+'% -- above 10% cap. Risk amplified.'});
-  if(ctx.momentum==='extended')flags.push({type:'warn',txt:'Market momentum extended. Avoid chasing entries -- wait for pullbacks.'});
+  if(ctx.momentum==='extended')flags.push({type:'warn',txt:'Market momentum extended. A common risk is chasing entries -- pullbacks tend to offer better setups.'});
   if(ctx.vix==='extreme')flags.push({type:'warn',txt:'VIX extreme regime. Reduce exposure, hold cash, do not add risk.'});
   if(!flags.length)flags.push({type:'ok',txt:'No major structural red flags. Portfolio looks well-structured.'});
   return flags;
@@ -7702,9 +7726,9 @@ function computeRiskFlags(actMix, ctx){
 
 function computeActionPlan(actMix, regime){
   var actions=[];
-  if(actMix.Core<TARGET_MIX.Core)actions.push('Add VOO or SCHD to lift core toward '+TARGET_MIX.Core+'% before pressing growth.');
-  if(actMix.Growth>TARGET_MIX.Growth)actions.push('Slow growth adds until entries improve or core layer strengthens.');
-  if(actMix.Cash<TARGET_MIX.Cash)actions.push('Rebuild cash buffer -- target 5% dry powder for opportunistic buys.');
+  if(actMix.Core<TARGET_MIX.Core)actions.push('One option is adding VOO or SCHD to lift core toward '+TARGET_MIX.Core+'% before pressing growth.');
+  if(actMix.Growth>TARGET_MIX.Growth)actions.push('One option is slowing growth additions until entries improve or the core layer strengthens.');
+  if(actMix.Cash<TARGET_MIX.Cash)actions.push('One option is rebuilding the cash buffer -- around 5% dry powder for opportunistic entries.');
   if(actMix.Tactical>TARGET_MIX.Tactical+5)actions.push('Trim speculative positions back toward 10% max. Book partial gains.');
   if(regime==='Risk-Off')actions.push('Risk-off regime -- favor core, hold cash, delay growth adds until conditions improve.');
   if(!actions.length)actions.push('Structure looks healthy. Continue balanced, systematic deployment on your cadence.');
@@ -7822,9 +7846,204 @@ function renderIntelligencePanel(){
   if(dp)dp.innerHTML=deploy.map(function(d){return '<div class="dp-row"><div><div class="dp-sym">'+esc(d.ticker)+'</div><div class="dp-reason">'+esc(d.reason)+'</div></div><div class="dp-amt">'+fmt$(d.amount)+'</div></div>';}).join('');
 
   updateStockDecision();
+
+  // Intelligence Engine v2 — guarded hook (no-op if module not loaded)
+  try {
+    if (
+      typeof hydratePortfolioState === 'function' &&
+      typeof runAnalysis === 'function' &&
+      typeof renderIntelligenceV2 === 'function'
+    ) {
+      hydratePortfolioState();
+      runAnalysis();
+      renderIntelligenceV2();
+    }
+  } catch(e) {
+    try { addPortfolioError(e && e.message || e, 'Intelligence Engine v2 hook'); } catch(_) {}
+  }
+
+  // Pilot C — live AI diagnosis via existing aiCall(). Falls back to mock
+  // internally on any failure (no key, network error, bad JSON, missing fields).
+  try {
+    if (typeof renderAIDiagnosisLive === 'function') {
+      renderAIDiagnosisLive(window.portfolioState);
+    }
+  } catch(eDx) {
+    try { addPortfolioError(eDx && eDx.message || eDx, 'renderAIDiagnosisLive'); } catch(_) {}
+  }
 }
 
 function updateDeployment(){renderIntelligencePanel();}
+
+/* ── Pilot B — AI Diagnosis preview (mock JSON renderer) ───────────────────
+   No API call. No async. Reads from the mock object only. Writes only to
+   #aiDiagnosisEl. Hidden when no holdings. Wrapped in try/catch at the
+   call site so failures cannot break the Intelligence Panel. */
+var MOCK_DIAGNOSIS_JSON = {
+  headline:    'Concentration is the dominant signal in this snapshot.',
+  summary:     'Single-name weight runs ahead of structural targets, while the core index layer sits below the typical range. The market regime is supportive, which masks structural risk that would surface during a drawdown.',
+  keyDrivers:  ['Top-name concentration', 'Core index underweight', 'Risk-on regime support'],
+  riskRead:    'Moderate · concentration risk dominates current diagnostic signals.',
+  nextQuestion:'What thesis-break condition would prompt re-evaluation of the largest position?'
+};
+
+function renderAIDiagnosis(ps, mockJson){
+  var el = document.getElementById('aiDiagnosisEl'); if (!el) return;
+  /* Hide when no holdings — never show diagnosis without a portfolio */
+  var hasHoldings = !!(ps && Array.isArray(ps.holdings) && ps.holdings.length);
+  if (!hasHoldings || !mockJson || typeof mockJson !== 'object'){
+    el.setAttribute('hidden','');
+    el.innerHTML = '';
+    return;
+  }
+  var headline    = String(mockJson.headline    || '');
+  var summary     = String(mockJson.summary     || '');
+  var riskRead    = String(mockJson.riskRead    || '');
+  var nextQuestion= String(mockJson.nextQuestion|| '');
+  var drivers     = Array.isArray(mockJson.keyDrivers) ? mockJson.keyDrivers : [];
+  var driversHtml = drivers.length
+    ? '<div class="ai-dx-row"><span class="ai-dx-lbl">Drivers</span><div class="ai-dx-val ai-dx-drivers">' +
+      drivers.map(function(d){return '<span class="ai-dx-drv">'+esc(String(d))+'</span>';}).join('') +
+      '</div></div>'
+    : '';
+  el.innerHTML =
+    '<div class="ai-dx-eye">AI Diagnosis · Preview</div>' +
+    (headline ? '<div class="ai-dx-headline">'+esc(headline)+'</div>' : '') +
+    (summary  ? '<div class="ai-dx-summary">'+esc(summary)+'</div>'   : '') +
+    driversHtml +
+    (riskRead ? '<div class="ai-dx-row"><span class="ai-dx-lbl">Risk read</span><span class="ai-dx-val">'+esc(riskRead)+'</span></div>' : '') +
+    (nextQuestion ? '<div class="ai-dx-q">'+esc(nextQuestion)+'</div>' : '');
+  el.removeAttribute('hidden');
+}
+
+/* ── Pilot C — live AI diagnosis via existing aiCall() ────────────────────
+   Builds a compact JSON-only prompt from portfolioState, parses the response,
+   validates the 5 required fields, then routes through renderAIDiagnosis().
+   Any failure (no key, network error, malformed JSON, missing fields) falls
+   back to MOCK_DIAGNOSIS_JSON so the surface still renders. */
+function _parseDxJSON(text){
+  if (!text || typeof text !== 'string') return null;
+  var json = null;
+  try { json = JSON.parse(text); } catch(_){}
+  if (!json) {
+    /* tolerate prose around the JSON block — extract first {...} */
+    var s = text.indexOf('{'), e = text.lastIndexOf('}');
+    if (s >= 0 && e > s) { try { json = JSON.parse(text.slice(s, e+1)); } catch(_){} }
+  }
+  if (!json || typeof json !== 'object') return null;
+  if (typeof json.headline !== 'string' || !json.headline.trim()) return null;
+  if (typeof json.summary  !== 'string' || !json.summary.trim())  return null;
+  if (!Array.isArray(json.keyDrivers)) return null;
+  if (typeof json.riskRead !== 'string' || !json.riskRead.trim()) return null;
+  if (typeof json.nextQuestion !== 'string' || !json.nextQuestion.trim()) return null;
+  return json;
+}
+
+/* Pilot C patch — request sequence, cache, debounce, timeout */
+var _aiDxSeq = 0;                 /* monotonically increasing — only latest writes DOM */
+var _aiDxLastKey = null;          /* cache key of last successful diagnosis */
+var _aiDxLastJson = null;         /* last successful JSON for cache hits */
+var _aiDxLastFiredAt = 0;         /* timestamp of last fired aiCall (success or fail) */
+var AI_DX_MIN_INTERVAL_MS = 1500; /* min gap between live fires */
+var AI_DX_TIMEOUT_MS = 12000;     /* 12s timeout wrapping aiCall */
+
+/* Stable cache key — holdings symbols+values, health, risk drivers, regime */
+function _aiDxKey(ps){
+  if (!ps) return '';
+  var holdSig = (ps.holdings||[]).map(function(h){return (h&&h.sym||'')+':'+Math.round((h&&h.mktVal)||0);}).sort().join('|');
+  var health  = ps.health || {};
+  var risk    = ps.risk   || {};
+  var market  = ps.market || {};
+  var driverSig = ((risk.drivers||[])).map(function(d){return (d&&d.type||'')+'~'+(d&&d.txt||'');}).sort().join('|');
+  return [holdSig, health.score==null?'-':health.score, health.grade||'-', driverSig, market.regime||'-'].join('§');
+}
+
+/* Loading state — uses existing .ai-dx-* classes; no new design */
+function _aiDxLoadingState(){
+  var el = document.getElementById('aiDiagnosisEl'); if (!el) return;
+  el.removeAttribute('hidden');
+  el.innerHTML = '<div class="ai-dx-eye">AI Diagnosis · Preview</div><div class="ai-dx-summary">AI Diagnosis refreshing…</div>';
+}
+
+async function renderAIDiagnosisLive(ps){
+  try {
+    var hasHoldings = !!(ps && Array.isArray(ps.holdings) && ps.holdings.length);
+    if (!hasHoldings) { renderAIDiagnosis(ps, null); return; }
+    /* aiCall uses the backend route — no user API key required.
+       Backend handles auth; on backend failure the catch branch falls back to mock. */
+
+    var key = _aiDxKey(ps);
+    var now = Date.now();
+    /* Cache hit — state unchanged since last successful diagnosis: reuse */
+    if (key && key === _aiDxLastKey && _aiDxLastJson) {
+      renderAIDiagnosis(ps, _aiDxLastJson);
+      return;
+    }
+    /* Debounce — block fresh fires inside the min interval */
+    if (now - _aiDxLastFiredAt < AI_DX_MIN_INTERVAL_MS) return;
+    _aiDxLastFiredAt = now;
+
+    var seq = ++_aiDxSeq;
+    _aiDxLoadingState();
+
+    var classes = (ps.allocation && ps.allocation.classes) || {};
+    var conc    = (ps.allocation && ps.allocation.concentration) || {};
+    var market  = ps.market || {};
+    var health  = ps.health || {};
+    var totalsLine = '$' + Math.round(ps.totalValue||0).toLocaleString() + ' total · ' + ps.holdings.length + ' positions';
+    var topLine    = conc.topSym ? (conc.topSym + ' at ' + Math.round(conc.topPct||0) + '%') : 'no clear top concentration';
+    var classLine  = ['Core','Growth','Tactical','Cash'].map(function(k){var v=classes[k]; return k+' '+(v!=null?Number(v).toFixed(0)+'%':'-');}).join(' · ');
+    var holdingsLine = ps.holdings.slice().sort(function(a,b){return (b.mktVal||0)-(a.mktVal||0);}).slice(0,10)
+      .map(function(h){return h.sym+'('+(h.pct!=null?Number(h.pct).toFixed(0):'?')+'%)';}).join(', ');
+
+    var sys = 'You are an institutional portfolio diagnostic engine for LaForce Capital. Output ONLY valid JSON matching the requested schema. No prose outside JSON. No markdown. Educational framing only — never advice. No buy/sell/should/recommend language.';
+    var prompt = [
+      'PORTFOLIO STATE',
+      totalsLine,
+      'Top concentration: ' + topLine,
+      'Allocation: ' + classLine,
+      'Health: score=' + (health.score==null?'-':health.score) + ' grade=' + (health.grade||'-'),
+      'Regime: ' + (market.regime || 'Neutral'),
+      'Holdings (top 10): ' + (holdingsLine || 'none'),
+      '',
+      'Return ONLY this JSON object (no commentary, no markdown fences):',
+      '{',
+      '  "headline": "one short descriptive sentence (max ~90 chars)",',
+      '  "summary": "2-3 sentence neutral summary of structural signals",',
+      '  "keyDrivers": ["3-5 short driver labels under 30 chars each"],',
+      '  "riskRead": "one short sentence describing risk posture",',
+      '  "nextQuestion": "one open-ended question for the investor to consider"',
+      '}',
+      '',
+      'Educational framing only. No advice. No buy/sell/should language.'
+    ].join('\n');
+
+    /* Race aiCall against a 12s timeout. Local wrapper — no global aiCall change. */
+    var raw;
+    try {
+      raw = await Promise.race([
+        aiCall(prompt, sys, 800),
+        new Promise(function(_, reject){ setTimeout(function(){ reject(new Error('AI diagnosis timed out')); }, AI_DX_TIMEOUT_MS); })
+      ]);
+    } catch(eRace) {
+      try { addPortfolioError(eRace && eRace.message || eRace, 'renderAIDiagnosisLive:race'); } catch(_){}
+      if (seq === _aiDxSeq) { try { renderAIDiagnosis(ps, MOCK_DIAGNOSIS_JSON); } catch(_){} }
+      return;
+    }
+
+    /* Stale-write guard — only the latest request can write to the DOM */
+    if (seq !== _aiDxSeq) return;
+
+    var json = _parseDxJSON(raw);
+    if (!json) { renderAIDiagnosis(ps, MOCK_DIAGNOSIS_JSON); return; }
+    _aiDxLastKey = key;
+    _aiDxLastJson = json;
+    renderAIDiagnosis(ps, json);
+  } catch(e) {
+    try { addPortfolioError(e && e.message || e, 'renderAIDiagnosisLive'); } catch(_){}
+    try { renderAIDiagnosis(ps, MOCK_DIAGNOSIS_JSON); } catch(_){}
+  }
+}
 
 function updateStockDecision(){
   var ticker=((document.getElementById('intelStockInput')||{}).value||'NVDA').toUpperCase().trim();
@@ -8246,6 +8465,198 @@ function renderFeedbackResponses(){
 // UTILS
 function fmt$(n){if(n===undefined||n===null||isNaN(n))return '$-';if(Math.abs(n)>=1000000)return '$'+(n/1000000).toFixed(2)+'M';if(Math.abs(n)>=1000)return '$'+Math.round(n).toLocaleString();return '$'+n.toFixed(2);}
 function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+/* =====================================================================
+   INTELLIGENCE ENGINE v2 — LaForce Capital Wealth Builder
+   Phases: hydrate -> analyze -> render
+   Single source of truth: window.portfolioState
+   Reuses v1 logic: computeHealthScore, computeRiskFlags,
+                    computeActionPlan, computeDeployment,
+                    computeRegime, computeConfidence
+   No duplicate calculations. No analysis inside render.
+   ===================================================================== */
+(function(){
+  'use strict';
+
+  // ---- State initializer (idempotent, non-destructive) ---------------
+  function _initState(){
+    if(!window.portfolioState || typeof window.portfolioState !== 'object'){
+      window.portfolioState = {};
+    }
+    var ps = window.portfolioState;
+    if(typeof ps.totalValue !== 'number') ps.totalValue = 0;
+    if(!Array.isArray(ps.holdings)) ps.holdings = [];
+    if(!ps.market || typeof ps.market !== 'object'){
+      /* canonical v1 shape — bias (not momentum) is the existing schema field */
+      ps.market = { trend:'neutral', vix:'normal', bias:null,
+                    regime:'Neutral / Selective', confidence:null };
+    } else {
+      if(!ps.market.trend)    ps.market.trend    = 'neutral';
+      if(!ps.market.vix)      ps.market.vix      = 'normal';
+      if(!ps.market.regime)   ps.market.regime   = 'Neutral / Selective';
+      if(typeof ps.market.confidence === 'undefined') ps.market.confidence = null;
+      /* bias may stay null; do not initialize ps.market.momentum (schema drift) */
+    }
+    if(!ps.allocation || typeof ps.allocation !== 'object'){
+      ps.allocation = { classes:{}, concentration:{} };
+    } else {
+      if(!ps.allocation.classes || typeof ps.allocation.classes !== 'object') ps.allocation.classes = {};
+      if(!ps.allocation.concentration || typeof ps.allocation.concentration !== 'object') ps.allocation.concentration = {};
+    }
+    if(!ps.health || typeof ps.health !== 'object') ps.health = {};
+    if(!ps.risk || typeof ps.risk !== 'object') ps.risk = { drivers: [] };
+    else if(!Array.isArray(ps.risk.drivers)) ps.risk.drivers = [];
+    if(!Array.isArray(ps.actionPlan)) ps.actionPlan = [];
+    if(!Array.isArray(ps.deployment)) ps.deployment = [];
+    if(!ps.stockAnalysis || typeof ps.stockAnalysis !== 'object') ps.stockAnalysis = {};
+    return ps;
+  }
+
+  function _logErr(e, where){
+    try { if(typeof addPortfolioError === 'function') addPortfolioError(e && e.message || e, where); }
+    catch(_){}
+  }
+
+  // PHASE 1 — HYDRATION
+  window.hydratePortfolioState = function hydratePortfolioState(){
+    var ps = _initState();
+    var holdings = [];
+    try {
+      if(typeof getHoldings === 'function') holdings = getHoldings() || [];
+    } catch(e){ _logErr(e, 'hydratePortfolioState:getHoldings'); holdings = []; }
+    if(!Array.isArray(holdings)) holdings = [];
+    ps.holdings = holdings;
+
+    var total = 0;
+    for(var i=0; i<holdings.length; i++){
+      var hi = holdings[i];
+      var v = hi ? Number(hi.mktVal != null ? hi.mktVal : (hi.value != null ? hi.value : 0)) : 0;
+      if(isFinite(v)) total += v;
+    }
+    /* Only overwrite when we have a meaningful total OR when there are no holdings.
+       Prevents v2 from clobbering ps.totalValue with 0 when holdings exist but parse fails. */
+    if (total > 0 || holdings.length === 0) ps.totalValue = total;
+
+    var ctx = (typeof _intelCtx !== 'undefined' && _intelCtx) ? _intelCtx : {};
+    ps.market.trend = ctx.trend || ps.market.trend || 'neutral';
+    ps.market.vix   = ctx.vix   || ps.market.vix   || 'normal';
+    /* momentum intentionally not written — bias is the canonical v1 field;
+       v2 must not introduce ps.market.momentum as a new schema field. */
+    return ps;
+  };
+
+  // PHASE 2 — ANALYSIS
+  window.runAnalysis = function runAnalysis(){
+    var ps = _initState();
+    var market = ps.market;
+    /* v1 compute* functions expect the _intelCtx shape — reuse it where present,
+       fall back to ps.market so v2 still works in standalone bootstrap. */
+    var ctx = (typeof _intelCtx !== 'undefined' && _intelCtx) ? _intelCtx : market;
+
+    try { if(typeof computeRegime === 'function') market.regime = computeRegime(ctx) || market.regime; }
+    catch(e){ _logErr(e, 'runAnalysis:computeRegime'); }
+    try { if(typeof computeConfidence === 'function') market.confidence = computeConfidence(ctx); }
+    catch(e){ _logErr(e, 'runAnalysis:computeConfidence'); }
+
+    try {
+      if(typeof computeHealthScore === 'function')
+        ps.health = computeHealthScore(ps.holdings, ctx) || {};
+    } catch(e){ _logErr(e, 'runAnalysis:computeHealthScore'); }
+
+    ps.allocation.classes = (ps.health && ps.health.actMix)
+      ? ps.health.actMix
+      : (ps.allocation.classes || {});
+
+    try {
+      if(typeof computeRiskFlags === 'function')
+        ps.risk.drivers = computeRiskFlags(ps.allocation.classes || {}, ctx) || [];
+    } catch(e){ _logErr(e, 'runAnalysis:computeRiskFlags'); }
+
+    try {
+      if(typeof computeActionPlan === 'function')
+        ps.actionPlan = computeActionPlan(ps.allocation.classes || {}, market.regime) || [];
+    } catch(e){ _logErr(e, 'runAnalysis:computeActionPlan'); }
+
+    try {
+      if(typeof computeDeployment === 'function'){
+        var deployCash = Number(ps.cash) > 0 ? Number(ps.cash) : 1000;
+        ps.deployment = computeDeployment(deployCash, market.regime, ctx) || [];
+      }
+    } catch(e){ _logErr(e, 'runAnalysis:computeDeployment'); }
+
+    return ps;
+  };
+
+  // PHASE 3 — RENDER (READ-ONLY)
+  function _esc(s){
+    if(typeof esc === 'function') return esc(s);
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c];
+    });
+  }
+  function _money(n){
+    if(typeof fmt$ === 'function') return fmt$(n);
+    var v = Number(n) || 0;
+    return '$' + v.toFixed(0);
+  }
+
+  window.renderIntelligenceV2 = function renderIntelligenceV2(){
+    var ps = (window.portfolioState && typeof window.portfolioState === 'object')
+      ? window.portfolioState : _initState();
+    var market = ps.market || {};
+    var health = ps.health || {};
+    var risk   = (ps.risk && Array.isArray(ps.risk.drivers)) ? ps.risk.drivers : [];
+    var plan   = Array.isArray(ps.actionPlan) ? ps.actionPlan : [];
+    var deploy = Array.isArray(ps.deployment) ? ps.deployment : [];
+
+    var elScore = document.getElementById('healthNum');
+    if(elScore) elScore.textContent = (health.score != null ? health.score : '-');
+    var elGrade = document.getElementById('healthGrade');
+    if(elGrade) elGrade.textContent = 'Grade ' + (health.grade || '-');
+    var elNote  = document.getElementById('healthNote');
+    if(elNote)  elNote.textContent  = health.note || '';
+
+    var elRegime = document.getElementById('regimeBadge');
+    if(elRegime){
+      var r = market.regime || '-';
+      elRegime.textContent = r;
+      var cls = 'regime-badge ';
+      if(r === 'Risk-Off') cls += 'rb-off';
+      else if(String(r).indexOf('On') > -1) cls += 'rb-on';
+      else cls += 'rb-neu';
+      elRegime.className = cls;
+    }
+
+    var elRisk = document.getElementById('riskFlagsEl');
+    if(elRisk){
+      elRisk.innerHTML = risk.map(function(f){
+        var t    = (f && f.type === 'warn') ? 'fi-warn' : 'fi-ok';
+        var icon = (f && f.type === 'warn') ? '&#9888;' : '&#10003;';
+        return '<div class="flag-item '+t+'"><span class="fi-icon">'+icon+'</span>'+_esc(f && f.txt || '')+'</div>';
+      }).join('');
+    }
+
+    var elPlan = document.getElementById('actionPlanEl');
+    if(elPlan){
+      elPlan.innerHTML = plan.map(function(a){
+        return '<div class="flag-item fi-ok"><span class="fi-icon">-&gt;</span>'+_esc(a)+'</div>';
+      }).join('');
+    }
+
+    var elDeploy = document.getElementById('deployPlanEl');
+    if(elDeploy){
+      elDeploy.innerHTML = deploy.map(function(d){
+        return '<div class="dp-row"><div>'+
+                 '<div class="dp-sym">'+_esc(d && d.ticker || '')+'</div>'+
+                 '<div class="dp-reason">'+_esc(d && d.reason || '')+'</div></div>'+
+               '<div class="dp-amt">'+_money(d && d.amount || 0)+'</div></div>';
+      }).join('');
+    }
+
+    return ps;
+  };
+
+})();
 </script>
 
 <!-- FEEDBACK PANEL -->
