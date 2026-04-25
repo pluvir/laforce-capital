@@ -167,9 +167,26 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
 .tour-tip-actions{display:flex;justify-content:flex-end}
 .tour-next{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.10em;text-transform:uppercase;font-weight:700;color:#0d0a08;background:linear-gradient(90deg,var(--gold-light),var(--gold));border:none;padding:6px 12px;border-radius:5px;cursor:pointer;transition:filter .15s ease}
 .tour-next:hover{filter:brightness(1.08)}
+.tour-next.tour-next-quiet{
+  background:transparent;
+  color:var(--text-2);
+  font-weight:600;
+  font-size:9.5px;
+  padding:3px 9px;
+  border:1px solid rgba(201,168,76,.22);
+  box-shadow:none;
+}
+.tour-next.tour-next-quiet:hover{
+  color:var(--gold-light);
+  border-color:var(--gold-dim);
+  filter:none;
+}
 .tour-skip{position:absolute;top:8px;right:10px;background:transparent;border:none;color:var(--text-3);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:3px 6px;transition:color .15s ease}
 .tour-skip:hover{color:var(--cream)}
 .tour-target-on{position:relative;z-index:99955;box-shadow:0 0 0 1px rgba(201,168,76,.55),0 0 24px rgba(201,168,76,.32);transition:box-shadow .25s ease}
+.tour-target-on.tour-target-click{cursor:pointer;animation:tourClickPulse 1.6s ease-in-out infinite}
+@keyframes tourClickPulse{0%,100%{box-shadow:0 0 0 1px rgba(201,168,76,.55),0 0 24px rgba(201,168,76,.32)}50%{box-shadow:0 0 0 1px rgba(201,168,76,.85),0 0 32px rgba(201,168,76,.50)}}
+.tour-tip-hint{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-light);font-weight:700;margin-top:-4px;margin-bottom:11px;opacity:.85}
 /* ── Pilot B — AI Diagnosis preview (secondary to score, mock JSON only) */
 .ai-dx{margin-top:10px;padding:9px 11px;border-radius:var(--r);border:1px solid var(--border);border-left:2px solid var(--gold-dim);background:rgba(0,0,0,.18);display:flex;flex-direction:column;gap:5px}
 .ai-dx[hidden]{display:none}
@@ -1404,7 +1421,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
   <div id="decisionSequence" style="display:block;margin-bottom:20px">
     <div class="ds-grid">
       <!-- HOW TO USE — collapsed by default -->
-      <details class="card pf-collapsible">
+      <details class="card pf-collapsible" id="howToUseDetails">
         <summary>
           <span><span class="pf-collapsible-eye">Getting started</span><span class="pf-collapsible-title">How to use this system</span></span>
           <span class="pf-collapsible-chev" aria-hidden="true">▾</span>
@@ -8937,6 +8954,7 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
       { target:null,            text:"You're set — explore your portfolio freely." }
     ];
     var _idx = 0, _overlay = null, _tip = null, _highlighted = null;
+    var _clickMode = false, _clickHandler = null, _clickKeyHandler = null;
 
     function _$(sel){ return sel ? document.querySelector(sel) : null; }
     function _ensureNodes(){
@@ -8958,7 +8976,25 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
         document.body.appendChild(_tip);
       }
     }
-    function _clearHighlight(){ if (_highlighted) { _highlighted.classList.remove('tour-target-on'); _highlighted = null; } }
+    function _clearHighlight(){
+      if (_highlighted) {
+        _highlighted.classList.remove('tour-target-on','tour-target-click');
+        if (_clickHandler) { try { _highlighted.removeEventListener('click', _clickHandler, true); } catch(_){} _clickHandler = null; }
+        if (_clickKeyHandler) {
+          try { _highlighted.removeEventListener('keydown', _clickKeyHandler); } catch(_){}
+          _clickKeyHandler = null;
+        }
+        if (_highlighted.dataset && _highlighted.dataset.tourAddedTabindex === '1') {
+          _highlighted.removeAttribute('tabindex');
+          delete _highlighted.dataset.tourAddedTabindex;
+        }
+        if (_highlighted.dataset && _highlighted.dataset.tourAddedRole === '1') {
+          _highlighted.removeAttribute('role');
+          delete _highlighted.dataset.tourAddedRole;
+        }
+        _highlighted = null;
+      }
+    }
     function _highlight(el){
       _clearHighlight();
       if (!el) return;
@@ -8987,22 +9023,55 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
       _highlight(target);
       var isLast = (_idx === tourSteps.length - 1);
       var nextLbl = isLast ? 'Got it' : 'Next';
+      var clickHint = (_clickMode && target) ? '<div class="tour-tip-hint">Click this section to continue</div>' : '';
+      var nextQuiet = (_clickMode && target) ? ' tour-next-quiet' : '';
       _tip.innerHTML =
         '<button class="tour-skip" type="button" aria-label="Skip tour">Skip</button>' +
         '<div class="tour-tip-step">Step ' + (_idx + 1) + ' of ' + tourSteps.length + '</div>' +
         '<div class="tour-tip-text"></div>' +
-        '<div class="tour-tip-actions"><button class="tour-next" type="button">' + nextLbl + ' &rarr;</button></div>';
+        clickHint +
+        '<div class="tour-tip-actions"><button class="tour-next' + nextQuiet + '" type="button">' + nextLbl + ' &rarr;</button></div>';
       _tip.querySelector('.tour-tip-text').textContent = step.text;
       _tip.querySelector('.tour-skip').onclick = endTour;
       _tip.querySelector('.tour-next').onclick = nextTourStep;
+      if (_clickMode && target) {
+        target.classList.add('tour-target-click');
+        if (!target.hasAttribute('tabindex')) {
+          target.setAttribute('tabindex', '0');
+          target.dataset.tourAddedTabindex = '1';
+        }
+        if (!target.hasAttribute('role')) {
+          target.setAttribute('role', 'button');
+          target.dataset.tourAddedRole = '1';
+        }
+        _clickHandler = function(e){ e.stopPropagation(); nextTourStep(); };
+        target.addEventListener('click', _clickHandler, true);
+        _clickKeyHandler = function(e){
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            nextTourStep();
+          }
+        };
+        target.addEventListener('keydown', _clickKeyHandler);
+      }
       _tip.classList.add('on');
       if (_overlay) _overlay.classList.add('on');
-      requestAnimationFrame(function(){ _positionTip(target); var n = _tip.querySelector('.tour-next'); if (n) try { n.focus(); } catch(_){} });
+      requestAnimationFrame(function(){ _positionTip(target); var n = _tip.querySelector('.tour-next'); if (n && n.style.display !== 'none') try { n.focus(); } catch(_){} });
     }
     function startProductTour(){
-      try { _ensureNodes(); _idx = 0; _renderStep(); }
+      try { _ensureNodes(); _idx = 0; _clickMode = false; _renderStep(); }
       catch(e){ try { if(typeof addPortfolioError==='function') addPortfolioError(e&&e.message||e,'startProductTour'); } catch(_){} }
     }
+    function startSpotlightTour(){
+      try { _ensureNodes(); _idx = 0; _clickMode = true; _renderStep(); }
+      catch(e){ try { if(typeof addPortfolioError==='function') addPortfolioError(e&&e.message||e,'startSpotlightTour'); } catch(_){} }
+    }
+    window.startSpotlightTour = startSpotlightTour;
+    /* Trigger spotlight tour when "How to use this system" is opened */
+    (function(){
+      var d = document.getElementById('howToUseDetails');
+      if (d) d.addEventListener('toggle', function(){ if (d.open) { try { if (typeof showPanel==='function') showPanel('intelligence', document.querySelectorAll('.nav-item')[3]); } catch(_){} setTimeout(startSpotlightTour, 340); } });
+    })();
     function nextTourStep(){
       _idx++;
       if (_idx >= tourSteps.length) { endTour(); return; }
@@ -9011,6 +9080,7 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     function endTour(){
       try {
         _clearHighlight();
+        _clickMode = false;
         if (_tip) _tip.classList.remove('on');
         if (_overlay) _overlay.classList.remove('on');
         try { localStorage.setItem(TOUR_KEY, 'true'); } catch(_){}
