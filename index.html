@@ -157,6 +157,19 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
   6%,72%{opacity:1;transform:translateY(0)}
   100%{opacity:0;transform:translateY(-2px)}
 }
+/* ── Beta product tour — anchored tooltips, premium minimal ─────────── */
+.tour-overlay{position:fixed;inset:0;background:rgba(0,0,0,.18);z-index:99950;opacity:0;pointer-events:none;transition:opacity .22s ease}
+.tour-overlay.on{opacity:1}
+.tour-tip{position:fixed;z-index:99960;width:280px;max-width:calc(100vw - 24px);padding:14px 16px 12px;border-radius:10px;background:linear-gradient(135deg,rgba(20,16,12,.97),rgba(35,28,18,.93));border:1px solid rgba(201,168,76,.32);box-shadow:0 12px 32px rgba(0,0,0,.55),0 0 18px rgba(201,168,76,.10);backdrop-filter:blur(10px);opacity:0;transform:translateY(4px);transition:opacity .2s ease,transform .2s ease;pointer-events:none}
+.tour-tip.on{opacity:1;transform:translateY(0);pointer-events:auto}
+.tour-tip-step{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);font-weight:700;margin-bottom:6px}
+.tour-tip-text{font-size:13px;line-height:1.5;color:var(--cream);margin-bottom:11px}
+.tour-tip-actions{display:flex;justify-content:flex-end}
+.tour-next{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.10em;text-transform:uppercase;font-weight:700;color:#0d0a08;background:linear-gradient(90deg,var(--gold-light),var(--gold));border:none;padding:6px 12px;border-radius:5px;cursor:pointer;transition:filter .15s ease}
+.tour-next:hover{filter:brightness(1.08)}
+.tour-skip{position:absolute;top:8px;right:10px;background:transparent;border:none;color:var(--text-3);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:3px 6px;transition:color .15s ease}
+.tour-skip:hover{color:var(--cream)}
+.tour-target-on{position:relative;z-index:99955;box-shadow:0 0 0 1px rgba(201,168,76,.55),0 0 24px rgba(201,168,76,.32);transition:box-shadow .25s ease}
 /* ── Pilot B — AI Diagnosis preview (secondary to score, mock JSON only) */
 .ai-dx{margin-top:10px;padding:9px 11px;border-radius:var(--r);border:1px solid var(--border);border-left:2px solid var(--gold-dim);background:rgba(0,0,0,.18);display:flex;flex-direction:column;gap:5px}
 .ai-dx[hidden]{display:none}
@@ -2540,7 +2553,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
 
   <!-- ROW 1: Health + Confidence + Regime -->
   <div class="g3" style="margin-bottom:14px">
-    <div class="card health-start" style="display:flex;align-items:center;gap:16px">
+    <div id="healthCard" class="card health-start" style="display:flex;align-items:center;gap:16px">
       <span class="health-start-lbl" aria-hidden="true">Start here</span>
       <div class="health-ring">
         <svg width="80" height="80" viewBox="0 0 80 80">
@@ -8913,6 +8926,125 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
   document.addEventListener('keydown', function(e){
     if(e.key==='Escape'){ var o=document.getElementById('aboutLfcOverlay'); if(o&&o.classList.contains('on')) closeAboutLaForce(); }
   });
+
+  /* ── Product tour — minimal, native, no external libs ───────────────── */
+  (function(){
+    var TOUR_KEY = 'seenTour';
+    var tourSteps = [
+      { target:'#healthCard',   text:'This is your portfolio health score — it reflects overall structure and balance.' },
+      { target:'#riskFlagsEl',  text:'These highlight the biggest structural risks in your portfolio.' },
+      { target:'#actionPlanEl', text:'This outlines possible next steps based on your current structure.' },
+      { target:null,            text:"You're set — explore your portfolio freely." }
+    ];
+    var _idx = 0, _overlay = null, _tip = null, _highlighted = null;
+
+    function _$(sel){ return sel ? document.querySelector(sel) : null; }
+    function _ensureNodes(){
+      if (!_overlay) { _overlay = document.createElement('div'); _overlay.className = 'tour-overlay'; document.body.appendChild(_overlay); }
+      if (!_tip) {
+        _tip = document.createElement('div');
+        _tip.className = 'tour-tip';
+        _tip.setAttribute('role','dialog');
+        _tip.setAttribute('aria-modal','true');
+        _tip.setAttribute('aria-live','polite');
+        _tip.addEventListener('keydown', function(e){
+          if (e.key !== 'Tab') return;
+          var skip = _tip.querySelector('.tour-skip'); var next = _tip.querySelector('.tour-next');
+          if (!skip || !next) return;
+          var first = skip, last = next;
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        });
+        document.body.appendChild(_tip);
+      }
+    }
+    function _clearHighlight(){ if (_highlighted) { _highlighted.classList.remove('tour-target-on'); _highlighted = null; } }
+    function _highlight(el){
+      _clearHighlight();
+      if (!el) return;
+      el.classList.add('tour-target-on');
+      _highlighted = el;
+      try { el.scrollIntoView({behavior:'smooth', block:'center'}); } catch(_){}
+    }
+    function _positionTip(target){
+      if (!_tip) return;
+      if (!target) {
+        _tip.style.left = '50%'; _tip.style.top = '50%'; _tip.style.transform = 'translate(-50%,-50%)'; return;
+      }
+      var r = target.getBoundingClientRect();
+      var tipW = _tip.offsetWidth || 280, tipH = _tip.offsetHeight || 120, pad = 12;
+      var top = r.bottom + pad;
+      var left = r.left + r.width/2 - tipW/2;
+      if (top + tipH > window.innerHeight - pad) top = Math.max(pad, r.top - tipH - pad);
+      if (left + tipW > window.innerWidth - pad) left = window.innerWidth - tipW - pad;
+      if (left < pad) left = pad;
+      _tip.style.left = left + 'px'; _tip.style.top = top + 'px'; _tip.style.transform = 'none';
+    }
+    function _renderStep(){
+      var step = tourSteps[_idx]; if (!step || !_tip) { endTour(); return; }
+      var target = step.target ? _$(step.target) : null;
+      if (target) { var r = target.getBoundingClientRect(); if (!r.width || !r.height) target = null; }
+      _highlight(target);
+      var isLast = (_idx === tourSteps.length - 1);
+      var nextLbl = isLast ? 'Got it' : 'Next';
+      _tip.innerHTML =
+        '<button class="tour-skip" type="button" aria-label="Skip tour">Skip</button>' +
+        '<div class="tour-tip-step">Step ' + (_idx + 1) + ' of ' + tourSteps.length + '</div>' +
+        '<div class="tour-tip-text"></div>' +
+        '<div class="tour-tip-actions"><button class="tour-next" type="button">' + nextLbl + ' &rarr;</button></div>';
+      _tip.querySelector('.tour-tip-text').textContent = step.text;
+      _tip.querySelector('.tour-skip').onclick = endTour;
+      _tip.querySelector('.tour-next').onclick = nextTourStep;
+      _tip.classList.add('on');
+      if (_overlay) _overlay.classList.add('on');
+      requestAnimationFrame(function(){ _positionTip(target); var n = _tip.querySelector('.tour-next'); if (n) try { n.focus(); } catch(_){} });
+    }
+    function startProductTour(){
+      try { _ensureNodes(); _idx = 0; _renderStep(); }
+      catch(e){ try { if(typeof addPortfolioError==='function') addPortfolioError(e&&e.message||e,'startProductTour'); } catch(_){} }
+    }
+    function nextTourStep(){
+      _idx++;
+      if (_idx >= tourSteps.length) { endTour(); return; }
+      _renderStep();
+    }
+    function endTour(){
+      try {
+        _clearHighlight();
+        if (_tip) _tip.classList.remove('on');
+        if (_overlay) _overlay.classList.remove('on');
+        try { localStorage.setItem(TOUR_KEY, 'true'); } catch(_){}
+      } catch(_){}
+    }
+    window.startProductTour = startProductTour;
+
+    function _autoStart(){
+      try {
+        if (localStorage.getItem(TOUR_KEY) === 'true') return;
+        var hasHoldings = !!(window.portfolioState && (window.portfolioState.holdings||[]).length);
+        if (!hasHoldings) {
+          tourSteps[1].text = 'Risk flags will appear here once a portfolio is loaded — they highlight structural risks.';
+          tourSteps[2].text = 'Suggested next steps will appear here once a portfolio is loaded.';
+        }
+        setTimeout(function(){
+          try { if (typeof showPanel === 'function') showPanel('intelligence', document.querySelectorAll('.nav-item')[3]); } catch(_){}
+          setTimeout(startProductTour, 340);
+        }, 1200);
+      } catch(_){}
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _autoStart);
+    else _autoStart();
+
+    window.addEventListener('resize', function(){
+      if (_tip && _tip.classList.contains('on')) {
+        var step = tourSteps[_idx];
+        _positionTip(step && step.target ? _$(step.target) : null);
+      }
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && _tip && _tip.classList.contains('on')) endTour();
+    });
+  })();
 </script>
 </body>
 </html>
