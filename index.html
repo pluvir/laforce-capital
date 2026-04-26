@@ -162,6 +162,8 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
 .tour-overlay.on{opacity:1}
 .tour-tip{position:fixed;z-index:99960;width:280px;max-width:calc(100vw - 24px);padding:14px 16px 12px;border-radius:10px;background:linear-gradient(135deg,rgba(20,16,12,.97),rgba(35,28,18,.93));border:1px solid rgba(201,168,76,.32);box-shadow:0 12px 32px rgba(0,0,0,.55),0 0 18px rgba(201,168,76,.10);backdrop-filter:blur(10px);opacity:0;transform:translateY(4px);transition:opacity .2s ease,transform .2s ease;pointer-events:none}
 .tour-tip.on{opacity:1;transform:translateY(0);pointer-events:auto}
+.tour-tip-eye{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-light);font-weight:700;margin-bottom:4px}
+.tour-tip-eye::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px var(--gold)}
 .tour-tip-step{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);font-weight:700;margin-bottom:6px}
 .tour-tip-text{font-size:13px;line-height:1.5;color:var(--cream);margin-bottom:11px}
 .tour-tip-actions{display:flex;justify-content:flex-end}
@@ -184,6 +186,21 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
 .tour-skip{position:absolute;top:8px;right:10px;background:transparent;border:none;color:var(--text-3);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:3px 6px;transition:color .15s ease}
 .tour-skip:hover{color:var(--cream)}
 .tour-target-on{position:relative;z-index:99955;box-shadow:0 0 0 1px rgba(201,168,76,.55),0 0 24px rgba(201,168,76,.32);transition:box-shadow .25s ease}
+/* ── Site footer — minimal resource block ──────────────────────────── */
+.lfc-foot{margin:48px 28px 32px;padding:28px 30px 22px;border-top:1px solid var(--border);border-radius:14px;background:linear-gradient(180deg,rgba(20,16,12,.32),rgba(12,10,8,.18))}
+.lfc-foot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+@media (max-width:880px){.lfc-foot-grid{grid-template-columns:repeat(2,1fr);gap:22px}}
+@media (max-width:520px){.lfc-foot-grid{grid-template-columns:1fr;gap:18px}}
+.lfc-foot-col{display:flex;flex-direction:column;gap:9px;min-width:0}
+.lfc-foot-hd{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.20em;text-transform:uppercase;color:var(--gold-light);font-weight:700;margin-bottom:3px}
+.lfc-foot-link{font-size:12.5px;line-height:1.5;color:var(--text-1);text-decoration:none;cursor:pointer;background:none;border:none;padding:0;text-align:left;font-family:inherit;transition:color .15s ease}
+.lfc-foot-link:hover,.lfc-foot-link:focus-visible{color:var(--gold-light);outline:none}
+.lfc-foot-mail{font-family:'DM Mono',monospace;font-size:12px;color:var(--cream-dim);letter-spacing:.02em;word-break:break-all}
+.lfc-foot-base{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px;margin-top:22px;padding-top:16px;border-top:1px dashed rgba(201,168,76,.14)}
+.lfc-foot-mark{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--cream)}
+.lfc-foot-mark em{font-style:italic;color:var(--gold-light)}
+.lfc-foot-meta{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--text-3)}
+.lfc-foot-disclaim{margin-top:10px;font-size:11px;line-height:1.55;color:var(--text-3);max-width:760px}
 .tour-target-on.tour-target-click{cursor:pointer;animation:tourClickPulse 1.6s ease-in-out infinite}
 @keyframes tourClickPulse{0%,100%{box-shadow:0 0 0 1px rgba(201,168,76,.55),0 0 24px rgba(201,168,76,.32)}50%{box-shadow:0 0 0 1px rgba(201,168,76,.85),0 0 32px rgba(201,168,76,.50)}}
 .tour-tip-hint{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-light);font-weight:700;margin-top:-4px;margin-bottom:11px;opacity:.85}
@@ -2002,7 +2019,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
         {sym:'META',chg:'+1.85%',up:true},{sym:'AMZN',chg:'-0.84%',up:false},{sym:'MSFT',chg:'+0.92%',up:true},
         {sym:'GOOGL',chg:'+0.68%',up:true},{sym:'AMD',chg:'+2.15%',up:true},{sym:'AVGO',chg:'+1.42%',up:true},
         {sym:'PLTR',chg:'+4.18%',up:true},{sym:'NFLX',chg:'-1.34%',up:false},{sym:'COST',chg:'+0.54%',up:true},
-        {sym:'JPM',chg:'-0.62%',up:false},{sym:'V',chg:'+0.78%',up:true}
+        {sym:'JPM',chg:'-0.62%',up:false},{sym:'V',chg:'+0.78%',up:true},{sym:'MA',chg:'+0.91%',up:true}
       ];
       var _discMacro=[
         {sym:'XLK',chg:'+1.42%',up:true},{sym:'XLV',chg:'+0.74%',up:true},{sym:'XLU',chg:'-0.42%',up:false},
@@ -2865,22 +2882,6 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
   </div>
 </div>
 
-<!-- FEEDBACK -->
-<div id="feedbackSection" style="padding:22px 30px 32px 30px">
-  <div style="background:linear-gradient(135deg,rgba(20,16,12,.6),rgba(10,8,6,.4));border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:16px 20px;display:flex;flex-direction:column;gap:12px">
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <div style="font-size:11px;letter-spacing:.2em;color:#8f7a45;text-transform:uppercase;font-weight:600;margin-right:4px">Feedback</div>
-      <div style="font-size:12.5px;color:#D4CAB8;letter-spacing:.005em">Was this helpful?</div>
-      <button id="fbThumbsUp" type="button" onclick="(function(b){try{document.querySelectorAll('#feedbackSection [data-fb-vote]').forEach(function(x){x.style.background='rgba(255,255,255,.03)';x.style.borderColor='rgba(201,168,76,.2)';x.style.color='#C0B594';});b.style.background='rgba(107,170,117,.18)';b.style.borderColor='rgba(107,170,117,.5)';b.style.color='#9DD0A8';}catch(e){}})(this);return false;" data-fb-vote="up" aria-label="Thumbs up" style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.2);color:#C0B594;font-size:14px;line-height:1;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;transition:background .15s,border-color .15s,color .15s">👍</button>
-      <button id="fbThumbsDown" type="button" onclick="(function(b){try{document.querySelectorAll('#feedbackSection [data-fb-vote]').forEach(function(x){x.style.background='rgba(255,255,255,.03)';x.style.borderColor='rgba(201,168,76,.2)';x.style.color='#C0B594';});b.style.background='rgba(192,113,79,.18)';b.style.borderColor='rgba(192,113,79,.5)';b.style.color='#E0947A';}catch(e){}})(this);return false;" data-fb-vote="down" aria-label="Thumbs down" style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.2);color:#C0B594;font-size:14px;line-height:1;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;transition:background .15s,border-color .15s,color .15s">👎</button>
-    </div>
-    <div>
-      <label for="fbNotes" style="display:block;font-size:11px;letter-spacing:.14em;color:#8B7D68;text-transform:uppercase;font-weight:600;margin-bottom:6px">What felt unclear or could be better?</label>
-      <textarea id="fbNotes" rows="2" placeholder="Share a quick thought…" style="width:100%;min-height:58px;font-family:'DM Sans',sans-serif;font-size:12.5px;background:rgba(0,0,0,.32);border:1px solid rgba(201,168,76,.12);color:#F0E8D0;padding:10px 12px;border-radius:8px;outline:none;resize:vertical;line-height:1.55;transition:border-color .2s,background .2s"></textarea>
-    </div>
-  </div>
-</div>
-
 </div><!-- end #main -->
 
 <!-- RIGHT SIDEBAR -->
@@ -2937,6 +2938,30 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
   </div>
 
 
+  <!-- OPPORTUNITY LAYER &mdash; data-driven only, hidden until portfolio loaded -->
+  <div class="sc" id="oppLayerCard" style="display:none">
+    <div class="sc-hdr">
+      <div class="sc-title"><div class="sc-dot" style="background:var(--violet)"></div>Opportunity Layer</div>
+      <button class="sc-act" id="oppRefreshBtn" onclick="renderOppLayer(_holdings)">Refresh</button>
+    </div>
+    <div style="font-size:10px;color:var(--text-2);margin-bottom:10px;line-height:1.5" id="oppSubtitle">Based on your holdings &amp; current regime</div>
+    <div id="oppItems" style="display:flex;flex-direction:column;gap:6px"></div>
+    <div style="margin-top:10px;font-size:11px;color:var(--text-3);line-height:1.5;text-align:center">Generated from your portfolio gaps. Not financial advice.</div>
+  </div>
+
+  <!-- BEFORE PORTFOLIO: locked placeholder -->
+  <div class="sc" id="oppLayerLocked">
+    <div class="sc-hdr">
+      <div class="sc-title"><div class="sc-dot" style="background:var(--text-3)"></div>Opportunity Layer</div>
+    </div>
+    <div style="text-align:center;padding:14px 6px">
+      <div style="font-size:22px;margin-bottom:8px;opacity:.2">&#9670;</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text-2);margin-bottom:5px">Upload portfolio to unlock</div>
+      <div style="font-size:10px;color:var(--text-3);line-height:1.6;margin-bottom:12px">Opportunities are generated from your actual holdings &mdash; gaps, missing layers, and overweights.</div>
+      <button class="btn-g" style="font-size:10px;width:100%;padding:7px" onclick="showPanel('portfolio',document.querySelectorAll('.nav-item')[1])">Upload portfolio &rarr;</button>
+    </div>
+  </div>
+
   <!-- COLOR MODE -->
   <div class="sc">
     <div class="sc-hdr">
@@ -2979,30 +3004,6 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
         <span class="cm-name">Crimson Apex</span>
         <span class="cm-active-dot" aria-hidden="true"></span>
       </div>
-    </div>
-  </div>
-
-  <!-- OPPORTUNITY LAYER &mdash; data-driven only, hidden until portfolio loaded -->
-  <div class="sc" id="oppLayerCard" style="display:none">
-    <div class="sc-hdr">
-      <div class="sc-title"><div class="sc-dot" style="background:var(--violet)"></div>Opportunity Layer</div>
-      <button class="sc-act" id="oppRefreshBtn" onclick="renderOppLayer(_holdings)">Refresh</button>
-    </div>
-    <div style="font-size:10px;color:var(--text-2);margin-bottom:10px;line-height:1.5" id="oppSubtitle">Based on your holdings &amp; current regime</div>
-    <div id="oppItems" style="display:flex;flex-direction:column;gap:6px"></div>
-    <div style="margin-top:10px;font-size:11px;color:var(--text-3);line-height:1.5;text-align:center">Generated from your portfolio gaps. Not financial advice.</div>
-  </div>
-
-  <!-- BEFORE PORTFOLIO: locked placeholder -->
-  <div class="sc" id="oppLayerLocked">
-    <div class="sc-hdr">
-      <div class="sc-title"><div class="sc-dot" style="background:var(--text-3)"></div>Opportunity Layer</div>
-    </div>
-    <div style="text-align:center;padding:14px 6px">
-      <div style="font-size:22px;margin-bottom:8px;opacity:.2">&#9670;</div>
-      <div style="font-size:11px;font-weight:600;color:var(--text-2);margin-bottom:5px">Upload portfolio to unlock</div>
-      <div style="font-size:10px;color:var(--text-3);line-height:1.6;margin-bottom:12px">Opportunities are generated from your actual holdings &mdash; gaps, missing layers, and overweights.</div>
-      <button class="btn-g" style="font-size:10px;width:100%;padding:7px" onclick="showPanel('portfolio',document.querySelectorAll('.nav-item')[1])">Upload portfolio &rarr;</button>
     </div>
   </div>
 </div><!-- end rsidebar -->
@@ -8876,19 +8877,69 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
   </div>
 </div>
 
+<!-- SITE FOOTER — minimal resource block -->
+<footer class="lfc-foot" role="contentinfo">
+  <div class="lfc-foot-grid">
+    <div class="lfc-foot-col">
+      <div class="lfc-foot-hd">Product</div>
+      <button class="lfc-foot-link" type="button" onclick="openAboutLaForce()">Overview</button>
+      <button class="lfc-foot-link" type="button" onclick="(function(){var d=document.getElementById(‘howToUseDetails’);if(d){d.open=true;d.scrollIntoView({behavior:’smooth’,block:’start’});}})()">How it works</button>
+      <button class="lfc-foot-link" type="button" onclick="if(typeof startSpotlightTour===’function’)startSpotlightTour();else if(typeof startProductTour===’function’)startProductTour()">Guided walkthrough</button>
+      <button class="lfc-foot-link" type="button" onclick="lfcShowInfo('whats-new')">What’s new</button>
+    </div>
+    <div class="lfc-foot-col">
+      <div class="lfc-foot-hd">Support</div>
+      <button class="lfc-foot-link" type="button" onclick="lfcSendFeedback()">Send feedback</button>
+      <a class="lfc-foot-link" href="mailto:LaForceCapital@gmail.com?subject=Bug%20Report">Report a bug</a>
+      <a class="lfc-foot-link" href="mailto:LaForceCapital@gmail.com?subject=Feature%20Request">Request a feature</a>
+    </div>
+    <div class="lfc-foot-col">
+      <div class="lfc-foot-hd">Trust</div>
+      <button class="lfc-foot-link" type="button" onclick="lfcShowInfo('privacy')">Privacy</button>
+      <button class="lfc-foot-link" type="button" onclick="lfcShowInfo('disclaimers')">Disclaimers</button>
+      <button class="lfc-foot-link" type="button" onclick="lfcShowInfo('data-handling')">Data handling</button>
+      <button class="lfc-foot-link" type="button" onclick="lfcShowInfo('beta-notes')">Beta notes</button>
+    </div>
+    <div class="lfc-foot-col">
+      <div class="lfc-foot-hd">Contact</div>
+      <a class="lfc-foot-link lfc-foot-mail" href="mailto:LaForceCapital@gmail.com">LaForceCapital@gmail.com</a>
+    </div>
+  </div>
+  <!-- Feedback — quick rating + open-ended note. Submit handled by submitFeedback() in Feedback panel; this is the lightweight footer surface. -->
+  <div id="feedbackSection" style="margin-top:22px;padding-top:16px;border-top:1px dashed rgba(201,168,76,.14);background:linear-gradient(135deg,rgba(20,16,12,.45),rgba(10,8,6,.30));border-radius:10px">
+    <div style="padding:14px 16px;display:flex;flex-direction:column;gap:11px">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.20em;color:var(--gold-light);text-transform:uppercase;font-weight:700;margin-right:4px">Feedback</div>
+        <div style="font-size:12.5px;color:var(--text-1);letter-spacing:.005em">Was this helpful?</div>
+        <button id="fbThumbsUp" type="button" onclick="(function(b){try{document.querySelectorAll('#feedbackSection [data-fb-vote]').forEach(function(x){x.style.background='rgba(255,255,255,.03)';x.style.borderColor='rgba(201,168,76,.2)';x.style.color='#C0B594';});b.style.background='rgba(107,170,117,.18)';b.style.borderColor='rgba(107,170,117,.5)';b.style.color='#9DD0A8';}catch(e){}})(this);return false;" data-fb-vote="up" aria-label="Thumbs up" style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.2);color:#C0B594;font-size:14px;line-height:1;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;transition:background .15s,border-color .15s,color .15s">👍</button>
+        <button id="fbThumbsDown" type="button" onclick="(function(b){try{document.querySelectorAll('#feedbackSection [data-fb-vote]').forEach(function(x){x.style.background='rgba(255,255,255,.03)';x.style.borderColor='rgba(201,168,76,.2)';x.style.color='#C0B594';});b.style.background='rgba(192,113,79,.18)';b.style.borderColor='rgba(192,113,79,.5)';b.style.color='#E0947A';}catch(e){}})(this);return false;" data-fb-vote="down" aria-label="Thumbs down" style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.2);color:#C0B594;font-size:14px;line-height:1;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;transition:background .15s,border-color .15s,color .15s">👎</button>
+      </div>
+      <div>
+        <label for="fbNotes" style="display:block;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--text-2);text-transform:uppercase;font-weight:700;margin-bottom:6px">What felt unclear or could be better?</label>
+        <textarea id="fbNotes" rows="2" placeholder="Share a quick thought…" style="width:100%;min-height:58px;font-family:'DM Sans',sans-serif;font-size:12.5px;background:rgba(0,0,0,.32);border:1px solid rgba(201,168,76,.12);color:var(--cream);padding:10px 12px;border-radius:8px;outline:none;resize:vertical;line-height:1.55;transition:border-color .2s,background .2s"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="lfc-foot-base">
+    <div class="lfc-foot-mark">LaForce <em>Capital</em></div>
+    <div class="lfc-foot-meta">Beta · Educational analysis · Not financial advice</div>
+  </div>
+  <div class="lfc-foot-disclaim">LaForce Capital is a portfolio intelligence platform built for educational analysis. It is not a registered investment advisor. Information surfaced here is not personalized financial advice. Consult a licensed advisor before making investment decisions.</div>
+</footer>
+
 <!-- ABOUT LAFORCE — premium modal opened by header click -->
 <style>
-  #aboutLfcOverlay { position:fixed; inset:0; z-index:99990; display:none; align-items:center; justify-content:center; padding:24px;
+  #aboutLfcOverlay, #lfcInfoOverlay { position:fixed; inset:0; z-index:99990; display:none; align-items:center; justify-content:center; padding:24px;
     background:rgba(5,5,8,.78); backdrop-filter:blur(8px); animation:lfcAboutFade .22s ease; }
-  #aboutLfcOverlay.on { display:flex; }
+  #aboutLfcOverlay.on, #lfcInfoOverlay.on { display:flex; }
   @keyframes lfcAboutFade { from { opacity:0; } to { opacity:1; } }
-  #aboutLfcOverlay .lfc-about { max-width:560px; width:100%; max-height:88vh; overflow:auto;
+  #aboutLfcOverlay .lfc-about, #lfcInfoOverlay .lfc-about { max-width:560px; width:100%; max-height:88vh; overflow:auto;
     background:linear-gradient(145deg,var(--noir-2),var(--noir-1));
     border:1px solid rgba(201,168,76,.25); border-radius:16px;
     box-shadow:0 30px 80px rgba(0,0,0,.65), 0 0 32px rgba(201,168,76,.06);
     padding:30px 32px; position:relative; animation:lfcAboutIn .26s cubic-bezier(.4,0,.2,1); }
   @keyframes lfcAboutIn { from { opacity:0; transform:translateY(10px) scale(.98); } to { opacity:1; transform:translateY(0) scale(1); } }
-  #aboutLfcOverlay .lfc-about::before { content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  #aboutLfcOverlay .lfc-about::before, #lfcInfoOverlay .lfc-about::before { content:''; position:absolute; top:0; left:0; right:0; height:1px;
     background:linear-gradient(90deg, transparent, var(--gold), transparent); }
   .lfc-about-x { position:absolute; top:14px; right:14px; width:30px; height:30px; border-radius:50%;
     background:transparent; border:1px solid var(--border); color:var(--text-2); font-size:14px; cursor:pointer;
@@ -8930,6 +8981,11 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     <div class="lfc-about-disclaim">Educational analysis only. LaForce Capital is not a registered investment advisor. Information here is not financial advice — consult a licensed advisor before making investment decisions.</div>
   </div>
 </div>
+
+<!-- LFC INFO MODAL — generic content shell, populated by lfcShowInfo(key) -->
+<div id="lfcInfoOverlay" role="dialog" aria-modal="true" onclick="if(event.target===this)lfcCloseInfo()">
+  <div class="lfc-about" role="document"><!-- content injected dynamically --></div>
+</div>
 <script>
   window.openAboutLaForce = function(){
     var o = document.getElementById('aboutLfcOverlay'); if(!o) return;
@@ -8944,14 +9000,85 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     if(e.key==='Escape'){ var o=document.getElementById('aboutLfcOverlay'); if(o&&o.classList.contains('on')) closeAboutLaForce(); }
   });
 
+  /* ── Generic info modal — used by footer Trust + Product/What's new links.
+     Reuses the About modal styling (.lfc-about-*) via shared CSS scope. */
+  window._lfcInfo = {
+    'whats-new': {
+      eyebrow:'Beta · What\'s new', title:'Recent updates', lede:'Highlights from the current beta cycle.',
+      sections:[
+        {h:'Shipped this cycle', list:[
+          'Intelligence Engine v2 — single-source-of-truth portfolioState pipeline',
+          'AI Diagnosis (live + mock fallback) — no user API key required',
+          'Guided walkthrough + click-to-learn spotlight tour',
+          'Improved readability — minimum 11px text, refined contrast',
+          'Footer resource section with Privacy, Disclaimers, and Beta notes',
+          'Feedback surface integrated into the footer'
+        ]}
+      ]
+    },
+    'privacy': {
+      eyebrow:'Trust · Privacy', title:'Privacy', lede:'How your data is handled in the beta.',
+      sections:[{h:'Beta privacy posture', p:'LaForce Capital is currently in private beta. Portfolio data is used only to generate the analysis experience. Do not upload sensitive personal documents beyond what is needed for testing.'}]
+    },
+    'disclaimers': {
+      eyebrow:'Trust · Disclaimers', title:'Disclaimers', lede:'Educational analysis only.',
+      sections:[{h:'Educational framing', p:'Educational and informational only. Not investment, tax, or legal advice. Outputs are not recommendations to buy, sell, or hold securities.'}]
+    },
+    'data-handling': {
+      eyebrow:'Trust · Data handling', title:'Data handling', lede:'What to share — and what to leave out.',
+      sections:[{h:'Beta data scope', p:'Uploaded portfolio inputs are used to generate analysis and improve the beta experience. Do not include passwords, account numbers, SSNs, or login credentials.'}]
+    },
+    'beta-notes': {
+      eyebrow:'Trust · Beta notes', title:'Beta notes', lede:'What to expect during private beta.',
+      sections:[{h:'Beta expectations', p:'Private beta. Features, outputs, and design may change. Please report confusing results, bugs, or unclear language.'}]
+    }
+  };
+  function _lfcEsc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){return ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[c];}); }
+  window.lfcShowInfo = function(key){
+    var d = window._lfcInfo && window._lfcInfo[key]; if (!d) return;
+    var o = document.getElementById('lfcInfoOverlay'); if (!o) return;
+    var inner = o.querySelector('.lfc-about'); if (!inner) return;
+    var sectionsHtml = (d.sections||[]).map(function(s){
+      var body = s.list
+        ? '<ul class="lfc-about-list">'+ s.list.map(function(li){return '<li>'+_lfcEsc(li)+'</li>';}).join('') +'</ul>'
+        : '<p class="lfc-about-p">'+_lfcEsc(s.p||'')+'</p>';
+      return '<div class="lfc-about-section"><div class="lfc-about-h">'+_lfcEsc(s.h||'')+'</div>'+ body +'</div>';
+    }).join('');
+    inner.innerHTML =
+      '<button type="button" class="lfc-about-x" onclick="lfcCloseInfo()" aria-label="Close">&times;</button>'+
+      '<div class="lfc-about-eye">'+_lfcEsc(d.eyebrow||'')+'</div>'+
+      '<h2 class="lfc-about-title" id="lfcInfoTitle">'+_lfcEsc(d.title||'')+'</h2>'+
+      (d.lede ? '<p class="lfc-about-lede">'+_lfcEsc(d.lede)+'</p>' : '')+
+      sectionsHtml +
+      '<div class="lfc-about-disclaim">Educational analysis only. LaForce Capital is not a registered investment advisor. Information here is not financial advice.</div>';
+    o.setAttribute('aria-labelledby','lfcInfoTitle');
+    o.classList.add('on'); document.body.style.overflow='hidden';
+    var x = inner.querySelector('.lfc-about-x'); if (x) try { x.focus(); } catch(_){}
+  };
+  window.lfcCloseInfo = function(){
+    var o = document.getElementById('lfcInfoOverlay'); if (!o) return;
+    o.classList.remove('on'); document.body.style.overflow='';
+  };
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape'){ var o=document.getElementById('lfcInfoOverlay'); if(o&&o.classList.contains('on')) lfcCloseInfo(); }
+  });
+  /* Footer "Send feedback" — open the existing Feedback panel if present, else fall back to mailto */
+  window.lfcSendFeedback = function(){
+    try {
+      var p = document.getElementById('panel-feedback');
+      if (p && typeof showPanel === 'function') { showPanel('feedback', null); window.scrollTo({top:0,behavior:'smooth'}); return; }
+    } catch(_){}
+    try { window.location.href = 'mailto:LaForceCapital@gmail.com?subject=LaForce%20Feedback'; } catch(_){}
+  };
+
   /* ── Product tour — minimal, native, no external libs ───────────────── */
   (function(){
     var TOUR_KEY = 'seenTour';
     var tourSteps = [
-      { target:'#healthCard',   text:'This is your portfolio health score — it reflects overall structure and balance.' },
-      { target:'#riskFlagsEl',  text:'These highlight the biggest structural risks in your portfolio.' },
-      { target:'#actionPlanEl', text:'This outlines possible next steps based on your current structure.' },
-      { target:null,            text:"You're set — explore your portfolio freely." }
+      { target:'#healthCard',   text:'Start here — this is your portfolio health. It shows how balanced your portfolio looks overall.' },
+      { target:'#riskFlagsEl',  text:'These are the main risks to notice. This section surfaces the biggest structural issues in the portfolio.' },
+      { target:'#actionPlanEl', text:'These are possible next moves. Think of this as a guide for what to evaluate next — not a checklist.' },
+      { target:null,            text:"You're set. Explore the rest of the dashboard at your own pace." }
     ];
     var _idx = 0, _overlay = null, _tip = null, _highlighted = null;
     var _clickMode = false, _clickHandler = null, _clickKeyHandler = null;
@@ -9023,10 +9150,11 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
       _highlight(target);
       var isLast = (_idx === tourSteps.length - 1);
       var nextLbl = isLast ? 'Got it' : 'Next';
-      var clickHint = (_clickMode && target) ? '<div class="tour-tip-hint">Click this section to continue</div>' : '';
+      var clickHint = (_clickMode && target) ? '<div class="tour-tip-hint">Click the highlighted section to continue</div>' : '';
       var nextQuiet = (_clickMode && target) ? ' tour-next-quiet' : '';
       _tip.innerHTML =
         '<button class="tour-skip" type="button" aria-label="Skip tour">Skip</button>' +
+        '<div class="tour-tip-eye">Guided walkthrough</div>' +
         '<div class="tour-tip-step">Step ' + (_idx + 1) + ' of ' + tourSteps.length + '</div>' +
         '<div class="tour-tip-text"></div>' +
         clickHint +
