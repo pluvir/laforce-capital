@@ -1957,6 +1957,9 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     .rk-tbl tbody tr:focus-visible { outline:1px solid var(--border-2); outline-offset:-1px; }
     .rk-tbl td { padding:9px 10px; border-bottom:1px dashed rgba(201,168,76,.10); vertical-align:middle; }
     .rk-tbl tbody tr:last-child td { border-bottom:none; }
+    /* Phase 2 — subtle "Refining reads…" status near the Rank button */
+    .rk-ai-refining { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:var(--text-3); opacity:.85; }
+    .rk-ai-refining[hidden] { display:none; }
     .rk-rank { font-family:'DM Mono',monospace; font-size:11px; color:var(--text-3); width:28px; }
     .rk-sym { font-family:'DM Mono',monospace; font-size:13px; font-weight:600; color:var(--cream); width:74px; letter-spacing:.04em; }
     .rk-score-cell { width:120px; }
@@ -1973,10 +1976,10 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     /* Phase 1.5 — expandable detail panel under each ranked row */
     .rk-detail-row[hidden] { display:none !important; }
     .rk-detail-row > td { padding:0; border-bottom:1px dashed rgba(201,168,76,.10); background:rgba(0,0,0,.18); }
-    .rk-detail { padding:13px 14px; animation:fadeUp .22s ease; }
-    .rk-detail-grid { display:grid; grid-template-columns:1.1fr .9fr; gap:18px; align-items:start; }
-    @media (max-width:720px) { .rk-detail-grid { grid-template-columns:1fr; gap:12px; } }
-    .rk-detail-bars { display:flex; flex-direction:column; gap:8px; }
+    .rk-detail { padding:11px 14px 12px; animation:fadeUp .22s ease; }
+    .rk-detail-grid { display:grid; grid-template-columns:1.1fr .9fr; gap:14px; align-items:start; }
+    @media (max-width:720px) { .rk-detail-grid { grid-template-columns:1fr; gap:11px; } }
+    .rk-detail-bars { display:flex; flex-direction:column; gap:7px; }
     .rk-detail-bar-block { display:flex; flex-direction:column; gap:3px; }
     .rk-detail-bar-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--text-3); font-weight:700; }
     .rk-detail-bar-row { display:flex; align-items:center; gap:9px; }
@@ -1985,9 +1988,13 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     .rk-detail-fill.up { background:var(--sage); } .rk-detail-fill.mid { background:var(--gold); } .rk-detail-fill.low { background:var(--clay); }
     .rk-detail-bar-num { font-family:'DM Mono',monospace; font-size:11px; font-weight:600; min-width:28px; text-align:right; }
     .rk-detail-bar-num.up { color:var(--sage); } .rk-detail-bar-num.mid { color:var(--gold-light); } .rk-detail-bar-num.low { color:var(--clay); }
-    .rk-detail-side { display:flex; flex-direction:column; gap:11px; min-width:0; }
-    .rk-detail-why { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:13px; color:var(--cream-dim); line-height:1.55; }
-    .rk-detail-cta { align-self:flex-start; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.10em; text-transform:uppercase; font-weight:700; color:var(--gold-light); background:transparent; border:1px solid var(--border-2); padding:6px 12px; border-radius:5px; cursor:pointer; transition:background .15s ease, color .15s ease; }
+    .rk-detail-side { display:flex; flex-direction:column; gap:8px; min-width:0; }
+    .rk-detail-eye { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--text-3); font-weight:700; }
+    .rk-detail-why { display:flex; flex-direction:column; gap:4px; }
+    .rk-detail-why-line { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:13px; color:var(--cream-dim); line-height:1.5; }
+    .rk-detail-why-caveat { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:12.5px; color:var(--text-2); line-height:1.5; opacity:.92; }
+    .rk-detail-emph { font-style:italic; color:var(--cream); }
+    .rk-detail-cta { align-self:flex-start; margin-top:2px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.10em; text-transform:uppercase; font-weight:700; color:var(--gold-light); background:transparent; border:1px solid var(--border-2); padding:6px 12px; border-radius:5px; cursor:pointer; transition:background .15s ease, color .15s ease; }
     .rk-detail-cta:hover, .rk-detail-cta:focus-visible { color:var(--cream); background:rgba(201,168,76,.08); outline:none; }
     .disc-signal-lbl { color:var(--text-2); font-weight:500; }
     .disc-signal-val { display:inline-flex; align-items:center; gap:7px; font-family:'DM Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.02em; }
@@ -2710,6 +2717,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       <textarea id="rankInput" rows="3" placeholder="NVDA, AAPL, MSFT, GOOGL, AMZN, META, TSLA, AVGO, AMD…" style="font-family:'DM Mono',monospace;font-size:13px;background:var(--noir-3);border:1px solid var(--border);color:var(--cream);padding:11px 13px;border-radius:8px;outline:none;resize:vertical;min-height:74px;line-height:1.55;text-transform:uppercase;letter-spacing:.04em;transition:border-color .2s,background .2s"></textarea>
       <div style="display:flex;align-items:center;gap:10px">
         <button class="btn-p" onclick="runRankList()">Rank &rarr;</button>
+        <span id="rkAiRefining" class="rk-ai-refining" hidden>Refining reads&hellip;</span>
         <span id="rankNotice" style="font-size:11px;color:var(--text-3);letter-spacing:.04em"></span>
       </div>
     </div>
@@ -7753,38 +7761,48 @@ function _rankBaselineScore(sym, regime){
   };
 }
 
-/* Phase 1.5 — observational explanation generator. No advice, no buy/sell/should/recommend. */
+/* Phase 1.5 — observational explanation generator. No advice, no buy/sell/should/recommend.
+   Pattern: "{sym} {position} because {drivers} are lifting the score. {Soft thread} keeps the read from being fully clean."
+   Contributors selected in priority order (role → regime → verdict → risk) when sub-score >= 6. */
 function _rankExplain(sym, item, rankIdx, total){
   var bucket = item.bucket || 'Growth';
-  var roleLbl   = bucket === 'Core' ? 'core role' : bucket === 'Growth' ? 'growth role' : bucket === 'Tactical' ? 'tactical role' : 'case-by-case role';
+  var roleLbl = bucket === 'Core' ? 'core role' : bucket === 'Growth' ? 'growth role' : bucket === 'Tactical' ? 'tactical role' : 'case-by-case role';
+  var roleCap = roleLbl.charAt(0).toUpperCase() + roleLbl.slice(1);
+
+  /* Priority order: role first, then regime, verdict, risk. `pos` = phrase used as positive contributor; `cap` = capitalized subject for caveat. */
   var subs = [
-    { key:'role',    val:item.roleFit,    pos:roleLbl + ' reads strong',                    neg:roleLbl + ' reads softer' },
-    { key:'risk',    val:item.riskFit,    pos:'risk tier reads clean',                       neg:'risk tier reads heavier' },
-    { key:'regime',  val:item.regimeFit,  pos:'regime support is present',                   neg:'regime support is soft' },
-    { key:'verdict', val:item.verdictFit, pos:'stock-decision alignment is positive',        neg:'stock-decision alignment is soft' }
+    { key:'role',    val:item.roleFit,    pos:roleLbl,                              cap:roleCap                  },
+    { key:'regime',  val:item.regimeFit,  pos:'regime support',                     cap:'Regime support'         },
+    { key:'verdict', val:item.verdictFit, pos:'positive stock-decision alignment',  cap:'Stock-decision alignment' },
+    { key:'risk',    val:item.riskFit,    pos:'clean risk tier',                    cap:'Risk tier'              }
   ];
-  var sorted = subs.slice().sort(function(a,b){ return b.val - a.val; });
-  var top1 = sorted[0], top2 = sorted[1], low = sorted[sorted.length - 1];
 
-  /* Position phrase by tertile of the sorted list */
+  /* Position phrase by tertile */
   var third = Math.max(1, Math.floor((total||1) / 3));
-  var pos = rankIdx < third ? 'ranks among the strongest reads'
-          : rankIdx >= (total - third) ? 'lands lower in the set'
-          : 'sits mid-pack';
+  var posPhrase = rankIdx < third                  ? 'ranks among the strongest reads'
+                : rankIdx >= (total - third)       ? 'lands lower in the set'
+                : 'sits mid-pack';
 
-  /* Top contributors phrase */
-  var driverParts = [];
-  if (top1 && top1.val >= 6) driverParts.push(top1.pos);
-  if (top2 && top2.val >= 6 && top2.key !== top1.key) driverParts.push(top2.pos);
-  var driverLine = driverParts.length ? driverParts.join(' and ') : 'mixed signals across the components';
+  /* Contributors >= 6 in priority order; pick first two. Wrap each in <em class="rk-detail-emph"> for subtle emphasis. */
+  var contribs = subs.filter(function(s){ return s.val >= 6; });
+  function _emph(s){ return '<em class="rk-detail-emph">' + esc(s) + '</em>'; }
+  var driverLine;
+  if (contribs.length >= 2)      driverLine = _emph(contribs[0].pos) + ' and ' + _emph(contribs[1].pos) + ' are lifting the score';
+  else if (contribs.length === 1) driverLine = _emph(contribs[0].pos) + ' is lifting the score';
+  else                            driverLine = 'no single read is clearly carrying the score';
 
-  /* Softer-thread caveat — only if materially below the top */
+  /* Lowest sub-score → caveat. Suppressed for bottom-third rankings (where the position phrase already conveys the weight). */
+  var lowest = subs.slice().sort(function(a,b){ return a.val - b.val; })[0];
   var caveat = '';
-  if (low && top1 && (top1.val - low.val) >= 2.0 && low.val < 6.0) {
-    caveat = ' ' + (low.neg.charAt(0).toUpperCase() + low.neg.slice(1)) + '.';
+  var inBottom = rankIdx >= (total - third);
+  if (!inBottom && contribs.length >= 1 && lowest && lowest.val < 6.0) {
+    caveat = lowest.cap + ' keeps the read from being fully clean.';
   }
 
-  return sym + ' ' + pos + ' because ' + driverLine + '.' + caveat;
+  return {
+    primary: esc(sym) + ' ' + posPhrase + ' because ' + driverLine + '.',
+    caveat: caveat
+  };
 }
 
 function _rankHeadline(b, regime, score){
@@ -7837,6 +7855,8 @@ function runRankList(){
     };
   }).sort(function(a,b){ return b.score - a.score; });
   renderRankList(items);
+  /* Phase 2 — AI overlay refines headline/read only. Deterministic stays canonical on any failure. */
+  try { refineRankReads(items, regime); } catch(_){}
 }
 
 /* Phase 1.5 — accordion-style row toggle. One open at a time. */
@@ -7900,7 +7920,11 @@ function renderRankList(items){
         '<div class="rk-detail-grid">' +
           '<div class="rk-detail-bars">'+bars+'</div>' +
           '<div class="rk-detail-side">' +
-            '<div class="rk-detail-why">'+esc(why)+'</div>' +
+            '<div class="rk-detail-eye">Why this ranks here</div>' +
+            '<div class="rk-detail-why">' +
+              '<div class="rk-detail-why-line">'+why.primary+'</div>' +
+              (why.caveat ? '<div class="rk-detail-why-caveat">'+esc(why.caveat)+'</div>' : '') +
+            '</div>' +
             '<button type="button" class="rk-detail-cta" onclick="event.stopPropagation();discOpenSym(\''+esc(it.sym)+'\')">Open in Stock Decision Engine &rarr;</button>' +
           '</div>' +
         '</div>' +
@@ -7923,6 +7947,170 @@ if (!window._rkEscBound) {
       var sym = row.getAttribute('data-rk-sym'); if (sym) _rkToggleRow(sym);
     }
   });
+}
+
+/* ─── Phase 2 — AI overlay (refines headline/read only; deterministic stays canonical) ─── */
+var _rkAiSeq = 0;                  /* monotonically increasing — only latest writes DOM */
+var _rkAiLastKey = null;           /* cache key of the last successful AI refine */
+var _rkAiLastMap = null;           /* { TICKER: { headline, read } } from last successful refine */
+var _rkAiInflight = false;         /* true while a request is in flight */
+var RK_AI_TIMEOUT_MS = 12000;
+
+/* Cache key — sorted tickers + active regime. Same input set + regime = cache hit. */
+function _rkAiKey(items, regime){
+  if (!items || !items.length) return '';
+  var syms = items.map(function(i){ return (i && i.sym) || ''; }).slice().sort().join('|');
+  return syms + '§' + (regime || '-');
+}
+
+/* Subtle "Refining reads…" toggle near the Rank button. */
+function _rkAiSetLoading(on){
+  var el = document.getElementById('rkAiRefining'); if (!el) return;
+  if (on) el.removeAttribute('hidden');
+  else    el.setAttribute('hidden','');
+}
+
+/* Forbidden-language check — case-insensitive, word-boundary. Returns true if any token found. */
+function _rkAiHasForbidden(text){
+  if (!text) return false;
+  return /\b(buy|sell|should|recommend(?:ed)?|best pick|top pick)\b/i.test(text);
+}
+
+/* Validate AI response against schema + set-equality + tone. Returns map or null. */
+function _rkParseAiJson(raw, items){
+  if (!raw || typeof raw !== 'string') return null;
+  var json = null;
+  try { json = JSON.parse(raw); } catch(_){}
+  if (!json) {
+    var s = raw.indexOf('{'), e = raw.lastIndexOf('}');
+    if (s >= 0 && e > s) { try { json = JSON.parse(raw.slice(s, e+1)); } catch(_){} }
+  }
+  if (!json || typeof json !== 'object') return null;
+  if (!Array.isArray(json.rankings)) return null;
+  /* Build expected ticker set from deterministic items */
+  var expected = {}, expectedCount = 0;
+  for (var i=0; i<items.length; i++){
+    var sym = items[i] && items[i].sym && String(items[i].sym).toUpperCase();
+    if (sym) { expected[sym] = true; expectedCount++; }
+  }
+  if (json.rankings.length !== expectedCount) return null;
+  var map = {};
+  for (var j=0; j<json.rankings.length; j++){
+    var r = json.rankings[j];
+    if (!r || typeof r !== 'object') return null;
+    var t = (typeof r.ticker === 'string') ? r.ticker.toUpperCase() : '';
+    if (!t || !expected[t]) return null;             /* unknown or missing ticker */
+    if (map[t]) return null;                         /* duplicate */
+    var h  = (typeof r.headline === 'string') ? r.headline.trim() : '';
+    var rd = (typeof r.read === 'string')     ? r.read.trim()     : '';
+    if (!h  || h.length  > 120) return null;
+    if (!rd || rd.length > 280) return null;
+    if (_rkAiHasForbidden(h) || _rkAiHasForbidden(rd)) return null;
+    map[t] = { headline: h, read: rd };
+  }
+  /* Final set-equality assertion */
+  for (var k in expected) { if (expected.hasOwnProperty(k) && !map[k]) return null; }
+  return map;
+}
+
+/* Merge AI map into items + repaint. Preserves the open detail row across repaint. */
+function _rkApplyAiAndRepaint(items, map, seq){
+  if (seq !== _rkAiSeq) return;
+  /* Snapshot which row was open before repaint, so we can restore it after */
+  var openSym = null;
+  var tbl = document.querySelector('#rankOutput .rk-tbl');
+  if (tbl) {
+    var openTrigger = tbl.querySelector('tr[data-rk-sym][aria-expanded="true"]');
+    if (openTrigger) openSym = openTrigger.getAttribute('data-rk-sym');
+  }
+  var merged = items.map(function(it){
+    var key = it && it.sym && String(it.sym).toUpperCase();
+    var m = key ? map[key] : null;
+    if (m && m.headline && m.read) {
+      return Object.assign({}, it, { headline: m.headline, read: m.read });
+    }
+    return it;
+  });
+  renderRankList(merged);
+  /* Restore previously-open detail row (matched by data-rk-sym, which is stable) */
+  if (openSym) {
+    try { _rkToggleRow(openSym); } catch(_){}
+  }
+}
+
+/* One batch aiCall with timeout, cache, sequence guard. Silent fallback on any failure. */
+async function refineRankReads(items, regime){
+  try {
+    if (!items || !items.length) return;
+    var key = _rkAiKey(items, regime);
+    /* Cache hit — serve instantly even if a parallel call is in flight on different inputs */
+    if (key && key === _rkAiLastKey && _rkAiLastMap) {
+      _rkApplyAiAndRepaint(items, _rkAiLastMap, ++_rkAiSeq);
+      return;
+    }
+    if (_rkAiInflight) return;
+    var seq = ++_rkAiSeq;
+    _rkAiInflight = true;
+    _rkAiSetLoading(true);
+
+    var dossier = items.map(function(it){
+      return [
+        'TICKER ' + it.sym,
+        '  score=' + (it.score!=null?Number(it.score).toFixed(1):'-'),
+        '  roleFit=' + (it.roleFit!=null?Number(it.roleFit).toFixed(1):'-'),
+        '  riskFit=' + (it.riskFit!=null?Number(it.riskFit).toFixed(1):'-'),
+        '  regimeFit=' + (it.regimeFit!=null?Number(it.regimeFit).toFixed(1):'-'),
+        '  current_headline=' + String(it.headline||''),
+        '  current_read='     + String(it.read||'')
+      ].join('\n');
+    }).join('\n\n');
+
+    var sys = 'You are a calm, observational portfolio diagnostic engine. Output ONLY valid JSON matching the requested schema. No prose outside JSON. No markdown. Educational framing only — never advice. Never use the words buy, sell, should, recommend, best pick, top pick. Never change scores. Never change rank order. Never add or remove tickers. Refine only headline and read for each ticker, in a neutral institutional voice. Tone: observational, calm, premium, human-readable.';
+    var prompt = [
+      'PORTFOLIO RANK DOSSIER',
+      'Active regime: ' + (regime || 'Neutral'),
+      'Tickers (in deterministic rank order, do not reorder):',
+      '',
+      dossier,
+      '',
+      'For each ticker above, return ONLY this JSON object (no commentary, no markdown fences):',
+      '{',
+      '  "rankings": [',
+      '    { "ticker": "SYM", "headline": "one short descriptive sentence (max ~90 chars)", "read": "2-3 sentence neutral read, observational tone" }',
+      '  ]',
+      '}',
+      '',
+      'One entry per ticker. Same set as input. Educational framing only. No advice. No buy/sell/should/recommend/best-pick language.'
+    ].join('\n');
+
+    var raw;
+    try {
+      raw = await Promise.race([
+        aiCall(prompt, sys, 1500),
+        new Promise(function(_, reject){ setTimeout(function(){ reject(new Error('Rank AI overlay timed out')); }, RK_AI_TIMEOUT_MS); })
+      ]);
+    } catch(eRace) {
+      try { addPortfolioError(eRace && eRace.message || eRace, 'refineRankReads:race'); } catch(_){}
+      return;  /* deterministic stays */
+    }
+
+    if (seq !== _rkAiSeq) return;  /* stale guard */
+
+    var map = _rkParseAiJson(raw, items);
+    if (!map) {
+      try { addPortfolioError('Rank AI overlay rejected by validator', 'refineRankReads:validate'); } catch(_){}
+      return;  /* deterministic stays */
+    }
+
+    _rkAiLastKey = key;
+    _rkAiLastMap = map;
+    _rkApplyAiAndRepaint(items, map, seq);
+  } catch(e) {
+    try { addPortfolioError(e && e.message || e, 'refineRankReads'); } catch(_){}
+  } finally {
+    _rkAiInflight = false;
+    _rkAiSetLoading(false);
+  }
 }
 
 function _cmpToggle(el){
