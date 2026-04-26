@@ -217,6 +217,23 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
 .ai-dx-drivers{display:flex;flex-wrap:wrap;gap:4px}
 .ai-dx-drv{font-size:11px;padding:1.5px 7px;border-radius:999px;border:1px solid var(--border-2);background:rgba(201,168,76,.05);color:var(--gold-light);font-family:'DM Mono',monospace;letter-spacing:.04em}
 .ai-dx-q{font-size:10.5px;color:var(--gold-light);font-style:italic;line-height:1.45;padding-top:4px;border-top:1px dashed rgba(201,168,76,.14)}
+/* AI Diagnosis feedback — minimal inline capture */
+.ai-dx-fb{margin-top:8px;padding:8px 11px 4px;display:flex;flex-direction:column;gap:7px;border-top:1px dashed rgba(201,168,76,.14)}
+.ai-dx-fb[hidden]{display:none !important}
+.ai-dx-fb-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ai-dx-fb-q{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);font-weight:700;margin-right:2px}
+.ai-dx-fb-btn{font-family:inherit;font-size:11px;color:var(--text-1);background:rgba(0,0,0,.18);border:1px solid var(--border);border-radius:6px;padding:4px 9px;cursor:pointer;transition:color .15s ease,border-color .15s ease;line-height:1}
+.ai-dx-fb-btn:hover,.ai-dx-fb-btn:focus-visible{color:var(--cream);border-color:var(--border-2);outline:none}
+.ai-dx-fb-thanks{font-size:11px;font-style:italic;color:var(--gold-light);transition:opacity .25s ease;margin-left:2px;opacity:1}
+.ai-dx-fb-thanks[hidden]{display:none}
+.ai-dx-fb-thanks.fade-out{opacity:0}
+.ai-dx-fb-expand{display:flex;flex-direction:column;gap:6px;animation:fadeUp .22s ease}
+.ai-dx-fb-expand[hidden]{display:none !important}
+.ai-dx-fb-lbl{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);font-weight:700}
+.ai-dx-fb-text{width:100%;font-family:'DM Sans',sans-serif;font-size:11.5px;background:rgba(0,0,0,.32);border:1px solid var(--border);color:var(--cream);padding:8px 10px;border-radius:6px;outline:none;resize:vertical;line-height:1.5;min-height:50px;transition:border-color .2s}
+.ai-dx-fb-text:focus{border-color:var(--gold-dim)}
+.ai-dx-fb-submit{align-self:flex-end;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.10em;text-transform:uppercase;font-weight:700;color:#0d0a08;background:linear-gradient(90deg,var(--gold-light),var(--gold));border:none;padding:5px 12px;border-radius:5px;cursor:pointer;transition:filter .15s ease}
+.ai-dx-fb-submit:hover{filter:brightness(1.08)}
 /* ── Phase 3 — Strategy Paths cards ────────────────────────────────── */
 .sp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 @media (max-width:900px){.sp-grid{grid-template-columns:1fr}}
@@ -1913,6 +1930,27 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     .disc-mover.heat-up { border-color:rgba(107,170,117,.30); background:linear-gradient(180deg,rgba(107,170,117,.10),rgba(107,170,117,.02)); }
     .disc-mover.heat-dn { border-color:rgba(192,113,79,.30); background:linear-gradient(180deg,rgba(192,113,79,.10),rgba(192,113,79,.02)); }
     .disc-mover-spark { display:block; width:100%; height:14px; margin-top:5px; opacity:.85; }
+    /* Quick Signals — compact market-context block under movers, dimmer than mover cards */
+    .disc-signals { margin-top:14px; padding:11px 13px 9px; border-radius:var(--r); border:1px solid var(--border); background:rgba(0,0,0,.18); display:flex; flex-direction:column; gap:2px; opacity:.92; }
+    .disc-signals-hd { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+    .disc-signals-hd-title { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.20em; color:var(--text-3); text-transform:uppercase; font-weight:700; }
+    .disc-signals-hd-meta { font-family:'DM Mono',monospace; font-size:11px; color:var(--text-3); letter-spacing:.04em; }
+    .disc-signal-row { display:flex; flex-direction:column; gap:0; padding:6px 6px; margin:0 -6px; border-bottom:1px dashed rgba(201,168,76,.10); font-size:11.5px; cursor:pointer; outline:none; border-radius:6px; transition:background .15s ease; }
+    .disc-signal-row:hover, .disc-signal-row:focus-visible { background:rgba(201,168,76,.05); }
+    .disc-signal-row:focus-visible { outline:1px solid var(--border-2); outline-offset:1px; }
+    .disc-signal-row:last-child { border-bottom:none; padding-bottom:2px; }
+    .disc-signal-row-main { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .disc-signal-exp { display:none; font-size:11px; color:var(--text-2); line-height:1.55; padding:6px 0 2px; max-width:34em; opacity:.88; animation:fadeUp .18s ease; }
+    .disc-signal-row:hover .disc-signal-exp,
+    .disc-signal-row:focus-visible .disc-signal-exp,
+    .disc-signal-row.is-open .disc-signal-exp { display:block; }
+    .disc-signal-lbl { color:var(--text-2); font-weight:500; }
+    .disc-signal-val { display:inline-flex; align-items:center; gap:7px; font-family:'DM Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.02em; }
+    .disc-signal-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+    .disc-signal-val.up   { color:var(--sage); }      .disc-signal-dot.up   { background:var(--sage);  box-shadow:0 0 5px var(--sage); }
+    .disc-signal-val.dn   { color:var(--clay); }      .disc-signal-dot.dn   { background:var(--clay);  box-shadow:0 0 5px var(--clay); }
+    .disc-signal-val.warn { color:var(--gold-light); }.disc-signal-dot.warn { background:var(--gold);  box-shadow:0 0 5px var(--gold); }
+    .disc-signal-val.neu  { color:var(--cream-dim); } .disc-signal-dot.neu  { background:var(--gold-dim); }
     /* Click feedback — selected highlight + dim siblings */
     .disc-movers.has-selection .disc-mover:not(.is-selected),
     .disc-news.has-selection .disc-news-item:not(.is-selected) { opacity:.42; filter:saturate(.7); }
@@ -2008,6 +2046,41 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
             <div class="disc-movers" id="discMoversCrypto"></div>
           </div>
         </div>
+        <!-- Quick Signals — compact market-context block, balances the news feed visually -->
+        <div class="disc-signals" aria-label="Quick market signals">
+          <div class="disc-signals-hd">
+            <span class="disc-signals-hd-title">Quick Signals</span>
+            <span class="disc-signals-hd-meta">Live read</span>
+          </div>
+          <div class="disc-signal-row" tabindex="0" role="button" aria-expanded="false" aria-label="Market regime: Risk-on">
+            <div class="disc-signal-row-main">
+              <span class="disc-signal-lbl">Market regime</span>
+              <span class="disc-signal-val up"><span class="disc-signal-dot up"></span>Risk-on</span>
+            </div>
+            <div class="disc-signal-exp">Risk appetite is supportive; growth and cyclicals may lead.</div>
+          </div>
+          <div class="disc-signal-row" tabindex="0" role="button" aria-expanded="false" aria-label="Volatility: Elevated">
+            <div class="disc-signal-row-main">
+              <span class="disc-signal-lbl">Volatility</span>
+              <span class="disc-signal-val warn"><span class="disc-signal-dot warn"></span>Elevated</span>
+            </div>
+            <div class="disc-signal-exp">Price swings are higher than normal, so entries may be less forgiving.</div>
+          </div>
+          <div class="disc-signal-row" tabindex="0" role="button" aria-expanded="false" aria-label="Breadth: Narrow">
+            <div class="disc-signal-row-main">
+              <span class="disc-signal-lbl">Breadth</span>
+              <span class="disc-signal-val warn"><span class="disc-signal-dot warn"></span>Narrow</span>
+            </div>
+            <div class="disc-signal-exp">Fewer names are leading the market, which can make rallies less durable.</div>
+          </div>
+          <div class="disc-signal-row" tabindex="0" role="button" aria-expanded="false" aria-label="Momentum: Positive">
+            <div class="disc-signal-row-main">
+              <span class="disc-signal-lbl">Momentum</span>
+              <span class="disc-signal-val up"><span class="disc-signal-dot up"></span>Positive</span>
+            </div>
+            <div class="disc-signal-exp">Trend is constructive, but extended moves can become crowded.</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2019,7 +2092,8 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
         {sym:'META',chg:'+1.85%',up:true},{sym:'AMZN',chg:'-0.84%',up:false},{sym:'MSFT',chg:'+0.92%',up:true},
         {sym:'GOOGL',chg:'+0.68%',up:true},{sym:'AMD',chg:'+2.15%',up:true},{sym:'AVGO',chg:'+1.42%',up:true},
         {sym:'PLTR',chg:'+4.18%',up:true},{sym:'NFLX',chg:'-1.34%',up:false},{sym:'COST',chg:'+0.54%',up:true},
-        {sym:'JPM',chg:'-0.62%',up:false},{sym:'V',chg:'+0.78%',up:true},{sym:'MA',chg:'+0.91%',up:true}
+        {sym:'JPM',chg:'-0.62%',up:false},{sym:'V',chg:'+0.78%',up:true},{sym:'MA',chg:'+0.91%',up:true},
+        {sym:'ORCL',chg:'+1.05%',up:true},{sym:'LLY',chg:'+1.78%',up:true},{sym:'INTC',chg:'-0.74%',up:false}
       ];
       var _discMacro=[
         {sym:'XLK',chg:'+1.42%',up:true},{sym:'XLV',chg:'+0.74%',up:true},{sym:'XLU',chg:'-0.42%',up:false},
@@ -2303,6 +2377,24 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
         if(nw) _bindHoverNews(nw);
       }
       if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',paint); else paint();
+
+      /* Quick Signals — click + Enter/Space pin/unpin (hover/focus already drive CSS) */
+      function _bindSignalsToggle(){
+        var sig = document.querySelector('.disc-signals'); if (!sig || sig.__pfBound) return; sig.__pfBound = true;
+        function toggle(row){
+          if (!row || !row.classList.contains('disc-signal-row')) return;
+          var wasOpen = row.classList.contains('is-open');
+          sig.querySelectorAll('.disc-signal-row.is-open').forEach(function(r){ r.classList.remove('is-open'); r.setAttribute('aria-expanded','false'); });
+          if (!wasOpen) { row.classList.add('is-open'); row.setAttribute('aria-expanded','true'); }
+        }
+        sig.addEventListener('click', function(e){ toggle(e.target.closest('.disc-signal-row')); });
+        sig.addEventListener('keydown', function(e){
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          var row = e.target.closest('.disc-signal-row'); if (!row) return;
+          e.preventDefault(); toggle(row);
+        });
+      }
+      if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',_bindSignalsToggle); else _bindSignalsToggle();
     })();
   </script>
 
@@ -2606,6 +2698,20 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
         <div style="font-size:11px;color:var(--text-2)" id="healthNote">Load portfolio to analyze</div>
         <!-- Pilot B — AI Diagnosis preview surface (mock JSON, no API call yet) -->
         <div id="aiDiagnosisEl" class="ai-dx" hidden></div>
+        <!-- AI Diagnosis feedback — lightweight inline capture, hidden until diagnosis renders -->
+        <div id="aiDxFb" class="ai-dx-fb" hidden>
+          <div class="ai-dx-fb-row">
+            <span class="ai-dx-fb-q">Was this helpful?</span>
+            <button class="ai-dx-fb-btn" type="button" onclick="aiDxFbVote('up')" aria-label="Helpful">👍 Helpful</button>
+            <button class="ai-dx-fb-btn" type="button" onclick="aiDxFbVote('down')" aria-label="Not helpful">👎 Not helpful</button>
+            <span class="ai-dx-fb-thanks" id="aiDxFbThanks" hidden>Got it — thanks</span>
+          </div>
+          <div class="ai-dx-fb-expand" id="aiDxFbExpand" hidden>
+            <label class="ai-dx-fb-lbl" for="aiDxFbText">What felt off or confusing?</label>
+            <textarea id="aiDxFbText" class="ai-dx-fb-text" rows="2" placeholder="Share a quick note…"></textarea>
+            <button class="ai-dx-fb-submit" type="button" onclick="aiDxFbSubmit()">Submit</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -7943,22 +8049,25 @@ function updateDeployment(){renderIntelligencePanel();}
    #aiDiagnosisEl. Hidden when no holdings. Wrapped in try/catch at the
    call site so failures cannot break the Intelligence Panel. */
 var MOCK_DIAGNOSIS_JSON = {
-  headline:    'Concentration is the dominant signal in this snapshot.',
-  summary:     'Single-name weight runs ahead of structural targets, while the core index layer sits below the typical range. The market regime is supportive, which masks structural risk that would surface during a drawdown.',
-  keyDrivers:  ['Top-name concentration', 'Core index underweight', 'Risk-on regime support'],
-  riskRead:    'Moderate · concentration risk dominates current diagnostic signals.',
-  nextQuestion:'What thesis-break condition would prompt re-evaluation of the largest position?'
+  headline:    'Concentration stands out as the main signal here.',
+  summary:     'Single-name weight is sitting above structural targets, while the core index layer reads a little lighter than usual. The current regime is supportive, which tends to soften how that structural exposure feels day to day.',
+  keyDrivers:  ['Top-name weighting elevated', 'Core index layer running light', 'Regime currently supportive'],
+  riskRead:    'Moderate · concentration is the most visible thread in the read right now.',
+  nextQuestion:'What would need to shift for the largest position to feel different?'
 };
 
 function renderAIDiagnosis(ps, mockJson){
   var el = document.getElementById('aiDiagnosisEl'); if (!el) return;
+  var fb = document.getElementById('aiDxFb');
   /* Hide when no holdings — never show diagnosis without a portfolio */
   var hasHoldings = !!(ps && Array.isArray(ps.holdings) && ps.holdings.length);
   if (!hasHoldings || !mockJson || typeof mockJson !== 'object'){
     el.setAttribute('hidden','');
     el.innerHTML = '';
+    if (fb) fb.setAttribute('hidden','');
     return;
   }
+  if (fb) fb.removeAttribute('hidden');
   var headline    = String(mockJson.headline    || '');
   var summary     = String(mockJson.summary     || '');
   var riskRead    = String(mockJson.riskRead    || '');
@@ -7978,6 +8087,59 @@ function renderAIDiagnosis(ps, mockJson){
     (nextQuestion ? '<div class="ai-dx-q">'+esc(nextQuestion)+'</div>' : '');
   el.removeAttribute('hidden');
 }
+
+/* AI Diagnosis feedback handlers — lightweight, no global state, no logging endpoint */
+window.aiDxFbVote = function(kind){
+  try {
+    var thanks = document.getElementById('aiDxFbThanks');
+    var expand = document.getElementById('aiDxFbExpand');
+    if (kind === 'up') {
+      if (expand) expand.setAttribute('hidden','');
+      if (thanks) {
+        thanks.classList.remove('fade-out');
+        thanks.removeAttribute('hidden');
+        clearTimeout(window.aiDxFbVote._t);
+        window.aiDxFbVote._t = setTimeout(function(){
+          thanks.classList.add('fade-out');
+          setTimeout(function(){ thanks.setAttribute('hidden',''); thanks.classList.remove('fade-out'); }, 280);
+        }, 2000);
+      }
+    } else {
+      if (thanks) thanks.setAttribute('hidden','');
+      if (expand) {
+        expand.removeAttribute('hidden');
+        var ta = document.getElementById('aiDxFbText'); if (ta) try { ta.focus(); } catch(_){}
+      }
+    }
+  } catch(e) { try { if(typeof addPortfolioError==='function') addPortfolioError(e&&e.message||e,'aiDxFbVote'); } catch(_){} }
+};
+window.aiDxFbSubmit = function(){
+  try {
+    var ta = document.getElementById('aiDxFbText');
+    var text = ta ? (ta.value||'').trim() : '';
+    var ps = window.portfolioState || {};
+    var conc = ps.allocation && ps.allocation.concentration;
+    var topSym = conc && conc.topSym;
+    var topPct = conc && conc.topPct;
+    var hScore = ps.health && ps.health.score;
+    var bits = [];
+    if (topSym) bits.push('Top holding: ' + topSym + (topPct ? ' (' + Math.round(topPct) + '%)' : ''));
+    if (hScore != null) bits.push('Health score: ' + hScore);
+    var summary = bits.length ? bits.join(' · ') : 'No portfolio summary available';
+    var when = new Date().toISOString();
+    var body = 'AI Diagnosis Feedback\n\n' + (text || '(no comment provided)') + '\n\n— Context —\nTimestamp: ' + when + '\n' + summary;
+    var url = 'mailto:LaForceCapital@gmail.com?subject=' + encodeURIComponent('AI Diagnosis Feedback') + '&body=' + encodeURIComponent(body);
+    window.location.href = url;
+    if (ta) ta.value = '';
+    var expand = document.getElementById('aiDxFbExpand'); if (expand) expand.setAttribute('hidden','');
+    var thanks = document.getElementById('aiDxFbThanks');
+    if (thanks) {
+      thanks.classList.remove('fade-out');
+      thanks.removeAttribute('hidden');
+      setTimeout(function(){ thanks.classList.add('fade-out'); setTimeout(function(){ thanks.setAttribute('hidden',''); thanks.classList.remove('fade-out'); }, 280); }, 2000);
+    }
+  } catch(e) { try { if(typeof addPortfolioError==='function') addPortfolioError(e&&e.message||e,'aiDxFbSubmit'); } catch(_){} }
+};
 
 /* ── Pilot C — live AI diagnosis via existing aiCall() ────────────────────
    Builds a compact JSON-only prompt from portfolioState, parses the response,
@@ -8059,7 +8221,7 @@ async function renderAIDiagnosisLive(ps){
     var holdingsLine = ps.holdings.slice().sort(function(a,b){return (b.mktVal||0)-(a.mktVal||0);}).slice(0,10)
       .map(function(h){return h.sym+'('+(h.pct!=null?Number(h.pct).toFixed(0):'?')+'%)';}).join(', ');
 
-    var sys = 'You are an institutional portfolio diagnostic engine for LaForce Capital. Output ONLY valid JSON matching the requested schema. No prose outside JSON. No markdown. Educational framing only — never advice. No buy/sell/should/recommend language.';
+    var sys = 'You are an institutional portfolio diagnostic engine for LaForce Capital. Output ONLY valid JSON matching the requested schema — no prose outside JSON, no markdown, no code fences. Tone: observational, calm, neutral, confident. Read like a thoughtful institutional desk note, not a how-to. Describe what is showing up in the data; do not direct the reader. Prefer natural phrasing such as what stands out, what is showing up, what feels lighter or heavier, the most visible thread — instead of jargon like dominant signal, diagnostic signals, thesis-break, or risk surface. No instructional language: never use should, recommend, buy, sell, must, or avoid. Keep each field concise, premium, and human-readable. Educational framing only — never advice.';
     var prompt = [
       'PORTFOLIO STATE',
       totalsLine,
