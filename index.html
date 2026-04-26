@@ -1425,6 +1425,125 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
 
 <!-- DASHBOARD -->
 <div class="panel active" id="panel-dashboard">
+  <!-- ── WAP Phase 3 — first visible card on Home/Dashboard. Renderer + engine in wap/. ── -->
+  <style>
+    #wapContainer {
+      --wap-bg:           var(--noir-1);
+      --wap-surface:      var(--noir-2);
+      --wap-fg-strong:    var(--cream);
+      --wap-fg:           var(--text-1);
+      --wap-fg-muted:     var(--text-2);
+      --wap-fg-faint:     var(--text-3);
+      --wap-border:       var(--border);
+      --wap-accent:       var(--sage);
+      --wap-accent-hover: #82c08c;
+      --wap-alert:        var(--gold-light);
+      margin: 0 0 16px;
+      max-width: 100%;
+    }
+    /* ── WAP empty / FAIL_CLOSED — premium onboarding state (CSS only) ── */
+    #wapContainer .wap-empty { font-family: 'DM Sans', system-ui, sans-serif; }
+    #wapContainer .wap-empty__head {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 0 22px; margin: 0 0 22px;
+      border-bottom: 1px solid var(--border);
+    }
+    #wapContainer .wap-empty__eye {
+      display: inline-flex; align-items: center; gap: 9px;
+      font-family: 'DM Mono', monospace; font-size: 11.5px;
+      letter-spacing: .20em; text-transform: uppercase; font-weight: 700;
+      color: var(--gold-light);
+    }
+    #wapContainer .wap-empty__eye svg { color: var(--gold-light); }
+    #wapContainer .wap-empty__pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 11.5px; color: var(--text-2);
+      padding: 5px 12px; border-radius: 999px;
+      border: 1px solid var(--border); background: rgba(0,0,0,.18);
+    }
+    #wapContainer .wap-empty__pill svg { color: var(--text-3); }
+    #wapContainer .wap-empty__inner {
+      border: 1px solid var(--border); border-radius: 12px;
+      padding: 22px 24px 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,.012), rgba(0,0,0,.18));
+      margin-bottom: 22px;
+    }
+    #wapContainer .wap-empty__week {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'DM Mono', monospace; font-size: 12.5px;
+      color: var(--text-2); margin-bottom: 14px;
+    }
+    #wapContainer .wap-empty__week svg { color: var(--text-3); }
+    #wapContainer .wap-empty__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 38px; font-weight: 500; line-height: 1.05; letter-spacing: -.01em;
+      color: var(--cream); margin: 0 0 10px;
+    }
+    #wapContainer .wap-empty__lede {
+      font-size: 13.5px; color: var(--text-1);
+      line-height: 1.55; margin: 0 0 20px; opacity: .9; max-width: 56ch;
+    }
+    #wapContainer .wap-empty__cta {
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px 18px;
+      border: 1px dashed rgba(201,168,76,.32); border-radius: 10px;
+      background: rgba(0,0,0,.20);
+    }
+    #wapContainer .wap-empty__cta-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      border: 1px dashed rgba(201,168,76,.42);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; color: var(--gold-light);
+    }
+    #wapContainer .wap-empty__cta-body { flex: 1; min-width: 0; }
+    #wapContainer .wap-empty__cta-title {
+      font-size: 14px; font-weight: 600; color: var(--cream); margin-bottom: 4px;
+    }
+    #wapContainer .wap-empty__cta-sub {
+      font-size: 12px; color: var(--text-2); line-height: 1.5;
+    }
+    #wapContainer .wap-empty__btn {
+      flex-shrink: 0; display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 18px; border-radius: 8px;
+      background: var(--gold); border: none; color: #0d0a08;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: filter .15s ease;
+    }
+    #wapContainer .wap-empty__btn:hover, #wapContainer .wap-empty__btn:focus-visible {
+      filter: brightness(1.08); outline: none;
+    }
+    #wapContainer .wap-empty__btn:focus-visible { box-shadow: 0 0 0 2px rgba(201,168,76,.35); }
+    #wapContainer .wap-empty__trust {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 18px; padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    #wapContainer .wap-empty__trust-item {
+      display: flex; align-items: flex-start; gap: 11px;
+      padding: 0 4px; border-right: 1px solid var(--border);
+    }
+    #wapContainer .wap-empty__trust-item:last-child { border-right: none; }
+    #wapContainer .wap-empty__trust-icon {
+      width: 22px; height: 22px; flex-shrink: 0;
+      color: var(--gold-light); margin-top: 1px;
+    }
+    #wapContainer .wap-empty__trust-title {
+      font-size: 12.5px; font-weight: 600; color: var(--cream); margin-bottom: 3px;
+      letter-spacing: .005em;
+    }
+    #wapContainer .wap-empty__trust-sub {
+      font-size: 11.5px; color: var(--text-2); line-height: 1.45;
+    }
+    @media (max-width: 720px) {
+      #wapContainer .wap-empty__cta { flex-direction: column; align-items: stretch; text-align: left; }
+      #wapContainer .wap-empty__btn { width: 100%; justify-content: center; }
+      #wapContainer .wap-empty__trust { grid-template-columns: 1fr; gap: 14px; }
+      #wapContainer .wap-empty__trust-item { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+      #wapContainer .wap-empty__trust-item:last-child { border-bottom: none; padding-bottom: 0; }
+      #wapContainer .wap-empty__title { font-size: 30px; }
+    }
+  </style>
+  <section class="wap" id="wapContainer" aria-label="Weekly Action Plan"></section>
   <div id="welcomeHero" class="wh">
     <div class="wh-eye">Institutional Grade &middot; Private &middot; Disciplined</div>
     <h1 class="wh-title">The institutional edge,<br><em>translated for everyday investors.</em></h1>
@@ -2374,17 +2493,29 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
 
       window.discSetTab=function(t,el){try{document.querySelectorAll('.disc-tab').forEach(function(b){b.classList.remove('active');b.setAttribute('aria-selected','false');});if(el){el.classList.add('active');el.setAttribute('aria-selected','true');}document.querySelectorAll('.disc-pane').forEach(function(p){p.classList.toggle('active',p.getAttribute('data-disc-pane')===t);});}catch(e){}};
       window.discOpenSym=function(sym){
-        sym=String(sym||'').toUpperCase().trim(); if(!sym) return;
+        sym=String(sym||'').toUpperCase().replace(/[^A-Z.]/g,''); if(!sym) return;
+        /* Existing visuals — Discovery active context + mover highlight (unchanged) */
         try { _highlightMoverSelection(sym); _setActiveContext(sym); } catch(_){}
+        /* Intelligence-panel preview surface — keep its preview in sync (in case user navigates there next) */
         try {
-          var inp=document.getElementById('stockTicker')||document.getElementById('intelStockInput')||document.getElementById('compA');
-          if(inp){inp.value=sym;}
+          var iIn=document.getElementById('intelStockInput'); if(iIn) iIn.value=sym;
           if(typeof updateStockDecision==='function') updateStockDecision();
+        } catch(_){}
+        /* Stock Decision Engine — populate ticker, lock Quick mode, navigate, single-shot auto-run.
+           Reuses the existing quickTick → showPanel → runStock chain used by dashboard tables, watchlist,
+           opportunity layer, and feasibility CTAs. */
+        try {
+          if(typeof quickTick==='function') quickTick(sym);
+          if(typeof setStockMode==='function') setStockMode('quick');
           if(typeof showPanel==='function'){
             var items=document.querySelectorAll('.nav-item');
             showPanel('stockcheck',items&&items[2]?items[2]:null);
           }
-        }catch(e){}
+          if(typeof runStock==='function'){
+            clearTimeout(window._discOpenSymRunT);
+            window._discOpenSymRunT=setTimeout(function(){ try{ runStock(); }catch(_){} },280);
+          }
+        } catch(_){}
       };
       window.discSearch=function(q){
         q=String(q||'').trim(); if(!q) return;
@@ -3811,11 +3942,28 @@ function clearKey(){_apiKey='';try{sessionStorage.removeItem('lfc_key');localSto
  * from real app state — holdings count, market context, deploy data.
  * Future: server-backed "journey" persisted per user.
  * ================================================================= */
+/* Resolve the correct nav-item for a given panel id by inspecting onclick attributes.
+   Source of truth = the rendered nav itself, not hard-coded indices. Safe across reorders. */
+function getNavForPanel(panelId){
+  if (!panelId) return null;
+  var items = document.querySelectorAll('.nav-item');
+  var needle1 = "showPanel('" + panelId + "'";
+  var needle2 = 'showPanel("' + panelId + '"';
+  for (var i = 0; i < items.length; i++) {
+    var oc = items[i].getAttribute && items[i].getAttribute('onclick') || '';
+    if (oc.indexOf(needle1) > -1 || oc.indexOf(needle2) > -1) return items[i];
+  }
+  return null;
+}
+
 function showPanel(id,navEl){
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
-  document.getElementById('panel-'+id).classList.add('active');
+  var pEl = document.getElementById('panel-'+id); if (pEl) pEl.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
-  if(navEl)navEl.classList.add('active');
+  /* Auto-resolve the correct nav item by panel id — ignores stale hard-coded indices passed as navEl.
+     Falls back to the passed navEl only if the nav can't be auto-resolved (defensive). */
+  var resolvedNav = getNavForPanel(id) || navEl;
+  if (resolvedNav && resolvedNav.classList) resolvedNav.classList.add('active');
   if(id==='watchlist')renderWatchlist();
   if(id==='intelligence')renderIntelligencePanel();
   if(id==='cadence')updateCadence();
@@ -4478,6 +4626,7 @@ function clearAll(){
   var sp=document.getElementById('strategyPanel');if(sp)sp.style.display='none';
   var ph=document.getElementById('portHero');if(ph)ph.style.display='none';
   var wh=document.getElementById('welcomeHero');if(wh)wh.style.display='block'; resetOppLayer(); var pq2=document.getElementById('imgPreviewQueue');if(pq2){pq2.style.display='none';var pl2=document.getElementById('imgPreviewList');if(pl2)pl2.innerHTML='';} _recurringInvestments=[];
+  try { if (typeof window._renderWAP === 'function') window._renderWAP(); } catch(_){}
 }
 
 // NOTE: handleFileInput is defined below in the multi-image queue section — this earlier stub was removed during consolidation.
@@ -4861,7 +5010,7 @@ function renderDashboard(){
     sp.setAttribute('d',path);sf.setAttribute('d',fill+' L600,48 L0,48 Z');
     if(sd){sd.setAttribute('cx','600');sd.setAttribute('cy','4');}
   }
-  renderAllocBar(total);renderDashHoldings(total);renderDashCharts(total);updateSideInsights(total,gain,pct); renderOppLayer(_holdings); renderIntelligencePanel(); syncCadencePortfolio();
+  renderAllocBar(total);renderDashHoldings(total);renderDashCharts(total);updateSideInsights(total,gain,pct); renderOppLayer(_holdings); renderIntelligencePanel(); syncCadencePortfolio(); try { if (typeof window._renderWAP === 'function') window._renderWAP(); } catch(_){}
 }
 
 function renderAllocBar(total){
@@ -9934,5 +10083,210 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     });
   })();
 </script>
+
+<!-- ── WAP Phase 3 — engine + adapters + UI loaded as external modules; sources untouched ── -->
+<link rel="stylesheet" href="wap/ui.css">
+<script src="wap/engine.js"></script>
+<script src="wap/adapters.js"></script>
+<script src="wap/ui.js"></script>
+<script>
+/* WAP integration glue — assembles engine state from existing app data and renders.
+   Phase 1/Phase 2 sources (wap/engine.js, wap/ui.js, wap/adapters.js, wap/ui.css) are NOT modified. */
+(function(){
+  function _wapMondayOfWeek(d){
+    d = d || new Date();
+    var day = d.getDay();
+    var diff = (day === 0 ? -6 : 1 - day);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate() + diff);
+  }
+  function _wapVerdictMap(s){
+    s = String(s||'');
+    if (/Accumulate|Buy in Pieces/i.test(s)) return 'BUY';
+    if (/Avoid/i.test(s))                    return 'AVOID';
+    if (/Wait|Keep Small/i.test(s))          return 'HOLD';
+    return 'AVOID';
+  }
+  function _wapBuildState(){
+    var ps = window.portfolioState || {};
+    var holdings = ps.holdings || [];
+    var totalValue = ps.totalValue || 0;
+    var regime = (ps.market && ps.market.regime) || 'Neutral / Selective';
+    var ctx = (typeof _intelCtx !== 'undefined') ? _intelCtx : {};
+    var classMap = window.WAPAdapters.getAllClassifications();
+    var classKeys = Object.keys(classMap);
+    /* Bucket counts → split TARGET_MIX evenly across classified tickers (v1 derivation) */
+    var bucketCount = { Core:0, Growth:0 };
+    classKeys.forEach(function(t){
+      var c = classMap[t];
+      if (c === 'CORE')      bucketCount.Core++;
+      if (c === 'WATCHLIST') bucketCount.Growth++;
+    });
+    var TM = (typeof TARGET_MIX !== 'undefined') ? TARGET_MIX : { Core:60, Growth:30, Tactical:10, Cash:0 };
+    function targetFor(ticker){
+      var c = classMap[ticker];
+      if (c === 'CORE')      return bucketCount.Core   > 0 ? TM.Core   / bucketCount.Core   : 0;
+      if (c === 'WATCHLIST') return bucketCount.Growth > 0 ? TM.Growth / bucketCount.Growth : 0;
+      return 0;
+    }
+    var portfolio = classKeys.map(function(t){
+      var h = holdings.find(function(x){ return x.sym === t; });
+      var currentWeight = (h && totalValue > 0) ? (h.mktVal / totalValue * 100) : 0;
+      return { ticker: t, currentWeight: currentWeight, targetWeight: targetFor(t) };
+    });
+    var verdicts = {};
+    classKeys.forEach(function(t){
+      try {
+        var d = (typeof computeStockDecision === 'function') ? computeStockDecision(t, regime, ctx) : null;
+        verdicts[t] = _wapVerdictMap(d && d.verdict);
+      } catch(_) { verdicts[t] = 'AVOID'; }
+    });
+    var eligible = classKeys.filter(function(t){ return classMap[t] !== 'LEGACY'; });
+    var rankedList = eligible
+      .map(function(t){
+        try { return { ticker: t, score: _rankBaselineScore(t, regime).score }; }
+        catch(_) { return { ticker: t, score: 0 }; }
+      })
+      .sort(function(a,b){ return b.score - a.score; })
+      .slice(0, 5)
+      .map(function(r, i){ return { ticker: r.ticker, rank: i + 1 }; });
+    return {
+      portfolio: portfolio,
+      classification: classMap,
+      rankedList: rankedList,
+      verdicts: verdicts,
+      lastBuys: window.WAPAdapters.getLastBuys(),
+      contribution: { amount: ps.cash || 0, weekOf: _wapMondayOfWeek() },
+      currentDate: new Date()
+    };
+  }
+  window._renderWAP = function(){
+    try {
+      var container = document.getElementById('wapContainer');
+      if (!container) return;
+      if (typeof window.WAPUi === 'undefined' || typeof window.WAP === 'undefined' || typeof window.WAPAdapters === 'undefined') return;
+      var ps = window.portfolioState || {};
+      var holdings = ps.holdings || [];
+      var contribution = ps.cash || 0;
+      var weekOf = _wapMondayOfWeek();
+      if (!holdings.length) {
+        window.WAPUi.render(container, { state:'FAIL_CLOSED', contribution:null, weekOf:weekOf,
+          failReason:"Upload portfolio to generate this week's plan." });
+        return;
+      }
+      if (contribution <= 0) {
+        window.WAPUi.render(container, { state:'FAIL_CLOSED', contribution:null, weekOf:weekOf,
+          failReason:"Set this week's contribution amount in Capital Deployment." });
+        return;
+      }
+      var state = _wapBuildState();
+      if (!state.rankedList.length) {
+        window.WAPUi.render(container, { state:'FAIL_CLOSED', contribution:contribution, weekOf:weekOf,
+          failReason:'No ranked candidates available this week.' });
+        return;
+      }
+      var result = window.WAP.generateWeeklyActionPlan(state);
+      window.WAPUi.render(container, { result: result, contribution: contribution, weekOf: weekOf });
+    } catch(e) {
+      if (typeof addPortfolioError === 'function') addPortfolioError(e && e.message || e, '_renderWAP');
+    }
+  };
+  /* Premium FAIL_CLOSED template — replaces Phase 2's minimal fail template.
+     Adapts CTA + button text by failReason; routes to the right panel. */
+  function _wapFmtWeek(d){
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return 'Week of ' + months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+  }
+  function _wapEsc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];}); }
+  function _wapEmptyCTA(failReason){
+    var r = String(failReason||'');
+    if (/contribution/i.test(r)) {
+      return { title:'Set this week\'s contribution', sub:'Open Capital Deployment to set how much to deploy this week.', btnLabel:'Open Capital Deployment', target:'intelligence' };
+    }
+    if (/ranked/i.test(r)) {
+      return { title:'No ranked candidates yet', sub:'Run Compare & Rank or revisit your watchlist to surface this week\'s top reads.', btnLabel:'Open Compare & Rank', target:'compare' };
+    }
+    /* default — no portfolio */
+    return { title:'Upload your portfolio to get started', sub:"Once we have your holdings and cash contribution, we'll generate your best action for the week.", btnLabel:'Upload portfolio', target:'portfolio' };
+  }
+  function _wapRenderEmpty(container, view){
+    var weekOf = (view && view.weekOf) ? view.weekOf : new Date();
+    var cta = _wapEmptyCTA(view && view.failReason);
+    var ICON_CAL_SM    = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+    var ICON_INFO      = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>';
+    var ICON_CAL_MD    = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+    var ICON_CLOUD     = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 16l-4-4-4 4M12 12v9"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>';
+    var ICON_UP_ARROW  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+    var ICON_LOCK      = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+    var ICON_TARGET    = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>';
+    var ICON_SHIELD    = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>';
+    container.setAttribute('data-state', 'FAIL_CLOSED');
+    container.innerHTML =
+      '<div class="wap-empty">' +
+        '<header class="wap-empty__head">' +
+          '<div class="wap-empty__eye">'+ICON_CAL_SM+'WEEKLY ACTION PLAN</div>' +
+          '<div class="wap-empty__pill">'+ICON_INFO+'Updates every Sunday</div>' +
+        '</header>' +
+        '<div class="wap-empty__inner">' +
+          '<div class="wap-empty__week">'+ICON_CAL_MD+_wapEsc(_wapFmtWeek(weekOf))+'</div>' +
+          '<h2 class="wap-empty__title">Plan unavailable</h2>' +
+          '<p class="wap-empty__lede">We need a little more information to build your personalized weekly plan.</p>' +
+          '<div class="wap-empty__cta">' +
+            '<div class="wap-empty__cta-icon">'+ICON_CLOUD+'</div>' +
+            '<div class="wap-empty__cta-body">' +
+              '<div class="wap-empty__cta-title">'+_wapEsc(cta.title)+'</div>' +
+              '<div class="wap-empty__cta-sub">'+_wapEsc(cta.sub)+'</div>' +
+            '</div>' +
+            '<button type="button" class="wap-empty__btn" data-wap-target="'+_wapEsc(cta.target)+'">'+ICON_UP_ARROW+_wapEsc(cta.btnLabel)+'</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="wap-empty__trust">' +
+          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+ICON_LOCK+'</span><div><div class="wap-empty__trust-title">Private &amp; Secure</div><div class="wap-empty__trust-sub">Your data stays on your device</div></div></div>' +
+          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+ICON_TARGET+'</span><div><div class="wap-empty__trust-title">One Clear Action</div><div class="wap-empty__trust-sub">No noise. Just your best move.</div></div></div>' +
+          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+ICON_SHIELD+'</span><div><div class="wap-empty__trust-title">Deterministic Engine</div><div class="wap-empty__trust-sub">Rules-based. No AI. Always consistent.</div></div></div>' +
+        '</div>' +
+      '</div>';
+    var btn = container.querySelector('.wap-empty__btn');
+    if (btn) btn.addEventListener('click', function(){
+      var target = btn.getAttribute('data-wap-target') || 'portfolio';
+      try { if (typeof showPanel === 'function') showPanel(target, null); } catch(_){}
+    });
+  }
+
+  /* One-time wrapper around WAPUi.render. Intercepts FAIL_CLOSED for the premium
+     empty state; falls through to Phase 2 unchanged for BUY/PARK_CASH/REBALANCE.
+     Phase 2 source (wap/ui.js, wap/ui.css) untouched. */
+  function _wapInstallWrapper(){
+    if (typeof window.WAPUi === 'undefined' || window.WAPUi.__wapWrapped) return;
+    var orig = window.WAPUi.render;
+    window.WAPUi.render = function(container, view){
+      var state = (view && view.state) || (view && view.result && view.result.type) || 'FAIL_CLOSED';
+      if (state === 'FAIL_CLOSED') {
+        try { _wapRenderEmpty(container, view); } catch(_){
+          /* if premium template throws for any reason, fall back to Phase 2's minimal template */
+          try { orig.call(this, container, view); } catch(__){}
+        }
+        return;
+      }
+      orig.call(this, container, view);
+      try {
+        if (view && view.result && view.result.type === 'BUY' && container) {
+          var btn = container.querySelector('[data-action="deployed"]');
+          if (btn && !btn.__wapBound) {
+            btn.__wapBound = true;
+            btn.addEventListener('click', function(){
+              try { window.WAPAdapters.logDeployment(view.result.ticker, view.result.amount_usd, new Date()); } catch(_){}
+            });
+          }
+        }
+      } catch(_){}
+    };
+    window.WAPUi.__wapWrapped = true;
+  }
+  function _wapBoot(){ _wapInstallWrapper(); window._renderWAP(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _wapBoot);
+  else _wapBoot();
+})();
+</script>
+
 </body>
 </html>
