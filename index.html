@@ -167,7 +167,7 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
 .tour-tip-step{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-3);font-weight:700;margin-bottom:6px}
 .tour-tip-text{font-size:13px;line-height:1.5;color:var(--cream);margin-bottom:11px}
 .tour-tip-actions{display:flex;justify-content:flex-end}
-.tour-next{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.10em;text-transform:uppercase;font-weight:700;color:#0d0a08;background:linear-gradient(90deg,var(--gold-light),var(--gold));border:none;padding:6px 12px;border-radius:5px;cursor:pointer;transition:filter .15s ease}
+.tour-next{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.10em;text-transform:uppercase;font-weight:700;color:#0d0a08;background:var(--gold);border:none;padding:6px 12px;border-radius:5px;cursor:pointer;transition:filter .15s ease}
 .tour-next:hover{filter:brightness(1.08)}
 .tour-next.tour-next-quiet{
   background:transparent;
@@ -205,7 +205,7 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
 @keyframes tourClickPulse{0%,100%{box-shadow:0 0 0 1px rgba(201,168,76,.55),0 0 24px rgba(201,168,76,.32)}50%{box-shadow:0 0 0 1px rgba(201,168,76,.85),0 0 32px rgba(201,168,76,.50)}}
 .tour-tip-hint{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-light);font-weight:700;margin-top:-4px;margin-bottom:11px;opacity:.85}
 /* ── Pilot B — AI Diagnosis preview (secondary to score, mock JSON only) */
-.ai-dx{margin-top:10px;padding:9px 11px;border-radius:var(--r);border:1px solid var(--border);border-left:2px solid var(--gold-dim);background:rgba(0,0,0,.18);display:flex;flex-direction:column;gap:5px}
+.ai-dx{margin-top:10px;padding:9px 11px 9px 12px;border-radius:0;border:none;border-left:2px solid var(--gold-dim);background:transparent;display:flex;flex-direction:column;gap:5px}
 .ai-dx[hidden]{display:none}
 .ai-dx-eye{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--text-3)}
 .ai-dx-eye::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--gold);box-shadow:0 0 4px var(--gold)}
@@ -232,7 +232,7 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
 .ai-dx-fb-lbl{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);font-weight:700}
 .ai-dx-fb-text{width:100%;font-family:'DM Sans',sans-serif;font-size:11.5px;background:rgba(0,0,0,.32);border:1px solid var(--border);color:var(--cream);padding:8px 10px;border-radius:6px;outline:none;resize:vertical;line-height:1.5;min-height:50px;transition:border-color .2s}
 .ai-dx-fb-text:focus{border-color:var(--gold-dim)}
-.ai-dx-fb-submit{align-self:flex-end;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.10em;text-transform:uppercase;font-weight:700;color:#0d0a08;background:linear-gradient(90deg,var(--gold-light),var(--gold));border:none;padding:5px 12px;border-radius:5px;cursor:pointer;transition:filter .15s ease}
+.ai-dx-fb-submit{align-self:flex-end;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.10em;text-transform:uppercase;font-weight:700;color:#0d0a08;background:var(--gold);border:none;padding:5px 12px;border-radius:5px;cursor:pointer;transition:filter .15s ease}
 .ai-dx-fb-submit:hover{filter:brightness(1.08)}
 /* ── Phase 3 — Strategy Paths cards ────────────────────────────────── */
 .sp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -1832,8 +1832,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     .disc-head-title { font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--cream); font-weight:500; line-height:1.15; }
     .disc-head-title em { font-style:italic; color:var(--gold-light); }
     .disc-live-pill { display:inline-flex; align-items:center; gap:7px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; color:var(--sage); padding:4px 10px; border-radius:999px; background:rgba(107,170,117,.06); border:1px solid rgba(107,170,117,.25); }
-    .disc-live-pill::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--sage); box-shadow:0 0 6px var(--sage); animation:discLivePulse 2.2s ease-in-out infinite; }
-    @keyframes discLivePulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.4; transform:scale(.7); } }
+    .disc-live-pill::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--sage); box-shadow:0 0 6px var(--sage); }
     .disc-live-meta { font-family:'DM Mono',monospace; font-size:11px; color:var(--text-3); letter-spacing:.06em; margin-left:8px; transition:color .25s ease; }
     .disc-live-pill.is-fresh { background:rgba(107,170,117,.14); border-color:rgba(107,170,117,.55); box-shadow:0 0 14px rgba(107,170,117,.35); }
     .disc-live-pill.is-fresh + .disc-live-meta { color:var(--sage); }
@@ -1936,7 +1935,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     .disc-signals-hd-title { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.20em; color:var(--text-3); text-transform:uppercase; font-weight:700; }
     .disc-signals-hd-meta { font-family:'DM Mono',monospace; font-size:11px; color:var(--text-3); letter-spacing:.04em; }
     .disc-signal-row { display:flex; flex-direction:column; gap:0; padding:6px 6px; margin:0 -6px; border-bottom:1px dashed rgba(201,168,76,.10); font-size:11.5px; cursor:pointer; outline:none; border-radius:6px; transition:background .15s ease; }
-    .disc-signal-row:hover, .disc-signal-row:focus-visible { background:rgba(201,168,76,.05); }
+    .disc-signal-row:hover, .disc-signal-row:focus-visible { background:rgba(201,168,76,.03); }
     .disc-signal-row:focus-visible { outline:1px solid var(--border-2); outline-offset:1px; }
     .disc-signal-row:last-child { border-bottom:none; padding-bottom:2px; }
     .disc-signal-row-main { display:flex; justify-content:space-between; align-items:center; gap:10px; }
@@ -1944,6 +1943,52 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     .disc-signal-row:hover .disc-signal-exp,
     .disc-signal-row:focus-visible .disc-signal-exp,
     .disc-signal-row.is-open .disc-signal-exp { display:block; }
+    /* ── Compare & Rank — Phase 1 (deterministic) ─────────────────── */
+    .cmp-pane { display:none; animation:fadeUp .22s ease; }
+    .cmp-pane.active { display:block; }
+    .rk-top3 { display:flex; align-items:center; gap:10px; padding:9px 13px; margin-bottom:12px; border-radius:var(--r); border:1px solid rgba(107,170,117,.30); background:linear-gradient(90deg,rgba(107,170,117,.08),rgba(107,170,117,.02)); flex-wrap:wrap; }
+    .rk-top3-eye { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.20em; text-transform:uppercase; font-weight:700; color:var(--sage); margin-right:4px; }
+    .rk-top3-pill { font-family:'DM Mono',monospace; font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; background:rgba(107,170,117,.10); border:1px solid rgba(107,170,117,.36); color:var(--sage); cursor:pointer; transition:transform .15s ease, background .15s ease; }
+    .rk-top3-pill:hover, .rk-top3-pill:focus-visible { transform:translateY(-1px); background:rgba(107,170,117,.18); outline:none; }
+    .rk-tbl { width:100%; border-collapse:collapse; font-size:12.5px; }
+    .rk-tbl thead th { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--text-3); font-weight:700; text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); }
+    .rk-tbl tbody tr { cursor:pointer; transition:background .15s ease; outline:none; }
+    .rk-tbl tbody tr:hover, .rk-tbl tbody tr:focus-visible { background:rgba(201,168,76,.04); }
+    .rk-tbl tbody tr:focus-visible { outline:1px solid var(--border-2); outline-offset:-1px; }
+    .rk-tbl td { padding:9px 10px; border-bottom:1px dashed rgba(201,168,76,.10); vertical-align:middle; }
+    .rk-tbl tbody tr:last-child td { border-bottom:none; }
+    .rk-rank { font-family:'DM Mono',monospace; font-size:11px; color:var(--text-3); width:28px; }
+    .rk-sym { font-family:'DM Mono',monospace; font-size:13px; font-weight:600; color:var(--cream); width:74px; letter-spacing:.04em; }
+    .rk-score-cell { width:120px; }
+    .rk-score-row { display:flex; align-items:center; gap:8px; }
+    .rk-score-bar { flex:1; height:5px; background:var(--noir-3); border-radius:3px; overflow:hidden; min-width:40px; }
+    .rk-score-fill { height:100%; border-radius:3px; transition:width .35s ease; }
+    .rk-score-num { font-family:'DM Mono',monospace; font-size:12px; font-weight:600; min-width:30px; text-align:right; }
+    .rk-score-num.up   { color:var(--sage); }       .rk-score-fill.up   { background:var(--sage); }
+    .rk-score-num.mid  { color:var(--gold-light); } .rk-score-fill.mid  { background:var(--gold); }
+    .rk-score-num.low  { color:var(--clay); }       .rk-score-fill.low  { background:var(--clay); }
+    .rk-headline { color:var(--cream); font-size:12.5px; line-height:1.45; }
+    .rk-read { color:var(--text-2); font-size:11px; line-height:1.45; margin-top:2px; }
+    .rk-empty { padding:18px 14px; text-align:center; font-size:12px; color:var(--text-3); border:1px dashed var(--border); border-radius:var(--r); }
+    /* Phase 1.5 — expandable detail panel under each ranked row */
+    .rk-detail-row[hidden] { display:none !important; }
+    .rk-detail-row > td { padding:0; border-bottom:1px dashed rgba(201,168,76,.10); background:rgba(0,0,0,.18); }
+    .rk-detail { padding:13px 14px; animation:fadeUp .22s ease; }
+    .rk-detail-grid { display:grid; grid-template-columns:1.1fr .9fr; gap:18px; align-items:start; }
+    @media (max-width:720px) { .rk-detail-grid { grid-template-columns:1fr; gap:12px; } }
+    .rk-detail-bars { display:flex; flex-direction:column; gap:8px; }
+    .rk-detail-bar-block { display:flex; flex-direction:column; gap:3px; }
+    .rk-detail-bar-label { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--text-3); font-weight:700; }
+    .rk-detail-bar-row { display:flex; align-items:center; gap:9px; }
+    .rk-detail-bar { flex:1; height:5px; background:var(--noir-3); border-radius:3px; overflow:hidden; min-width:60px; }
+    .rk-detail-fill { height:100%; border-radius:3px; transition:width .35s ease; }
+    .rk-detail-fill.up { background:var(--sage); } .rk-detail-fill.mid { background:var(--gold); } .rk-detail-fill.low { background:var(--clay); }
+    .rk-detail-bar-num { font-family:'DM Mono',monospace; font-size:11px; font-weight:600; min-width:28px; text-align:right; }
+    .rk-detail-bar-num.up { color:var(--sage); } .rk-detail-bar-num.mid { color:var(--gold-light); } .rk-detail-bar-num.low { color:var(--clay); }
+    .rk-detail-side { display:flex; flex-direction:column; gap:11px; min-width:0; }
+    .rk-detail-why { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:13px; color:var(--cream-dim); line-height:1.55; }
+    .rk-detail-cta { align-self:flex-start; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.10em; text-transform:uppercase; font-weight:700; color:var(--gold-light); background:transparent; border:1px solid var(--border-2); padding:6px 12px; border-radius:5px; cursor:pointer; transition:background .15s ease, color .15s ease; }
+    .rk-detail-cta:hover, .rk-detail-cta:focus-visible { color:var(--cream); background:rgba(201,168,76,.08); outline:none; }
     .disc-signal-lbl { color:var(--text-2); font-weight:500; }
     .disc-signal-val { display:inline-flex; align-items:center; gap:7px; font-family:'DM Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.02em; }
     .disc-signal-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
@@ -2640,16 +2685,36 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
 <div class="panel" id="panel-compare">
   <div class="ph">
     <div class="ph-eye">Head to Head</div>
-    <h1 class="ph-title">Compare <em>any</em> two.</h1>
-    <p class="ph-sub">Side-by-side institutional analysis with a clear verdict on which belongs in your portfolio.</p>
+    <h1 class="ph-title">Compare <em>any</em> two — or rank a list.</h1>
+    <p class="ph-sub">Side-by-side institutional analysis on two tickers, or paste a watchlist for a ranked read.</p>
   </div>
-  <div style="display:flex;gap:10px;margin-bottom:18px;align-items:flex-end">
-    <div style="flex:1"><label class="il">Stock A</label><input type="text" id="compA" placeholder="NVDA" style="font-family:DM Mono,monospace;font-size:15px;text-transform:uppercase;letter-spacing:.06em"/></div>
-    <div style="font-family:Cormorant Garamond,serif;font-size:22px;color:var(--text-3);padding-bottom:8px">vs</div>
-    <div style="flex:1"><label class="il">Stock B</label><input type="text" id="compB" placeholder="AAPL" style="font-family:DM Mono,monospace;font-size:15px;text-transform:uppercase;letter-spacing:.06em"/></div>
-    <button class="btn-p" onclick="runCompare()">Compare &rarr;</button>
+  <!-- Phase 1: Side-by-Side default · Rank a List as second tab -->
+  <div class="disc-tabs cmp-tabs" role="tablist" style="margin-bottom:14px">
+    <button type="button" class="disc-tab active" data-cmp-tab="side" role="tab" aria-selected="true" onclick="cmpSetTab('side',this)">Side-by-Side</button>
+    <button type="button" class="disc-tab" data-cmp-tab="rank" role="tab" aria-selected="false" onclick="cmpSetTab('rank',this)">Rank a List</button>
   </div>
-  <div id="compareOutput"></div>
+
+  <div class="cmp-pane active" data-cmp-pane="side">
+    <div style="display:flex;gap:10px;margin-bottom:18px;align-items:flex-end">
+      <div style="flex:1"><label class="il">Stock A</label><input type="text" id="compA" placeholder="NVDA" style="font-family:DM Mono,monospace;font-size:15px;text-transform:uppercase;letter-spacing:.06em"/></div>
+      <div style="font-family:Cormorant Garamond,serif;font-size:22px;color:var(--text-3);padding-bottom:8px">vs</div>
+      <div style="flex:1"><label class="il">Stock B</label><input type="text" id="compB" placeholder="AAPL" style="font-family:DM Mono,monospace;font-size:15px;text-transform:uppercase;letter-spacing:.06em"/></div>
+      <button class="btn-p" onclick="runCompare()">Compare &rarr;</button>
+    </div>
+    <div id="compareOutput"></div>
+  </div>
+
+  <div class="cmp-pane" data-cmp-pane="rank">
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
+      <label class="il" for="rankInput">Paste up to 30 tickers — commas, spaces, or newlines all work; <code style="font-family:'DM Mono',monospace;color:var(--gold-light)">$</code> prefixes accepted</label>
+      <textarea id="rankInput" rows="3" placeholder="NVDA, AAPL, MSFT, GOOGL, AMZN, META, TSLA, AVGO, AMD…" style="font-family:'DM Mono',monospace;font-size:13px;background:var(--noir-3);border:1px solid var(--border);color:var(--cream);padding:11px 13px;border-radius:8px;outline:none;resize:vertical;min-height:74px;line-height:1.55;text-transform:uppercase;letter-spacing:.04em;transition:border-color .2s,background .2s"></textarea>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn-p" onclick="runRankList()">Rank &rarr;</button>
+        <span id="rankNotice" style="font-size:11px;color:var(--text-3);letter-spacing:.04em"></span>
+      </div>
+    </div>
+    <div id="rankOutput"></div>
+  </div>
 </div>
 
 <!-- WATCHLIST -->
@@ -4764,7 +4829,7 @@ function renderDashboard(){
   var ht=document.getElementById('heroTotal');if(ht)ht.textContent=fmt$(total);
   // Card 2 — Hero delta (gain $ + return %)
   var hd=document.getElementById('heroDelta');
-  if(hd)hd.innerHTML='<span style="color:'+(gain>=0?'var(--sage)':'var(--clay)')+'">'+(gain>=0?'+':'')+fmt$(gain)+'&nbsp;&nbsp;'+(gain>=0?'+':'')+pct.toFixed(1)+'% all time</span>';
+  if(hd)hd.innerHTML='<span style="color:'+(gain>=0?'var(--sage)':'var(--clay)')+'">'+(gain>=0?'+':'')+fmt$(gain)+'&nbsp;&nbsp;'+(gain>=0?'+':'')+pct.toFixed(1)+'%</span>';
   // Card 3 — Invested / cost basis
   var mc=document.getElementById('mCost');if(mc)mc.textContent=fmt$(cost);
   // Card 4 — Unrealized gain
@@ -7597,6 +7662,269 @@ async function runCompare(){
     hideAiToast();
   }
 }
+
+/* ── Compare & Rank — Phase 1 (deterministic baseline only) ────────────────
+   Reuses STOCK_LIBRARY + computeStockDecision + portfolioState.market.regime.
+   No AI overlay yet. Click row → existing discOpenSym → Stock Decision Engine. */
+var RANK_MAX = 30;
+
+function cmpSetTab(tab, el){
+  try {
+    document.querySelectorAll('#panel-compare .disc-tab').forEach(function(b){ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+    if (el) { el.classList.add('active'); el.setAttribute('aria-selected','true'); }
+    document.querySelectorAll('#panel-compare .cmp-pane').forEach(function(p){ p.classList.toggle('active', p.getAttribute('data-cmp-pane') === tab); });
+  } catch(e){ try { if(typeof addPortfolioError==='function') addPortfolioError(e&&e.message||e,'cmpSetTab'); } catch(_){} }
+}
+
+function parseTickerList(text){
+  var raw = String(text||'').toUpperCase();
+  var parts = raw.split(/[\s,;|\n\r\t]+/);
+  var seen = {}, out = [], dropped = 0;
+  var rxValid = /^[A-Z]{1,5}(?:\.[A-Z]{1,2})?$/;
+  for (var i = 0; i < parts.length; i++){
+    var t = parts[i].replace(/^\$+/, '').trim();
+    if (!t) continue;
+    if (!rxValid.test(t)) { dropped++; continue; }
+    if (seen[t]) continue;
+    seen[t] = 1;
+    out.push(t);
+  }
+  var truncated = false;
+  if (out.length > RANK_MAX) { out = out.slice(0, RANK_MAX); truncated = true; }
+  return { tickers: out, dropped: dropped, truncated: truncated };
+}
+
+function _rankBaselineScore(sym, regime){
+  var model = (typeof getStockModel === 'function') ? getStockModel(sym) : { role:'', bucket:'Growth', risk:'Medium-High', horizon:'', thesis:'' };
+  var bucket = model.bucket || 'Growth';
+  var risk   = String(model.risk || '').toLowerCase();
+  var verdict = '';
+  try { var d = computeStockDecision(sym, regime, (typeof _intelCtx !== 'undefined' && _intelCtx) || {}); verdict = (d && d.verdict) || ''; } catch(_){}
+
+  var base = bucket === 'Core' ? 7.0 : bucket === 'Growth' ? 6.5 : bucket === 'Tactical' ? 5.5 : 5.0;
+  var rmod = risk.indexOf('very high') > -1 ? -1.0 : risk.indexOf('high') > -1 ? -0.4 : risk.indexOf('medium-high') > -1 ? 0 : risk.indexOf('low-medium') > -1 || risk.indexOf('medium') > -1 ? 0.3 : risk.indexOf('low') > -1 ? 0.7 : 0;
+  var regStr = String(regime||'');
+  var gmod = 0;
+  if (regStr.indexOf('Off') > -1) {
+    if (bucket === 'Tactical') gmod = -1.5;
+    else if (bucket === 'Growth') gmod = -0.6;
+    else if (bucket === 'Core') gmod = +0.5;
+  } else if (regStr.indexOf('On') > -1) {
+    if (bucket === 'Growth' || bucket === 'Tactical') gmod = +0.6;
+  }
+  var vmod = 0;
+  if (/Accumulate/i.test(verdict))      vmod = +0.6;
+  else if (/Buy in Pieces/i.test(verdict)) vmod = +0.2;
+  else if (/Avoid/i.test(verdict))      vmod = -1.5;
+  else if (/Wait/i.test(verdict))       vmod = -0.6;
+  else if (/Keep Small/i.test(verdict)) vmod = -0.2;
+
+  var raw = base + rmod + gmod + vmod;
+  if (!isFinite(raw)) raw = 5.0;
+  var clamped = Math.max(1.0, Math.min(10.0, raw));
+
+  /* Phase 1.5 — surface sub-scores (0–10) for the explainability panel.
+     Math is unchanged; these are normalized projections of the same modifiers. */
+  var roleFit = bucket === 'Core' ? 9.0 : bucket === 'Growth' ? 7.5 : bucket === 'Tactical' ? 6.0 : 5.0;
+  var riskFit = risk.indexOf('very high') > -1 ? 3.0
+              : risk.indexOf('medium-high') > -1 ? 6.0
+              : risk.indexOf('high') > -1 ? 5.0
+              : (risk.indexOf('low-medium') > -1 || risk.indexOf('medium') > -1) ? 7.5
+              : risk.indexOf('low') > -1 ? 9.0 : 6.5;
+  var regimeFit;
+  if (regStr.indexOf('Off') > -1) {
+    regimeFit = bucket === 'Core' ? 8.5 : bucket === 'Growth' ? 4.5 : bucket === 'Tactical' ? 2.5 : 5.5;
+  } else if (regStr.indexOf('On') > -1) {
+    regimeFit = bucket === 'Core' ? 6.5 : bucket === 'Growth' ? 8.0 : bucket === 'Tactical' ? 8.0 : 5.5;
+  } else {
+    regimeFit = bucket === 'Core' ? 7.5 : bucket === 'Growth' ? 6.0 : bucket === 'Tactical' ? 5.5 : 5.5;
+  }
+  var verdictFit = /Accumulate/i.test(verdict) ? 8.5
+                 : /Buy in Pieces/i.test(verdict) ? 7.0
+                 : /Keep Small/i.test(verdict) ? 5.5
+                 : /Avoid/i.test(verdict) ? 2.0
+                 : /Wait/i.test(verdict) ? 4.0
+                 : 5.5;
+
+  return {
+    score: Math.round(clamped * 10) / 10,
+    model: model, verdict: verdict, bucket: bucket,
+    roleFit: roleFit, riskFit: riskFit, regimeFit: regimeFit, verdictFit: verdictFit
+  };
+}
+
+/* Phase 1.5 — observational explanation generator. No advice, no buy/sell/should/recommend. */
+function _rankExplain(sym, item, rankIdx, total){
+  var bucket = item.bucket || 'Growth';
+  var roleLbl   = bucket === 'Core' ? 'core role' : bucket === 'Growth' ? 'growth role' : bucket === 'Tactical' ? 'tactical role' : 'case-by-case role';
+  var subs = [
+    { key:'role',    val:item.roleFit,    pos:roleLbl + ' reads strong',                    neg:roleLbl + ' reads softer' },
+    { key:'risk',    val:item.riskFit,    pos:'risk tier reads clean',                       neg:'risk tier reads heavier' },
+    { key:'regime',  val:item.regimeFit,  pos:'regime support is present',                   neg:'regime support is soft' },
+    { key:'verdict', val:item.verdictFit, pos:'stock-decision alignment is positive',        neg:'stock-decision alignment is soft' }
+  ];
+  var sorted = subs.slice().sort(function(a,b){ return b.val - a.val; });
+  var top1 = sorted[0], top2 = sorted[1], low = sorted[sorted.length - 1];
+
+  /* Position phrase by tertile of the sorted list */
+  var third = Math.max(1, Math.floor((total||1) / 3));
+  var pos = rankIdx < third ? 'ranks among the strongest reads'
+          : rankIdx >= (total - third) ? 'lands lower in the set'
+          : 'sits mid-pack';
+
+  /* Top contributors phrase */
+  var driverParts = [];
+  if (top1 && top1.val >= 6) driverParts.push(top1.pos);
+  if (top2 && top2.val >= 6 && top2.key !== top1.key) driverParts.push(top2.pos);
+  var driverLine = driverParts.length ? driverParts.join(' and ') : 'mixed signals across the components';
+
+  /* Softer-thread caveat — only if materially below the top */
+  var caveat = '';
+  if (low && top1 && (top1.val - low.val) >= 2.0 && low.val < 6.0) {
+    caveat = ' ' + (low.neg.charAt(0).toUpperCase() + low.neg.slice(1)) + '.';
+  }
+
+  return sym + ' ' + pos + ' because ' + driverLine + '.' + caveat;
+}
+
+function _rankHeadline(b, regime, score){
+  var on = String(regime||'').indexOf('On') > -1;
+  var off = String(regime||'').indexOf('Off') > -1;
+  if (b === 'Core')     return off ? 'Defensive anchor read holds up.' : 'Steady core read; regime stays supportive.';
+  if (b === 'Growth')   return off ? 'Growth read softens in the current regime.' : (score >= 7.5 ? 'Growth setup reads constructive.' : 'Growth read is mixed in this set.');
+  if (b === 'Tactical') return off ? 'Tactical read weakens in the current regime.' : 'Tactical sleeve read tracks the risk-on tape.';
+  return 'Uncatalogued name; treat as a growth-tier read until more is known.';
+}
+
+function _rankReadLine(model){
+  var role = (model && model.role) || 'Case-by-case';
+  var risk = (model && model.risk) || '—';
+  var horizon = (model && model.horizon) || '';
+  return role + ' · ' + risk + ' risk' + (horizon ? ' · ' + horizon : '');
+}
+
+function _rankTier(score){
+  if (score >= 7.5) return 'up';
+  if (score >= 5.0) return 'mid';
+  return 'low';
+}
+
+function runRankList(){
+  var ta = document.getElementById('rankInput'); var out = document.getElementById('rankOutput'); var notice = document.getElementById('rankNotice');
+  if (!ta || !out) return;
+  var parsed = parseTickerList(ta.value);
+  if (notice) {
+    var bits = [];
+    if (parsed.truncated) bits.push('Capped at ' + RANK_MAX);
+    if (parsed.dropped)   bits.push(parsed.dropped + ' invalid skipped');
+    notice.textContent = bits.join(' · ');
+  }
+  if (!parsed.tickers.length){
+    out.innerHTML = '<div class="rk-empty">Paste a list of tickers above to see a ranked read.</div>';
+    return;
+  }
+  var ps = window.portfolioState || {};
+  var regime = (ps.market && ps.market.regime) || (typeof computeRegime === 'function' ? (function(){ try { return computeRegime((typeof _intelCtx!=='undefined'&&_intelCtx)||{}); } catch(_){ return 'Neutral / Selective'; } })() : 'Neutral / Selective');
+  var items = parsed.tickers.map(function(sym){
+    var s = _rankBaselineScore(sym, regime);
+    return {
+      sym: sym,
+      score: s.score,
+      bucket: s.bucket,
+      headline: _rankHeadline(s.bucket, regime, s.score),
+      read: _rankReadLine(s.model),
+      roleFit: s.roleFit, riskFit: s.riskFit, regimeFit: s.regimeFit, verdictFit: s.verdictFit
+    };
+  }).sort(function(a,b){ return b.score - a.score; });
+  renderRankList(items);
+}
+
+/* Phase 1.5 — accordion-style row toggle. One open at a time. */
+function _rkToggleRow(sym){
+  var tbl = document.querySelector('#rankOutput .rk-tbl'); if (!tbl) return;
+  var targetId = 'rk-d-' + sym;
+  var target = document.getElementById(targetId);
+  var trigger = tbl.querySelector('tr[data-rk-sym="'+sym+'"]');
+  var isOpen = target && !target.hasAttribute('hidden');
+  /* Close all other open detail rows */
+  tbl.querySelectorAll('.rk-detail-row').forEach(function(r){ if (r !== target) r.setAttribute('hidden',''); });
+  tbl.querySelectorAll('tr[data-rk-sym]').forEach(function(r){ if (r !== trigger) r.setAttribute('aria-expanded','false'); });
+  if (!target) return;
+  if (isOpen) {
+    target.setAttribute('hidden','');
+    if (trigger) trigger.setAttribute('aria-expanded','false');
+  } else {
+    target.removeAttribute('hidden');
+    if (trigger) trigger.setAttribute('aria-expanded','true');
+  }
+}
+
+function _rkBar(label, val, tier){
+  var pct = Math.round(Math.max(0, Math.min(10, val)) * 10);
+  return '<div class="rk-detail-bar-block">' +
+    '<div class="rk-detail-bar-label">'+esc(label)+'</div>' +
+    '<div class="rk-detail-bar-row">' +
+      '<div class="rk-detail-bar"><div class="rk-detail-fill '+tier+'" style="width:'+pct+'%"></div></div>' +
+      '<div class="rk-detail-bar-num '+tier+'">'+val.toFixed(1)+'</div>' +
+    '</div></div>';
+}
+
+function _rkSubTier(v){ if (v >= 7.5) return 'up'; if (v >= 5.0) return 'mid'; return 'low'; }
+
+function renderRankList(items){
+  var out = document.getElementById('rankOutput'); if (!out) return;
+  if (!items || !items.length){ out.innerHTML = '<div class="rk-empty">No valid tickers found.</div>'; return; }
+  var top3 = items.slice(0, 3);
+  var top3Html = '<div class="rk-top3"><span class="rk-top3-eye">Top reads</span>' +
+    top3.map(function(t){ return '<button type="button" class="rk-top3-pill" onclick="discOpenSym(\''+esc(t.sym)+'\')" aria-label="Open '+esc(t.sym)+' in Stock Decision Engine">'+esc(t.sym)+' · '+t.score.toFixed(1)+'</button>'; }).join('') +
+    '</div>';
+  var total = items.length;
+  var rows = items.map(function(it, i){
+    var tier = _rankTier(it.score);
+    var pct = Math.round(it.score * 10);
+    var detailId = 'rk-d-' + it.sym;
+    var why = _rankExplain(it.sym, it, i, total);
+    var bars =
+      _rkBar('Overall score', it.score,     tier) +
+      _rkBar('Role fit',      it.roleFit,   _rkSubTier(it.roleFit)) +
+      _rkBar('Risk fit',      it.riskFit,   _rkSubTier(it.riskFit)) +
+      _rkBar('Regime fit',    it.regimeFit, _rkSubTier(it.regimeFit));
+    var triggerRow = '<tr tabindex="0" role="button" aria-expanded="false" aria-controls="'+detailId+'" aria-label="Toggle '+esc(it.sym)+' score detail" data-rk-sym="'+esc(it.sym)+'" onclick="_rkToggleRow(\''+esc(it.sym)+'\')" onkeydown="if(event.key===&quot;Enter&quot;||event.key===&quot; &quot;){event.preventDefault();_rkToggleRow(\''+esc(it.sym)+'\')}">' +
+      '<td class="rk-rank">'+(i+1)+'</td>' +
+      '<td class="rk-sym">'+esc(it.sym)+'</td>' +
+      '<td class="rk-score-cell"><div class="rk-score-row"><div class="rk-score-bar"><div class="rk-score-fill '+tier+'" style="width:'+pct+'%"></div></div><div class="rk-score-num '+tier+'">'+it.score.toFixed(1)+'</div></div></td>' +
+      '<td><div class="rk-headline">'+esc(it.headline)+'</div><div class="rk-read">'+esc(it.read)+'</div></td>' +
+    '</tr>';
+    var detailRow = '<tr class="rk-detail-row" id="'+detailId+'" hidden><td colspan="4">' +
+      '<div class="rk-detail" role="region" aria-label="'+esc(it.sym)+' score detail">' +
+        '<div class="rk-detail-grid">' +
+          '<div class="rk-detail-bars">'+bars+'</div>' +
+          '<div class="rk-detail-side">' +
+            '<div class="rk-detail-why">'+esc(why)+'</div>' +
+            '<button type="button" class="rk-detail-cta" onclick="event.stopPropagation();discOpenSym(\''+esc(it.sym)+'\')">Open in Stock Decision Engine &rarr;</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</td></tr>';
+    return triggerRow + detailRow;
+  }).join('');
+  out.innerHTML = top3Html +
+    '<table class="rk-tbl"><thead><tr><th>#</th><th>Ticker</th><th>Score</th><th>Read</th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+
+/* ESC closes a focused, expanded rank row. Idempotent — single global listener. */
+if (!window._rkEscBound) {
+  window._rkEscBound = true;
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    var t = document.activeElement; if (!t) return;
+    var row = t.closest && t.closest('tr[data-rk-sym]'); if (!row) return;
+    if (row.getAttribute('aria-expanded') === 'true') {
+      var sym = row.getAttribute('data-rk-sym'); if (sym) _rkToggleRow(sym);
+    }
+  });
+}
+
 function _cmpToggle(el){
   var on=el.classList.toggle('on');
   el.setAttribute('aria-expanded',on?'true':'false');
@@ -8072,7 +8400,7 @@ function renderAIDiagnosis(ps, mockJson){
   var summary     = String(mockJson.summary     || '');
   var riskRead    = String(mockJson.riskRead    || '');
   var nextQuestion= String(mockJson.nextQuestion|| '');
-  var drivers     = Array.isArray(mockJson.keyDrivers) ? mockJson.keyDrivers : [];
+  var drivers     = Array.isArray(mockJson.keyDrivers) ? mockJson.keyDrivers.slice(0, 3) : [];
   var driversHtml = drivers.length
     ? '<div class="ai-dx-row"><span class="ai-dx-lbl">Drivers</span><div class="ai-dx-val ai-dx-drivers">' +
       drivers.map(function(d){return '<span class="ai-dx-drv">'+esc(String(d))+'</span>';}).join('') +
@@ -8235,7 +8563,7 @@ async function renderAIDiagnosisLive(ps){
       '{',
       '  "headline": "one short descriptive sentence (max ~90 chars)",',
       '  "summary": "2-3 sentence neutral summary of structural signals",',
-      '  "keyDrivers": ["3-5 short driver labels under 30 chars each"],',
+      '  "keyDrivers": ["exactly 3 short driver labels, each under 30 chars"],',
       '  "riskRead": "one short sentence describing risk posture",',
       '  "nextQuestion": "one open-ended question for the investor to consider"',
       '}',
