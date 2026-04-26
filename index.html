@@ -1962,16 +1962,20 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     .rk-ai-refining[hidden] { display:none; }
     .rk-rank { font-family:'DM Mono',monospace; font-size:11px; color:var(--text-3); width:28px; }
     .rk-sym { font-family:'DM Mono',monospace; font-size:13px; font-weight:600; color:var(--cream); width:74px; letter-spacing:.04em; }
-    .rk-score-cell { width:120px; }
+    .rk-score-cell { width:124px; }
+    .rk-score-head { display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:4px; }
+    .rk-score-lbl  { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--text-3); font-weight:700; }
+    .rk-score-tier { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.04em; text-transform:uppercase; color:var(--text-3); font-weight:600; }
+    .rk-score-tier.up { color:var(--sage); } .rk-score-tier.mid { color:var(--gold-light); } .rk-score-tier.low { color:var(--clay); }
     .rk-score-row { display:flex; align-items:center; gap:8px; }
-    .rk-score-bar { flex:1; height:5px; background:var(--noir-3); border-radius:3px; overflow:hidden; min-width:40px; }
-    .rk-score-fill { height:100%; border-radius:3px; transition:width .35s ease; }
-    .rk-score-num { font-family:'DM Mono',monospace; font-size:12px; font-weight:600; min-width:30px; text-align:right; }
+    .rk-score-bar { flex:1; height:6px; background:var(--noir-3); border-radius:4px; overflow:hidden; min-width:40px; }
+    .rk-score-fill { height:100%; border-radius:4px; transition:width .35s ease; }
+    .rk-score-num { font-family:'DM Mono',monospace; font-size:14px; font-weight:600; min-width:30px; text-align:right; }
     .rk-score-num.up   { color:var(--sage); }       .rk-score-fill.up   { background:var(--sage); }
     .rk-score-num.mid  { color:var(--gold-light); } .rk-score-fill.mid  { background:var(--gold); }
     .rk-score-num.low  { color:var(--clay); }       .rk-score-fill.low  { background:var(--clay); }
-    .rk-headline { color:var(--cream); font-size:12.5px; line-height:1.45; }
-    .rk-read { color:var(--text-2); font-size:11px; line-height:1.45; margin-top:2px; }
+    .rk-headline { color:var(--cream); font-size:12.5px; line-height:1.45; opacity:.88; }
+    .rk-read { color:var(--text-2); font-size:11px; line-height:1.45; margin-top:2px; opacity:.85; }
     .rk-empty { padding:18px 14px; text-align:center; font-size:12px; color:var(--text-3); border:1px dashed var(--border); border-radius:var(--r); }
     /* Phase 1.5 — expandable detail panel under each ranked row */
     .rk-detail-row[hidden] { display:none !important; }
@@ -1991,8 +1995,8 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     .rk-detail-side { display:flex; flex-direction:column; gap:8px; min-width:0; }
     .rk-detail-eye { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--text-3); font-weight:700; }
     .rk-detail-why { display:flex; flex-direction:column; gap:4px; }
-    .rk-detail-why-line { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:13px; color:var(--cream-dim); line-height:1.5; }
-    .rk-detail-why-caveat { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:12.5px; color:var(--text-2); line-height:1.5; opacity:.92; }
+    .rk-detail-why-line { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:13px; color:var(--cream-dim); line-height:1.4; max-width:65ch; }
+    .rk-detail-why-caveat { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:12.5px; color:var(--text-2); line-height:1.4; max-width:65ch; opacity:.85; }
     .rk-detail-emph { font-style:italic; color:var(--cream); }
     .rk-detail-cta { align-self:flex-start; margin-top:2px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.10em; text-transform:uppercase; font-weight:700; color:var(--gold-light); background:transparent; border:1px solid var(--border-2); padding:6px 12px; border-radius:5px; cursor:pointer; transition:background .15s ease, color .15s ease; }
     .rk-detail-cta:hover, .rk-detail-cta:focus-visible { color:var(--cream); background:rgba(201,168,76,.08); outline:none; }
@@ -7827,6 +7831,11 @@ function _rankTier(score){
   return 'low';
 }
 
+/* Observational tier label shown next to the score — calm, never directive. */
+function _rkTierLabel(tier){
+  return tier === 'up' ? 'Strong' : tier === 'mid' ? 'Mixed' : 'Soft';
+}
+
 function runRankList(){
   var ta = document.getElementById('rankInput'); var out = document.getElementById('rankOutput'); var notice = document.getElementById('rankNotice');
   if (!ta || !out) return;
@@ -7912,7 +7921,10 @@ function renderRankList(items){
     var triggerRow = '<tr tabindex="0" role="button" aria-expanded="false" aria-controls="'+detailId+'" aria-label="Toggle '+esc(it.sym)+' score detail" data-rk-sym="'+esc(it.sym)+'" onclick="_rkToggleRow(\''+esc(it.sym)+'\')" onkeydown="if(event.key===&quot;Enter&quot;||event.key===&quot; &quot;){event.preventDefault();_rkToggleRow(\''+esc(it.sym)+'\')}">' +
       '<td class="rk-rank">'+(i+1)+'</td>' +
       '<td class="rk-sym">'+esc(it.sym)+'</td>' +
-      '<td class="rk-score-cell"><div class="rk-score-row"><div class="rk-score-bar"><div class="rk-score-fill '+tier+'" style="width:'+pct+'%"></div></div><div class="rk-score-num '+tier+'">'+it.score.toFixed(1)+'</div></div></td>' +
+      '<td class="rk-score-cell">' +
+        '<div class="rk-score-head"><span class="rk-score-lbl">Score</span><span class="rk-score-tier '+tier+'">'+esc(_rkTierLabel(tier))+'</span></div>' +
+        '<div class="rk-score-row"><div class="rk-score-bar"><div class="rk-score-fill '+tier+'" style="width:'+pct+'%"></div></div><div class="rk-score-num '+tier+'">'+it.score.toFixed(1)+'</div></div>' +
+      '</td>' +
       '<td><div class="rk-headline">'+esc(it.headline)+'</div><div class="rk-read">'+esc(it.read)+'</div></td>' +
     '</tr>';
     var detailRow = '<tr class="rk-detail-row" id="'+detailId+'" hidden><td colspan="4">' +
