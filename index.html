@@ -1488,6 +1488,146 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       padding: 16px 18px;
       border: 1px dashed rgba(201,168,76,.32); border-radius: 10px;
       background: rgba(0,0,0,.20);
+      cursor: pointer; text-align: left; font-family: inherit; width: 100%;
+      appearance: none; -webkit-appearance: none; color: inherit;
+      transition: border-color .18s ease, background .18s ease, box-shadow .22s ease, transform .12s ease;
+    }
+    #wapContainer .wap-empty__cta:hover,
+    #wapContainer .wap-empty__cta:focus-visible {
+      border-color: rgba(201,168,76,.55);
+      background: rgba(201,168,76,.06);
+      box-shadow: 0 0 0 1px rgba(201,168,76,.22), 0 4px 18px rgba(201,168,76,.08);
+      outline: none;
+    }
+    #wapContainer .wap-empty__cta:hover .wap-empty__cta-icon,
+    #wapContainer .wap-empty__cta:focus-visible .wap-empty__cta-icon {
+      border-color: rgba(201,168,76,.62); color: var(--gold-light);
+    }
+    #wapContainer .wap-empty__cta:hover .wap-empty__btn,
+    #wapContainer .wap-empty__cta:focus-visible .wap-empty__btn {
+      filter: brightness(1.08);
+    }
+    #wapContainer .wap-empty__cta:active { transform: translateY(1px); }
+    #wapContainer .wap-empty__btn { pointer-events: none; margin-left: auto; }
+    /* Readiness checklist under the CTA */
+    #wapContainer .wap-empty__checklist {
+      display: flex; flex-direction: column; gap: 7px;
+      margin-top: 16px; padding: 12px 14px; border-radius: 8px;
+      border: 1px solid var(--border); background: rgba(0,0,0,.10);
+    }
+    #wapContainer .wap-empty__check-item {
+      display: flex; align-items: center; gap: 9px;
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      letter-spacing: .08em; text-transform: uppercase;
+    }
+    #wapContainer .wap-empty__check-icon {
+      width: 16px; height: 16px; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    #wapContainer .wap-empty__check-item.is-complete   { color: var(--sage); }
+    #wapContainer .wap-empty__check-item.is-incomplete { color: var(--gold-light); opacity: .85; }
+    #wapContainer .wap-empty__check-item.is-locked     { color: var(--text-3); opacity: .65; }
+    /* ── Phase 5 — portfolio context strip + portfolio reason + expandable detail ── */
+    #wapContainer .wap__context {
+      margin-bottom: 18px; padding: 11px 14px;
+      border-radius: 8px; border: 1px solid var(--border);
+      background: rgba(0,0,0,.14);
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    #wapContainer .wap__context-eye {
+      font-family: 'DM Mono', monospace; font-size: 10.5px;
+      letter-spacing: .18em; text-transform: uppercase; font-weight: 700;
+      color: var(--text-3); margin-bottom: 2px;
+    }
+    #wapContainer .wap__context-row {
+      font-size: 12px; line-height: 1.5; display: flex; gap: 10px;
+      align-items: baseline;
+    }
+    #wapContainer .wap__context-lbl {
+      font-family: 'DM Mono', monospace; font-size: 10.5px;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--text-3); font-weight: 600;
+      min-width: 96px; flex-shrink: 0;
+    }
+    #wapContainer .wap__context-val { color: var(--cream-dim); flex: 1; }
+    #wapContainer .wap__context-val strong { color: var(--cream); font-weight: 600; }
+    #wapContainer .wap__why-item--portfolio {
+      font-style: italic; color: var(--gold-light);
+      padding-top: 8px; margin-top: 4px;
+      border-top: 1px dashed rgba(201,168,76,.16);
+      opacity: .94;
+    }
+    #wapContainer .wap__detail {
+      margin-top: 8px;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: rgba(0,0,0,.10);
+    }
+    #wapContainer .wap__detail[open] { background: rgba(0,0,0,.16); }
+    #wapContainer .wap__detail summary {
+      cursor: pointer; list-style: none; padding: 10px 14px;
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
+      color: var(--gold-light);
+      display: flex; align-items: center; justify-content: space-between;
+      user-select: none;
+    }
+    #wapContainer .wap__detail summary::-webkit-details-marker { display: none; }
+    #wapContainer .wap__detail summary::after {
+      content: '▾'; font-family: 'DM Mono', monospace; font-size: 10px;
+      color: var(--text-3); transition: transform .18s ease;
+    }
+    #wapContainer .wap__detail[open] summary::after { transform: rotate(180deg); }
+    #wapContainer .wap__detail summary:focus-visible { outline: 1px solid var(--border-2); outline-offset: 2px; border-radius: 6px; }
+    #wapContainer .wap__detail-body {
+      padding: 4px 14px 12px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px;
+    }
+    #wapContainer .wap__detail-row {
+      display: flex; gap: 8px; font-size: 11.5px; line-height: 1.45;
+    }
+    #wapContainer .wap__detail-lbl {
+      font-family: 'DM Mono', monospace; font-size: 10px;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--text-3); font-weight: 700; min-width: 76px;
+    }
+    #wapContainer .wap__detail-val { color: var(--cream-dim); flex: 1; }
+    #wapContainer .wap__detail-narrative {
+      grid-column: 1 / -1;
+      margin-top: 6px; padding-top: 8px;
+      border-top: 1px dashed rgba(201,168,76,.16);
+      font-style: italic; font-size: 11.5px;
+      color: var(--text-2); line-height: 1.5;
+    }
+    @media (max-width: 720px) {
+      #wapContainer .wap__detail-body { grid-template-columns: 1fr; }
+      #wapContainer .wap__context-row { flex-direction: column; gap: 2px; }
+      #wapContainer .wap__context-lbl { min-width: 0; }
+    }
+    /* ── Trust row — interactive micro-education (hover/focus reveal + click pin) ── */
+    #wapContainer .wap-empty__trust-item {
+      flex-direction: column; align-items: stretch; gap: 0;
+      cursor: pointer; outline: none; padding: 8px 10px; margin: -8px -10px;
+      border-radius: 6px; transition: background .15s ease;
+    }
+    #wapContainer .wap-empty__trust-item:hover,
+    #wapContainer .wap-empty__trust-item:focus-visible {
+      background: rgba(201,168,76,.05);
+    }
+    #wapContainer .wap-empty__trust-item:focus-visible { outline: 1px solid var(--border-2); outline-offset: 1px; }
+    #wapContainer .wap-empty__trust-item-row { display: flex; align-items: flex-start; gap: 11px; }
+    #wapContainer .wap-empty__trust-detail {
+      display: none; padding: 8px 0 2px 33px;
+      font-size: 11px; line-height: 1.5; color: var(--text-2);
+      animation: fadeUp .18s ease;
+    }
+    #wapContainer .wap-empty__trust-item:hover .wap-empty__trust-detail,
+    #wapContainer .wap-empty__trust-item:focus-visible .wap-empty__trust-detail,
+    #wapContainer .wap-empty__trust-item.is-pinned .wap-empty__trust-detail {
+      display: block;
+    }
+    @media (max-width: 720px) {
+      #wapContainer .wap-empty__trust-item { margin: 0; padding: 0 0 12px; border-radius: 0; }
+      #wapContainer .wap-empty__trust-detail { padding-left: 33px; }
     }
     #wapContainer .wap-empty__cta-icon {
       width: 56px; height: 56px; border-radius: 50%;
@@ -10242,7 +10382,10 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
         return;
       }
       var result = window.WAP.generateWeeklyActionPlan(state);
-      window.WAPUi.render(container, { result: result, contribution: contribution, weekOf: weekOf });
+      /* Phase 5 — derive portfolio context and stash on view for the wrapper to read */
+      var portfolioContext = null;
+      try { portfolioContext = _wapDeriveContext(state, result); } catch(_){}
+      window.WAPUi.render(container, { result: result, contribution: contribution, weekOf: weekOf, portfolioContext: portfolioContext });
     } catch(e) {
       if (typeof addPortfolioError === 'function') addPortfolioError(e && e.message || e, '_renderWAP');
     }
@@ -10264,6 +10407,23 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     }
     /* default — no portfolio */
     return { title:'Upload your portfolio to get started', sub:"Once we have your holdings and cash contribution, we'll generate your best action for the week.", btnLabel:'Upload portfolio', target:'portfolio' };
+  }
+  /* Readiness checklist — keyed off the active CTA target.
+     portfolio    → 1 incomplete · 2 locked · 3 locked
+     intelligence → 1 complete   · 2 incomplete · 3 locked
+     compare      → 1 complete   · 2 complete   · 3 incomplete */
+  function _wapChecklistHtml(target){
+    var ICON_CHECK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg>';
+    var ICON_DOT   = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="3.5"/></svg>';
+    var ICON_LOCK  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+    var s1='incomplete', s2='locked', s3='locked';
+    if (target === 'intelligence') { s1='complete'; s2='incomplete'; s3='locked'; }
+    else if (target === 'compare') { s1='complete'; s2='complete'; s3='incomplete'; }
+    function row(state, label){
+      var icon = state==='complete' ? ICON_CHECK : state==='incomplete' ? ICON_DOT : ICON_LOCK;
+      return '<div class="wap-empty__check-item is-'+state+'"><span class="wap-empty__check-icon">'+icon+'</span>'+_wapEsc(label)+'</div>';
+    }
+    return row(s1,'Portfolio uploaded') + row(s2,'Contribution set') + row(s3,'Weekly plan ready');
   }
   function _wapRenderEmpty(container, view){
     var weekOf = (view && view.weekOf) ? view.weekOf : new Date();
@@ -10287,26 +10447,66 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
           '<div class="wap-empty__week">'+ICON_CAL_MD+_wapEsc(_wapFmtWeek(weekOf))+'</div>' +
           '<h2 class="wap-empty__title">Plan unavailable</h2>' +
           '<p class="wap-empty__lede">We need a little more information to build your personalized weekly plan.</p>' +
-          '<div class="wap-empty__cta">' +
+          '<button type="button" class="wap-empty__cta" data-wap-target="'+_wapEsc(cta.target)+'" aria-label="'+_wapEsc(cta.btnLabel)+'">' +
             '<div class="wap-empty__cta-icon">'+ICON_CLOUD+'</div>' +
             '<div class="wap-empty__cta-body">' +
               '<div class="wap-empty__cta-title">'+_wapEsc(cta.title)+'</div>' +
               '<div class="wap-empty__cta-sub">'+_wapEsc(cta.sub)+'</div>' +
             '</div>' +
-            '<button type="button" class="wap-empty__btn" data-wap-target="'+_wapEsc(cta.target)+'">'+ICON_UP_ARROW+_wapEsc(cta.btnLabel)+'</button>' +
-          '</div>' +
+            '<span class="wap-empty__btn">'+ICON_UP_ARROW+_wapEsc(cta.btnLabel)+'</span>' +
+          '</button>' +
+          '<div class="wap-empty__checklist" aria-label="Setup progress">'+_wapChecklistHtml(cta.target)+'</div>' +
         '</div>' +
         '<div class="wap-empty__trust">' +
-          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+ICON_LOCK+'</span><div><div class="wap-empty__trust-title">Private &amp; Secure</div><div class="wap-empty__trust-sub">Your data stays on your device</div></div></div>' +
-          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+ICON_TARGET+'</span><div><div class="wap-empty__trust-title">One Clear Action</div><div class="wap-empty__trust-sub">No noise. Just your best move.</div></div></div>' +
-          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+ICON_SHIELD+'</span><div><div class="wap-empty__trust-title">Deterministic Engine</div><div class="wap-empty__trust-sub">Rules-based. No AI. Always consistent.</div></div></div>' +
+          _wapTrustItem(ICON_LOCK,   'Private & Secure',     'Your data stays on your device',         'Your portfolio data stays local to this session unless you choose to save or deploy an action.') +
+          _wapTrustItem(ICON_TARGET, 'One Clear Action',     'No noise. Just your best move.',         'WAP gives one weekly move so you are not forced to compare multiple competing recommendations.') +
+          _wapTrustItem(ICON_SHIELD, 'Deterministic Engine', 'Rules-based. No AI. Always consistent.','The recommendation comes from fixed rules, not AI judgment, so the same inputs produce the same plan.') +
         '</div>' +
       '</div>';
-    var btn = container.querySelector('.wap-empty__btn');
-    if (btn) btn.addEventListener('click', function(){
-      var target = btn.getAttribute('data-wap-target') || 'portfolio';
+    _wapBindTrustToggle(container);
+    var ctaBtn = container.querySelector('.wap-empty__cta');
+    if (ctaBtn) ctaBtn.addEventListener('click', function(){
+      var target = ctaBtn.getAttribute('data-wap-target') || 'portfolio';
       try { if (typeof showPanel === 'function') showPanel(target, null); } catch(_){}
     });
+  }
+
+  /* ── Trust-row item builder (interactive micro-education) ──
+     Each item: icon + title + sub, plus a hover/focus/pin-revealed detail line. */
+  function _wapTrustItem(iconSvg, title, sub, detail){
+    return '<div class="wap-empty__trust-item" tabindex="0" role="button" aria-expanded="false" aria-label="'+_wapEsc(title)+': '+_wapEsc(sub)+'">' +
+             '<div class="wap-empty__trust-item-row">' +
+               '<span class="wap-empty__trust-icon">'+iconSvg+'</span>' +
+               '<div>' +
+                 '<div class="wap-empty__trust-title">'+_wapEsc(title)+'</div>' +
+                 '<div class="wap-empty__trust-sub">'+_wapEsc(sub)+'</div>' +
+               '</div>' +
+             '</div>' +
+             '<div class="wap-empty__trust-detail">'+_wapEsc(detail)+'</div>' +
+           '</div>';
+  }
+  /* Bind hover/focus/click pin behavior — single delegated handler per container.
+     Click toggles .is-pinned (one at a time); Enter/Space same as click. */
+  function _wapBindTrustToggle(container){
+    try {
+      var trust = container && container.querySelector('.wap-empty__trust');
+      if (!trust || trust.__wapTrustBound) return;
+      trust.__wapTrustBound = true;
+      function toggle(item){
+        if (!item) return;
+        var wasPinned = item.classList.contains('is-pinned');
+        trust.querySelectorAll('.wap-empty__trust-item.is-pinned').forEach(function(r){
+          r.classList.remove('is-pinned'); r.setAttribute('aria-expanded','false');
+        });
+        if (!wasPinned) { item.classList.add('is-pinned'); item.setAttribute('aria-expanded','true'); }
+      }
+      trust.addEventListener('click', function(e){ toggle(e.target.closest('.wap-empty__trust-item')); });
+      trust.addEventListener('keydown', function(e){
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        var item = e.target.closest('.wap-empty__trust-item'); if (!item) return;
+        e.preventDefault(); toggle(item);
+      });
+    } catch(_){}
   }
 
   /* ── Phase 4 — commitment-driven WAP (lock + streak + skip friction + authority) ──
@@ -10379,11 +10579,12 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
           (streak > 0 ? '<div class="wap-empty__streak">Discipline streak: '+streak+' '+(streak===1?'week':'weeks')+'</div>' : '') +
         '</div>' +
         '<div class="wap-empty__trust">' +
-          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+_wapIconLock+'</span><div><div class="wap-empty__trust-title">Locked Until Monday</div><div class="wap-empty__trust-sub">No second-guessing this week.</div></div></div>' +
-          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+_wapIconTarget+'</span><div><div class="wap-empty__trust-title">One Clear Action</div><div class="wap-empty__trust-sub">Done. See you next week.</div></div></div>' +
-          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+_wapIconShield+'</span><div><div class="wap-empty__trust-title">Deterministic Engine</div><div class="wap-empty__trust-sub">Rules-based. No AI. Always consistent.</div></div></div>' +
+          _wapTrustItem(_wapIconLock,   'Locked Until Monday',  'No second-guessing this week.',          'Your portfolio data stays local to this session unless you choose to save or deploy an action.') +
+          _wapTrustItem(_wapIconTarget, 'One Clear Action',     'Done. See you next week.',               'WAP gives one weekly move so you are not forced to compare multiple competing recommendations.') +
+          _wapTrustItem(_wapIconShield, 'Deterministic Engine', 'Rules-based. No AI. Always consistent.','The recommendation comes from fixed rules, not AI judgment, so the same inputs produce the same plan.') +
         '</div>' +
       '</div>';
+    _wapBindTrustToggle(container);
   }
   function _wapRenderLockedSkipped(container, lockUntil){
     var days = _wapDaysUntil(lockUntil);
@@ -10407,11 +10608,12 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
           '</div>' +
         '</div>' +
         '<div class="wap-empty__trust">' +
-          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+_wapIconLock+'</span><div><div class="wap-empty__trust-title">Locked Until Monday</div><div class="wap-empty__trust-sub">Plan resumes next week.</div></div></div>' +
-          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+_wapIconTarget+'</span><div><div class="wap-empty__trust-title">One Clear Action</div><div class="wap-empty__trust-sub">Skipped — see you Monday.</div></div></div>' +
-          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+_wapIconShield+'</span><div><div class="wap-empty__trust-title">Deterministic Engine</div><div class="wap-empty__trust-sub">Rules-based. No AI. Always consistent.</div></div></div>' +
+          _wapTrustItem(_wapIconLock,   'Locked Until Monday',  'Plan resumes next week.',                'Your portfolio data stays local to this session unless you choose to save or deploy an action.') +
+          _wapTrustItem(_wapIconTarget, 'One Clear Action',     'Skipped — see you Monday.',              'WAP gives one weekly move so you are not forced to compare multiple competing recommendations.') +
+          _wapTrustItem(_wapIconShield, 'Deterministic Engine', 'Rules-based. No AI. Always consistent.','The recommendation comes from fixed rules, not AI judgment, so the same inputs produce the same plan.') +
         '</div>' +
       '</div>';
+    _wapBindTrustToggle(container);
   }
 
   /* DOM-mutate Phase 2's BUY render to add authority framing + optional streak chip.
@@ -10510,6 +10712,144 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     } catch(_){}
   }
 
+  /* ── Phase 5 — portfolio-aware context derivation + DOM enrichment ──
+     Engine output unchanged. All additions are integrator-side post-processing. */
+  function _wapDeriveContext(state, result){
+    var portfolio = (state && state.portfolio) || [];
+    var classification = (state && state.classification) || {};
+    var rankedList = (state && state.rankedList) || [];
+    var verdicts = (state && state.verdicts) || {};
+    /* Largest by currentWeight */
+    var largest = null;
+    portfolio.forEach(function(p){
+      if (!p) return;
+      if (!largest || (p.currentWeight||0) > (largest.currentWeight||0)) largest = p;
+    });
+    /* Most underweight eligible (CORE/WATCHLIST, gap > 0), by largest gap */
+    var underweight = null;
+    portfolio.forEach(function(p){
+      if (!p) return;
+      var cls = classification[p.ticker]; if (cls !== 'CORE' && cls !== 'WATCHLIST') return;
+      var gap = (p.targetWeight||0) - (p.currentWeight||0);
+      if (gap <= 0) return;
+      if (!underweight || gap > underweight.gap) underweight = { ticker: p.ticker, currentWeight: p.currentWeight||0, targetWeight: p.targetWeight||0, gap: gap };
+    });
+    /* Focus narrative — deterministic branch */
+    var focus = 'scaling positions on cadence';
+    if (largest && (largest.currentWeight||0) > 30) {
+      focus = 'reducing concentration through disciplined deployment';
+    } else {
+      var hasMaterialGap = portfolio.some(function(p){
+        if (!p) return false;
+        var cls = classification[p.ticker]; if (cls !== 'CORE' && cls !== 'WATCHLIST') return false;
+        return ((p.targetWeight||0) - (p.currentWeight||0)) > 5;
+      });
+      if (hasMaterialGap) focus = 'rebalancing toward target structure';
+    }
+    /* Pick facts — for the engine's chosen ticker (BUY only) */
+    var pick = null;
+    if (result && result.type === 'BUY' && result.ticker) {
+      var p = null;
+      for (var i = 0; i < portfolio.length; i++) { if (portfolio[i] && portfolio[i].ticker === result.ticker) { p = portfolio[i]; break; } }
+      var rank = null;
+      for (var j = 0; j < rankedList.length; j++) { if (rankedList[j] && rankedList[j].ticker === result.ticker) { rank = rankedList[j].rank; break; } }
+      pick = {
+        ticker: result.ticker,
+        currentWeight: p ? (p.currentWeight||0) : 0,
+        targetWeight:  p ? (p.targetWeight||0)  : 0,
+        gap: p ? Math.max(0, (p.targetWeight||0) - (p.currentWeight||0)) : 0,
+        rank: rank,
+        verdict: verdicts[result.ticker] || 'BUY',
+        helpsConcentration: !!(largest && result.ticker !== largest.ticker),
+        helpsBalance: !!(p && (p.targetWeight||0) > (p.currentWeight||0))
+      };
+    }
+    return { largest: largest, underweight: underweight, focus: focus, pick: pick };
+  }
+
+  /* Render the context strip above the BUY framing */
+  function _wapApplyContextStrip(container, ctx){
+    try {
+      if (!ctx) return;
+      var inner = container.querySelector('.wap'); /* Phase 2's outer card */
+      if (!inner) inner = container; /* fallback */
+      /* Insert above the first content node — Phase 2's <header> sits first; we go below header but above .wap__main */
+      var header = inner.querySelector('.wap__header');
+      var main = inner.querySelector('.wap__main');
+      if (!main) return;
+      if (inner.querySelector('.wap__context')) return; /* idempotent */
+      var largestStr = ctx.largest && ctx.largest.ticker
+        ? '<strong>' + _wapEsc(ctx.largest.ticker) + '</strong> ' + Math.round(ctx.largest.currentWeight||0) + '%'
+        : '—';
+      var underStr = ctx.underweight
+        ? '<strong>' + _wapEsc(ctx.underweight.ticker) + '</strong> ' + Math.round(ctx.underweight.currentWeight||0) + '% / ' + Math.round(ctx.underweight.targetWeight||0) + '% target'
+        : 'no eligible underweight position';
+      var strip = document.createElement('div');
+      strip.className = 'wap__context';
+      strip.innerHTML =
+        '<div class="wap__context-eye">Portfolio context</div>' +
+        '<div class="wap__context-row"><span class="wap__context-lbl">Largest</span><span class="wap__context-val">'+largestStr+'</span></div>' +
+        '<div class="wap__context-row"><span class="wap__context-lbl">Most underweight</span><span class="wap__context-val">'+underStr+'</span></div>' +
+        '<div class="wap__context-row"><span class="wap__context-lbl">Focus</span><span class="wap__context-val">'+_wapEsc(ctx.focus||'')+'</span></div>';
+      /* Place above .wap__authority-eye if present, else above main */
+      var auth = inner.querySelector('.wap__authority-eye');
+      var anchor = auth || main;
+      anchor.parentNode.insertBefore(strip, anchor);
+    } catch(_){}
+  }
+
+  /* Append the portfolio-specific reason as an extra why-item */
+  function _wapApplyPortfolioReason(container, ctx, result){
+    try {
+      if (!ctx || !ctx.pick || !result || result.type !== 'BUY') return;
+      var why = container.querySelector('.wap__why');
+      if (!why || why.querySelector('.wap__why-item--portfolio')) return;
+      var line = 'Buying ' + ctx.pick.ticker + ' adds to an eligible underweight position';
+      if (ctx.helpsConcentration && ctx.largest && ctx.pick.ticker !== ctx.largest.ticker) {
+        line += ' and reduces dependence on your largest holding (' + ctx.largest.ticker + ').';
+      } else {
+        line += ' and continues building your highest-conviction position.';
+      }
+      var item = document.createElement('div');
+      item.className = 'wap__why-item wap__why-item--portfolio';
+      item.textContent = line;
+      why.appendChild(item);
+    } catch(_){}
+  }
+
+  /* Append the collapsible "Why this move?" detail block */
+  function _wapApplyExpandableWhy(container, ctx, result){
+    try {
+      if (!ctx || !ctx.pick || !result || result.type !== 'BUY') return;
+      var why = container.querySelector('.wap__why');
+      if (!why) return;
+      if (container.querySelector('.wap__detail')) return; /* idempotent */
+      var p = ctx.pick;
+      var helpsLine = (p.helpsConcentration && p.helpsBalance)
+        ? 'This move improves both balance and concentration in the current portfolio.'
+        : p.helpsConcentration
+          ? 'This move reduces dependence on the largest holding.'
+          : p.helpsBalance
+            ? 'This move improves structural balance against target weights.'
+            : 'This move continues building toward target structure.';
+      var rankStr = (p.rank != null) ? ('#' + p.rank) : '—';
+      var d = document.createElement('details');
+      d.className = 'wap__detail';
+      d.innerHTML =
+        '<summary>Why this move?</summary>' +
+        '<div class="wap__detail-body">' +
+          '<div class="wap__detail-row"><span class="wap__detail-lbl">Current</span><span class="wap__detail-val">'+(p.currentWeight||0).toFixed(1)+'%</span></div>' +
+          '<div class="wap__detail-row"><span class="wap__detail-lbl">Target</span><span class="wap__detail-val">'+(p.targetWeight||0).toFixed(1)+'%</span></div>' +
+          '<div class="wap__detail-row"><span class="wap__detail-lbl">Gap</span><span class="wap__detail-val">'+(p.gap||0).toFixed(1)+' pp</span></div>' +
+          '<div class="wap__detail-row"><span class="wap__detail-lbl">Top read</span><span class="wap__detail-val">'+_wapEsc(rankStr)+'</span></div>' +
+          '<div class="wap__detail-row"><span class="wap__detail-lbl">Verdict</span><span class="wap__detail-val">'+_wapEsc(p.verdict||'')+'</span></div>' +
+          '<div class="wap__detail-row"><span class="wap__detail-lbl">Ticker</span><span class="wap__detail-val">'+_wapEsc(p.ticker||'')+'</span></div>' +
+          '<div class="wap__detail-narrative">'+_wapEsc(helpsLine)+'</div>' +
+        '</div>';
+      why.parentNode.insertBefore(d, why.nextSibling);
+    } catch(_){}
+  }
+
   /* One-time wrapper around WAPUi.render. Intercepts FAIL_CLOSED for the premium
      empty state; falls through to Phase 2 unchanged for BUY/PARK_CASH/REBALANCE.
      Phase 2 source (wap/ui.js, wap/ui.css) untouched. */
@@ -10526,10 +10866,13 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
         return;
       }
       orig.call(this, container, view);
-      /* Phase 4: BUY gets authority framing + deploy-listener (writes lock+streak) + skip-friction.
-         PARK_CASH and REBALANCE pass through unchanged. */
+      /* Phase 4 + 5: BUY gets authority framing + portfolio context + portfolio reason + expandable detail
+         + deploy-listener (writes lock+streak) + skip-friction. PARK_CASH and REBALANCE pass through. */
       if (view && view.result && view.result.type === 'BUY' && container) {
+        try { _wapApplyContextStrip(container, view.portfolioContext); } catch(_){}
         try { _wapApplyBuyFraming(container); } catch(_){}
+        try { _wapApplyPortfolioReason(container, view.portfolioContext, view.result); } catch(_){}
+        try { _wapApplyExpandableWhy(container, view.portfolioContext, view.result); } catch(_){}
         try { _wapRebindBuyActions(container, view); } catch(_){}
       }
     };
