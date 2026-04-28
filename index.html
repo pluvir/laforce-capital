@@ -1542,6 +1542,52 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       #wapContainer .wap-empty__trust-item:last-child { border-bottom: none; padding-bottom: 0; }
       #wapContainer .wap-empty__title { font-size: 30px; }
     }
+    /* ── Phase 4 — locked deployed/skipped + authority framing + skip friction ── */
+    #wapContainer .wap-empty.is-deployed .wap-empty__cta-icon { color: var(--sage); border-color: rgba(107,170,117,.42); }
+    #wapContainer .wap-empty.is-deployed .wap-empty__lede strong { color: var(--sage); font-weight: 600; }
+    #wapContainer .wap-empty.is-skipped .wap-empty__cta-icon { color: var(--text-2); border-color: var(--border); }
+    #wapContainer .wap-empty__streak {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 14px; padding: 4px 10px; border-radius: 999px;
+      border: 1px solid rgba(107,170,117,.30); background: rgba(107,170,117,.06);
+      font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .14em;
+      text-transform: uppercase; font-weight: 700; color: var(--sage);
+    }
+    #wapContainer .wap__authority-eye, #wapContainer .wap__authority-kicker {
+      font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .18em;
+      text-transform: uppercase; font-weight: 700; color: var(--text-3);
+      margin-bottom: 6px;
+    }
+    #wapContainer .wap__authority-rule {
+      font-size: 11.5px; color: var(--text-2); font-style: italic;
+      line-height: 1.5; margin: -8px 0 14px;
+    }
+    #wapContainer .wap__streak {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-bottom: 12px; padding: 4px 10px; border-radius: 999px;
+      border: 1px solid rgba(107,170,117,.30); background: rgba(107,170,117,.06);
+      font-family: 'DM Mono', monospace; font-size: 10.5px; letter-spacing: .14em;
+      text-transform: uppercase; font-weight: 700; color: var(--sage);
+    }
+    #wapContainer .wap__skip-confirm {
+      display: flex; flex-direction: column; gap: 10px;
+      padding: 14px 16px; border-radius: 8px;
+      background: rgba(192,113,79,.06); border: 1px solid rgba(192,113,79,.30);
+    }
+    #wapContainer .wap__skip-confirm-title { font-size: 13.5px; font-weight: 600; color: var(--cream); }
+    #wapContainer .wap__skip-confirm-sub { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+    #wapContainer .wap__skip-confirm-actions { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+    #wapContainer .wap__skip-confirm-actions button {
+      font-family: 'DM Sans', sans-serif; font-size: 12.5px; padding: 8px 14px;
+      border-radius: 6px; cursor: pointer; transition: filter .15s ease;
+    }
+    #wapContainer .wap__skip-confirm-actions .skip-confirm--primary {
+      background: var(--clay); border: 1px solid var(--clay); color: #0d0a08; font-weight: 600;
+    }
+    #wapContainer .wap__skip-confirm-actions .skip-confirm--secondary {
+      background: transparent; border: 1px solid var(--border); color: var(--text-1);
+    }
+    #wapContainer .wap__skip-confirm-actions button:hover { filter: brightness(1.1); }
   </style>
   <section class="wap" id="wapContainer" aria-label="Weekly Action Plan"></section>
   <div id="welcomeHero" class="wh">
@@ -10164,6 +10210,17 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
       var container = document.getElementById('wapContainer');
       if (!container) return;
       if (typeof window.WAPUi === 'undefined' || typeof window.WAP === 'undefined' || typeof window.WAPAdapters === 'undefined') return;
+      /* Phase 4 — lock check runs before any engine assembly. */
+      var lockUntil = _wapReadLock();
+      if (lockUntil) {
+        var lastAction = _wapReadLastAction();
+        if (lastAction && lastAction.type === 'SKIPPED') {
+          _wapRenderLockedSkipped(container, lockUntil);
+        } else {
+          _wapRenderLockedDeployed(container, lockUntil, lastAction);
+        }
+        return;
+      }
       var ps = window.portfolioState || {};
       var holdings = ps.holdings || [];
       var contribution = ps.cash || 0;
@@ -10252,6 +10309,207 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     });
   }
 
+  /* ── Phase 4 — commitment-driven WAP (lock + streak + skip friction + authority) ──
+     All persistence in localStorage. Survives Clear All by design. */
+  var WAP_LOCK_KEY        = 'fortis_wap_lock_until_v1';
+  var WAP_LAST_ACTION_KEY = 'fortis_wap_last_action_v1';
+  var WAP_STREAK_KEY      = 'fortis_wap_streak_v1';
+
+  function _wapNextMondayISO(from){
+    from = from || new Date();
+    var d = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+    var day = d.getDay();
+    var add = (day === 0) ? 1 : (8 - day); /* always *next* Monday */
+    d.setDate(d.getDate() + add);
+    return d.toISOString();
+  }
+  function _wapReadLock(){
+    try {
+      var raw = localStorage.getItem(WAP_LOCK_KEY); if (!raw) return null;
+      var d = new Date(raw); if (isNaN(d.getTime())) return null;
+      if (d.getTime() <= Date.now()) { try { localStorage.removeItem(WAP_LOCK_KEY); } catch(_){} return null; }
+      return d;
+    } catch(_) { return null; }
+  }
+  function _wapReadLastAction(){
+    try { var raw = localStorage.getItem(WAP_LAST_ACTION_KEY); return raw ? JSON.parse(raw) : null; }
+    catch(_) { return null; }
+  }
+  function _wapReadStreak(){
+    try { var n = parseInt(localStorage.getItem(WAP_STREAK_KEY)||'0', 10); return isNaN(n) ? 0 : n; }
+    catch(_) { return 0; }
+  }
+  function _wapWriteLock(){ try { localStorage.setItem(WAP_LOCK_KEY, _wapNextMondayISO()); } catch(_){} }
+  function _wapWriteLastAction(action){ try { localStorage.setItem(WAP_LAST_ACTION_KEY, JSON.stringify(action)); } catch(_){} }
+  function _wapIncStreak(){ try { var n = _wapReadStreak() + 1; localStorage.setItem(WAP_STREAK_KEY, String(n)); return n; } catch(_) { return 0; } }
+  function _wapDaysUntil(d){ var ms = d.getTime() - Date.now(); return Math.max(0, Math.ceil(ms / (24*60*60*1000))); }
+
+  /* SVG icon library (shared by locked templates) */
+  var _wapIconCalSm  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+  var _wapIconInfo   = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg>';
+  var _wapIconCheck  = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>';
+  var _wapIconArrow  = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  var _wapIconLock   = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+  var _wapIconTarget = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>';
+  var _wapIconShield = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>';
+
+  function _wapRenderLockedDeployed(container, lockUntil, action){
+    var days = _wapDaysUntil(lockUntil);
+    var streak = _wapReadStreak();
+    var ticker = (action && action.ticker) || '—';
+    var amount = (action && action.amount != null) ? '$' + Math.round(action.amount) : '—';
+    container.setAttribute('data-state', 'LOCKED_DEPLOYED');
+    container.innerHTML =
+      '<div class="wap-empty is-deployed">' +
+        '<header class="wap-empty__head">' +
+          '<div class="wap-empty__eye">'+_wapIconCalSm+'WEEKLY ACTION PLAN</div>' +
+          '<div class="wap-empty__pill">'+_wapIconInfo+'Updates every Sunday</div>' +
+        '</header>' +
+        '<div class="wap-empty__inner">' +
+          '<div class="wap-empty__week">'+_wapIconCalSm+_wapEsc(_wapFmtWeek(new Date()))+'</div>' +
+          '<h2 class="wap-empty__title">&#10003; Deployed</h2>' +
+          '<p class="wap-empty__lede">You added <strong>'+_wapEsc(amount)+' to '+_wapEsc(ticker)+'</strong> this week.</p>' +
+          '<div class="wap-empty__cta">' +
+            '<div class="wap-empty__cta-icon">'+_wapIconCheck+'</div>' +
+            '<div class="wap-empty__cta-body">' +
+              '<div class="wap-empty__cta-title">Next opportunity opens in '+days+(days===1?' day':' days')+'</div>' +
+              '<div class="wap-empty__cta-sub">WAP locks until next Monday so you can stay disciplined and avoid second-guessing.</div>' +
+            '</div>' +
+          '</div>' +
+          (streak > 0 ? '<div class="wap-empty__streak">Discipline streak: '+streak+' '+(streak===1?'week':'weeks')+'</div>' : '') +
+        '</div>' +
+        '<div class="wap-empty__trust">' +
+          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+_wapIconLock+'</span><div><div class="wap-empty__trust-title">Locked Until Monday</div><div class="wap-empty__trust-sub">No second-guessing this week.</div></div></div>' +
+          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+_wapIconTarget+'</span><div><div class="wap-empty__trust-title">One Clear Action</div><div class="wap-empty__trust-sub">Done. See you next week.</div></div></div>' +
+          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+_wapIconShield+'</span><div><div class="wap-empty__trust-title">Deterministic Engine</div><div class="wap-empty__trust-sub">Rules-based. No AI. Always consistent.</div></div></div>' +
+        '</div>' +
+      '</div>';
+  }
+  function _wapRenderLockedSkipped(container, lockUntil){
+    var days = _wapDaysUntil(lockUntil);
+    container.setAttribute('data-state', 'LOCKED_SKIPPED');
+    container.innerHTML =
+      '<div class="wap-empty is-skipped">' +
+        '<header class="wap-empty__head">' +
+          '<div class="wap-empty__eye">'+_wapIconCalSm+'WEEKLY ACTION PLAN</div>' +
+          '<div class="wap-empty__pill">'+_wapIconInfo+'Updates every Sunday</div>' +
+        '</header>' +
+        '<div class="wap-empty__inner">' +
+          '<div class="wap-empty__week">'+_wapIconCalSm+_wapEsc(_wapFmtWeek(new Date()))+'</div>' +
+          '<h2 class="wap-empty__title">Skipped this week</h2>' +
+          '<p class="wap-empty__lede">You passed on this week\'s move.</p>' +
+          '<div class="wap-empty__cta">' +
+            '<div class="wap-empty__cta-icon">'+_wapIconArrow+'</div>' +
+            '<div class="wap-empty__cta-body">' +
+              '<div class="wap-empty__cta-title">Next opportunity opens in '+days+(days===1?' day':' days')+'</div>' +
+              '<div class="wap-empty__cta-sub">WAP locks until next Monday. The plan resumes automatically.</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="wap-empty__trust">' +
+          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+_wapIconLock+'</span><div><div class="wap-empty__trust-title">Locked Until Monday</div><div class="wap-empty__trust-sub">Plan resumes next week.</div></div></div>' +
+          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+_wapIconTarget+'</span><div><div class="wap-empty__trust-title">One Clear Action</div><div class="wap-empty__trust-sub">Skipped — see you Monday.</div></div></div>' +
+          '<div class="wap-empty__trust-item"><span class="wap-empty__trust-icon">'+_wapIconShield+'</span><div><div class="wap-empty__trust-title">Deterministic Engine</div><div class="wap-empty__trust-sub">Rules-based. No AI. Always consistent.</div></div></div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  /* DOM-mutate Phase 2's BUY render to add authority framing + optional streak chip.
+     Idempotent — bails if already framed. Wrapped in try/catch — never breaks BUY render. */
+  function _wapApplyBuyFraming(container){
+    try {
+      var main = container.querySelector('.wap__main');
+      var why = container.querySelector('.wap__why');
+      var actions = container.querySelector('.wap__actions');
+      if (!main || !why || !actions) return;
+      if (container.querySelector('.wap__authority-eye')) return; /* already framed */
+      var streak = _wapReadStreak();
+      var eye = document.createElement('div');
+      eye.className = 'wap__authority-eye';
+      eye.textContent = 'Based on your portfolio and strategy:';
+      main.parentNode.insertBefore(eye, main);
+      var decision = main.querySelector('.wap__decision');
+      if (decision) {
+        var kicker = document.createElement('div');
+        kicker.className = 'wap__authority-kicker';
+        kicker.textContent = 'Your move this week:';
+        main.insertBefore(kicker, decision);
+      }
+      var rule = document.createElement('div');
+      rule.className = 'wap__authority-rule';
+      rule.textContent = 'This meets all allocation and discipline rules.';
+      why.parentNode.insertBefore(rule, actions);
+      if (streak > 0) {
+        var streakEl = document.createElement('div');
+        streakEl.className = 'wap__streak';
+        streakEl.textContent = 'Discipline streak: ' + streak + ' ' + (streak === 1 ? 'week' : 'weeks');
+        actions.parentNode.insertBefore(streakEl, actions);
+      }
+    } catch(_){}
+  }
+
+  /* Replace Phase 2's "Skip this week" handler with a confirmation interstitial.
+     Confirm → write lock + skipped action → re-render into LOCKED_SKIPPED.
+     Go back → restore original buttons + re-bind everything. */
+  function _wapInjectSkipFriction(container, view){
+    try {
+      var actions = container.querySelector('.wap__actions');
+      if (!actions) return;
+      var skipBtn = actions.querySelector('[data-action="skip"]');
+      if (!skipBtn || skipBtn.__wapSkipBound) return;
+      var clone = skipBtn.cloneNode(true); /* drop Phase 2's listener */
+      skipBtn.parentNode.replaceChild(clone, skipBtn);
+      clone.__wapSkipBound = true;
+      var originalActionsHtml = actions.innerHTML;
+      clone.addEventListener('click', function(){
+        actions.innerHTML =
+          '<div class="wap__skip-confirm" role="alert">' +
+            '<div class="wap__skip-confirm-title">Skip this week?</div>' +
+            '<div class="wap__skip-confirm-sub">You\'re passing on a valid, rule-compliant move. This delays your allocation plan.</div>' +
+            '<div class="wap__skip-confirm-actions">' +
+              '<button type="button" class="skip-confirm--primary" data-skip="confirm">Confirm skip</button>' +
+              '<button type="button" class="skip-confirm--secondary" data-skip="back">Go back</button>' +
+            '</div>' +
+          '</div>';
+        var confirmBtn = actions.querySelector('[data-skip="confirm"]');
+        var backBtn    = actions.querySelector('[data-skip="back"]');
+        if (confirmBtn) confirmBtn.addEventListener('click', function(){
+          _wapWriteLock();
+          _wapWriteLastAction({ type:'SKIPPED', date: new Date().toISOString() });
+          /* skip neutral on streak — no increment, no reset */
+          if (typeof window._renderWAP === 'function') window._renderWAP();
+        });
+        if (backBtn) backBtn.addEventListener('click', function(){
+          actions.innerHTML = originalActionsHtml;
+          _wapRebindBuyActions(container, view); /* re-bind on restored buttons */
+        });
+      });
+    } catch(_){}
+  }
+
+  /* Bind/re-bind the deploy + skip-friction handlers on a BUY card's actions row.
+     Used by the wrapper after Phase 2 render, and after "Go back" restores HTML. */
+  function _wapRebindBuyActions(container, view){
+    try {
+      var deployBtn = container.querySelector('[data-action="deployed"]');
+      if (deployBtn && !deployBtn.__wapBound) {
+        deployBtn.__wapBound = true;
+        deployBtn.addEventListener('click', function(){
+          try {
+            if (view && view.result && view.result.type === 'BUY') {
+              window.WAPAdapters.logDeployment(view.result.ticker, view.result.amount_usd, new Date());
+              _wapWriteLock();
+              _wapWriteLastAction({ type:'DEPLOYED', ticker: view.result.ticker, amount: view.result.amount_usd, date: new Date().toISOString() });
+              _wapIncStreak();
+              setTimeout(function(){ if (typeof window._renderWAP === 'function') window._renderWAP(); }, 350);
+            }
+          } catch(_){}
+        });
+      }
+      _wapInjectSkipFriction(container, view);
+    } catch(_){}
+  }
+
   /* One-time wrapper around WAPUi.render. Intercepts FAIL_CLOSED for the premium
      empty state; falls through to Phase 2 unchanged for BUY/PARK_CASH/REBALANCE.
      Phase 2 source (wap/ui.js, wap/ui.css) untouched. */
@@ -10268,17 +10526,12 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
         return;
       }
       orig.call(this, container, view);
-      try {
-        if (view && view.result && view.result.type === 'BUY' && container) {
-          var btn = container.querySelector('[data-action="deployed"]');
-          if (btn && !btn.__wapBound) {
-            btn.__wapBound = true;
-            btn.addEventListener('click', function(){
-              try { window.WAPAdapters.logDeployment(view.result.ticker, view.result.amount_usd, new Date()); } catch(_){}
-            });
-          }
-        }
-      } catch(_){}
+      /* Phase 4: BUY gets authority framing + deploy-listener (writes lock+streak) + skip-friction.
+         PARK_CASH and REBALANCE pass through unchanged. */
+      if (view && view.result && view.result.type === 'BUY' && container) {
+        try { _wapApplyBuyFraming(container); } catch(_){}
+        try { _wapRebindBuyActions(container, view); } catch(_){}
+      }
     };
     window.WAPUi.__wapWrapped = true;
   }
