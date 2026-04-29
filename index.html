@@ -4310,6 +4310,146 @@ function scrollToEl(id,block){
 }
 
 /* ========================================================================
+ * Multi-step scanning loader for portfolio extraction
+ * Phases: 1=Scanning, 2=Reading positions, 3=Validating against brokerage totals
+ * ====================================================================== */
+function _scanStep(text, sub, doneSteps){
+  function ico(d){return d?'<span style="color:#9DD0A8">✓</span>':'<span style="color:#8B7D68">·</span>';}
+  function clr(d){return d?'#9DD0A8':'#8B7D68';}
+  return '<div class="cd-loader"><div class="spinner"></div><div style="flex:1">'+
+    '<div class="cd-loader-text">'+esc(text)+'</div>'+
+    '<div class="cd-loader-sub">'+esc(sub)+'</div>'+
+    '<div style="display:flex;gap:14px;margin-top:9px;font-size:10.5px;font-family:DM Mono,monospace;letter-spacing:.05em;flex-wrap:wrap">'+
+      '<span style="color:'+clr(doneSteps>=1)+'">'+ico(doneSteps>=1)+' Scanning portfolio</span>'+
+      '<span style="color:'+clr(doneSteps>=2)+'">'+ico(doneSteps>=2)+' Reading positions &amp; totals</span>'+
+      '<span style="color:'+clr(doneSteps>=3)+'">'+ico(doneSteps>=3)+' Validating against brokerage totals</span>'+
+    '</div>'+
+  '</div></div>';
+}
+
+/* ========================================================================
+ * Extraction review-before-merge UI
+ * Shown only when validation gate hard-fails (cost or mkt-value off >50%).
+ * Two actions: Accept Anyway (merge as-is) or Retry (clear, prompt better screenshot).
+ * NO synthetic PORTFOLIO row — that distorts WAP/allocation/Stock Analysis.
+ * ====================================================================== */
+window._pendingExtraction = null;
+function _renderExtractionReview(parsed, summary, validation, fileCount){
+  var rowsHTML = parsed.slice(0,15).map(function(h){
+    return '<tr>'+
+      '<td style="padding:5px 9px;font-family:DM Mono,monospace;font-size:11px;color:#F2E6BD">'+esc(h.sym)+'</td>'+
+      '<td style="padding:5px 9px;font-family:DM Mono,monospace;font-size:11px;text-align:right;color:#C0B594">'+(Number(h.shares)||0).toLocaleString()+'</td>'+
+      '<td style="padding:5px 9px;font-family:DM Mono,monospace;font-size:11px;text-align:right;color:#C0B594">'+fmt$(h.costPerShare)+'</td>'+
+      '<td style="padding:5px 9px;font-family:DM Mono,monospace;font-size:11px;text-align:right;color:#C0B594">'+fmt$(h.mktVal)+'</td>'+
+    '</tr>';
+  }).join('');
+  var moreRows = parsed.length>15 ? '<tr><td colspan="4" style="padding:6px 9px;font-size:10.5px;color:#8B7D68;font-style:italic;text-align:center">+ '+(parsed.length-15)+' more rows</td></tr>' : '';
+  var summarySide = '';
+  if(Object.keys(summary).length){
+    summarySide =
+      (summary.TOTAL_VALUE!=null?'<div style="font-size:11.5px;color:#C0B594;line-height:1.7">Total account: <strong style="color:#F2E6BD;font-family:DM Mono,monospace">'+fmt$(summary.TOTAL_VALUE)+'</strong></div>':'')+
+      (summary.MKT_VAL!=null?'<div style="font-size:11.5px;color:#C0B594;line-height:1.7">Market value: <strong style="color:#F2E6BD;font-family:DM Mono,monospace">'+fmt$(summary.MKT_VAL)+'</strong></div>':'')+
+      (summary.COST_BASIS!=null?'<div style="font-size:11.5px;color:#C0B594;line-height:1.7">Cost basis: <strong style="color:#F2E6BD;font-family:DM Mono,monospace">'+fmt$(summary.COST_BASIS)+'</strong></div>':'')+
+      (summary.GAIN_LOSS!=null?'<div style="font-size:11.5px;color:#C0B594;line-height:1.7">Gain/loss: <strong style="color:'+(summary.GAIN_LOSS>=0?'#9DD0A8':'#E0947A')+';font-family:DM Mono,monospace">'+(summary.GAIN_LOSS>=0?'+':'')+fmt$(summary.GAIN_LOSS)+'</strong></div>':'')+
+      (summary.CASH!=null?'<div style="font-size:11.5px;color:#C0B594;line-height:1.7">Cash: <strong style="color:#F2E6BD;font-family:DM Mono,monospace">'+fmt$(summary.CASH)+'</strong></div>':'')+
+      (summary.CONFIDENCE!=null?'<div style="font-size:10.5px;color:#8B7D68;margin-top:5px;font-style:italic">AI confidence: '+summary.CONFIDENCE+'/10</div>':'');
+  } else {
+    summarySide = '<div style="font-size:11.5px;color:#8B7D68;font-style:italic">No Account Summary panel detected in the screenshot.</div>';
+  }
+  var matchColor = function(m){ return m==null?'#8B7D68' : m>0.85?'#9DD0A8' : m>0.50?'#E8CC7A' : '#E0947A'; };
+  return '<div style="padding:20px;border-radius:12px;background:linear-gradient(135deg,rgba(40,18,12,.55),rgba(20,16,12,.65));border:1px solid rgba(192,113,79,.5);box-shadow:0 8px 28px rgba(192,113,79,.12)">'+
+    '<div style="display:flex;align-items:center;gap:11px;margin-bottom:11px">'+
+      '<span style="font-size:24px">⚠</span>'+
+      '<div>'+
+        '<div style="font-size:10.5px;letter-spacing:.18em;color:#E0947A;text-transform:uppercase;font-weight:700">Review Extracted Portfolio</div>'+
+        '<div style="font-size:13.5px;color:#F2E6BD;margin-top:3px;font-family:Cormorant Garamond,serif;font-style:italic">Brokerage totals do not match the parsed positions</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="font-size:13px;color:#D8C9A8;line-height:1.7;margin-bottom:14px">The extraction looks off. Please review before this overwrites your portfolio. Accepting bad data could distort feasibility, allocation, and stock analysis.</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px">'+
+      '<div style="padding:13px 15px;background:rgba(0,0,0,.32);border-radius:9px;border:1px solid rgba(255,255,255,.05)">'+
+        '<div style="font-size:9.5px;letter-spacing:.14em;color:#A89878;text-transform:uppercase;font-weight:700;margin-bottom:7px">Brokerage Says</div>'+
+        summarySide+
+      '</div>'+
+      '<div style="padding:13px 15px;background:rgba(0,0,0,.32);border-radius:9px;border:1px solid rgba(255,255,255,.05)">'+
+        '<div style="font-size:9.5px;letter-spacing:.14em;color:#A89878;text-transform:uppercase;font-weight:700;margin-bottom:7px">We Parsed</div>'+
+        '<div style="font-size:11.5px;color:#C0B594;line-height:1.7">Positions: <strong style="color:#F2E6BD;font-family:DM Mono,monospace">'+parsed.length+'</strong></div>'+
+        '<div style="font-size:11.5px;color:#C0B594;line-height:1.7">Market value: <strong style="color:'+matchColor(validation.mktValMatch)+';font-family:DM Mono,monospace">'+fmt$(validation.computedMktVal)+'</strong></div>'+
+        '<div style="font-size:11.5px;color:#C0B594;line-height:1.7">Cost basis: <strong style="color:'+matchColor(validation.costMatch)+';font-family:DM Mono,monospace">'+fmt$(validation.computedCost)+'</strong></div>'+
+        (validation.mktValMatch!=null?'<div style="font-size:10.5px;color:#8B7D68;margin-top:5px;font-style:italic">Match score: '+(validation.mktValMatch*100).toFixed(0)+'% MV · '+(validation.costMatch!=null?(validation.costMatch*100).toFixed(0)+'% cost':'cost n/a')+'</div>':'')+
+      '</div>'+
+    '</div>'+
+    (validation.reasons.length?'<div style="padding:11px 13px;background:rgba(192,113,79,.09);border-left:3px solid #C0714F;border-radius:7px;margin-bottom:14px">'+
+      '<div style="font-size:9.5px;letter-spacing:.14em;color:#E0947A;text-transform:uppercase;font-weight:700;margin-bottom:6px">Why we flagged it</div>'+
+      validation.reasons.map(function(r){return '<div style="font-size:11.5px;color:#D8C9A8;line-height:1.65;margin-bottom:3px">· '+esc(r)+'</div>';}).join('')+
+    '</div>':'')+
+    '<details style="margin-bottom:14px;cursor:pointer">'+
+      '<summary style="font-size:11px;color:#C9A84C;letter-spacing:.06em;text-transform:uppercase;font-weight:600;cursor:pointer;padding:6px 0">Show parsed rows ('+parsed.length+')</summary>'+
+      '<table style="width:100%;margin-top:8px;border-collapse:collapse;background:rgba(0,0,0,.2);border-radius:7px;overflow:hidden">'+
+        '<thead><tr style="font-size:9.5px;letter-spacing:.13em;color:#8B7D68;text-transform:uppercase;font-weight:700;background:rgba(0,0,0,.3)">'+
+          '<th style="text-align:left;padding:7px 9px">Sym</th>'+
+          '<th style="text-align:right;padding:7px 9px">Shares</th>'+
+          '<th style="text-align:right;padding:7px 9px">Cost/Sh</th>'+
+          '<th style="text-align:right;padding:7px 9px">Mkt Val</th>'+
+        '</tr></thead><tbody>'+rowsHTML+moreRows+'</tbody>'+
+      '</table>'+
+    '</details>'+
+    '<div style="display:flex;gap:9px;flex-wrap:wrap">'+
+      '<button class="btn-p" onclick="_extractionAccept()">Accept anyway</button>'+
+      '<button class="btn-g" onclick="_extractionRetry()">Retry with clearer screenshot</button>'+
+    '</div>'+
+    '<div style="font-size:10.5px;color:#8B7D68;margin-top:11px;font-style:italic;line-height:1.6">If you accept, these positions will overwrite or merge into your current portfolio. Use Retry to upload a higher-resolution screenshot or paste holdings manually below.</div>'+
+  '</div>';
+}
+function _extractionAccept(){
+  var p = window._pendingExtraction;
+  if(!p) return;
+  var status = document.getElementById('portExtractStatus');
+  // Replay the merge path that runs after the validation gate would have passed.
+  // _clean / _renderExtractionReceipt etc are defined inside queueImagesForExtraction
+  // closure; we can't call them directly. Inline the merge with the same semantics.
+  function _clean(h){
+    return {sym:h.sym, shares:Number(h.shares)||0, costPerShare:Number(h.costPerShare)||0,
+            cost:Number(h.cost)||0, mktVal:Number(h.mktVal)||0, gain:Number(h.gain)||0, pct:Number(h.pct)||0};
+  }
+  var stats={found:p.parsed.length, files:1, merged:0, new:0,
+             skipped:(p.parsed.errors&&p.parsed.errors.length)||0,
+             model:p.parsed.reportedCount||0,
+             parsed:p.parsed.parsedCount||p.parsed.length,
+             mismatch:(p.parsed.reportedCount>0 && p.parsed.reportedCount!==p.parsed.parsedCount),
+             errors:p.parsed.errors||[],
+             flagged:true};
+  if(_holdings.length){
+    p.parsed.forEach(function(newH){
+      var idx=_holdings.findIndex(function(h){return h&&h.sym===newH.sym;});
+      var clean=_clean(newH);
+      if(idx>=0){_holdings[idx]=clean;stats.merged++;}
+      else{_holdings.push(clean);stats.new++;}
+    });
+  } else {
+    _holdings = p.parsed.map(_clean);
+    stats.new = p.parsed.length;
+  }
+  dedupeHoldings();saveHoldings();
+  var totalValue=_holdings.reduce(function(s,h){return s+(Number(h&&h.mktVal)||0);},0);
+  try{console.log('[extract accept-anyway] TOTAL VALUE:', totalValue, _holdings);}catch(e){}
+  renderLabTable();renderDashboard();
+  if(typeof renderExtractionReceipt==='function' && status){
+    status.innerHTML=renderExtractionReceipt(stats, p.recurring||[]);
+  }
+  if(p.recurring && p.recurring.length && status && typeof renderRecurring==='function') renderRecurring(p.recurring,status);
+  window._pendingExtraction = null;
+}
+function _extractionRetry(){
+  var status = document.getElementById('portExtractStatus');
+  if(status) status.innerHTML='<div class="extract-err" style="padding:13px 15px;border-radius:9px;background:rgba(0,0,0,.25);border:1px solid var(--border)">'+
+    '<div style="font-size:12px;color:var(--gold);font-weight:600;margin-bottom:5px">Ready when you are</div>'+
+    '<div style="font-size:11.5px;color:var(--text-2);line-height:1.65">Upload a higher-resolution screenshot — make sure the Account Summary totals panel is visible at the top, or use the manual paste box below.</div>'+
+  '</div>';
+  window._pendingExtraction = null;
+}
+
+/* ========================================================================
  * Top index pills + ticker tape — click for floating detail popup
  * ====================================================================== */
 function _idxTipEl(){
@@ -4660,11 +4800,39 @@ function parseCSV(csv){
   result.reportedCount=0;
   result.parsedCount=0;
   result.errors=[];
+  result.summary={};
 
   if(csv==null){ result.errors.push('empty input'); return result; }
 
   var text=String(csv).replace(/\r\n?/g,'\n').trim();
   var lines=text.split('\n').map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
+
+  // SUMMARY block — authoritative brokerage Account Summary totals.
+  // Parsed BEFORE COUNT so that downstream validation can cross-check positions.
+  var inSummary=false;
+  var summaryEnd=-1;
+  for(var si=0; si<Math.min(20,lines.length); si++){
+    var sline=lines[si];
+    if(/^SUMMARY\b/i.test(sline)){ inSummary=true; continue; }
+    if(inSummary){
+      // SUMMARY ends at COUNT, POSITIONS, or any non-key:value line
+      if(/^COUNT\s*[:=]/i.test(sline)||/^POSITIONS\b/i.test(sline)){ summaryEnd=si; break; }
+      var sm=sline.match(/^([A-Z_]+)\s*:\s*([+\-]?[\d,.\s]+)\s*%?\s*(?:\/\/.*)?$/);
+      if(sm){
+        var skey=sm[1].toUpperCase();
+        var sval=parseFloat(String(sm[2]).replace(/[,\s]/g,''));
+        if(isFinite(sval)) result.summary[skey]=sval;
+      } else {
+        // Non-key:value line ends the SUMMARY block
+        summaryEnd=si; break;
+      }
+    }
+  }
+  // Drop SUMMARY lines from the data section so they don't try to parse as holdings
+  if(Object.keys(result.summary).length){
+    var stop = summaryEnd>0 ? summaryEnd : 20;
+    lines = lines.slice(stop);
+  }
 
   // COUNT:N may appear in the first 3 lines (tolerates ':' or '=', any case).
   var dataStart=0;
@@ -4872,6 +5040,11 @@ async function queueImagesForExtraction(files){
   var key=getKey();
   if(!key){status.innerHTML='<div style="color:var(--clay);font-size:12px">API key required to extract from images. Set your key above.</div>';return;}
 
+  // Phase 1 — Scanning portfolio (file read)
+  status.innerHTML = _scanStep('Scanning portfolio…','Reading screenshot pixels and preparing for AI analysis', 0);
+  showAiToast('Scanning portfolio…','Reading positions and account totals');
+  scrollToEl('feasOutput','start');
+
   try{
     // Build content array -- one image block per file plus a combined instruction
     var contentBlocks=[];
@@ -4881,35 +5054,61 @@ async function queueImagesForExtraction(files){
       var mt='image/'+f.name.split('.').pop().toLowerCase().replace('jpg','jpeg');
       contentBlocks.push({type:'image',source:{type:'base64',media_type:mt,data:b64}});
     }
+    // Phase 2 — Reading positions (AI call begins)
+    status.innerHTML = _scanStep('Reading positions and account totals…','AI is parsing the brokerage layout · usually 8-15 seconds', 1);
 
-    // Smart extraction prompt -- handles Robinhood, fractional shares, recurring investments, bankrupt positions.
-    // First line MUST be COUNT:<n> so the frontend can verify nothing was dropped.
+    // Brokerage screenshot extraction prompt — emits SUMMARY block first (authoritative
+    // brokerage totals) then COUNT:N positions. Column definitions are explicit to prevent
+    // the model from confusing Last Price / Total Gain $ with Cost-Per-Share.
     var extractPrompt=[
-      'You are analyzing '+files.length+' brokerage screenshot(s). Extract ALL stock/ETF holdings from ALL images combined.',
+      'You are reading '+files.length+' brokerage account screenshot(s). Output two blocks: SUMMARY first, then POSITIONS.',
       '',
-      'Rules:',
-      '- Include fractional shares (e.g. 26.3771 shares)',
-      '- Skip bankrupt/delisted positions with N/A price (no market value)',
-      '- Skip positions with $0.0001 or near-zero price (likely worthless)',
-      '- If a position appears in multiple screenshots, combine the shares (they may be different accounts)',
-      '- If you see "Recurring Investments" (e.g. SCHD $15/month, VOO $40/month), note them separately at the END after a line that says RECURRING:',
-      '- Extract market value and cost basis when visible',
+      'CRITICAL COLUMN DEFINITIONS — read carefully:',
+      '- SHARES = quantity owned (e.g. 26.3771)',
+      '- COST_PER_SHARE = the user\'s AVERAGE COST per share (also called "Avg Cost", "Cost Basis per Share", "Average Price"). NOT today\'s price, NOT total gain, NOT last price.',
+      '- MARKET_VALUE = the CURRENT total dollar value of the position (Shares × Current Price).',
+      '- If the brokerage shows only TOTAL Cost Basis (whole-position dollar amount, not per-share), divide it by shares to get COST_PER_SHARE.',
       '',
-      'Return ONLY this format (no headers, no explanations). The FIRST line must be COUNT:<n> where <n> is the exact number of holdings rows that follow.',
+      'BLOCK 1 — Account Summary (read from the totals panel at the top of the brokerage UI):',
+      'SUMMARY',
+      'TOTAL_VALUE:<amount>     // total accounts value',
+      'CASH:<amount>            // cash & cash investments (0 if none visible)',
+      'MKT_VAL:<amount>         // total market value of positions',
+      'COST_BASIS:<amount>      // total cost basis',
+      'GAIN_LOSS:<+/-amount>    // total dollar gain/loss (use - prefix for losses)',
+      'GAIN_PCT:<+/-pct>        // total percent gain/loss',
+      'CONFIDENCE:<1-10>        // your confidence the screenshot was clear and column mapping is unambiguous',
+      '',
+      'BLOCK 2 — Positions table (one line per holding):',
       'COUNT:<n>',
       'SYMBOL,SHARES,COST_PER_SHARE,MARKET_VALUE',
+      '... (n rows) ...',
       '',
-      'Then if recurring investments found:',
+      'Optional after positions, only if visible:',
       'RECURRING:',
       'SYMBOL,MONTHLY_AMOUNT',
       '',
+      'Rules:',
+      '- Include fractional shares (e.g. 26.3771)',
+      '- Skip bankrupt/delisted positions with N/A or $0 market value',
+      '- Skip positions where price is essentially $0 (likely worthless)',
+      '- If a position appears across multiple sub-accounts, combine the shares',
+      '- Use absolute $ values (no commas, no $ signs)',
+      '- Negative gain/loss must be prefixed with -',
+      '- DO NOT confuse "Last Price" with "Cost Per Share". When unsure, set CONFIDENCE to 5 or below.',
+      '',
       'Example:',
+      'SUMMARY',
+      'TOTAL_VALUE:122804.80',
+      'CASH:65.28',
+      'MKT_VAL:122739.52',
+      'COST_BASIS:61559.14',
+      'GAIN_LOSS:+61263.23',
+      'GAIN_PCT:+99.65',
+      'CONFIDENCE:9',
       'COUNT:2',
       'AAPL,26.3771,180.60,7127.88',
-      'NVDA,48,126.74,9680.64',
-      'RECURRING:',
-      'SCHD,15',
-      'VOO,40'
+      'NVDA,48,126.74,9680.64'
     ].join('\n');
 
     contentBlocks.push({type:'text',text:extractPrompt});
@@ -4929,10 +5128,62 @@ async function queueImagesForExtraction(files){
     var recurringText=parts.length>1?parts[1]:'';
 
     // Parse holdings (new parseCSV returns an Array with .reportedCount,
-    // .parsedCount, .errors, .rows attached — still iterable as holdings).
+    // .parsedCount, .errors, .rows, .summary attached — still iterable as holdings).
     var parsed=parseCSV(holdingsText);
     // Parse recurring investments
     var recurring=parseRecurring(recurringText);
+
+    // Phase 3 — Validating against brokerage totals
+    status.innerHTML = _scanStep('Validating against brokerage totals…','Cross-checking parsed positions vs Account Summary', 2);
+
+    // VALIDATION GATE — cross-check parsed positions vs brokerage Account Summary.
+    // Catches column-misread bugs (Last Price read as Cost-Per-Share, etc.) BEFORE
+    // bad data is merged into _holdings.
+    var summary = parsed.summary || {};
+    var hasSummary = Object.keys(summary).length > 0;
+    var computedMktVal = parsed.reduce(function(s,h){return s+(Number(h.mktVal)||0);},0);
+    var computedCost   = parsed.reduce(function(s,h){return s+(Number(h.cost)||0);},0);
+    var validation = {
+      hasSummary: hasSummary,
+      mktValMatch: null,
+      costMatch: null,
+      flagged: false,
+      reasons: [],
+      computedMktVal: computedMktVal,
+      computedCost: computedCost,
+      summary: summary
+    };
+    if(hasSummary){
+      if(summary.MKT_VAL && computedMktVal){
+        validation.mktValMatch = 1 - Math.min(1, Math.abs(computedMktVal - summary.MKT_VAL) / summary.MKT_VAL);
+        if(validation.mktValMatch < 0.85){
+          validation.reasons.push('Market value mismatch: brokerage reports '+fmt$(summary.MKT_VAL)+', positions sum to '+fmt$(computedMktVal));
+        }
+      }
+      if(summary.COST_BASIS && computedCost){
+        validation.costMatch = 1 - Math.min(1, Math.abs(computedCost - summary.COST_BASIS) / summary.COST_BASIS);
+        if(validation.costMatch < 0.80){
+          validation.reasons.push('Cost basis mismatch: brokerage reports '+fmt$(summary.COST_BASIS)+', positions sum to '+fmt$(computedCost)+' — likely column-misread (Last Price or Total Gain $ read as Cost-Per-Share)');
+        }
+      }
+      var aiConf = summary.CONFIDENCE;
+      if(aiConf!=null && aiConf < 6){
+        validation.reasons.push('AI flagged low extraction confidence ('+aiConf+'/10)');
+      }
+    }
+    validation.flagged = validation.reasons.length > 0;
+    var hardFail = (validation.costMatch !== null && validation.costMatch < 0.50)
+                || (validation.mktValMatch !== null && validation.mktValMatch < 0.50);
+
+    try{console.log('[extract validation]',{hasSummary:hasSummary,mktValMatch:validation.mktValMatch,costMatch:validation.costMatch,flagged:validation.flagged,hardFail:hardFail,reasons:validation.reasons,summary:summary,computedMktVal:computedMktVal,computedCost:computedCost});}catch(e){}
+
+    // Hard fail → review-before-merge (do NOT touch _holdings yet)
+    if(parsed.length && hardFail){
+      window._pendingExtraction = {parsed:parsed, recurring:recurring, summary:summary, validation:validation};
+      status.innerHTML = _renderExtractionReview(parsed, summary, validation, files.length);
+      hideAiToast();
+      return;
+    }
 
     if(parsed.length){
       // Track merge stats for the user
