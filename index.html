@@ -2151,6 +2151,196 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     .disc-active-meta b { color:var(--cream-dim); font-weight:600; font-style:normal; font-family:'DM Mono',monospace; }
     .disc-active-clear { font-family:'DM Mono',monospace; font-size:10px; padding:4px 10px; border-radius:5px; background:transparent; border:1px solid rgba(201,168,76,.28); color:var(--text-2); cursor:pointer; letter-spacing:.06em; transition:all .18s; }
     .disc-active-clear:hover { color:var(--cream); border-color:var(--border-2); background:rgba(201,168,76,.06); }
+    /* =====================================================================
+       Discovery v2 — Market / Yours toggle + structured cards
+       Spec: project_discovery_v2_spec.md, project_fortis_voice.md
+       ===================================================================== */
+    .disc2 { margin-top: 14px; }
+    .disc2-mode {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px; margin-bottom: 14px;
+      background: rgba(0,0,0,.30);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+    }
+    .disc2-mode-btn {
+      font-family: 'DM Mono', monospace; font-size: 11.5px;
+      letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
+      padding: 7px 14px; border-radius: var(--r);
+      background: transparent; color: var(--text-2);
+      border: 1px solid transparent;
+      cursor: pointer; transition: all .16s ease;
+    }
+    .disc2-mode-btn:hover { color: var(--cream-dim); background: rgba(255,255,255,.03); }
+    .disc2-mode-btn.is-active {
+      background: linear-gradient(135deg, rgba(201,168,76,.18), rgba(201,168,76,.06));
+      color: var(--gold-light); border-color: rgba(201,168,76,.40);
+      box-shadow: 0 0 0 1px rgba(201,168,76,.15) inset;
+    }
+    .disc2-mode-btn:disabled { opacity: .42; cursor: not-allowed; }
+    .disc2-mode-meta {
+      margin-left: auto;
+      font-family: 'DM Mono', monospace; font-size: 10.5px;
+      letter-spacing: .06em; color: var(--text-3); font-style: italic;
+    }
+    .disc2-refresh {
+      width: 26px; height: 26px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 50%; border: 1px solid var(--border);
+      background: transparent; color: var(--text-2);
+      font-size: 14px; cursor: pointer; transition: all .15s;
+    }
+    .disc2-refresh:hover { color: var(--gold-light); border-color: rgba(201,168,76,.45); transform: rotate(60deg); }
+
+    .disc2-cards {
+      display: grid; grid-template-columns: 1fr; gap: 10px;
+      min-height: 80px;
+    }
+    @media (min-width: 980px) {
+      .disc2-cards { grid-template-columns: 1fr 1fr; }
+      .disc2-card.is-primary { grid-column: 1 / -1; }
+      .disc2-card.is-portfolio-risk { grid-column: 1 / -1; }
+    }
+
+    /* Card base */
+    .disc2-card {
+      position: relative;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      background: linear-gradient(145deg, rgba(20,16,12,.55), rgba(35,28,18,.30));
+      transition: border-color .18s, transform .18s, box-shadow .22s;
+    }
+    .disc2-card:hover { border-color: var(--border-2); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+    .disc2-card.is-primary {
+      background: linear-gradient(145deg, rgba(201,168,76,.10), rgba(201,168,76,.02));
+      border-color: rgba(201,168,76,.32);
+    }
+    .disc2-card.is-risk, .disc2-card.is-portfolio-risk {
+      background: linear-gradient(145deg, rgba(195,108,72,.08), rgba(195,108,72,.02));
+      border-color: rgba(195,108,72,.32);
+    }
+    .disc2-card.is-opportunity {
+      background: linear-gradient(145deg, rgba(107,170,117,.08), rgba(107,170,117,.02));
+      border-color: rgba(107,170,117,.32);
+    }
+
+    /* Eyebrow / kicker */
+    .disc2-card-eye {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'DM Mono', monospace; font-size: 10px;
+      letter-spacing: .18em; text-transform: uppercase; font-weight: 700;
+      color: var(--gold-dim); margin-bottom: 7px;
+    }
+    .disc2-card.is-primary .disc2-card-eye { color: var(--gold); }
+    .disc2-card.is-risk .disc2-card-eye, .disc2-card.is-portfolio-risk .disc2-card-eye { color: var(--clay); }
+    .disc2-card.is-opportunity .disc2-card-eye { color: var(--sage); }
+
+    .disc2-card-eye-tag {
+      font-family: inherit; font-size: 10px;
+      padding: 1px 7px; border-radius: 3px;
+      background: rgba(255,255,255,.05); border: 1px solid currentColor;
+      letter-spacing: .12em;
+    }
+
+    /* Headline */
+    .disc2-card-headline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px; line-height: 1.30; font-weight: 500;
+      color: var(--cream); margin-bottom: 8px;
+      letter-spacing: -0.005em;
+    }
+
+    /* Block lines (Impact / Action) */
+    .disc2-block {
+      display: flex; gap: 8px;
+      padding: 7px 0;
+      font-size: 12.5px; line-height: 1.55;
+      color: var(--text-1);
+      border-top: 1px dashed rgba(201,168,76,.14);
+    }
+    .disc2-block-lbl {
+      flex: 0 0 auto;
+      font-family: 'DM Mono', monospace; font-size: 10.5px;
+      letter-spacing: .12em; text-transform: uppercase; font-weight: 700;
+      color: var(--gold-dim); padding-top: 1.5px;
+      min-width: 96px;
+    }
+    .disc2-block-val { flex: 1; color: var(--cream-dim); }
+
+    /* Footer row: stance pill + confidence */
+    .disc2-card-foot {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 10px; padding-top: 9px;
+      border-top: 1px solid rgba(255,255,255,.04);
+    }
+    .disc2-stance {
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      padding: 3px 10px; border-radius: 4px; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase;
+      border: 1px solid currentColor; background: rgba(255,255,255,.02);
+    }
+    .disc2-stance.is-add  { color: var(--sage); }
+    .disc2-stance.is-hold { color: var(--text-2); }
+    .disc2-stance.is-watch{ color: var(--gold); }
+    .disc2-stance.is-trim { color: var(--clay); }
+
+    .disc2-confidence {
+      margin-left: auto;
+      font-family: 'DM Mono', monospace; font-size: 10.5px;
+      letter-spacing: .10em; color: var(--text-3); font-style: italic;
+    }
+    .disc2-confidence.is-high   { color: var(--sage); font-style: normal; font-weight: 700; }
+    .disc2-confidence.is-medium { color: var(--gold); font-style: normal; font-weight: 700; }
+    .disc2-confidence.is-low    { color: var(--text-3); }
+
+    /* Empty / loading / locked */
+    .disc2-empty {
+      grid-column: 1 / -1;
+      padding: 22px 18px;
+      border: 1px dashed var(--border);
+      border-radius: var(--r-lg);
+      text-align: center;
+      background: rgba(0,0,0,.18);
+    }
+    .disc2-empty-eye {
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      letter-spacing: .18em; text-transform: uppercase; font-weight: 700;
+      color: var(--gold-dim); margin-bottom: 5px;
+    }
+    .disc2-empty-line {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px; color: var(--cream-dim); margin-bottom: 12px; font-style: italic;
+    }
+    .disc2-empty-cta {
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
+      padding: 8px 16px; border-radius: var(--r);
+      background: linear-gradient(135deg, rgba(201,168,76,.18), rgba(201,168,76,.06));
+      color: var(--gold-light); border: 1px solid rgba(201,168,76,.40);
+      cursor: pointer; transition: all .16s;
+    }
+    .disc2-empty-cta:hover { background: linear-gradient(135deg, rgba(201,168,76,.28), rgba(201,168,76,.10)); }
+
+    /* Loading skeleton */
+    .disc2-skel {
+      grid-column: 1 / -1;
+      padding: 22px 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      background: rgba(0,0,0,.18);
+      font-family: 'DM Mono', monospace; font-size: 11.5px;
+      color: var(--text-3); letter-spacing: .08em;
+      display: flex; align-items: center; gap: 11px;
+    }
+    .disc2-skel-spin {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(201,168,76,.20);
+      border-top-color: var(--gold-light);
+      border-radius: 50%;
+      animation: aiSpin .9s linear infinite;
+    }
+
     /* TWO-ZONE LAYOUT */
     .disc-grid { display:grid; grid-template-columns: 1.05fr .95fr; gap:18px; }
     @media (max-width:1100px) { .disc-grid { grid-template-columns: 1fr; } }
@@ -2380,7 +2570,25 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
           </div>
           <div class="disc-pulse-bridge" id="discBridge">→ Tap a driver above to filter the feed, or explore today's movers below.</div>
         </div>
-        <div class="disc-news" id="discNews"></div>
+        <!-- Legacy disc-news kept as hidden DOM so existing renderers don't throw. Discovery v2 below replaces it visually. -->
+        <div class="disc-news" id="discNews" hidden aria-hidden="true"></div>
+
+        <!-- =============================================================
+             Discovery v2 — Market / Yours toggle + structured card grid.
+             Spec: project_discovery_v2_spec.md + project_fortis_voice.md
+             - Market: AI-generated commentary (1–2 Primary, 3–5 Secondary, optional Risk; max 6).
+             - Yours: deterministic stance per holding (Add/Hold/Watch/Trim) + AI explanation; max 5.
+             - Voice: calm, precise, operator-level; → Impact / → Action; no hype.
+             ============================================================= -->
+        <div class="disc2" id="disc2Wrap">
+          <div class="disc2-mode" role="tablist" aria-label="Discovery mode">
+            <button type="button" class="disc2-mode-btn is-active" data-disc2-mode="market" role="tab" aria-selected="true" onclick="_disc2SetMode('market')">Market</button>
+            <button type="button" class="disc2-mode-btn" data-disc2-mode="yours" role="tab" aria-selected="false" onclick="_disc2SetMode('yours')">Yours</button>
+            <span class="disc2-mode-meta" id="disc2ModeMeta">Operator read · refreshed —</span>
+            <button type="button" class="disc2-refresh" id="disc2Refresh" onclick="_disc2Refresh()" title="Refresh cards">↻</button>
+          </div>
+          <div class="disc2-cards" id="disc2Cards" aria-live="polite"></div>
+        </div>
       </div>
       <!-- RIGHT: Action & Discovery -->
       <div class="disc-action-zone">
@@ -2388,24 +2596,12 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
           <input id="discSearch" type="text" placeholder="Search ticker or company (AAPL, Microsoft, BTC)…" autocomplete="off" onkeydown="if(event.key==='Enter'){discSearch(this.value)}"/>
           <button type="button" class="disc-search-btn" onclick="discSearch(document.getElementById('discSearch').value)">Analyze →</button>
         </div>
-        <div class="disc-tabs" role="tablist">
-          <button type="button" class="disc-tab active" data-disc-tab="now" role="tab" aria-selected="true" onclick="discSetTab('now',this)">Now</button>
-          <button type="button" class="disc-tab" data-disc-tab="macro" role="tab" aria-selected="false" onclick="discSetTab('macro',this)">Macro</button>
-          <button type="button" class="disc-tab" data-disc-tab="crypto" role="tab" aria-selected="false" onclick="discSetTab('crypto',this)">Crypto</button>
-        </div>
-        <div id="discContent">
-          <div class="disc-pane active" data-disc-pane="now">
-            <div class="disc-sec-hdr"><span>Top Movers</span><span class="disc-sec-cnt">Hover for read · click to analyze</span></div>
-            <div class="disc-movers" id="discMoversNow"></div>
-          </div>
-          <div class="disc-pane" data-disc-pane="macro">
-            <div class="disc-sec-hdr"><span>Sector Heatmap</span><span class="disc-sec-cnt">Session performance</span></div>
-            <div class="disc-movers" id="discMoversMacro"></div>
-          </div>
-          <div class="disc-pane" data-disc-pane="crypto">
-            <div class="disc-sec-hdr"><span>Crypto Movers</span><span class="disc-sec-cnt">Click to analyze</span></div>
-            <div class="disc-movers" id="discMoversCrypto"></div>
-          </div>
+        <!-- Now/Macro/Crypto tabs removed 2026-04-29 — content absorbed into Market mode of Discovery v2 toggle (left column). -->
+        <div id="discContent" hidden aria-hidden="true">
+          <!-- Legacy panes retained as hidden DOM stubs so any orphaned references to discMoversNow/Macro/Crypto don't crash. Safe to delete in a later pass. -->
+          <div class="disc-pane" data-disc-pane="now"><div class="disc-movers" id="discMoversNow"></div></div>
+          <div class="disc-pane" data-disc-pane="macro"><div class="disc-movers" id="discMoversMacro"></div></div>
+          <div class="disc-pane" data-disc-pane="crypto"><div class="disc-movers" id="discMoversCrypto"></div></div>
         </div>
         <!-- Quick Signals — compact market-context block, balances the news feed visually -->
         <div class="disc-signals" aria-label="Quick market signals">
@@ -2769,6 +2965,346 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       }
       if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',_bindSignalsToggle); else _bindSignalsToggle();
     })();
+
+    /* =========================================================================
+     * Discovery v2 — Market / Yours toggle + structured cards
+     * Spec: project_discovery_v2_spec.md, project_fortis_voice.md
+     * Phase B1: shell + deterministic Yours stance using existing data.
+     *           Market mode uses placeholder cards (voice-compliant) until
+     *           AI wiring lands in Phase B2.
+     * Architecture:
+     *   - Pure render; mode persisted in window._disc2State and localStorage
+     *   - Yours stance is deterministic — derived from drift + last buy days +
+     *     classification. Audit trail: every card carries the rule that fired
+     *     in data-disc2-rule for SEC/state-scrutiny defensibility.
+     *   - AI is called only for explanations, never for stance decisions.
+     * ====================================================================== */
+    (function(global){
+      'use strict';
+
+      // ----- Constants (mirror WAP) -----
+      var MIN_DAYS = 7;          // matches WAP MIN_DAYS — eligibility window
+      var DRIFT_TRIM = 5;        // pp overweight before stance flips to Trim
+      var DRIFT_ADD  = -5;       // pp underweight before stance flips to Add/Watch
+      var YOURS_MAX  = 5;        // hard cap per spec
+      var MARKET_MAX = 6;        // hard cap per spec
+
+      // Target weights — bucket-split derivation. Until WAP target-mix adapter
+      // is wired, these mirror the contribution-plan bucket logic.
+      // CORE = 50%, WATCHLIST = 30%, LEGACY = 0% (no new contributions).
+      var TARGET_WEIGHTS = {
+        VOO:   25,
+        GOOGL: 8.33,  AMZN: 8.33,  NVDA: 8.34,         // CORE growth (25% / 3)
+        META:  15,    LMT:  15,                        // WATCHLIST (30% / 2)
+        SCHD:   0,    RCL:   0,    CCL:   0, NCLH: 0   // LEGACY → no target weight
+      };
+
+      function _esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+      // ----- State -----
+      global._disc2State = global._disc2State || {
+        mode: (function(){ try { return localStorage.getItem('fortis_disc2_mode') || 'market'; } catch(_){ return 'market'; } })(),
+        marketCards: null,
+        yoursCards: null,
+        lastFetch: null,
+        loading: false
+      };
+
+      // ----- Public mode setter -----
+      global._disc2SetMode = function(mode){
+        if (mode !== 'market' && mode !== 'yours') return;
+        global._disc2State.mode = mode;
+        try { localStorage.setItem('fortis_disc2_mode', mode); } catch(_){}
+        _disc2RenderToggle();
+        _disc2RenderCards();
+      };
+
+      // ----- Public refresh -----
+      global._disc2Refresh = function(){
+        global._disc2State.marketCards = null;
+        global._disc2State.yoursCards = null;
+        _disc2RenderCards();
+      };
+
+      function _disc2RenderToggle(){
+        var btns = document.querySelectorAll('.disc2-mode-btn');
+        Array.prototype.forEach.call(btns, function(b){
+          var on = b.getAttribute('data-disc2-mode') === global._disc2State.mode;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        var meta = document.getElementById('disc2ModeMeta');
+        if (meta) {
+          var stamp = global._disc2State.lastFetch
+            ? new Date(global._disc2State.lastFetch).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+            : '—';
+          meta.textContent = 'Operator read · refreshed ' + stamp;
+        }
+      }
+
+      function _disc2RenderCards(){
+        var host = document.getElementById('disc2Cards');
+        if (!host) return;
+        var mode = global._disc2State.mode;
+        if (mode === 'yours') {
+          host.innerHTML = _disc2RenderYours();
+        } else {
+          host.innerHTML = _disc2RenderMarket();
+        }
+      }
+
+      // ===== MARKET MODE =====
+      // Phase B1: voice-compliant placeholder cards. Phase B2 wires the AI call
+      // through the laforce-api proxy and parses to this same shape.
+      function _disc2RenderMarket(){
+        // Placeholder card set — operator voice, no hype, structured.
+        // Each card has: type (primary|secondary|risk), eye, headline, impact, confidence.
+        var cards = [
+          { type:'primary', eye:'Primary Signal · Macro',
+            headline:'Fed posture tilts toward one more cut',
+            impact:'Lower-for-longer rate path supports growth and cyclicals; financial conditions stay accommodative into Q3.',
+            confidence:'High' },
+          { type:'primary', eye:'Primary Signal · Breadth',
+            headline:'Leadership narrows to mega-cap tech',
+            impact:'Index gains driven by a thinning roster of names. Rally durability depends on broader participation by mid-cap.',
+            confidence:'Medium' },
+          { type:'secondary', eye:'Sector · Energy',
+            headline:'Energy supply tightens; supportive for majors',
+            impact:'Sustained production discipline favors integrated majors over spec E&P. Position sizing should respect the volatility regime.',
+            confidence:'Medium' },
+          { type:'secondary', eye:'Sector · Financials',
+            headline:'Banks lag on net-interest pressure',
+            impact:'Margin compression and regional-bank stress overhang weigh on the lane. Underweight exposure remains the disciplined read.',
+            confidence:'Medium' },
+          { type:'secondary', eye:'Sector · Tech / AI',
+            headline:'AI infrastructure spend stays elevated',
+            impact:'Hyperscaler capex guidance reinforces the semis + power-and-cooling thesis. Conviction in the lane stays constructive.',
+            confidence:'High' },
+          { type:'risk', eye:'Watch · Inflation',
+            headline:'Sticky services inflation is the swing risk',
+            impact:'A hot CPI print could compress the rate-cut path and reset positioning. Keep cash optionality and avoid late-cycle leverage.',
+            confidence:'Medium' }
+        ].slice(0, MARKET_MAX);
+
+        global._disc2State.marketCards = cards;
+        global._disc2State.lastFetch = Date.now();
+        _disc2RenderToggle(); // refresh stamp
+
+        return cards.map(_disc2CardMarket).join('');
+      }
+
+      function _disc2CardMarket(c){
+        var cls = 'disc2-card is-' + (c.type === 'primary' ? 'primary' : c.type === 'risk' ? 'risk' : 'secondary');
+        return '<div class="' + cls + '">'
+          +   '<div class="disc2-card-eye"><span>' + _esc(c.eye) + '</span></div>'
+          +   '<div class="disc2-card-headline">' + _esc(c.headline) + '</div>'
+          +   '<div class="disc2-block">'
+          +     '<div class="disc2-block-lbl">→ Impact</div>'
+          +     '<div class="disc2-block-val">' + _esc(c.impact) + '</div>'
+          +   '</div>'
+          +   (c.confidence
+                ? '<div class="disc2-card-foot">'
+                  +   '<span class="disc2-confidence is-' + c.confidence.toLowerCase() + '">Confidence: ' + _esc(c.confidence) + '</span>'
+                  + '</div>'
+                : '')
+          + '</div>';
+      }
+
+      // ===== YOURS MODE =====
+      function _disc2RenderYours(){
+        var holdings = (global._holdings || []).filter(function(h){ return h && h.sym && (Number(h.mktVal) > 0); });
+        if (!holdings.length) {
+          return '<div class="disc2-empty">'
+            + '<div class="disc2-empty-eye">Yours · Locked</div>'
+            + '<div class="disc2-empty-line">Scan portfolio to surface the read tied to your positions.</div>'
+            + '<button type="button" class="disc2-empty-cta" onclick="showPanel(\'portfolio\',document.querySelectorAll(\'.nav-item\')[2])">Scan portfolio →</button>'
+            + '</div>';
+        }
+        var totalVal = holdings.reduce(function(s,h){ return s + Number(h.mktVal||0); }, 0);
+        if (totalVal <= 0) totalVal = 1; // avoid /0
+
+        // Build deterministic stance per holding, then rank by importance:
+        // Trim (overweight or LEGACY) ranks higher than Add (eligible underweight)
+        // higher than Watch (underweight, in-window) higher than Hold.
+        var rows = holdings.map(function(h){
+          var weight = (Number(h.mktVal) / totalVal) * 100;
+          var target = (TARGET_WEIGHTS[h.sym] != null) ? TARGET_WEIGHTS[h.sym] : null;
+          var drift  = (target == null) ? null : (weight - target);
+          var classification = (global.WAPAdapters && global.WAPAdapters.getTickerClassification)
+            ? global.WAPAdapters.getTickerClassification(h.sym)
+            : 'LEGACY';
+          var lastBuy = (global.WAPAdapters && global.WAPAdapters.getLastBuy)
+            ? global.WAPAdapters.getLastBuy(h.sym)
+            : null;
+          var daysSince = lastBuy && lastBuy.date
+            ? Math.floor((Date.now() - new Date(lastBuy.date).getTime()) / (24*3600*1000))
+            : null;
+
+          // ----- Stance rules (priority-ordered, deterministic) -----
+          var stance = 'Hold';
+          var rule   = 'default-hold';
+          var reason = '';
+          if (classification === 'LEGACY') {
+            stance = 'Trim';
+            rule   = 'rule-1-legacy';
+            reason = 'Classified Legacy. New contributions stop here.';
+          } else if (drift != null && drift >= DRIFT_TRIM) {
+            stance = 'Trim';
+            rule   = 'rule-2-overweight';
+            reason = 'Position is ' + drift.toFixed(1) + 'pp over target (' + weight.toFixed(1) + '% / ' + target.toFixed(1) + '%).';
+          } else if (drift != null && drift <= DRIFT_ADD && daysSince != null && daysSince >= MIN_DAYS) {
+            stance = 'Add';
+            rule   = 'rule-3-eligible-underweight';
+            reason = 'Underweight ' + Math.abs(drift).toFixed(1) + 'pp. Last buy ' + daysSince + 'd ago — eligible.';
+          } else if (drift != null && drift <= DRIFT_ADD) {
+            stance = 'Watch';
+            rule   = 'rule-4-window-underweight';
+            reason = 'Underweight ' + Math.abs(drift).toFixed(1) + 'pp but inside ' + MIN_DAYS + '-day cadence' + (daysSince != null ? ' (last buy ' + daysSince + 'd ago)' : '') + '.';
+          } else {
+            stance = 'Hold';
+            rule   = 'rule-5-in-band';
+            reason = (drift != null)
+              ? 'Drift ' + (drift >= 0 ? '+' : '') + drift.toFixed(1) + 'pp — inside band.'
+              : 'No target set. Treat as Hold pending classification.';
+          }
+          return {
+            sym: h.sym, weight: weight, target: target, drift: drift,
+            classification: classification, daysSince: daysSince,
+            stance: stance, rule: rule, reason: reason
+          };
+        });
+
+        // Priority for the 5-card cap: Trim > Add > Watch > Hold; within tier, by |drift|.
+        var pri = { Trim:0, Add:1, Watch:2, Hold:3 };
+        rows.sort(function(a,b){
+          if (pri[a.stance] !== pri[b.stance]) return pri[a.stance] - pri[b.stance];
+          var da = (a.drift==null) ? 0 : Math.abs(a.drift);
+          var db = (b.drift==null) ? 0 : Math.abs(b.drift);
+          return db - da;
+        });
+        var top = rows.slice(0, YOURS_MAX);
+
+        // Optional Portfolio Risk card if there's a >30% concentration breach.
+        var biggest = rows.slice().sort(function(a,b){ return b.weight - a.weight; })[0];
+        var riskCard = '';
+        if (biggest && biggest.weight >= 30) {
+          riskCard = '<div class="disc2-card is-portfolio-risk">'
+            + '<div class="disc2-card-eye">Portfolio Risk · Concentration</div>'
+            + '<div class="disc2-card-headline">' + _esc(biggest.sym) + ' is ' + biggest.weight.toFixed(1) + '% of the book</div>'
+            + '<div class="disc2-block"><div class="disc2-block-lbl">→ Portfolio Impact</div>'
+            +   '<div class="disc2-block-val">A single name above 30% raises idiosyncratic risk. Lane balance and rebalance discipline matter more than the next contribution.</div>'
+            + '</div>'
+            + '<div class="disc2-block"><div class="disc2-block-lbl">→ Action</div>'
+            +   '<div class="disc2-block-val">Trim back toward target on the next strength window. Hold cash optionality until balance is restored.</div>'
+            + '</div>'
+            + '</div>';
+        }
+
+        global._disc2State.yoursCards = top;
+        global._disc2State.lastFetch = Date.now();
+        _disc2RenderToggle();
+
+        return riskCard + top.map(_disc2CardYours).join('');
+      }
+
+      function _disc2CardYours(r){
+        var cls = (r.classification || 'core').toLowerCase();
+        // Action line — operator language, derived from stance + drift
+        var action = '';
+        if (r.stance === 'Add') {
+          action = 'Allocate next contribution to ' + r.sym + '. Bring exposure toward ' + (r.target!=null ? r.target.toFixed(1)+'%' : 'target') + '.';
+        } else if (r.stance === 'Trim') {
+          action = (r.classification === 'LEGACY')
+            ? 'No new contributions. Trim opportunistically into strength.'
+            : 'Trim back toward ' + (r.target!=null ? r.target.toFixed(1)+'%' : 'target') + ' on the next up-move.';
+        } else if (r.stance === 'Watch') {
+          action = 'Hold off. Eligible to add once cadence window opens (' + MIN_DAYS + 'd post last buy).';
+        } else {
+          action = 'No move needed. Hold and let the cadence run.';
+        }
+        return '<div class="disc2-card" data-disc2-rule="' + _esc(r.rule) + '">'
+          + '<div class="disc2-card-eye">'
+          +   '<span>' + _esc(r.sym) + ' · ' + _esc(cls.charAt(0).toUpperCase()+cls.slice(1)) + '</span>'
+          +   '<span class="disc2-card-eye-tag">' + r.weight.toFixed(1) + '%' + (r.target!=null ? ' / ' + r.target.toFixed(1) + '%' : '') + '</span>'
+          + '</div>'
+          + '<div class="disc2-card-headline">' + _esc(r.reason) + '</div>'
+          + '<div class="disc2-block"><div class="disc2-block-lbl">→ Portfolio Impact</div>'
+          +   '<div class="disc2-block-val">' + _esc(_disc2ImpactLine(r)) + '</div>'
+          + '</div>'
+          + '<div class="disc2-block"><div class="disc2-block-lbl">→ Action</div>'
+          +   '<div class="disc2-block-val">' + _esc(action) + '</div>'
+          + '</div>'
+          + '<div class="disc2-card-foot">'
+          +   '<span class="disc2-stance is-' + r.stance.toLowerCase() + '">' + r.stance + '</span>'
+          + '</div>'
+          + '</div>';
+      }
+
+      function _disc2ImpactLine(r){
+        if (r.classification === 'LEGACY')
+          return 'Legacy lane. Capital is parked, not deployed. Treat any gain as a trim window.';
+        if (r.stance === 'Add')
+          return 'Below target by ' + Math.abs(r.drift).toFixed(1) + 'pp. Adding here pulls allocation toward plan and respects cadence.';
+        if (r.stance === 'Trim')
+          return 'Above target by ' + r.drift.toFixed(1) + 'pp. Trimming protects portfolio balance and frees capital for underweight names.';
+        if (r.stance === 'Watch')
+          return 'Underweight, but inside the cadence window. Wait for eligibility before deploying.';
+        return 'Position sits inside the target band. Lane balance is intact.';
+      }
+
+      // ----- Init / lazy mount -----
+      function _disc2Init(){
+        if (!document.getElementById('disc2Wrap')) return;
+        _disc2RenderToggle();
+        _disc2RenderCards();
+      }
+
+      // Re-render whenever the Discovery panel becomes visible (showPanel calls).
+      // We hook the global showPanel by patching after definition — guarded
+      // so we never double-wrap.
+      function _disc2HookShowPanel(){
+        if (typeof global.showPanel !== 'function' || global.showPanel.__disc2Wrapped) return;
+        var orig = global.showPanel;
+        var wrapped = function(name, btn){
+          var r = orig.apply(this, arguments);
+          if (name === 'discovery') { try { _disc2Init(); } catch(_){} }
+          return r;
+        };
+        wrapped.__disc2Wrapped = true;
+        global.showPanel = wrapped;
+      }
+
+      // Re-render Yours on portfolio updates (so a fresh scan flips the empty state).
+      // Listen on a custom event the portfolio render emits if present, fall back
+      // to a MutationObserver on the holdings table for resilience.
+      function _disc2HookPortfolio(){
+        try {
+          // If renderDashboard / renderLabTable exists, monkey-patch to fire a refresh.
+          if (typeof global.renderDashboard === 'function' && !global.renderDashboard.__disc2Wrapped) {
+            var origRD = global.renderDashboard;
+            var wrapped = function(){
+              var r = origRD.apply(this, arguments);
+              try {
+                if (global._disc2State && global._disc2State.mode === 'yours') {
+                  _disc2RenderCards();
+                }
+              } catch(_){}
+              return r;
+            };
+            wrapped.__disc2Wrapped = true;
+            global.renderDashboard = wrapped;
+          }
+        } catch(_){}
+      }
+
+      function _start(){
+        _disc2HookShowPanel();
+        _disc2HookPortfolio();
+        _disc2Init();
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _start);
+      else _start();
+    })(typeof window !== 'undefined' ? window : globalThis);
   </script>
 
 </div>
@@ -4297,22 +4833,12 @@ function getHoldings(){return _holdings||[];}
 // Pair every long-running AI call with showAiToast(...) → hideAiToast() in
 // both the success and error paths, plus scrollIntoView on the output node.
 function showAiToast(text,sub){
-  var el=document.getElementById('aiToast');
-  console.log('[showAiToast]', {found: !!el, id: el && el.id, classBefore: el && el.className, text: text});
-  if(!el)return;
+  var el=document.getElementById('aiToast');if(!el)return;
   var t=document.getElementById('aiToastText');if(t)t.textContent=text||'AI working…';
   var s=document.getElementById('aiToastSub');if(s)s.textContent=sub||'This usually takes 10-25 seconds';
   el.classList.add('on');
-  console.log('[showAiToast] classAfter:', el.className, 'computed display:', getComputedStyle(el).display);
 }
-function hideAiToast(){
-  var el=document.getElementById('aiToast');
-  console.log('[hideAiToast]', {found: !!el, id: el && el.id, classBefore: el && el.className});
-  if(el){
-    el.classList.remove('on');
-    console.log('[hideAiToast] classAfter:', el.className, 'computed display:', getComputedStyle(el).display);
-  }
-}
+function hideAiToast(){var el=document.getElementById('aiToast');if(el)el.classList.remove('on');}
 function scrollToEl(id,block){
   var el=typeof id==='string'?document.getElementById(id):id;
   if(!el)return;
@@ -5051,7 +5577,6 @@ async function queueImagesForExtraction(files){
   if(!key){status.innerHTML='<div style="color:var(--clay);font-size:12px">API key required to extract from images. Set your key above.</div>';return;}
 
   // Phase 1 — Scanning portfolio (file read)
-  console.log('[extract] M1 entered queueImagesForExtraction, files:', files && files.length, 'status el?', !!status);
   status.innerHTML = _scanStep('Scanning portfolio…','Reading screenshot pixels and preparing for AI analysis', 0);
   showAiToast('Scanning portfolio…','Reading positions and account totals');
   scrollToEl('feasOutput','start');
@@ -5129,11 +5654,9 @@ async function queueImagesForExtraction(files){
       headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1200,messages:[{role:'user',content:contentBlocks}]})
     });
-    console.log('[extract] M2 fetch returned, ok=', resp.ok, 'status=', resp.status);
     if(!resp.ok){var er=await resp.json().catch(function(){return{};});throw new Error((er.error&&er.error.message)||resp.statusText);}
     var d=await resp.json();
     var txt=d.content[0].text;
-    console.log('[extract] M3 parsed JSON, text length:', txt && txt.length);
 
     // Split holdings vs recurring
     var parts=txt.split(/^RECURRING:/m);
@@ -5243,15 +5766,12 @@ async function queueImagesForExtraction(files){
       var totalValue=_holdings.reduce(function(s,h){return s+(Number(h&&h.mktVal)||0);},0);
       console.log("TOTAL VALUE:", totalValue, _holdings);
 
-      console.log('[extract] M4 about to render table+dashboard');
       renderLabTable();renderDashboard();
-      console.log('[extract] M5 render complete, about to set receipt');
 
       // Console-log the receipt diagnostics so you can spot COUNT/parsed mismatches.
       try{console.log('[extract]',{model:stats.model,parsed:stats.parsed,found:stats.found,new:stats.new,merged:stats.merged,skipped:stats.skipped,mismatch:stats.mismatch,errors:stats.errors});}catch(e){}
 
       status.innerHTML=renderExtractionReceipt(stats,recurring);
-      console.log('[extract] M6 receipt set into status.innerHTML');
       if(recurring.length)renderRecurring(recurring,status);
     }else{
       status.innerHTML='<div class="extract-err">'
@@ -5268,20 +5788,8 @@ async function queueImagesForExtraction(files){
     // Guarantee the floating toast clears on every terminal path:
     // success-with-merge, empty-result, hard-fail review, and exception.
     // Without this, the inline status replaces with the receipt but the
-    // top-right "Scanning portfolio…" toast stays visible — the symptom
-    // user reported (holdings populate, loader stuck).
-    console.log('[extract finally] hiding toast');
+    // top-right "Scanning portfolio…" toast stays visible.
     hideAiToast();
-    // Defensive: if anything is still rendering an inline cd-loader inside the
-    // status element (e.g. a render exception left it in mid-phase), clear it
-    // so the user is never staring at a stuck "Scanning…" / "Reading…" /
-    // "Validating…" pane after extraction has terminated.
-    try{
-      if(status){
-        var stuckLoaders = status.querySelectorAll('.cd-loader');
-        console.log('[extract finally] stuck cd-loader nodes in status:', stuckLoaders.length);
-      }
-    }catch(_e){ console.log('[extract finally] inline loader probe failed:', _e && _e.message); }
   }
 }
 
