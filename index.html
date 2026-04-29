@@ -4297,12 +4297,22 @@ function getHoldings(){return _holdings||[];}
 // Pair every long-running AI call with showAiToast(...) → hideAiToast() in
 // both the success and error paths, plus scrollIntoView on the output node.
 function showAiToast(text,sub){
-  var el=document.getElementById('aiToast');if(!el)return;
+  var el=document.getElementById('aiToast');
+  console.log('[showAiToast]', {found: !!el, id: el && el.id, classBefore: el && el.className, text: text});
+  if(!el)return;
   var t=document.getElementById('aiToastText');if(t)t.textContent=text||'AI working…';
   var s=document.getElementById('aiToastSub');if(s)s.textContent=sub||'This usually takes 10-25 seconds';
   el.classList.add('on');
+  console.log('[showAiToast] classAfter:', el.className, 'computed display:', getComputedStyle(el).display);
 }
-function hideAiToast(){var el=document.getElementById('aiToast');if(el)el.classList.remove('on');}
+function hideAiToast(){
+  var el=document.getElementById('aiToast');
+  console.log('[hideAiToast]', {found: !!el, id: el && el.id, classBefore: el && el.className});
+  if(el){
+    el.classList.remove('on');
+    console.log('[hideAiToast] classAfter:', el.className, 'computed display:', getComputedStyle(el).display);
+  }
+}
 function scrollToEl(id,block){
   var el=typeof id==='string'?document.getElementById(id):id;
   if(!el)return;
@@ -5041,6 +5051,7 @@ async function queueImagesForExtraction(files){
   if(!key){status.innerHTML='<div style="color:var(--clay);font-size:12px">API key required to extract from images. Set your key above.</div>';return;}
 
   // Phase 1 — Scanning portfolio (file read)
+  console.log('[extract] M1 entered queueImagesForExtraction, files:', files && files.length, 'status el?', !!status);
   status.innerHTML = _scanStep('Scanning portfolio…','Reading screenshot pixels and preparing for AI analysis', 0);
   showAiToast('Scanning portfolio…','Reading positions and account totals');
   scrollToEl('feasOutput','start');
@@ -5118,9 +5129,11 @@ async function queueImagesForExtraction(files){
       headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1200,messages:[{role:'user',content:contentBlocks}]})
     });
+    console.log('[extract] M2 fetch returned, ok=', resp.ok, 'status=', resp.status);
     if(!resp.ok){var er=await resp.json().catch(function(){return{};});throw new Error((er.error&&er.error.message)||resp.statusText);}
     var d=await resp.json();
     var txt=d.content[0].text;
+    console.log('[extract] M3 parsed JSON, text length:', txt && txt.length);
 
     // Split holdings vs recurring
     var parts=txt.split(/^RECURRING:/m);
@@ -5230,12 +5243,15 @@ async function queueImagesForExtraction(files){
       var totalValue=_holdings.reduce(function(s,h){return s+(Number(h&&h.mktVal)||0);},0);
       console.log("TOTAL VALUE:", totalValue, _holdings);
 
+      console.log('[extract] M4 about to render table+dashboard');
       renderLabTable();renderDashboard();
+      console.log('[extract] M5 render complete, about to set receipt');
 
       // Console-log the receipt diagnostics so you can spot COUNT/parsed mismatches.
       try{console.log('[extract]',{model:stats.model,parsed:stats.parsed,found:stats.found,new:stats.new,merged:stats.merged,skipped:stats.skipped,mismatch:stats.mismatch,errors:stats.errors});}catch(e){}
 
       status.innerHTML=renderExtractionReceipt(stats,recurring);
+      console.log('[extract] M6 receipt set into status.innerHTML');
       if(recurring.length)renderRecurring(recurring,status);
     }else{
       status.innerHTML='<div class="extract-err">'
@@ -5248,6 +5264,24 @@ async function queueImagesForExtraction(files){
       +'<div style="font-size:12px;color:var(--clay);font-weight:600;margin-bottom:4px">Extraction failed</div>'
       +'<div style="font-size:11px;color:var(--text-2);line-height:1.6">'+esc(err.message)+'</div>'
     +'</div>';
+  }finally{
+    // Guarantee the floating toast clears on every terminal path:
+    // success-with-merge, empty-result, hard-fail review, and exception.
+    // Without this, the inline status replaces with the receipt but the
+    // top-right "Scanning portfolio…" toast stays visible — the symptom
+    // user reported (holdings populate, loader stuck).
+    console.log('[extract finally] hiding toast');
+    hideAiToast();
+    // Defensive: if anything is still rendering an inline cd-loader inside the
+    // status element (e.g. a render exception left it in mid-phase), clear it
+    // so the user is never staring at a stuck "Scanning…" / "Reading…" /
+    // "Validating…" pane after extraction has terminated.
+    try{
+      if(status){
+        var stuckLoaders = status.querySelectorAll('.cd-loader');
+        console.log('[extract finally] stuck cd-loader nodes in status:', stuckLoaders.length);
+      }
+    }catch(_e){ console.log('[extract finally] inline loader probe failed:', _e && _e.message); }
   }
 }
 
