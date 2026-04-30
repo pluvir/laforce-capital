@@ -1284,8 +1284,8 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
 <div class="ai-toast" id="aiToast" role="status" aria-live="polite">
   <div class="ai-toast-spin"></div>
   <div>
-    <div class="ai-toast-text" id="aiToastText">AI working…</div>
-    <div class="ai-toast-sub" id="aiToastSub">This usually takes 10-25 seconds</div>
+    <div class="ai-toast-text" id="aiToastText">Working…</div>
+    <div class="ai-toast-sub" id="aiToastSub">One moment.</div>
   </div>
 </div>
 
@@ -1693,6 +1693,8 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .14em;
       text-transform: uppercase; font-weight: 700; color: var(--sage);
     }
+    /* Legacy authority-framing styles kept dormant — old code paths may still
+       reference them on first render before the wrapper takes over. */
     #wapContainer .wap__authority-eye, #wapContainer .wap__authority-kicker {
       font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .18em;
       text-transform: uppercase; font-weight: 700; color: var(--text-3);
@@ -1701,6 +1703,96 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     #wapContainer .wap__authority-rule {
       font-size: 11.5px; color: var(--text-2); font-style: italic;
       line-height: 1.5; margin: -8px 0 14px;
+    }
+    /* ── Copilot-Money refinement ─────────────────────────────────────────
+       One calm header, isolated decision, all reasoning behind disclosure.
+       Tokens reused: --text-3, --gold-dim, --cream, --border, --gold.
+       No new color system. */
+    #wapContainer .wap__week-header {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--gold-dim);
+      margin: 0 0 18px;
+      text-align: center;
+    }
+    /* Decision becomes the visual anchor: more breathing room, centered. */
+    #wapContainer .wap__main {
+      text-align: center;
+      padding: 22px 0 26px;
+    }
+    #wapContainer .wap__decision {
+      font-size: 42px;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+    #wapContainer .wap__amount {
+      margin-top: 12px;
+      font-size: 14px;
+      letter-spacing: .02em;
+    }
+    /* Hide the in-place .wap__why content once it has been folded into the
+       collapsible — the disclosure now owns all reasoning. */
+    #wapContainer .wap__why--folded { display: none; }
+    /* "Why this move →" disclosure — calm, minimal, default-collapsed. */
+    #wapContainer .wap__detail {
+      margin-top: 4px;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+    #wapContainer .wap__detail > summary {
+      list-style: none;
+      cursor: pointer;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-2);
+      padding: 6px 0;
+      transition: color .18s ease;
+      user-select: none;
+    }
+    #wapContainer .wap__detail > summary::-webkit-details-marker { display: none; }
+    #wapContainer .wap__detail > summary:hover,
+    #wapContainer .wap__detail > summary:focus-visible { color: var(--gold-light); outline: none; }
+    #wapContainer .wap__detail-arrow {
+      display: inline-block;
+      margin-left: 6px;
+      transition: transform .22s ease;
+    }
+    #wapContainer .wap__detail[open] > summary .wap__detail-arrow { transform: rotate(90deg); }
+    #wapContainer .wap__detail-body {
+      padding: 10px 0 4px;
+      animation: wapDetailIn .22s ease;
+    }
+    @keyframes wapDetailIn { from { opacity: 0; transform: translateY(-2px); } to { opacity: 1; transform: translateY(0); } }
+    #wapContainer .wap__detail-narrative {
+      font-size: 13px; line-height: 1.55;
+      color: var(--cream-dim, var(--text-1));
+      padding: 4px 0;
+    }
+    #wapContainer .wap__detail-rows {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--border);
+    }
+    #wapContainer .wap__detail-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 12px; padding: 4px 0;
+    }
+    #wapContainer .wap__detail-lbl {
+      font-family: 'DM Mono', monospace;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--text-3); font-weight: 600;
+    }
+    #wapContainer .wap__detail-val {
+      font-family: 'DM Mono', monospace;
+      color: var(--cream); font-variant-numeric: tabular-nums;
     }
     #wapContainer .wap__streak {
       display: inline-flex; align-items: center; gap: 6px;
@@ -4795,8 +4887,8 @@ function getHoldings(){return _holdings||[];}
 // both the success and error paths, plus scrollIntoView on the output node.
 function showAiToast(text,sub){
   var el=document.getElementById('aiToast');if(!el)return;
-  var t=document.getElementById('aiToastText');if(t)t.textContent=text||'AI working…';
-  var s=document.getElementById('aiToastSub');if(s)s.textContent=sub||'This usually takes 10-25 seconds';
+  var t=document.getElementById('aiToastText');if(t)t.textContent=text||'Working…';
+  var s=document.getElementById('aiToastSub');if(s)s.textContent=sub||'One moment.';
   el.classList.add('on');
 }
 function hideAiToast(){var el=document.getElementById('aiToast');if(el)el.classList.remove('on');}
@@ -4807,8 +4899,9 @@ function scrollToEl(id,block){
 }
 
 /* ========================================================================
- * Multi-step scanning loader for portfolio extraction
- * Phases: 1=Scanning, 2=Reading positions, 3=Validating against brokerage totals
+ * Multi-step loader for portfolio extraction.
+ * Step labels use calm, system-level language (no "AI", "analysis", "scanning").
+ * Structure unchanged — only the visible copy.
  * ====================================================================== */
 function _scanStep(text, sub, doneSteps){
   function ico(d){return d?'<span style="color:#9DD0A8">✓</span>':'<span style="color:#8B7D68">·</span>';}
@@ -4817,9 +4910,9 @@ function _scanStep(text, sub, doneSteps){
     '<div class="cd-loader-text">'+esc(text)+'</div>'+
     '<div class="cd-loader-sub">'+esc(sub)+'</div>'+
     '<div style="display:flex;gap:14px;margin-top:9px;font-size:10.5px;font-family:DM Mono,monospace;letter-spacing:.05em;flex-wrap:wrap">'+
-      '<span style="color:'+clr(doneSteps>=1)+'">'+ico(doneSteps>=1)+' Scanning portfolio</span>'+
-      '<span style="color:'+clr(doneSteps>=2)+'">'+ico(doneSteps>=2)+' Reading positions &amp; totals</span>'+
-      '<span style="color:'+clr(doneSteps>=3)+'">'+ico(doneSteps>=3)+' Validating against brokerage totals</span>'+
+      '<span style="color:'+clr(doneSteps>=1)+'">'+ico(doneSteps>=1)+' Reading your portfolio</span>'+
+      '<span style="color:'+clr(doneSteps>=2)+'">'+ico(doneSteps>=2)+' Organizing positions</span>'+
+      '<span style="color:'+clr(doneSteps>=3)+'">'+ico(doneSteps>=3)+' Preparing your weekly decision</span>'+
     '</div>'+
   '</div></div>';
 }
@@ -5537,9 +5630,9 @@ async function queueImagesForExtraction(files){
   var key=getKey();
   if(!key){status.innerHTML='<div style="color:var(--clay);font-size:12px">API key required to extract from images. Set your key above.</div>';return;}
 
-  // Phase 1 — Scanning portfolio (file read)
-  status.innerHTML = _scanStep('Scanning portfolio…','Reading screenshot pixels and preparing for AI analysis', 0);
-  showAiToast('Scanning portfolio…','Reading positions and account totals');
+  // Phase 1 — Reading the file
+  status.innerHTML = _scanStep('Reading your portfolio…','Just a moment.', 0);
+  showAiToast('Reading your portfolio…','One moment.');
   scrollToEl('feasOutput','start');
 
   try{
@@ -5551,8 +5644,8 @@ async function queueImagesForExtraction(files){
       var mt='image/'+f.name.split('.').pop().toLowerCase().replace('jpg','jpeg');
       contentBlocks.push({type:'image',source:{type:'base64',media_type:mt,data:b64}});
     }
-    // Phase 2 — Reading positions (AI call begins)
-    status.innerHTML = _scanStep('Reading positions and account totals…','AI is parsing the brokerage layout · usually 8-15 seconds', 1);
+    // Phase 2 — Organizing positions
+    status.innerHTML = _scanStep('Organizing positions…','Working through the layout. Usually 8–15 seconds.', 1);
 
     // Brokerage screenshot extraction prompt — emits SUMMARY block first (authoritative
     // brokerage totals) then COUNT:N positions. Column definitions are explicit to prevent
@@ -5630,8 +5723,8 @@ async function queueImagesForExtraction(files){
     // Parse recurring investments
     var recurring=parseRecurring(recurringText);
 
-    // Phase 3 — Validating against brokerage totals
-    status.innerHTML = _scanStep('Validating against brokerage totals…','Cross-checking parsed positions vs Account Summary', 2);
+    // Phase 3 — Preparing the weekly decision (cross-check vs brokerage totals)
+    status.innerHTML = _scanStep('Preparing your weekly decision…','Cross-checking positions against your account totals.', 2);
 
     // VALIDATION GATE — cross-check parsed positions vs brokerage Account Summary.
     // Catches column-misread bugs (Last Price read as Cost-Per-Share, etc.) BEFORE
@@ -11212,9 +11305,9 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
           '<div class="wap-empty__checklist" aria-label="Setup progress">'+_wapChecklistHtml(cta.target)+'</div>' +
         '</div>' +
         '<div class="wap-empty__trust">' +
-          _wapTrustItem(ICON_LOCK,   'Private & Secure',     'Your data stays on your device',         'Your portfolio data stays local to this session unless you choose to save or deploy an action.') +
-          _wapTrustItem(ICON_TARGET, 'One Clear Action',     'No noise. Just your best move.',         'WAP gives one weekly move so you are not forced to compare multiple competing recommendations.') +
-          _wapTrustItem(ICON_SHIELD, 'Deterministic Engine', 'Rules-based. No AI. Always consistent.','The recommendation comes from fixed rules, not AI judgment, so the same inputs produce the same plan.') +
+          _wapTrustItem(ICON_LOCK,   'Private & Secure',     'Your data stays local unless you choose to save or deploy.', 'Your portfolio data stays on your device throughout this session. Saving or deploying is the only way it leaves.') +
+          _wapTrustItem(ICON_TARGET, 'One Clear Action',     'One decision per week. No competing recommendations.',      'One decision per week so you stay focused. No noise, no ranked alternatives, no comparison fatigue.') +
+          _wapTrustItem(ICON_SHIELD, 'Deterministic System', 'Same inputs. Same outcome. Every time.',                    'The decision comes from fixed rules. Same inputs always produce the same outcome — no model variance.') +
         '</div>' +
       '</div>';
     _wapBindTrustToggle(container);
@@ -11333,9 +11426,9 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
           (streak > 0 ? '<div class="wap-empty__streak">Discipline streak: '+streak+' '+(streak===1?'week':'weeks')+'</div>' : '') +
         '</div>' +
         '<div class="wap-empty__trust">' +
-          _wapTrustItem(_wapIconLock,   'Locked Until Monday',  'No second-guessing this week.',          'Your portfolio data stays local to this session unless you choose to save or deploy an action.') +
-          _wapTrustItem(_wapIconTarget, 'One Clear Action',     'Done. See you next week.',               'WAP gives one weekly move so you are not forced to compare multiple competing recommendations.') +
-          _wapTrustItem(_wapIconShield, 'Deterministic Engine', 'Rules-based. No AI. Always consistent.','The recommendation comes from fixed rules, not AI judgment, so the same inputs produce the same plan.') +
+          _wapTrustItem(_wapIconLock,   'Locked Until Monday',  'No second-guessing this week.',                              'Your portfolio data stays on your device. Saving or deploying is the only way it leaves.') +
+          _wapTrustItem(_wapIconTarget, 'One Clear Action',     'One decision per week. No competing recommendations.',      'Done for the week. One decision per week so you stay focused.') +
+          _wapTrustItem(_wapIconShield, 'Deterministic System', 'Same inputs. Same outcome. Every time.',                    'The decision comes from fixed rules. Same inputs always produce the same outcome — no model variance.') +
         '</div>' +
       '</div>';
     _wapBindTrustToggle(container);
@@ -11362,9 +11455,9 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
           '</div>' +
         '</div>' +
         '<div class="wap-empty__trust">' +
-          _wapTrustItem(_wapIconLock,   'Locked Until Monday',  'Plan resumes next week.',                'Your portfolio data stays local to this session unless you choose to save or deploy an action.') +
-          _wapTrustItem(_wapIconTarget, 'One Clear Action',     'Skipped — see you Monday.',              'WAP gives one weekly move so you are not forced to compare multiple competing recommendations.') +
-          _wapTrustItem(_wapIconShield, 'Deterministic Engine', 'Rules-based. No AI. Always consistent.','The recommendation comes from fixed rules, not AI judgment, so the same inputs produce the same plan.') +
+          _wapTrustItem(_wapIconLock,   'Locked Until Monday',  'Plan resumes next week.',                                    'Your portfolio data stays on your device. Saving or deploying is the only way it leaves.') +
+          _wapTrustItem(_wapIconTarget, 'One Clear Action',     'One decision per week. No competing recommendations.',      'Skipped this week. The next decision arrives Monday.') +
+          _wapTrustItem(_wapIconShield, 'Deterministic System', 'Same inputs. Same outcome. Every time.',                    'The decision comes from fixed rules. Same inputs always produce the same outcome — no model variance.') +
         '</div>' +
       '</div>';
     _wapBindTrustToggle(container);
@@ -11372,29 +11465,23 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
 
   /* DOM-mutate Phase 2's BUY render to add authority framing + optional streak chip.
      Idempotent — bails if already framed. Wrapped in try/catch — never breaks BUY render. */
+  /* Copilot-Money refinement: one calm header above the decision.
+     Replaces the previous three-line eye + kicker + rule with a single
+     "This Week's Move" label. Decision becomes the visual anchor — nothing
+     above it explains, recommends, or justifies. The reasoning lives behind
+     the collapsible "Why this move" added by _wapApplyExpandableWhy.
+     The streak line is preserved (calm discipline marker, not hype). */
   function _wapApplyBuyFraming(container){
     try {
       var main = container.querySelector('.wap__main');
-      var why = container.querySelector('.wap__why');
       var actions = container.querySelector('.wap__actions');
-      if (!main || !why || !actions) return;
-      if (container.querySelector('.wap__authority-eye')) return; /* already framed */
+      if (!main || !actions) return;
+      if (container.querySelector('.wap__week-header')) return; /* idempotent */
       var streak = _wapReadStreak();
-      var eye = document.createElement('div');
-      eye.className = 'wap__authority-eye';
-      eye.textContent = 'Based on your portfolio and strategy:';
-      main.parentNode.insertBefore(eye, main);
-      var decision = main.querySelector('.wap__decision');
-      if (decision) {
-        var kicker = document.createElement('div');
-        kicker.className = 'wap__authority-kicker';
-        kicker.textContent = 'Your move this week:';
-        main.insertBefore(kicker, decision);
-      }
-      var rule = document.createElement('div');
-      rule.className = 'wap__authority-rule';
-      rule.textContent = 'This meets all allocation and discipline rules.';
-      why.parentNode.insertBefore(rule, actions);
+      var header = document.createElement('div');
+      header.className = 'wap__week-header';
+      header.textContent = "This Week's Move";
+      main.parentNode.insertBefore(header, main);
       if (streak > 0) {
         var streakEl = document.createElement('div');
         streakEl.className = 'wap__streak';
@@ -11572,6 +11659,10 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
   }
 
   /* Append the collapsible "Why this move?" detail block */
+  /* Copilot-Money refinement: one collapsible holds ALL reasoning.
+     Default-collapsed. Summary line is calm ("Why this move →"). Body
+     contains both the qualitative narrative (was visible in .wap__why)
+     and the quantitative breakdown (Current / Target / Gap / Verdict). */
   function _wapApplyExpandableWhy(container, ctx, result){
     try {
       if (!ctx || !ctx.pick || !result || result.type !== 'BUY') return;
@@ -11580,26 +11671,40 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
       if (container.querySelector('.wap__detail')) return; /* idempotent */
       var p = ctx.pick;
       var helpsLine = (p.helpsConcentration && p.helpsBalance)
-        ? 'This move improves both balance and concentration in the current portfolio.'
+        ? 'This move keeps both balance and concentration on track.'
         : p.helpsConcentration
-          ? 'This move reduces dependence on the largest holding.'
+          ? 'This move reduces dependence on your largest holding.'
           : p.helpsBalance
-            ? 'This move improves structural balance against target weights.'
-            : 'This move continues building toward target structure.';
+            ? 'This move keeps structural balance on track.'
+            : 'This move continues building toward your target structure.';
       var rankStr = (p.rank != null) ? ('#' + p.rank) : '—';
+      /* Pull the in-place narrative lines from .wap__why so all reasoning
+         lives behind a single disclosure. Phase 2 source untouched. */
+      var whyItems = Array.prototype.map.call(
+        why.querySelectorAll('.wap__why-item'),
+        function(el){ return (el.textContent || '').trim(); }
+      ).filter(Boolean);
+      var narrativeHtml = whyItems.map(function(t){
+        return '<div class="wap__detail-narrative">'+_wapEsc(t)+'</div>';
+      }).join('') + '<div class="wap__detail-narrative">'+_wapEsc(helpsLine)+'</div>';
       var d = document.createElement('details');
       d.className = 'wap__detail';
+      /* Default collapsed — `open` attribute deliberately not set. */
       d.innerHTML =
-        '<summary>Why this move?</summary>' +
+        '<summary>Why this move <span class="wap__detail-arrow" aria-hidden="true">→</span></summary>' +
         '<div class="wap__detail-body">' +
-          '<div class="wap__detail-row"><span class="wap__detail-lbl">Current</span><span class="wap__detail-val">'+(p.currentWeight||0).toFixed(1)+'%</span></div>' +
-          '<div class="wap__detail-row"><span class="wap__detail-lbl">Target</span><span class="wap__detail-val">'+(p.targetWeight||0).toFixed(1)+'%</span></div>' +
-          '<div class="wap__detail-row"><span class="wap__detail-lbl">Gap</span><span class="wap__detail-val">'+(p.gap||0).toFixed(1)+' pp</span></div>' +
-          '<div class="wap__detail-row"><span class="wap__detail-lbl">Top read</span><span class="wap__detail-val">'+_wapEsc(rankStr)+'</span></div>' +
-          '<div class="wap__detail-row"><span class="wap__detail-lbl">Verdict</span><span class="wap__detail-val">'+_wapEsc(p.verdict||'')+'</span></div>' +
-          '<div class="wap__detail-row"><span class="wap__detail-lbl">Ticker</span><span class="wap__detail-val">'+_wapEsc(p.ticker||'')+'</span></div>' +
-          '<div class="wap__detail-narrative">'+_wapEsc(helpsLine)+'</div>' +
+          narrativeHtml +
+          '<div class="wap__detail-rows">' +
+            '<div class="wap__detail-row"><span class="wap__detail-lbl">Current</span><span class="wap__detail-val">'+(p.currentWeight||0).toFixed(1)+'%</span></div>' +
+            '<div class="wap__detail-row"><span class="wap__detail-lbl">Target</span><span class="wap__detail-val">'+(p.targetWeight||0).toFixed(1)+'%</span></div>' +
+            '<div class="wap__detail-row"><span class="wap__detail-lbl">Gap</span><span class="wap__detail-val">'+(p.gap||0).toFixed(1)+' pp</span></div>' +
+            '<div class="wap__detail-row"><span class="wap__detail-lbl">Top read</span><span class="wap__detail-val">'+_wapEsc(rankStr)+'</span></div>' +
+            '<div class="wap__detail-row"><span class="wap__detail-lbl">Verdict</span><span class="wap__detail-val">'+_wapEsc(p.verdict||'')+'</span></div>' +
+            '<div class="wap__detail-row"><span class="wap__detail-lbl">Ticker</span><span class="wap__detail-val">'+_wapEsc(p.ticker||'')+'</span></div>' +
+          '</div>' +
         '</div>';
+      /* Hide the original .wap__why — its content is now inside <details>. */
+      why.classList.add('wap__why--folded');
       why.parentNode.insertBefore(d, why.nextSibling);
     } catch(_){}
   }
