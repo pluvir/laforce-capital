@@ -2140,15 +2140,24 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
        ===================================================================== */
     #panel-discovery .disc-grid {
       grid-template-columns: 1fr;
+      grid-auto-rows: min-content;
       gap: 14px;
+      align-items: start;
     }
-    #panel-discovery .disc-feed-zone { width: 100%; min-width: 0; }
+    #panel-discovery .disc-feed-zone {
+      width: 100%; min-width: 0;
+      height: auto; min-height: 0;
+      align-self: start;
+    }
     #panel-discovery .disc-action-zone {
       width: 100%;
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-auto-rows: min-content;
       gap: 14px;
       align-items: start;
+      height: auto; min-height: 0;
+      align-self: start;
     }
     @media (max-width: 880px) {
       #panel-discovery .disc-action-zone { grid-template-columns: 1fr; }
@@ -2156,22 +2165,37 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     /* Ensure the disc2 cards container expands to the panel width and the
        inner two-column grid (Primary spans both, Secondaries 2-up) actually
        uses the breakpoint at full panel width rather than the old 50% column. */
-    #panel-discovery .disc2 { width: 100%; }
-    #panel-discovery .disc2-cards { width: 100%; }
+    #panel-discovery .disc2 { width: 100%; height: auto; min-height: 0; }
+    #panel-discovery .disc2-cards { width: 100%; height: auto; min-height: 0; gap: 8px; }
+    /* Tighter card density inside Discovery Phase 1 */
+    #panel-discovery .disc2-card { padding: 12px 14px; }
+    #panel-discovery .disc2-card-eye { margin-bottom: 6px; }
+    #panel-discovery .disc2-card-headline { font-size: 16px; line-height: 1.28; margin-bottom: 6px; }
+    #panel-discovery .disc2-block { padding: 6px 0; font-size: 12px; line-height: 1.5; }
+    #panel-discovery .disc2-card-foot { margin-top: 8px; padding-top: 7px; }
     /* Quick Signals as a horizontal strip at full width — 4 cells across a wide
        panel, stepping down to 2 then 1 on smaller widths. */
     #panel-discovery .disc-signals {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 4px 14px;
+      gap: 6px 14px;
       align-items: start;
+      margin-top: 0;             /* reset base 14px so it aligns with sibling search row */
+      padding: 12px 14px 10px;
     }
-    #panel-discovery .disc-signals-hd { grid-column: 1 / -1; }
+    #panel-discovery .disc-signals-hd { grid-column: 1 / -1; margin-bottom: 4px; }
     @media (min-width: 1180px) {
       #panel-discovery .disc-signals { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
     @media (max-width: 600px) {
-      #panel-discovery .disc-signals { grid-template-columns: 1fr; }
+      #panel-discovery .disc-signals { grid-template-columns: 1fr; padding: 10px 12px 8px; }
+      #panel-discovery .disc2-mode { flex-wrap: wrap; gap: 6px; padding: 5px; }
+      #panel-discovery .disc2-mode-btn { padding: 9px 13px; font-size: 11px; flex: 1 1 auto; min-width: 90px; }
+      #panel-discovery .disc2-mode-meta { display: none; }
+      #panel-discovery .disc2-card { padding: 11px 12px; }
+      #panel-discovery .disc2-card-headline { font-size: 15px; }
+      #panel-discovery .disc-search-row { flex-direction: column; align-items: stretch; gap: 8px; }
+      #panel-discovery .disc-action-zone { gap: 10px; }
     }
     /* Today's Pulse should also use the full width as a header strip. */
     #panel-discovery .disc-pulse-card { width: 100%; }
@@ -2218,9 +2242,10 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     }
     .disc2-mode-btn:hover { color: var(--cream-dim); background: rgba(255,255,255,.03); }
     .disc2-mode-btn.is-active {
-      background: linear-gradient(135deg, rgba(201,168,76,.18), rgba(201,168,76,.06));
-      color: var(--gold-light); border-color: rgba(201,168,76,.40);
-      box-shadow: 0 0 0 1px rgba(201,168,76,.15) inset;
+      background: linear-gradient(135deg, rgba(201,168,76,.32), rgba(201,168,76,.14));
+      color: var(--cream); border-color: rgba(201,168,76,.62);
+      box-shadow: 0 0 0 1px rgba(201,168,76,.30) inset, 0 4px 14px rgba(201,168,76,.18);
+      text-shadow: 0 0 12px rgba(201,168,76,.35);
     }
     .disc2-mode-btn:disabled { opacity: .42; cursor: not-allowed; }
     .disc2-mode-meta {
@@ -2239,7 +2264,6 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
 
     .disc2-cards {
       display: grid; grid-template-columns: 1fr; gap: 10px;
-      min-height: 80px;
     }
     @media (min-width: 980px) {
       .disc2-cards { grid-template-columns: 1fr 1fr; }
@@ -3091,19 +3115,19 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
         var cards = [
           { type:'primary', eye:'Primary Signal · Macro',
             headline:'Fed posture tilts toward one more cut',
-            impact:'Lower-for-longer rate path supports growth and cyclicals; financial conditions stay accommodative into Q3.',
+            impact:'Lower-for-longer rate path supports growth and cyclicals.',
             confidence:'High' },
           { type:'secondary', eye:'Sector · Energy',
-            headline:'Energy supply tightens; supportive for majors',
-            impact:'Sustained production discipline favors integrated majors over spec E&P. Position sizing should respect the volatility regime.',
+            headline:'Energy supply tightens; majors supported',
+            impact:'Production discipline favors majors over spec E&P.',
             confidence:'Medium' },
           { type:'secondary', eye:'Sector · Financials',
             headline:'Banks lag on net-interest pressure',
-            impact:'Margin compression and regional-bank stress overhang weigh on the lane. Underweight exposure remains the disciplined read.',
+            impact:'Margin compression weighs on the lane. Underweight stays the read.',
             confidence:'Medium' },
           { type:'secondary', eye:'Sector · Tech / AI',
             headline:'AI infrastructure spend stays elevated',
-            impact:'Hyperscaler capex guidance reinforces the semis + power-and-cooling thesis. Conviction in the lane stays constructive.',
+            impact:'Hyperscaler capex reinforces the semis + power thesis.',
             confidence:'High' }
         ].slice(0, MARKET_MAX);
 
@@ -3142,29 +3166,29 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
           { type:'portfolio-risk',
             eye:'Portfolio Risk · Concentration',
             headline:'VOO sits at 32% of the book',
-            impact:'A single name above 30% raises idiosyncratic risk and weakens lane balance.',
-            action:'Trim back toward target on the next strength window. Hold cash optionality until balance is restored.'
+            impact:'Single name above 30% raises idiosyncratic risk.',
+            action:'Trim toward target on the next strength window.'
           },
           { stance:'Add',
             eye:'GOOGL · Core',
             tag:'18.0% / 25.0%',
-            headline:'Underweight 7.0pp. Last buy 14d ago — eligible.',
-            impact:'Below target by 7.0pp. Adding here pulls allocation toward plan and respects cadence.',
-            action:'Allocate next contribution to GOOGL. Bring exposure toward 25.0%.'
+            headline:'Underweight 7.0pp. Eligible to add.',
+            impact:'Below target by 7.0pp. Adding pulls allocation toward plan.',
+            action:'Allocate next contribution to GOOGL.'
           },
           { stance:'Watch',
             eye:'NVDA · Core',
             tag:'5.6% / 8.3%',
-            headline:'Underweight 2.7pp but inside the cadence window.',
-            impact:'Underweight, but inside the cadence window. Wait for eligibility before deploying.',
-            action:'Hold off. Eligible to add once cadence window opens.'
+            headline:'Underweight 2.7pp; inside cadence window.',
+            impact:'Wait for the cadence window to open before deploying.',
+            action:'Hold off. Eligible once window opens.'
           },
           { stance:'Trim',
             eye:'SCHD · Legacy',
             tag:'2.0% / 0.0%',
-            headline:'Classified Legacy. New contributions stop here.',
-            impact:'Legacy lane. Capital is parked, not deployed. Treat any gain as a trim window.',
-            action:'No new contributions. Trim opportunistically into strength.'
+            headline:'Legacy lane. No new contributions.',
+            impact:'Capital is parked, not deployed.',
+            action:'Trim opportunistically into strength.'
           }
         ].slice(0, YOURS_MAX);
 
