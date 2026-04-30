@@ -349,6 +349,124 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
 .panel{display:none;padding:26px 30px}
 .panel.active{display:block;animation:fadeUp .3s ease}
 
+/* ===== Pass C — Dark scrollbar + dark surface to all edges ===================
+   Eliminates the white scroll gutter / flash that appears at the right and
+   bottom of the viewport. Uses existing tokens. Webkit + Firefox.
+   =========================================================================== */
+html, body, #app, #main { background: var(--noir); }
+* { scrollbar-color: rgba(201,168,76,.20) var(--noir-1); scrollbar-width: thin; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: var(--noir-1); }
+*::-webkit-scrollbar-thumb { background: rgba(201,168,76,.18); border-radius: 5px; border: 2px solid var(--noir-1); }
+*::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,.40); }
+*::-webkit-scrollbar-corner { background: var(--noir-1); }
+
+/* ===== Pass C — WAP visual anchor ============================================
+   Slightly more breathing room above and below the WAP container, plus a
+   subtle gold halo/lift consistent with existing tokens.
+   =========================================================================== */
+#panel-dashboard #wapContainer {
+  margin: 6px 0 32px;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px rgba(201,168,76,.10), 0 18px 52px rgba(0,0,0,.40);
+  transition: box-shadow .35s ease;
+}
+
+/* ===== Pass C — Hero collapse on portfolio active ============================
+   Hides the landing-style welcome hero whenever holdings exist. Class is
+   toggled by JS on dashboard show + on portfolio updates. Inline display:block
+   is cleared by JS so this rule wins. New users (no portfolio) still see it.
+   =========================================================================== */
+#welcomeHero.is-fortis-collapsed { display: none !important; }
+
+/* ===== Pass C — Collapsible card pattern =====================================
+   Applied to 5 dashboard cards via data-fortis-collapsible. JS wraps existing
+   non-title children in .fortis-collapsible-body and inserts a one-line
+   summary row + chevron. One open at a time across the group.
+   =========================================================================== */
+.fortis-collapsible-card { transition: border-color .22s ease, box-shadow .22s ease; }
+.fortis-collapsible-card.is-open {
+  border-color: rgba(201,168,76,.32);
+  box-shadow: 0 0 0 1px rgba(201,168,76,.06) inset, 0 8px 24px rgba(0,0,0,.30);
+}
+.fortis-collapsible-card .card-title.fortis-collapsible-title {
+  cursor: pointer; user-select: none;
+  padding: 6px 0 8px;
+  outline: none;
+  transition: color .18s ease;
+}
+.fortis-collapsible-card .card-title.fortis-collapsible-title:hover { color: var(--cream); }
+.fortis-collapsible-card .card-title.fortis-collapsible-title:focus-visible {
+  background: rgba(201,168,76,.04); border-radius: 6px;
+}
+.fortis-collapsible-header-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 0 8px;
+  cursor: pointer; user-select: none;
+}
+.fortis-collapsible-summary {
+  flex: 1; font-size: 12.5px; line-height: 1.6;
+  color: var(--text-2);
+  transition: color .18s ease;
+}
+.fortis-collapsible-card.is-open .fortis-collapsible-summary { color: var(--cream-dim); }
+.fortis-collapsible-card .fortis-collapsible-header-row:hover .fortis-collapsible-summary { color: var(--cream-dim); }
+.fortis-collapsible-arrow {
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  color: var(--text-3);
+  transition: transform .22s ease, color .22s ease;
+  flex-shrink: 0;
+}
+.fortis-collapsible-card.is-open .fortis-collapsible-arrow {
+  transform: rotate(90deg); color: var(--gold-light);
+}
+.fortis-collapsible-body {
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height .26s ease-out, opacity .22s ease-out, padding-top .22s ease;
+  padding-top: 0;
+}
+.fortis-collapsible-card.is-open .fortis-collapsible-body {
+  max-height: 8000px;
+  opacity: 1;
+  padding-top: 8px;
+}
+
+/* ===== Pass C — Density polish ==============================================
+   Slightly looser line-height on the summary lines and card-titles inside
+   collapsible cards so collapsed state doesn't feel cramped.
+   =========================================================================== */
+.fortis-collapsible-card .card-title { line-height: 1.4; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fortis-collapsible-body,
+  .fortis-collapsible-arrow,
+  .fortis-collapsible-card,
+  #panel-dashboard #wapContainer { transition: none !important; }
+}
+
+/* ===== Pass B — Flow Layer scaffolding =====================================
+   Adds staggered fade-in for the 5 marked flow steps inside #panel-dashboard.
+   Pure presentation. No interaction logic, no de-emphasis, no section reorder.
+   Steps stay fully interactive throughout the reveal. Pass C will add
+   click-to-focus / one-at-a-time / opacity de-emphasis on top of this.
+   =========================================================================== */
+.fortis-flow-step {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .35s ease, transform .35s ease;
+  will-change: opacity, transform;
+}
+.fortis-flow-step.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Premium spacing — modest separation between flow steps. */
+#panel-dashboard .fortis-flow-step + .fortis-flow-step { margin-top: 18px; }
+@media (prefers-reduced-motion: reduce) {
+  .fortis-flow-step,
+  .fortis-flow-step.is-revealed { opacity: 1; transform: none; transition: none; }
+}
+
 .ph{margin-bottom:26px}
 .ph-eye{font-size:11px;letter-spacing:.2em;color:var(--gold-dim);text-transform:uppercase;font-weight:600;margin-bottom:7px}
 .ph-title{font-family:"Cormorant Garamond",serif;font-size:34px;font-weight:300;color:var(--cream);line-height:1;margin-bottom:5px}
@@ -1821,7 +1939,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     }
     #wapContainer .wap__skip-confirm-actions button:hover { filter: brightness(1.1); }
   </style>
-  <section class="wap" id="wapContainer" aria-label="Weekly Action Plan"></section>
+  <section class="wap fortis-flow-step" data-flow-step="4" id="wapContainer" aria-label="Weekly Action Plan"></section>
   <div id="welcomeHero" class="wh">
     <div class="wh-eye">Institutional Grade &middot; Private &middot; Disciplined</div>
     <h1 class="wh-title">The institutional edge,<br><em>translated for everyday investors.</em></h1>
@@ -3660,8 +3778,8 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     <p class="ph-sub">Real-time health scoring, regime detection, allocation diagnosis, and a deployment plan from your portfolio data.</p>
   </div>
 
-  <!-- ROW 1: Health + Confidence + Regime -->
-  <div class="g3" style="margin-bottom:14px">
+  <!-- ROW 1: Health + Confidence + Regime — Flow Step 1 (Portfolio Status Summary) -->
+  <div class="g3 fortis-flow-step" data-flow-step="1" style="margin-bottom:14px">
     <div id="healthCard" class="card health-start" style="display:flex;align-items:center;gap:16px">
       <span class="health-start-lbl" aria-hidden="true">Start here</span>
       <div class="health-ring">
@@ -3725,22 +3843,22 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     </div>
   </div>
 
-  <!-- ROW 1.5: Strategy Paths · educational frames between diagnosis and action plan -->
-  <div class="card" style="margin-bottom:14px">
+  <!-- ROW 1.5: Strategy Paths · educational frames between diagnosis and action plan — Flow Step 3 -->
+  <div class="card fortis-flow-step" data-flow-step="3" data-fortis-collapsible="strategy-paths" style="margin-bottom:14px">
     <div class="card-title">Strategy Paths · Educational Frames</div>
     <div style="font-size:10px;color:var(--text-3);margin-bottom:14px">Three structural directions translated from your diagnosis. Educational frames — not recommendations.</div>
     <div id="strategyPathsEl"></div>
   </div>
 
-  <!-- ROW 2: Allocation Diagnosis + Risk Flags / Action Plan -->
-  <div class="g2" style="margin-bottom:14px">
-    <div class="card">
+  <!-- ROW 2: Allocation Diagnosis + Risk Flags / Action Plan — Flow Step 2 (Risk Flags) -->
+  <div class="g2 fortis-flow-step" data-flow-step="2" style="margin-bottom:14px">
+    <div class="card" data-fortis-collapsible="allocation">
       <div class="card-title">Actual vs Ideal Allocation</div>
       <div style="font-size:10px;color:var(--text-3);margin-bottom:14px">White line = ideal target. Bar = your actual. Gap = your action zone.</div>
       <div id="allocDiagnosis"></div>
     </div>
 
-    <div class="card">
+    <div class="card" data-fortis-collapsible="risk-flags">
       <div class="card-title">Risk Flags &amp; Action Plan</div>
       <div style="margin-bottom:14px">
         <div style="font-size:11px;letter-spacing:.12em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:8px">Risk Flags</div>
@@ -3753,9 +3871,9 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     </div>
   </div>
 
-  <!-- ROW 3: Deployment Plan + Stock Decision -->
-  <div class="g2" style="margin-bottom:14px">
-    <div class="card">
+  <!-- ROW 3: Deployment Plan + Stock Decision — Flow Step 5 (Expandable Details) -->
+  <div class="g2 fortis-flow-step" data-flow-step="5" style="margin-bottom:14px">
+    <div class="card" data-fortis-collapsible="deployment">
       <div class="card-title">Deployment Plan</div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
         <div style="flex:1">
@@ -3769,7 +3887,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       <div id="deployPlanEl"></div>
     </div>
 
-    <div class="card">
+    <div class="card" data-fortis-collapsible="stock-decision">
       <div class="card-title">Stock Decision Engine</div>
       <div style="display:flex;gap:8px;margin-bottom:14px">
         <input type="text" id="intelStockInput" value="NVDA" placeholder="NVDA" oninput="updateStockDecision()"
@@ -11741,6 +11859,185 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _wapBoot);
   else _wapBoot();
 })();
+
+/* =============================================================================
+ * Pass C — Collapse + Focus + Polish controller
+ * - Decorates 5 dashboard cards (data-fortis-collapsible) with a one-line
+ *   summary + chevron, wrapping non-title children in a body that animates
+ *   max-height + opacity. One open at a time across the dashboard group.
+ * - Hides #welcomeHero whenever a portfolio is loaded (calls into the existing
+ *   _holdings global; reactive to renderDashboard).
+ * - Idempotent. Safe to re-run. No engine / WAP / extraction touch.
+ * ========================================================================== */
+(function(global){
+  'use strict';
+  /* One-line summaries — calm, operator language, no hype. */
+  var SUMMARIES = {
+    'strategy-paths': 'Three educational frames — Conservative, Balanced, Aggressive.',
+    'allocation':     'Your actual allocation against the ideal target.',
+    'risk-flags':     'Active risk flags and the recommended actions.',
+    'deployment':     'Cash deployment plan based on regime and portfolio.',
+    'stock-decision': 'Run a deep stock analysis through your strategy lens.'
+  };
+
+  function _esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+  function _decorate(card){
+    if (!card || card.__fortisDecorated) return;
+    var key = card.getAttribute('data-fortis-collapsible');
+    var titleEl = card.querySelector('.card-title');
+    if (!titleEl) return;
+
+    /* Wrap subsequent siblings of .card-title into a body div without
+       reordering them. The original child IDs stay reachable via getElementById. */
+    var body = document.createElement('div');
+    body.className = 'fortis-collapsible-body';
+    var sib = titleEl.nextSibling;
+    while (sib){
+      var nx = sib.nextSibling;
+      body.appendChild(sib);
+      sib = nx;
+    }
+
+    /* Inject a one-line summary + chevron row right between title and body. */
+    var headerRow = document.createElement('div');
+    headerRow.className = 'fortis-collapsible-header-row';
+    headerRow.innerHTML =
+      '<div class="fortis-collapsible-summary">' + _esc(SUMMARIES[key] || '') + '</div>' +
+      '<span class="fortis-collapsible-arrow" aria-hidden="true">▸</span>';
+
+    card.appendChild(headerRow);
+    card.appendChild(body);
+
+    /* Make the .card-title and the header-row clickable + keyboard-focusable. */
+    titleEl.classList.add('fortis-collapsible-title');
+    titleEl.setAttribute('tabindex', '0');
+    titleEl.setAttribute('role', 'button');
+    titleEl.setAttribute('aria-expanded', 'false');
+    var bodyId = 'fortis-disc-body-' + key;
+    body.id = bodyId;
+    titleEl.setAttribute('aria-controls', bodyId);
+
+    function clickHandler(e){
+      /* Don't toggle if the click originated inside a form control or button
+         within the body — those are already inside an open card and should
+         operate normally. The header-row + title only fire when clicked on
+         the title/summary/arrow text itself. */
+      var t = e.target;
+      if (t && t !== titleEl && t !== headerRow && !headerRow.contains(t) && !titleEl.contains(t)) return;
+      e.stopPropagation();
+      _toggle(card);
+    }
+    titleEl.addEventListener('click', clickHandler);
+    headerRow.addEventListener('click', clickHandler);
+    titleEl.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' '){
+        e.preventDefault(); _toggle(card);
+      }
+    });
+
+    card.classList.add('fortis-collapsible-card');
+    card.__fortisDecorated = true;
+  }
+
+  function _toggle(card){
+    var willOpen = !card.classList.contains('is-open');
+    /* Single-open per group: close any other open collapsible card in the dashboard. */
+    var others = document.querySelectorAll('#panel-dashboard .fortis-collapsible-card.is-open');
+    Array.prototype.forEach.call(others, function(o){
+      o.classList.remove('is-open');
+      var ot = o.querySelector('.fortis-collapsible-title');
+      if (ot) ot.setAttribute('aria-expanded', 'false');
+    });
+    if (willOpen){
+      card.classList.add('is-open');
+      var t = card.querySelector('.fortis-collapsible-title');
+      if (t) t.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  function _decorateAll(){
+    var cards = document.querySelectorAll('[data-fortis-collapsible]');
+    Array.prototype.forEach.call(cards, _decorate);
+  }
+
+  /* ── Hero hide ─────────────────────────────────────────────────────────
+     Hide #welcomeHero whenever holdings exist. Existing show/hide JS uses
+     inline style="display:block" on Clear All — we clear that inline value
+     when a portfolio exists so the .is-fortis-collapsed class can take effect. */
+  function _heroSync(){
+    var wh = document.getElementById('welcomeHero');
+    if (!wh) return;
+    var hasPortfolio = !!(global._holdings && global._holdings.length > 0);
+    if (hasPortfolio){
+      wh.style.display = '';
+      wh.classList.add('is-fortis-collapsed');
+    } else {
+      wh.classList.remove('is-fortis-collapsed');
+    }
+  }
+
+  function _hookRenderDashboard(){
+    if (typeof global.renderDashboard !== 'function' || global.renderDashboard.__fortisHeroWrapped) return;
+    var orig = global.renderDashboard;
+    var wrapped = function(){
+      var r = orig.apply(this, arguments);
+      try { _heroSync(); } catch(_){}
+      return r;
+    };
+    wrapped.__fortisHeroWrapped = true;
+    global.renderDashboard = wrapped;
+  }
+
+  function _start(){
+    _decorateAll();
+    _heroSync();
+    _hookRenderDashboard();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _start);
+  else _start();
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* =============================================================================
+ * Pass B — Flow Layer scaffolding controller
+ * Stagger-reveals the 5 marked .fortis-flow-step sections inside #panel-dashboard
+ * in DOM order. One-time animation per page load. No interaction logic.
+ * No section reorder. No click-to-focus / de-emphasis (Pass C).
+ * ========================================================================== */
+(function(global){
+  'use strict';
+  var STAGGER_MS = 180;
+  function _flowReveal(){
+    var panel = document.getElementById('panel-dashboard');
+    if (!panel || panel.__flowRevealed) return;
+    panel.__flowRevealed = true;
+    var steps = panel.querySelectorAll('.fortis-flow-step');
+    Array.prototype.forEach.call(steps, function(step, i){
+      setTimeout(function(){ step.classList.add('is-revealed'); }, i * STAGGER_MS);
+    });
+  }
+  /* Wrap showPanel so the reveal fires whenever the dashboard becomes active.
+     The wrapper guards `__flowRevealed` so re-shows don't re-animate. */
+  function _hookShowPanel(){
+    if (typeof global.showPanel !== 'function' || global.showPanel.__flowWrapped) return;
+    var orig = global.showPanel;
+    var wrapped = function(name, btn){
+      var r = orig.apply(this, arguments);
+      if (name === 'dashboard') { try { _flowReveal(); } catch(_){} }
+      return r;
+    };
+    wrapped.__flowWrapped = true;
+    global.showPanel = wrapped;
+  }
+  function _start(){
+    _hookShowPanel();
+    /* Dashboard is the default-active panel — fire immediately on load. */
+    var p = document.getElementById('panel-dashboard');
+    if (p && p.classList.contains('active')) _flowReveal();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _start);
+  else _start();
+})(typeof window !== 'undefined' ? window : globalThis);
 </script>
 
 </body>
