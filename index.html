@@ -2969,35 +2969,21 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     /* =========================================================================
      * Discovery v2 — Market / Yours toggle + structured cards
      * Spec: project_discovery_v2_spec.md, project_fortis_voice.md
-     * Phase B1: shell + deterministic Yours stance using existing data.
-     *           Market mode uses placeholder cards (voice-compliant) until
-     *           AI wiring lands in Phase B2.
-     * Architecture:
-     *   - Pure render; mode persisted in window._disc2State and localStorage
-     *   - Yours stance is deterministic — derived from drift + last buy days +
-     *     classification. Audit trail: every card carries the rule that fired
-     *     in data-disc2-rule for SEC/state-scrutiny defensibility.
-     *   - AI is called only for explanations, never for stance decisions.
+     *
+     * PHASE 1 — UI ONLY. Static / mock data only. No logic. No WAP integration.
+     *   Goal: prove layout, spacing, and visual clarity.
+     *   Phase 2 will introduce deterministic stance generation.
+     *   Phase 3 will align Discovery with WAP outputs.
+     *
+     * Do NOT add deterministic logic, holdings reads, drift math, or WAPAdapters
+     * calls in this file until Phase 1 is signed off. Mixing phases is a violation
+     * of the build-sequencing rule (see feedback_phase_gating.md).
      * ====================================================================== */
     (function(global){
       'use strict';
 
-      // ----- Constants (mirror WAP) -----
-      var MIN_DAYS = 7;          // matches WAP MIN_DAYS — eligibility window
-      var DRIFT_TRIM = 5;        // pp overweight before stance flips to Trim
-      var DRIFT_ADD  = -5;       // pp underweight before stance flips to Add/Watch
       var YOURS_MAX  = 5;        // hard cap per spec
       var MARKET_MAX = 6;        // hard cap per spec
-
-      // Target weights — bucket-split derivation. Until WAP target-mix adapter
-      // is wired, these mirror the contribution-plan bucket logic.
-      // CORE = 50%, WATCHLIST = 30%, LEGACY = 0% (no new contributions).
-      var TARGET_WEIGHTS = {
-        VOO:   25,
-        GOOGL: 8.33,  AMZN: 8.33,  NVDA: 8.34,         // CORE growth (25% / 3)
-        META:  15,    LMT:  15,                        // WATCHLIST (30% / 2)
-        SCHD:   0,    RCL:   0,    CCL:   0, NCLH: 0   // LEGACY → no target weight
-      };
 
       function _esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
@@ -3054,20 +3040,14 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       }
 
       // ===== MARKET MODE =====
-      // Phase B1: voice-compliant placeholder cards. Phase B2 wires the AI call
-      // through the laforce-api proxy and parses to this same shape.
+      // PHASE 1: 1 Primary + 3 Secondary mock cards.
+      // Phase 2 replaces with deterministic generation.
       function _disc2RenderMarket(){
-        // Placeholder card set — operator voice, no hype, structured.
-        // Each card has: type (primary|secondary|risk), eye, headline, impact, confidence.
         var cards = [
           { type:'primary', eye:'Primary Signal · Macro',
             headline:'Fed posture tilts toward one more cut',
             impact:'Lower-for-longer rate path supports growth and cyclicals; financial conditions stay accommodative into Q3.',
             confidence:'High' },
-          { type:'primary', eye:'Primary Signal · Breadth',
-            headline:'Leadership narrows to mega-cap tech',
-            impact:'Index gains driven by a thinning roster of names. Rally durability depends on broader participation by mid-cap.',
-            confidence:'Medium' },
           { type:'secondary', eye:'Sector · Energy',
             headline:'Energy supply tightens; supportive for majors',
             impact:'Sustained production discipline favors integrated majors over spec E&P. Position sizing should respect the volatility regime.',
@@ -3079,11 +3059,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
           { type:'secondary', eye:'Sector · Tech / AI',
             headline:'AI infrastructure spend stays elevated',
             impact:'Hyperscaler capex guidance reinforces the semis + power-and-cooling thesis. Conviction in the lane stays constructive.',
-            confidence:'High' },
-          { type:'risk', eye:'Watch · Inflation',
-            headline:'Sticky services inflation is the swing risk',
-            impact:'A hot CPI print could compress the rate-cut path and reset positioning. Keep cash optionality and avoid late-cycle leverage.',
-            confidence:'Medium' }
+            confidence:'High' }
         ].slice(0, MARKET_MAX);
 
         global._disc2State.marketCards = cards;
@@ -3111,145 +3087,82 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       }
 
       // ===== YOURS MODE =====
+      // PHASE 1: 1 Portfolio Risk + 3 holding cards covering the most action-
+      // oriented stances (Add / Watch / Trim). Hold is omitted from Phase 1
+      // because the no-action card adds the least visual signal.
+      // Phase 2 replaces with deterministic stance derived from holdings.
+      // Phase 3 aligns with WAP outputs.
       function _disc2RenderYours(){
-        var holdings = (global._holdings || []).filter(function(h){ return h && h.sym && (Number(h.mktVal) > 0); });
-        if (!holdings.length) {
-          return '<div class="disc2-empty">'
-            + '<div class="disc2-empty-eye">Yours · Locked</div>'
-            + '<div class="disc2-empty-line">Scan portfolio to surface the read tied to your positions.</div>'
-            + '<button type="button" class="disc2-empty-cta" onclick="showPanel(\'portfolio\',document.querySelectorAll(\'.nav-item\')[2])">Scan portfolio →</button>'
-            + '</div>';
-        }
-        var totalVal = holdings.reduce(function(s,h){ return s + Number(h.mktVal||0); }, 0);
-        if (totalVal <= 0) totalVal = 1; // avoid /0
-
-        // Build deterministic stance per holding, then rank by importance:
-        // Trim (overweight or LEGACY) ranks higher than Add (eligible underweight)
-        // higher than Watch (underweight, in-window) higher than Hold.
-        var rows = holdings.map(function(h){
-          var weight = (Number(h.mktVal) / totalVal) * 100;
-          var target = (TARGET_WEIGHTS[h.sym] != null) ? TARGET_WEIGHTS[h.sym] : null;
-          var drift  = (target == null) ? null : (weight - target);
-          var classification = (global.WAPAdapters && global.WAPAdapters.getTickerClassification)
-            ? global.WAPAdapters.getTickerClassification(h.sym)
-            : 'LEGACY';
-          var lastBuy = (global.WAPAdapters && global.WAPAdapters.getLastBuy)
-            ? global.WAPAdapters.getLastBuy(h.sym)
-            : null;
-          var daysSince = lastBuy && lastBuy.date
-            ? Math.floor((Date.now() - new Date(lastBuy.date).getTime()) / (24*3600*1000))
-            : null;
-
-          // ----- Stance rules (priority-ordered, deterministic) -----
-          var stance = 'Hold';
-          var rule   = 'default-hold';
-          var reason = '';
-          if (classification === 'LEGACY') {
-            stance = 'Trim';
-            rule   = 'rule-1-legacy';
-            reason = 'Classified Legacy. New contributions stop here.';
-          } else if (drift != null && drift >= DRIFT_TRIM) {
-            stance = 'Trim';
-            rule   = 'rule-2-overweight';
-            reason = 'Position is ' + drift.toFixed(1) + 'pp over target (' + weight.toFixed(1) + '% / ' + target.toFixed(1) + '%).';
-          } else if (drift != null && drift <= DRIFT_ADD && daysSince != null && daysSince >= MIN_DAYS) {
-            stance = 'Add';
-            rule   = 'rule-3-eligible-underweight';
-            reason = 'Underweight ' + Math.abs(drift).toFixed(1) + 'pp. Last buy ' + daysSince + 'd ago — eligible.';
-          } else if (drift != null && drift <= DRIFT_ADD) {
-            stance = 'Watch';
-            rule   = 'rule-4-window-underweight';
-            reason = 'Underweight ' + Math.abs(drift).toFixed(1) + 'pp but inside ' + MIN_DAYS + '-day cadence' + (daysSince != null ? ' (last buy ' + daysSince + 'd ago)' : '') + '.';
-          } else {
-            stance = 'Hold';
-            rule   = 'rule-5-in-band';
-            reason = (drift != null)
-              ? 'Drift ' + (drift >= 0 ? '+' : '') + drift.toFixed(1) + 'pp — inside band.'
-              : 'No target set. Treat as Hold pending classification.';
+        var cards = [
+          { type:'portfolio-risk',
+            eye:'Portfolio Risk · Concentration',
+            headline:'VOO sits at 32% of the book',
+            impact:'A single name above 30% raises idiosyncratic risk and weakens lane balance.',
+            action:'Trim back toward target on the next strength window. Hold cash optionality until balance is restored.'
+          },
+          { stance:'Add',
+            eye:'GOOGL · Core',
+            tag:'18.0% / 25.0%',
+            headline:'Underweight 7.0pp. Last buy 14d ago — eligible.',
+            impact:'Below target by 7.0pp. Adding here pulls allocation toward plan and respects cadence.',
+            action:'Allocate next contribution to GOOGL. Bring exposure toward 25.0%.'
+          },
+          { stance:'Watch',
+            eye:'NVDA · Core',
+            tag:'5.6% / 8.3%',
+            headline:'Underweight 2.7pp but inside the cadence window.',
+            impact:'Underweight, but inside the cadence window. Wait for eligibility before deploying.',
+            action:'Hold off. Eligible to add once cadence window opens.'
+          },
+          { stance:'Trim',
+            eye:'SCHD · Legacy',
+            tag:'2.0% / 0.0%',
+            headline:'Classified Legacy. New contributions stop here.',
+            impact:'Legacy lane. Capital is parked, not deployed. Treat any gain as a trim window.',
+            action:'No new contributions. Trim opportunistically into strength.'
           }
-          return {
-            sym: h.sym, weight: weight, target: target, drift: drift,
-            classification: classification, daysSince: daysSince,
-            stance: stance, rule: rule, reason: reason
-          };
-        });
+        ].slice(0, YOURS_MAX);
 
-        // Priority for the 5-card cap: Trim > Add > Watch > Hold; within tier, by |drift|.
-        var pri = { Trim:0, Add:1, Watch:2, Hold:3 };
-        rows.sort(function(a,b){
-          if (pri[a.stance] !== pri[b.stance]) return pri[a.stance] - pri[b.stance];
-          var da = (a.drift==null) ? 0 : Math.abs(a.drift);
-          var db = (b.drift==null) ? 0 : Math.abs(b.drift);
-          return db - da;
-        });
-        var top = rows.slice(0, YOURS_MAX);
-
-        // Optional Portfolio Risk card if there's a >30% concentration breach.
-        var biggest = rows.slice().sort(function(a,b){ return b.weight - a.weight; })[0];
-        var riskCard = '';
-        if (biggest && biggest.weight >= 30) {
-          riskCard = '<div class="disc2-card is-portfolio-risk">'
-            + '<div class="disc2-card-eye">Portfolio Risk · Concentration</div>'
-            + '<div class="disc2-card-headline">' + _esc(biggest.sym) + ' is ' + biggest.weight.toFixed(1) + '% of the book</div>'
-            + '<div class="disc2-block"><div class="disc2-block-lbl">→ Portfolio Impact</div>'
-            +   '<div class="disc2-block-val">A single name above 30% raises idiosyncratic risk. Lane balance and rebalance discipline matter more than the next contribution.</div>'
-            + '</div>'
-            + '<div class="disc2-block"><div class="disc2-block-lbl">→ Action</div>'
-            +   '<div class="disc2-block-val">Trim back toward target on the next strength window. Hold cash optionality until balance is restored.</div>'
-            + '</div>'
-            + '</div>';
-        }
-
-        global._disc2State.yoursCards = top;
+        global._disc2State.yoursCards = cards;
         global._disc2State.lastFetch = Date.now();
         _disc2RenderToggle();
 
-        return riskCard + top.map(_disc2CardYours).join('');
+        return cards.map(_disc2CardYoursMock).join('');
       }
 
-      function _disc2CardYours(r){
-        var cls = (r.classification || 'core').toLowerCase();
-        // Action line — operator language, derived from stance + drift
-        var action = '';
-        if (r.stance === 'Add') {
-          action = 'Allocate next contribution to ' + r.sym + '. Bring exposure toward ' + (r.target!=null ? r.target.toFixed(1)+'%' : 'target') + '.';
-        } else if (r.stance === 'Trim') {
-          action = (r.classification === 'LEGACY')
-            ? 'No new contributions. Trim opportunistically into strength.'
-            : 'Trim back toward ' + (r.target!=null ? r.target.toFixed(1)+'%' : 'target') + ' on the next up-move.';
-        } else if (r.stance === 'Watch') {
-          action = 'Hold off. Eligible to add once cadence window opens (' + MIN_DAYS + 'd post last buy).';
-        } else {
-          action = 'No move needed. Hold and let the cadence run.';
+      function _disc2CardYoursMock(c){
+        if (c.type === 'portfolio-risk') {
+          return '<div class="disc2-card is-portfolio-risk">'
+            + '<div class="disc2-card-eye"><span>' + _esc(c.eye) + '</span></div>'
+            + '<div class="disc2-card-headline">' + _esc(c.headline) + '</div>'
+            + '<div class="disc2-block">'
+            +   '<div class="disc2-block-lbl">→ Portfolio Impact</div>'
+            +   '<div class="disc2-block-val">' + _esc(c.impact) + '</div>'
+            + '</div>'
+            + '<div class="disc2-block">'
+            +   '<div class="disc2-block-lbl">→ Action</div>'
+            +   '<div class="disc2-block-val">' + _esc(c.action) + '</div>'
+            + '</div>'
+            + '</div>';
         }
-        return '<div class="disc2-card" data-disc2-rule="' + _esc(r.rule) + '">'
+        return '<div class="disc2-card">'
           + '<div class="disc2-card-eye">'
-          +   '<span>' + _esc(r.sym) + ' · ' + _esc(cls.charAt(0).toUpperCase()+cls.slice(1)) + '</span>'
-          +   '<span class="disc2-card-eye-tag">' + r.weight.toFixed(1) + '%' + (r.target!=null ? ' / ' + r.target.toFixed(1) + '%' : '') + '</span>'
+          +   '<span>' + _esc(c.eye) + '</span>'
+          +   '<span class="disc2-card-eye-tag">' + _esc(c.tag) + '</span>'
           + '</div>'
-          + '<div class="disc2-card-headline">' + _esc(r.reason) + '</div>'
-          + '<div class="disc2-block"><div class="disc2-block-lbl">→ Portfolio Impact</div>'
-          +   '<div class="disc2-block-val">' + _esc(_disc2ImpactLine(r)) + '</div>'
+          + '<div class="disc2-card-headline">' + _esc(c.headline) + '</div>'
+          + '<div class="disc2-block">'
+          +   '<div class="disc2-block-lbl">→ Portfolio Impact</div>'
+          +   '<div class="disc2-block-val">' + _esc(c.impact) + '</div>'
           + '</div>'
-          + '<div class="disc2-block"><div class="disc2-block-lbl">→ Action</div>'
-          +   '<div class="disc2-block-val">' + _esc(action) + '</div>'
+          + '<div class="disc2-block">'
+          +   '<div class="disc2-block-lbl">→ Action</div>'
+          +   '<div class="disc2-block-val">' + _esc(c.action) + '</div>'
           + '</div>'
           + '<div class="disc2-card-foot">'
-          +   '<span class="disc2-stance is-' + r.stance.toLowerCase() + '">' + r.stance + '</span>'
+          +   '<span class="disc2-stance is-' + c.stance.toLowerCase() + '">' + _esc(c.stance) + '</span>'
           + '</div>'
           + '</div>';
-      }
-
-      function _disc2ImpactLine(r){
-        if (r.classification === 'LEGACY')
-          return 'Legacy lane. Capital is parked, not deployed. Treat any gain as a trim window.';
-        if (r.stance === 'Add')
-          return 'Below target by ' + Math.abs(r.drift).toFixed(1) + 'pp. Adding here pulls allocation toward plan and respects cadence.';
-        if (r.stance === 'Trim')
-          return 'Above target by ' + r.drift.toFixed(1) + 'pp. Trimming protects portfolio balance and frees capital for underweight names.';
-        if (r.stance === 'Watch')
-          return 'Underweight, but inside the cadence window. Wait for eligibility before deploying.';
-        return 'Position sits inside the target band. Lane balance is intact.';
       }
 
       // ----- Init / lazy mount -----
@@ -3274,32 +3187,11 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
         global.showPanel = wrapped;
       }
 
-      // Re-render Yours on portfolio updates (so a fresh scan flips the empty state).
-      // Listen on a custom event the portfolio render emits if present, fall back
-      // to a MutationObserver on the holdings table for resilience.
-      function _disc2HookPortfolio(){
-        try {
-          // If renderDashboard / renderLabTable exists, monkey-patch to fire a refresh.
-          if (typeof global.renderDashboard === 'function' && !global.renderDashboard.__disc2Wrapped) {
-            var origRD = global.renderDashboard;
-            var wrapped = function(){
-              var r = origRD.apply(this, arguments);
-              try {
-                if (global._disc2State && global._disc2State.mode === 'yours') {
-                  _disc2RenderCards();
-                }
-              } catch(_){}
-              return r;
-            };
-            wrapped.__disc2Wrapped = true;
-            global.renderDashboard = wrapped;
-          }
-        } catch(_){}
-      }
+      // Phase 2 will hook portfolio update events here so Yours re-renders on
+      // a fresh scan. Phase 1 is UI-only — no portfolio reads.
 
       function _start(){
         _disc2HookShowPanel();
-        _disc2HookPortfolio();
         _disc2Init();
       }
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _start);
