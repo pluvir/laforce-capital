@@ -3048,6 +3048,103 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       font-family: 'DM Mono', monospace; font-size: 10.5px; letter-spacing: .14em;
       text-transform: uppercase; font-weight: 700; color: var(--sage);
     }
+    /* ===== Phase 17a — Contribution edit + guardrails + interpretive line ===== */
+    #wapContainer .wap__contribution {
+      display: inline-flex; align-items: baseline; gap: 6px;
+    }
+    #wapContainer .wap__contrib-display { font-variant-numeric: tabular-nums; }
+    #wapContainer .wap__contrib-edit {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px;
+      padding: 0; margin-left: 2px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--text-3);
+      cursor: pointer;
+      font-family: inherit; font-size: 11px; line-height: 1;
+      transition: color .15s ease, border-color .15s ease, background-color .15s ease;
+    }
+    #wapContainer .wap__contrib-edit:hover,
+    #wapContainer .wap__contrib-edit:focus-visible {
+      color: var(--gold-light);
+      border-color: rgba(201,168,76,.45);
+      background: rgba(201,168,76,.05);
+      outline: none;
+    }
+    #wapContainer .wap__contrib-input-wrap {
+      display: inline-flex; align-items: baseline; gap: 4px;
+    }
+    #wapContainer .wap__contrib-currency {
+      color: var(--text-3); font-family: inherit;
+    }
+    #wapContainer .wap__contrib-input {
+      font-family: inherit; font-size: inherit;
+      width: 64px; padding: 1px 4px;
+      background: rgba(0,0,0,.3);
+      border: 1px solid rgba(201,168,76,.40);
+      border-radius: 4px;
+      color: var(--cream-dim);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      outline: none;
+      -moz-appearance: textfield;
+    }
+    #wapContainer .wap__contrib-input::-webkit-outer-spin-button,
+    #wapContainer .wap__contrib-input::-webkit-inner-spin-button {
+      -webkit-appearance: none; margin: 0;
+    }
+    #wapContainer .wap__contrib-input:focus { border-color: var(--gold); }
+    #wapContainer .wap__contrib-sub {
+      color: var(--text-3); font-family: inherit;
+    }
+
+    #wapContainer .wap__guardrails {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin: 14px 0 12px;
+    }
+    #wapContainer .wap__guard {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: 999px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10.5px; letter-spacing: .12em;
+      text-transform: uppercase; font-weight: 700;
+      border: 1px solid;
+      transition: opacity .18s ease;
+    }
+    #wapContainer .wap__guard-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+    #wapContainer .wap__guard--on {
+      color: var(--sage);
+      border-color: rgba(107,170,117,.32);
+      background: rgba(107,170,117,.06);
+    }
+    #wapContainer .wap__guard--off {
+      color: var(--text-3);
+      border-color: var(--border);
+      background: rgba(255,255,255,.02);
+      opacity: .65;
+    }
+
+    #wapContainer .wap__interpretive {
+      margin: 8px 0 14px;
+      padding: 10px 14px;
+      border-left: 2px solid rgba(201,168,76,.35);
+      background: rgba(201,168,76,.04);
+      border-radius: 0 6px 6px 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 14.5px;
+      color: var(--cream-dim);
+      line-height: 1.5;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #wapContainer .wap__contrib-edit,
+      #wapContainer .wap__guard { transition: none; }
+    }
     #wapContainer .wap__skip-confirm {
       display: flex; flex-direction: column; gap: 10px;
       padding: 14px 16px; border-radius: 8px;
@@ -12717,7 +12814,9 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
       }
       var ps = window.portfolioState || {};
       var holdings = ps.holdings || [];
-      var contribution = ps.cash || 0;
+      /* Phase 17a — contribution sourced from localStorage with $100 default.
+         Falls back to ps.cash for backward compat. */
+      var contribution = _wapGetContribution();
       var weekOf = _wapMondayOfWeek();
       if (!holdings.length) {
         window.WAPUi.render(container, { state:'FAIL_CLOSED', contribution:null, weekOf:weekOf,
@@ -12739,6 +12838,10 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
       /* Phase 5 — derive portfolio context and stash on view for the wrapper to read */
       var portfolioContext = null;
       try { portfolioContext = _wapDeriveContext(state, result); } catch(_){}
+      /* Phase 17a — enrich engine output with deterministic guardrails.
+         Engine result is not mutated; an enriched copy with .guardrails and
+         a stable .amount field is passed downstream. */
+      result = _wapEnrichResult(result, state, portfolioContext);
       window.WAPUi.render(container, { result: result, contribution: contribution, weekOf: weekOf, portfolioContext: portfolioContext });
     } catch(e) {
       if (typeof addPortfolioError === 'function') addPortfolioError(e && e.message || e, '_renderWAP');
@@ -13437,6 +13540,261 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
   /* One-time wrapper around WAPUi.render. Intercepts FAIL_CLOSED for the premium
      empty state; falls through to Phase 2 unchanged for BUY/PARK_CASH/REBALANCE.
      Phase 2 source (wap/ui.js, wap/ui.css) untouched. */
+
+  /* ===== Phase 17a — Contribution storage + guardrails + interpretive line ====
+     Three deterministic additions to the WAP card. None touch the engine.
+
+     1. Contribution amount: read/write to localStorage 'fortis_contribution_v1'.
+        Default $100 (Rod's baseline) when no value is set. Falls back to
+        portfolioState.cash for backward-compat with the existing flow.
+     2. Guardrails: enrich the engine result with { conviction, balance,
+        cadence } booleans, computed from the same state the engine saw.
+        Same inputs → same outputs.
+     3. Interpretive line: deterministic one-line template per result.type
+        and ticker existence. No AI, no model variance.
+     ============================================================================ */
+  var WAP_CONTRIB_KEY = 'fortis_contribution_v1';
+
+  function _wapGetContribution(){
+    try {
+      var raw = localStorage.getItem(WAP_CONTRIB_KEY);
+      var v = parseFloat(raw);
+      if (isFinite(v) && v > 0) return Math.round(v);
+    } catch(_){}
+    /* Fallback to existing portfolioState.cash flow for backward compat. */
+    try {
+      var ps = window.portfolioState || {};
+      if (typeof ps.cash === 'number' && ps.cash > 0) return Math.round(ps.cash);
+    } catch(_){}
+    return 100; /* Rod's baseline contribution per profile. */
+  }
+
+  function _wapSetContribution(amount){
+    var n = parseFloat(amount);
+    if (!isFinite(n) || n <= 0) return false;
+    n = Math.round(n);
+    try { localStorage.setItem(WAP_CONTRIB_KEY, String(n)); } catch(_){}
+    /* Keep portfolioState.cash + #intelCashInput in sync so the deploy plan
+       and other surfaces that read ps.cash see the same value. The Phase 4
+       setPortfolioCash wrap will fire _renderWAP, but we re-render below
+       to ensure the WAP card reflects the new amount immediately. */
+    try {
+      if (typeof window.setPortfolioCash === 'function') {
+        window.setPortfolioCash(n);
+      } else if (window.portfolioState) {
+        window.portfolioState.cash = n;
+      }
+    } catch(_){}
+    try {
+      var input = document.getElementById('intelCashInput');
+      if (input && input.value != n) input.value = n;
+    } catch(_){}
+    return true;
+  }
+
+  /* Compute three deterministic guardrails from result + state + ctx. */
+  function _wapComputeGuardrails(result, state, ctx){
+    var rails = { conviction: false, balance: false, cadence: false };
+    if (!result || !result.type) return rails;
+
+    /* CONVICTION — a decisive move (BUY or REBALANCE) clears conviction.
+       PARK_CASH means no candidate cleared the rank threshold → fail. */
+    rails.conviction = (result.type === 'BUY' || result.type === 'REBALANCE');
+
+    /* BALANCE — the move pulls allocation toward target structure.
+       REBALANCE always restores balance. BUY clears if the picked ticker
+       has a positive gap or ctx.helpsBalance is true. PARK_CASH does not
+       move balance → fail. */
+    if (result.type === 'REBALANCE') {
+      rails.balance = true;
+    } else if (result.type === 'BUY' && ctx && ctx.pick) {
+      rails.balance = !!ctx.pick.helpsBalance || ((ctx.pick.gap || 0) > 0);
+    } else {
+      rails.balance = false;
+    }
+
+    /* CADENCE — last buy of this ticker must be >= MIN_DAYS (7) ago.
+       For PARK_CASH/REBALANCE without a buy ticker, cadence is N/A → pass. */
+    if (result.type === 'BUY' && result.ticker) {
+      try {
+        var lastBuys = (state && state.lastBuys) ||
+                       (window.WAPAdapters && window.WAPAdapters.getLastBuys && window.WAPAdapters.getLastBuys()) || {};
+        var lb = lastBuys[result.ticker];
+        if (!lb || !lb.date) {
+          rails.cadence = true; /* never bought = no cadence violation */
+        } else {
+          var days = Math.floor((Date.now() - new Date(lb.date).getTime()) / 86400000);
+          rails.cadence = days >= 7;
+        }
+      } catch(_) { rails.cadence = true; }
+    } else {
+      rails.cadence = true;
+    }
+    return rails;
+  }
+
+  /* Return an enriched copy of the engine result with guardrails attached.
+     Engine object itself is not mutated. */
+  function _wapEnrichResult(result, state, ctx){
+    if (!result) return result;
+    try {
+      var enriched = {};
+      for (var k in result) {
+        if (Object.prototype.hasOwnProperty.call(result, k)) enriched[k] = result[k];
+      }
+      enriched.guardrails = _wapComputeGuardrails(result, state, ctx);
+      /* Surface a stable 'amount' field for callers that want it without the
+         _usd suffix (Phase 17a output-shape contract). */
+      if (enriched.amount_usd != null && enriched.amount == null) {
+        enriched.amount = enriched.amount_usd;
+      }
+      return enriched;
+    } catch(_) { return result; }
+  }
+
+  /* Deterministic one-line interpretation per result.type + ticker context. */
+  function _wapInterpretiveLine(result, state){
+    if (!result || !result.type) return '';
+    var t = result.ticker || '';
+    if (result.type === 'PARK_CASH') {
+      return 'No move clears all guardrails this week';
+    }
+    if (result.type === 'REBALANCE') {
+      return t ? ('Trim ' + t + ' before next contribution')
+               : 'Trim back to target before next contribution';
+    }
+    if (result.type === 'BUY') {
+      try {
+        var portfolio = (state && state.portfolio) || [];
+        var existing = false;
+        for (var i = 0; i < portfolio.length; i++) {
+          var p = portfolio[i];
+          if (p && p.ticker === t && (p.currentWeight || 0) > 0) { existing = true; break; }
+        }
+        if (existing && t) {
+          return 'Adds to your underweight ' + t + ' position';
+        }
+        return 'Opens a new position in your most underweight watchlist name';
+      } catch(_) {
+        return t ? ('Adds to your underweight ' + t + ' position')
+                 : 'Opens a new position in your most underweight watchlist name';
+      }
+    }
+    return '';
+  }
+
+  /* DOM mutator — replace the static "$N to deploy" header with an inline
+     editable component. Idempotent: re-running on the same container is safe. */
+  function _wapApplyContributionEdit(container){
+    try {
+      var el = container.querySelector('.wap__contribution');
+      if (!el) return;
+      if (el.querySelector('.wap__contrib-edit')) return; /* already decorated */
+      var current = _wapGetContribution();
+      el.innerHTML =
+        '<span class="wap__contrib-display">$' + current + ' to deploy</span>' +
+        '<button type="button" class="wap__contrib-edit" aria-label="Edit contribution amount" title="Edit weekly contribution">' +
+          '<span aria-hidden="true">✎</span>' +
+        '</button>' +
+        '<span class="wap__contrib-input-wrap" hidden>' +
+          '<span class="wap__contrib-currency" aria-hidden="true">$</span>' +
+          '<input type="number" min="1" step="1" inputmode="numeric" class="wap__contrib-input" value="' + current + '" aria-label="Contribution amount" />' +
+          '<span class="wap__contrib-sub">to deploy</span>' +
+        '</span>';
+      var displayEl = el.querySelector('.wap__contrib-display');
+      var editBtn   = el.querySelector('.wap__contrib-edit');
+      var wrapEl    = el.querySelector('.wap__contrib-input-wrap');
+      var inputEl   = el.querySelector('.wap__contrib-input');
+      function enterEdit(){
+        displayEl.hidden = true; editBtn.hidden = true;
+        wrapEl.hidden = false;
+        try { inputEl.focus(); inputEl.select(); } catch(_){}
+      }
+      function exitEdit(restore){
+        wrapEl.hidden = true;
+        displayEl.hidden = false; editBtn.hidden = false;
+        if (restore) inputEl.value = current;
+      }
+      function commit(){
+        var v = parseFloat(inputEl.value);
+        if (!isFinite(v) || v <= 0) { exitEdit(true); return; }
+        _wapSetContribution(v);
+        /* Re-render WAP so the engine runs with the new amount.
+           setPortfolioCash's Phase 4 wrap also fires _renderWAP, so this
+           is belt-and-suspenders but harmless (idempotent re-render). */
+        try { if (typeof window._renderWAP === 'function') window._renderWAP(); } catch(_){}
+      }
+      editBtn.addEventListener('click', function(e){
+        e.preventDefault(); e.stopPropagation(); enterEdit();
+      });
+      inputEl.addEventListener('keydown', function(e){
+        if (e.key === 'Enter') { e.preventDefault(); commit(); }
+        else if (e.key === 'Escape') { e.preventDefault(); exitEdit(true); }
+      });
+      inputEl.addEventListener('blur', function(){
+        if (!wrapEl.hidden) commit();
+      });
+    } catch(_){}
+  }
+
+  /* DOM mutator — render the three guardrail chips (Conviction / Balance /
+     Cadence). Inserted before .wap__why so the strip sits between the
+     decision and the reason copy. */
+  function _wapApplyGuardrailStrip(container, result){
+    try {
+      if (!result || !result.guardrails) return;
+      if (container.querySelector('.wap__guardrails')) return; /* idempotent */
+      var anchor = container.querySelector('.wap__why') || container.querySelector('.wap__actions');
+      if (!anchor) return;
+      var g = result.guardrails;
+      var strip = document.createElement('div');
+      strip.className = 'wap__guardrails';
+      strip.setAttribute('role', 'group');
+      strip.setAttribute('aria-label', 'Guardrails');
+      function chip(name, on){
+        return '<span class="wap__guard wap__guard--' + (on ? 'on' : 'off') + '" aria-label="' + name + ' ' + (on ? 'cleared' : 'not cleared') + '">' +
+                 '<span class="wap__guard-dot" aria-hidden="true"></span>' + name +
+               '</span>';
+      }
+      strip.innerHTML = chip('Conviction', !!g.conviction) + chip('Balance', !!g.balance) + chip('Cadence', !!g.cadence);
+      anchor.parentNode.insertBefore(strip, anchor);
+    } catch(_){}
+  }
+
+  /* DOM mutator — render the deterministic interpretive line just below the
+     decision (.wap__main). One sentence, no flourishes. */
+  function _wapApplyInterpretiveLine(container, result, state){
+    try {
+      if (!result) return;
+      if (container.querySelector('.wap__interpretive')) return;
+      var line = _wapInterpretiveLine(result, state);
+      if (!line) return;
+      var main = container.querySelector('.wap__main');
+      if (!main) return;
+      var lineEl = document.createElement('div');
+      lineEl.className = 'wap__interpretive';
+      lineEl.textContent = line;
+      main.parentNode.insertBefore(lineEl, main.nextSibling);
+    } catch(_){}
+  }
+
+  /* Sync localStorage when setPortfolioCash is called externally (e.g., the
+     deploy-plan input). Keeps the contribution source-of-truth consistent. */
+  (function _wapHookSetCashForContrib(){
+    if (typeof window.setPortfolioCash !== 'function' || window.setPortfolioCash.__phase17aWrapped) return;
+    var origSetCash = window.setPortfolioCash;
+    var wrapped = function(n){
+      var r = origSetCash.apply(this, arguments);
+      try {
+        var v = parseFloat(n);
+        if (isFinite(v) && v > 0) localStorage.setItem(WAP_CONTRIB_KEY, String(Math.round(v)));
+      } catch(_){}
+      return r;
+    };
+    wrapped.__phase17aWrapped = true;
+    window.setPortfolioCash = wrapped;
+  })();
+
   function _wapInstallWrapper(){
     if (typeof window.WAPUi === 'undefined' || window.WAPUi.__wapWrapped) return;
     var orig = window.WAPUi.render;
@@ -13463,6 +13821,16 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
          Idempotent; safe across BUY / PARK_CASH / REBALANCE renders and
          WAP relocation between Dashboard and Decision Center. */
       try { _wapApplyDecisionMemory(container, view && view.result); } catch(_){}
+      /* Phase 17a — contribution edit + guardrail strip + interpretive line.
+         All three are idempotent and safe across BUY / PARK_CASH / REBALANCE. */
+      try { _wapApplyContributionEdit(container); } catch(_){}
+      if (view && view.result) {
+        try { _wapApplyGuardrailStrip(container, view.result); } catch(_){}
+        try {
+          var __stForLine = (typeof _wapBuildState === 'function') ? _wapBuildState() : null;
+          _wapApplyInterpretiveLine(container, view.result, __stForLine);
+        } catch(_){}
+      }
     };
     window.WAPUi.__wapWrapped = true;
   }
