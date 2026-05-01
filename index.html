@@ -3052,6 +3052,12 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     #wapContainer .wap__contribution {
       display: inline-flex; align-items: baseline; gap: 6px;
     }
+    /* Phase 17a fix — explicit [hidden] override. Without this the
+       display:inline-flex below beats the browser's default [hidden] rule and
+       both display + edit modes render simultaneously. */
+    #wapContainer .wap__contrib-display[hidden],
+    #wapContainer .wap__contrib-edit[hidden],
+    #wapContainer .wap__contrib-input-wrap[hidden] { display: none !important; }
     #wapContainer .wap__contrib-display { font-variant-numeric: tabular-nums; }
     #wapContainer .wap__contrib-edit {
       display: inline-flex; align-items: center; justify-content: center;
@@ -7539,6 +7545,11 @@ function renderDashboard(){
     if(sd){sd.setAttribute('cx','600');sd.setAttribute('cy','4');}
   }
   renderAllocBar(total);renderDashHoldings(total);renderDashCharts(total);updateSideInsights(total,gain,pct); renderOppLayer(_holdings); renderIntelligencePanel(); syncCadencePortfolio(); try { if (typeof window._renderWAP === 'function') window._renderWAP(); } catch(_){}
+  /* Phase 17a — refresh Decision Center summary slots after portfolio update.
+     Without this, Why and Compare DC tabs stay frozen in empty state if they
+     were rendered before holdings were loaded. */
+  try { if (typeof window._dcRenderWhySummary === 'function') window._dcRenderWhySummary(); } catch(_){}
+  try { if (typeof window._dcRenderCompareSummary === 'function') window._dcRenderCompareSummary(); } catch(_){}
 }
 
 function renderAllocBar(total){
@@ -13674,10 +13685,13 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
         if (existing && t) {
           return 'Adds to your underweight ' + t + ' position';
         }
-        return 'Opens a new position in your most underweight watchlist name';
+        if (t) {
+          return 'Opens a new ' + t + ' position toward target';
+        }
+        return 'Opens a new position toward target';
       } catch(_) {
         return t ? ('Adds to your underweight ' + t + ' position')
-                 : 'Opens a new position in your most underweight watchlist name';
+                 : 'Opens a new position toward target';
       }
     }
     return '';
