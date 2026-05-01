@@ -384,6 +384,193 @@ body:has(#panel-compare.active)        .lfc-foot {
 .panel{display:none;padding:26px 30px}
 .panel.active{display:block;animation:fadeUp .3s ease}
 
+/* ===== Phase 14 — The "wow" pass ============================================
+   A unified visual layer over Phases 0–13. Pure presentation. No engine
+   touch, no DOM mutation, no logic change. Targets the moments that decide
+   whether the app feels premium-calm or just functional:
+
+   1. Sidebar gets a brand mark + today strip — identity anchor on every
+      panel. The thing that says "you're in Fortis."
+   2. Welcome hero recast — copy moved from marketing-pitch register to
+      orientation register. Less "institutional edge," more "what's the move
+      this week?"
+   3. Cinematic tab transitions — Decision Center tab content cross-fades
+      instead of snapping in. ≤220ms, ease-out.
+   4. Active tab breath — barely perceptible 4s pulse on the gold pill so
+      the indicator feels alive, not flagged.
+   5. Aggression-bar stagger — each starter row fills with a small delay
+      so the cascade feels deliberate, not flat.
+   6. Hover lift on cards — Compare/Why/Starter cards rise 1px on hover
+      with a soft gold-tinted shadow. Subtle, not loud.
+   7. Refined empty/placeholder rhythm via shared tokens.
+   8. Reduced-motion honored throughout.
+   ============================================================================ */
+
+/* ---- 1. Brand mark + today strip --------------------------------------- */
+.fortis-mark {
+  padding: 6px 18px 18px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.fortis-mark-row {
+  display: flex; align-items: baseline; gap: 9px;
+  margin-bottom: 5px;
+}
+.fortis-mark-glyph {
+  font-size: 14px;
+  color: var(--gold);
+  line-height: 1;
+  text-shadow: 0 0 12px rgba(201,168,76,.35);
+  animation: fortisMarkPulse 4.2s ease-in-out infinite;
+}
+@keyframes fortisMarkPulse {
+  0%, 100% { opacity: .85; text-shadow: 0 0 8px rgba(201,168,76,.25); }
+  50%      { opacity: 1;   text-shadow: 0 0 16px rgba(201,168,76,.50); }
+}
+.fortis-mark-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--cream);
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+.fortis-mark-name em {
+  font-style: normal;
+  color: var(--gold-light);
+  margin-left: -1px;
+}
+.fortis-mark-today {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--text-3);
+  line-height: 1.35;
+  margin-left: 23px; /* visually align with name, past the glyph */
+}
+
+/* ---- 2. Welcome hero refresh — quieter eye, more breathing room ------- */
+#panel-dashboard #welcomeHero { padding: 10px 0 6px; }
+#panel-dashboard #welcomeHero .wh-eye {
+  font-family: 'DM Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--gold-dim);
+  margin-bottom: 14px;
+  opacity: .85;
+}
+#panel-dashboard #welcomeHero .wh-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px;
+  font-weight: 400;
+  color: var(--cream);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin: 0 0 14px;
+}
+#panel-dashboard #welcomeHero .wh-title em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+#panel-dashboard #welcomeHero .wh-lede {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--cream-dim);
+  line-height: 1.55;
+  max-width: 540px;
+  margin: 0 0 4px;
+}
+
+/* ---- 3. Cinematic tab transition (Decision Center) -------------------- */
+@keyframes dcTabFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#panel-decisioncenter .dc-content {
+  animation: dcTabFadeIn .22s ease-out;
+}
+
+/* ---- 4. Active-tab breath — subtle 4s pulse on the gold pill ---------- */
+@keyframes dcTabBreath {
+  0%, 100% { opacity: 1;   transform: scaleX(1); }
+  50%      { opacity: .82; transform: scaleX(.98); }
+}
+#panel-decisioncenter .dc-tab.is-active::after {
+  animation: dcTabBreath 4.2s ease-in-out infinite;
+}
+
+/* ---- 5. Aggression bar stagger ---------------------------------------- */
+@keyframes dcStarterFillIn {
+  from { width: 0%; opacity: .35; }
+  to   { /* width: stays per-row inline; opacity full */ opacity: 1; }
+}
+#panel-decisioncenter .dc-starter-fill {
+  animation: dcStarterFillIn .55s cubic-bezier(.4, 0, .2, 1) backwards;
+}
+#panel-decisioncenter .dc-starter-row:nth-child(1) .dc-starter-fill { animation-delay:   0ms; }
+#panel-decisioncenter .dc-starter-row:nth-child(2) .dc-starter-fill { animation-delay:  90ms; }
+#panel-decisioncenter .dc-starter-row:nth-child(3) .dc-starter-fill { animation-delay: 180ms; }
+#panel-decisioncenter .dc-starter-row:nth-child(4) .dc-starter-fill { animation-delay: 270ms; }
+#panel-decisioncenter .dc-starter-row:nth-child(5) .dc-starter-fill { animation-delay: 360ms; }
+
+/* ---- 6. Card hover lift refinement ----------------------------------- */
+#panel-decisioncenter .dc-compare-card,
+#panel-decisioncenter .dc-why-card,
+#panel-decisioncenter .dc-starter-card {
+  transition: transform .25s cubic-bezier(.2,.9,.3,1.05),
+              box-shadow .25s ease,
+              border-color .22s ease;
+}
+#panel-decisioncenter .dc-compare-card:hover,
+#panel-decisioncenter .dc-why-card:hover,
+#panel-decisioncenter .dc-starter-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 32px rgba(0,0,0,.32),
+              0 0 0 1px rgba(201,168,76,.06);
+}
+
+/* ---- 7. Decision Center entry — first paint feels orchestrated -------- */
+@keyframes dcPanelIn {
+  from { opacity: 0; transform: translateY(8px) scale(.998); }
+  to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+#panel-decisioncenter.active {
+  animation: dcPanelIn .28s ease-out;
+}
+
+/* ---- 8. WAP card "presented" feel inside Decision Center focus mode --- */
+@keyframes wapPresentIn {
+  from { opacity: .4; transform: scale(.985); }
+  to   { opacity: 1;   transform: scale(1.03); }
+}
+#panel-decisioncenter.is-wap-active #wapContainer {
+  /* Phase 3 already sets the final scale(1.03) + margins. Phase 14 makes the
+     entry feel like a verdict being presented — opacity ramps from 40% so
+     the eye reads "settling into resolution," not "sudden render." */
+  animation: wapPresentIn .32s cubic-bezier(.2,.9,.3,1.05);
+}
+
+/* ---- Reduced motion guard --------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .fortis-mark-glyph,
+  #panel-decisioncenter .dc-content,
+  #panel-decisioncenter .dc-tab.is-active::after,
+  #panel-decisioncenter .dc-starter-fill,
+  #panel-decisioncenter .dc-compare-card,
+  #panel-decisioncenter .dc-why-card,
+  #panel-decisioncenter .dc-starter-card,
+  #panel-decisioncenter.active,
+  #panel-decisioncenter.is-wap-active #wapContainer {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 /* ===== Phase 10 — Visual polish pass =======================================
    CSS-only refinements. No feature changes, no DOM mutation, no JS, no
    engine touch. Targets rhythm, refined active states, smoother transitions,
@@ -956,10 +1143,39 @@ html, body, #app, #main { background: var(--noir); }
      _dcRenderCompareSummary — Deploy and Analyze get equivalent CSS-only
      fallbacks below. :has() hides them when the singleton is relocated in.
    ============================================================================ */
-html, body { overflow: hidden; }
+/* ===== Phase 12.1 — Controlled panel scrolling ============================
+   Reverses Phase 11's html/body overflow lock. Page itself is no longer
+   trapped — but it doesn't need to scroll either, because #app fills the
+   visible viewport (minus the 90px topbar) and clips overflow. Each .panel
+   is its own scroll surface, so long content (Portfolio Lab tables, Stock
+   Analysis output, Discovery feeds) scrolls cleanly inside the active panel.
+
+   Height chain:
+     html / body  → no overflow lock, no fixed height
+     topbar       → 90px (existing)
+     #app         → height calc(100vh - 90px), overflow: hidden  ← boundary
+     #main        → height: 100%, overflow: hidden                ← grid cell
+     .panel       → height: 100%, overflow-y: auto                ← scroller
+       (.panel.active still uses display:block via existing rule)
+     #panel-decisioncenter overrides .panel with flex column + its own
+       overflow: hidden so .dc-content remains the scroller (Phase 11 logic).
+   ============================================================================ */
+#app {
+  height: calc(100vh - 90px);
+  overflow: hidden;
+}
+#main {
+  height: 100%;
+  overflow: hidden;  /* panels handle their own scroll */
+}
+.panel {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 
 #panel-decisioncenter {
-  height: calc(100vh - 120px);
+  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -2244,6 +2460,15 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
 
 <!-- SIDENAV -->
 <nav id="sidenav">
+  <!-- Phase 14 — brand mark + today strip. Identity anchor at the top of every panel. -->
+  <div class="fortis-mark">
+    <div class="fortis-mark-row">
+      <div class="fortis-mark-glyph" aria-hidden="true">◎</div>
+      <div class="fortis-mark-name">Fortis<em>.</em></div>
+    </div>
+    <div class="fortis-mark-today" id="fortisMarkToday">— —</div>
+  </div>
+
   <div class="nav-sec">
     <div class="nav-sec-lbl">Workspace</div>
     <div class="nav-item active" data-panel="dashboard" onclick="showPanel('dashboard',this)">
@@ -2813,11 +3038,12 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     <section class="wap fortis-flow-step" data-flow-step="4" id="wapContainer" aria-label="Weekly Action Plan"></section>
   </div>
   <div id="welcomeHero" class="wh">
-    <div class="wh-eye">Institutional Grade &middot; Private &middot; Disciplined</div>
-    <h1 class="wh-title">The institutional edge,<br><em>translated for everyday investors.</em></h1>
-    <p class="wh-lede">Start building your strategy or upload an existing portfolio &mdash; either way, Fortis gives you structured clarity.</p>
-    <div class="wh-trust">We don&rsquo;t give advice. We give clarity.</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <!-- Phase 14 — recast as orientation, not a sales pitch. Date string is
+         populated at runtime by _fortisSetTodayStrings(). -->
+    <div class="wh-eye" id="welcomeHeroEye">Today &middot; — &middot; —</div>
+    <h1 class="wh-title">What&rsquo;s the move<br><em>this week?</em></h1>
+    <p class="wh-lede">Build a starter strategy or upload your portfolio. Either way, Fortis gives you one clear move.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
       <button class="btn-p" onclick="showPanel('decisioncenter',getNavForPanel('decisioncenter'));if(typeof dcSetTab==='function')setTimeout(function(){dcSetTab('wap');},80)">Start Building &rarr;</button>
       <button class="btn-s" onclick="showPanel('portfolio',getNavForPanel('portfolio'))">Upload Portfolio</button>
       <button class="btn-s" onclick="showPanel('stockcheck',getNavForPanel('stockcheck'))">Analyze a Stock</button>
@@ -13689,6 +13915,37 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     wrappedSetCash.__phase4Wrapped = true;
     global.setPortfolioCash = wrappedSetCash;
   }
+
+  /* Phase 14 — populate the brand-mark today strip + welcome hero eye with
+     the current date. Runs once on init. No engine call, no API. */
+  function _fortisSetTodayStrings(){
+    try {
+      var now = new Date();
+      var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      /* ISO week-of-year — operator-friendly anchor. */
+      function weekOfYear(d){
+        var date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        var dayNum = date.getUTCDay() || 7;
+        date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+        var yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+        return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+      }
+      var w = weekOfYear(now);
+      var sidebarStr = DAYS[now.getDay()].slice(0,3).toUpperCase() + ' · ' +
+                       MONTHS[now.getMonth()].toUpperCase() + ' ' + now.getDate() +
+                       ' · WK ' + w;
+      var heroStr = 'Today · ' + DAYS[now.getDay()] + ', ' +
+                    MONTHS[now.getMonth()] + ' ' + now.getDate() +
+                    ' · Week ' + w;
+      var sidebarEl = document.getElementById('fortisMarkToday');
+      var heroEl    = document.getElementById('welcomeHeroEye');
+      if (sidebarEl) sidebarEl.textContent = sidebarStr;
+      if (heroEl)    heroEl.textContent    = heroStr;
+    } catch(_){}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _fortisSetTodayStrings);
+  else _fortisSetTodayStrings();
 
   function _init(){
     if (!document.getElementById('panel-decisioncenter')) return;
