@@ -1,0 +1,149 @@
+/* =====================================================================
+   Weekly Action Plan — UI styles (v1)
+   Premium, calm, single-card layout. Self-contained CSS variables so the
+   integrator can remap to existing Fortis design tokens without rewrites.
+   ===================================================================== */
+
+:root {
+  --wap-bg:           #ffffff;
+  --wap-surface:      #fafaf9;
+  --wap-fg-strong:    #111111;
+  --wap-fg:           #2a2a2a;
+  --wap-fg-muted:     #6b6b6b;
+  --wap-fg-faint:     #9a9a9a;
+  --wap-border:       #ebebeb;
+  --wap-accent:       #156c4d;   /* quiet confident green — BUY */
+  --wap-accent-hover: #0f5b40;
+  --wap-alert:        #8a5a00;   /* warm amber — REBALANCE */
+  --wap-radius:       12px;
+}
+
+/* ---------- Card shell ---------- */
+.wap {
+  background: var(--wap-bg);
+  border: 1px solid var(--wap-border);
+  border-radius: var(--wap-radius);
+  padding: 32px 36px 28px;
+  max-width: 480px;
+  margin: 40px auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  color: var(--wap-fg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Header ---------- */
+.wap__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 13px;
+  color: var(--wap-fg-muted);
+  letter-spacing: 0.01em;
+  padding-bottom: 28px;
+}
+.wap__week        { font-weight: 500; }
+.wap__contribution { font-variant-numeric: tabular-nums; }
+
+/* ---------- Main decision ---------- */
+.wap__main { padding: 4px 0 28px; }
+
+.wap__decision {
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--wap-fg-strong);
+}
+.wap__decision--accent { color: var(--wap-accent); }
+.wap__decision--alert  { color: var(--wap-alert); }
+.wap__decision--muted  { color: var(--wap-fg-muted); }
+
+.wap__amount {
+  font-size: 14px;
+  color: var(--wap-fg-muted);
+  margin-top: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Why block ---------- */
+.wap__why {
+  background: var(--wap-surface);
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-bottom: 24px;
+}
+.wap__why-item {
+  font-size: 13px;
+  color: var(--wap-fg);
+  line-height: 1.5;
+  padding: 3px 0;
+}
+
+/* ---------- Actions ---------- */
+.wap__actions {
+  display: flex;
+  gap: 10px;
+}
+.wap__btn {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+.wap__btn--primary {
+  background: var(--wap-accent);
+  color: #fff;
+  border-color: var(--wap-accent);
+}
+.wap__btn--primary:hover { background: var(--wap-accent-hover); border-color: var(--wap-accent-hover); }
+
+.wap__btn--secondary {
+  background: transparent;
+  color: var(--wap-fg);
+  border-color: var(--wap-border);
+}
+.wap__btn--secondary:hover { background: var(--wap-surface); }
+
+.wap__btn:focus-visible { outline: 2px solid var(--wap-accent); outline-offset: 2px; }
+
+/* ---------- Confirmation row (replaces actions after click) ---------- */
+.wap__confirm {
+  font-size: 13px;
+  color: var(--wap-fg-muted);
+  padding: 10px 2px;
+}
+
+/* =====================================================================
+   Preview-only styles (the demo state switcher; remove on integration)
+   ===================================================================== */
+.wap-preview {
+  background: #f5f5f4;
+  min-height: 100vh;
+  padding: 30px 0;
+  font-family: -apple-system, system-ui, sans-serif;
+}
+.wap-preview__switcher {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.wap-preview__tab {
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #555;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.wap-preview__tab.is-active {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}

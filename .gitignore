@@ -1,0 +1,49 @@
+# ===== Secrets / env =====
+.env
+.env.local
+.env.*.local
+*.env
+
+# ===== Personal / financial data (NEVER commit) =====
+portfolio.local.json
+portfolio_extract_*.yaml
+portfolio_extract_*.json
+holdings_*.csv
+*_private.*
+private/
+
+# ===== macOS / OS junk =====
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+desktop.ini
+
+# ===== Editor / IDE =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===== Build / dependencies (for when you migrate to Next.js) =====
+node_modules/
+.next/
+.vercel/
+out/
+dist/
+build/
+.cache/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===== Local uploads / scratch =====
+uploads/
+tmp/
+scratch/
+*.bak
+
+# ===== OS-specific weirdness already in this repo =====
+assets:/

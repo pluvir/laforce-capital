@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Weekly Action Plan — Preview</title>
+  <link rel="stylesheet" href="ui.css">
+</head>
+<body class="wap-preview">
+
+  <!-- Demo state switcher (preview only — remove on integration) -->
+  <div class="wap-preview__switcher">
+    <button class="wap-preview__tab is-active" data-state="BUY">BUY</button>
+    <button class="wap-preview__tab"           data-state="PARK_CASH">PARK_CASH</button>
+    <button class="wap-preview__tab"           data-state="REBALANCE">REBALANCE</button>
+    <button class="wap-preview__tab"           data-state="FAIL_CLOSED">FAIL_CLOSED</button>
+  </div>
+
+  <!-- The single WAP card. Re-rendered per state. -->
+  <section class="wap" id="wap"></section>
+
+  <script src="ui.js"></script>
+  <script>
+    (function () {
+      var weekOf = new Date('2026-04-26');
+      var contribution = 100;
+
+      // Fixture data — Phase 3 will replace with engine output + adapter assembly
+      var fixtures = {
+        BUY: {
+          result: {
+            type: 'BUY',
+            ticker: 'GOOGL',
+            amount_usd: 100,
+            reason: 'Underweight vs target (18.0% / 25.0%), Top Read #1, BUY verdict.'
+          },
+          contribution: contribution,
+          weekOf: weekOf
+        },
+        PARK_CASH: {
+          result: {
+            type: 'PARK_CASH',
+            reason: 'No candidate cleared all guardrails this week.'
+          },
+          contribution: contribution,
+          weekOf: weekOf
+        },
+        REBALANCE: {
+          result: {
+            type: 'REBALANCE',
+            ticker: 'GOOGL',
+            reason: 'GOOGL is 5.5pp over target (30.5% / 25.0%). Recommend trimming before next contribution.'
+          },
+          contribution: contribution,
+          weekOf: weekOf
+        },
+        FAIL_CLOSED: {
+          state: 'FAIL_CLOSED',
+          contribution: null,
+          weekOf: weekOf,
+          failReason: "Run Compare & Rank to generate this week's plan."
+        }
+      };
+
+      var container = document.getElementById('wap');
+      function show(state) {
+        WAPUi.render(container, fixtures[state]);
+        Array.prototype.forEach.call(
+          document.querySelectorAll('.wap-preview__tab'),
+          function (t) { t.classList.toggle('is-active', t.getAttribute('data-state') === state); }
+        );
+      }
+      Array.prototype.forEach.call(
+        document.querySelectorAll('.wap-preview__tab'),
+        function (t) { t.addEventListener('click', function () { show(t.getAttribute('data-state')); }); }
+      );
+      show('BUY');
+    })();
+  </script>
+</body>
+</html>

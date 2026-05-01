@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>WAP v1 — Acceptance Tests</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      max-width: 780px;
+      margin: 40px auto;
+      padding: 0 24px;
+      color: #1a1a1a;
+      background: #fff;
+    }
+    h1 {
+      font-size: 18px;
+      font-weight: 500;
+      margin: 0 0 4px;
+      letter-spacing: -0.01em;
+    }
+    .sub {
+      color: #666;
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
+    .summary {
+      font-size: 16px;
+      font-weight: 500;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+    }
+    .summary.pass { background: #ecf8f1; color: #0a6c3a; }
+    .summary.fail { background: #fdeeee; color: #a8241f; }
+    .row {
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 4px;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
+    .row.pass { color: #0a6c3a; background: #f6fbf8; }
+    .row.fail { color: #a8241f; background: #fdf6f5; }
+    .err {
+      color: #666;
+      font-size: 12px;
+      padding-top: 6px;
+      padding-left: 8px;
+      font-family: -apple-system, system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <h1>WAP v1 — Acceptance Tests</h1>
+  <div class="sub">All eight tests must pass before Phase 2 (UI) begins.</div>
+  <div id="results">Running…</div>
+
+  <script src="engine.js"></script>
+  <script src="engine.test.js"></script>
+</body>
+</html>
