@@ -899,6 +899,127 @@ html, body, #app, #main { background: var(--noir); }
   #panel-decisioncenter .dc-tab { transition: none; }
 }
 
+/* ===== Phase 11 — Decision Center fixed-height workspace ====================
+   Locks Decision Center to a viewport-relative height with internal scroll.
+   Page-level scroll disabled. Tab content (.dc-content) is the only scroll
+   surface inside DC; tabs/header/context strip stay fixed.
+
+   Design notes:
+   - `html, body { overflow: hidden }` complements the existing
+     `#main { overflow-y: auto }` — page chrome never scrolls; #main owns
+     panel-level scroll for non-DC panels (Dashboard, Discovery, Portfolio
+     Lab, Cadence, Watchlist, hidden legacy panels). DC has its OWN internal
+     scroll inside .dc-content, so #main doesn't need to scroll for DC.
+   - `min-height: 0` on .dc-content is critical — flex children default to
+     `min-content` size, which prevents overflow:auto from kicking in.
+   - `flex-shrink: 0` on .ph, .dc-context, .dc-tabs keeps the chrome at
+     natural height while .dc-content absorbs the remaining space.
+
+   Constraints honored:
+   - No JS logic touched, no relocator touched, no WAP touched.
+   - Compare summary card (Phase 6) already has its empty state via
+     _dcRenderCompareSummary — Deploy and Analyze get equivalent CSS-only
+     fallbacks below. :has() hides them when the singleton is relocated in.
+   ============================================================================ */
+html, body { overflow: hidden; }
+
+#panel-decisioncenter {
+  height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#panel-decisioncenter > .ph,
+#panel-decisioncenter > .dc-context,
+#panel-decisioncenter > .dc-tabs {
+  flex-shrink: 0;
+}
+#panel-decisioncenter .dc-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 0;
+}
+
+/* Phase 11 — Empty-state fallback for Deploy + Analyze slots.
+   Always rendered as a sibling of the relocator target. CSS :has() removes
+   it from layout the moment the singleton (#deployContent / #stockContent)
+   arrives — no JS, no flicker. Compare uses its own renderer-driven empty
+   state (Phase 6 / _dcRenderCompareSummary). */
+#panel-decisioncenter .dc-empty-fallback {
+  padding: 36px 18px 30px;
+  text-align: center;
+}
+#panel-decisioncenter .dc-empty-msg {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--cream-dim);
+  line-height: 1.55;
+  margin: 0 auto 18px;
+  max-width: 380px;
+}
+#panel-decisioncenter .dc-empty-cta {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, rgba(201,168,76,.18), rgba(201,168,76,.06));
+  color: var(--gold-light);
+  border: 1px solid rgba(201,168,76,.40);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: background .16s, border-color .16s;
+}
+#panel-decisioncenter .dc-empty-cta:hover,
+#panel-decisioncenter .dc-empty-cta:focus-visible {
+  background: linear-gradient(135deg, rgba(201,168,76,.28), rgba(201,168,76,.10));
+  border-color: rgba(201,168,76,.60);
+  outline: none;
+}
+/* When the relocator has placed actual content into the slot, hide the
+   fallback. :has() resolves natively in modern browsers (Safari 15.4+,
+   Chrome 105+, Firefox 121+). */
+#panel-decisioncenter #deployDcSlot:has(#deployContent) > .dc-empty-fallback,
+#panel-decisioncenter #stockDcSlot:has(#stockContent)  > .dc-empty-fallback {
+  display: none;
+}
+
+/* ===== Phase 11.5 — Decision Center tab intro headers ======================
+   Compact context block at the top of each tab's content. Calm, institutional
+   tone — Cormorant title + small DM Sans description. Matches existing card
+   header rhythm (e.g., dc-compare-eye + dc-compare-sub) but lives at tab
+   scope, not card scope. Dims with the rest of DC chrome when WAP focus mode
+   is active so the visual hierarchy stays consistent.
+   ============================================================================ */
+#panel-decisioncenter .dc-tab-intro {
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  transition: opacity .25s ease;
+}
+#panel-decisioncenter .dc-tab-intro-title {
+  margin: 0 0 6px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--cream);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+#panel-decisioncenter .dc-tab-intro-desc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.55;
+  max-width: 580px;
+}
+/* Phase 3 focus-mode dim — intro fades along with .ph and .dc-context. */
+#panel-decisioncenter.is-wap-active .dc-tab-intro { opacity: 0.55; }
+
 /* ===== Pass B — Flow Layer scaffolding =====================================
    Adds staggered fade-in for the 5 marked flow steps inside #panel-dashboard.
    Pure presentation. No interaction logic, no de-emphasis, no section reorder.
@@ -12721,6 +12842,19 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     try { localStorage.setItem(TAB_KEY, name); } catch (_) {}
   }
 
+  /* Phase 11.5 — reusable tab intro builder.
+     Returns a small Cormorant + DM Sans header block prepended to each tab's
+     content area. Pure HTML string. No state, no JS logic, no engine touch.
+     The intro lives ABOVE the per-tab slot, so relocators (Phase 4 / 5) and
+     summary renderers (Phase 6 / 7) that mutate the slot's innerHTML never
+     touch the intro. */
+  function _dcTabIntro(title, description){
+    return '<div class="dc-tab-intro">' +
+             '<h2 class="dc-tab-intro-title">' + _esc(title) + '</h2>' +
+             '<p class="dc-tab-intro-desc">' + _esc(description) + '</p>' +
+           '</div>';
+  }
+
   global.dcSetTab = function(name){
     if (TABS.indexOf(name) === -1) name = DEFAULT_TAB;
     var panel = document.getElementById('panel-decisioncenter');
@@ -12736,27 +12870,77 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     if (content){
       if (name === 'wap') {
         /* Phase 2 — render mount slot for the re-parented singleton #wapContainer.
-           The container itself is not duplicated; _dcRelocateWap moves it here. */
-        content.innerHTML = '<div id="wapDcSlot" class="dc-wap-slot"></div>';
+           The container itself is not duplicated; _dcRelocateWap moves it here.
+           Phase 11.5 — tab intro prepended above the slot. */
+        content.innerHTML =
+          _dcTabIntro(
+            "This Week's Move",
+            'Your portfolio is translated into one weekly action based on structure, concentration, and available cash.'
+          ) +
+          '<div id="wapDcSlot" class="dc-wap-slot"></div>';
       } else if (name === 'deploy') {
         /* Phase 4 — render mount slot for the re-parented singleton
-           #deployContent. Singleton; _dcRelocateDeploy moves it here. */
-        content.innerHTML = '<div id="deployDcSlot" class="dc-deploy-slot"></div>';
+           #deployContent. Singleton; _dcRelocateDeploy moves it here.
+           Phase 11 — empty-state fallback inside the slot. CSS :has()
+           hides it once the singleton arrives. No JS branching needed.
+           Phase 11.5 — tab intro prepended above the slot. */
+        content.innerHTML =
+          _dcTabIntro(
+            'Deploy Capital',
+            'Adjust how much cash you want to deploy and see how the weekly plan allocates it.'
+          ) +
+          '<div id="deployDcSlot" class="dc-deploy-slot">' +
+            '<div class="dc-empty-fallback">' +
+              '<div class="dc-empty-msg">Upload your portfolio to generate a deployment plan.</div>' +
+              '<button type="button" class="dc-empty-cta" ' +
+                'onclick="showPanel(\'portfolio\', getNavForPanel(\'portfolio\'))">' +
+                'Upload Portfolio &rarr;' +
+              '</button>' +
+            '</div>' +
+          '</div>';
       } else if (name === 'analyze') {
         /* Phase 5 — render mount slot for the re-parented singleton
-           #stockContent. Singleton; _dcRelocateStock moves it here. */
-        content.innerHTML = '<div id="stockDcSlot" class="dc-stock-slot"></div>';
+           #stockContent. Singleton; _dcRelocateStock moves it here.
+           Phase 11 — empty-state fallback inside the slot. CSS :has()
+           hides it once the singleton arrives. No JS branching needed.
+           Phase 11.5 — tab intro prepended above the slot. */
+        content.innerHTML =
+          _dcTabIntro(
+            'Analyze a Stock',
+            'Check an individual ticker before adding it to your plan or comparing it against alternatives.'
+          ) +
+          '<div id="stockDcSlot" class="dc-stock-slot">' +
+            '<div class="dc-empty-fallback">' +
+              '<div class="dc-empty-msg">Pick a ticker to run an institutional-grade read.</div>' +
+              '<button type="button" class="dc-empty-cta" ' +
+                'onclick="showPanel(\'stockcheck\', getNavForPanel(\'stockcheck\'))">' +
+                'Open Stock Analysis &rarr;' +
+              '</button>' +
+            '</div>' +
+          '</div>';
       } else if (name === 'compare') {
         /* Phase 6 — Render slot for the Compare summary card. The card is
            NOT a relocated singleton — it's a freshly rendered summary that
            reads from cached state and links out to the existing Compare
-           panel. _dcRenderCompareSummary populates it. */
-        content.innerHTML = '<div id="compareDcSlot" class="dc-compare-slot"></div>';
+           panel. _dcRenderCompareSummary populates it.
+           Phase 11.5 — tab intro prepended above the slot. */
+        content.innerHTML =
+          _dcTabIntro(
+            'Compare & Rank',
+            'Rank a short list of candidates before deciding what deserves capital.'
+          ) +
+          '<div id="compareDcSlot" class="dc-compare-slot"></div>';
       } else if (name === 'why') {
         /* Phase 7 — Render slot for the Why summary card. Deterministic only.
            _dcRenderWhySummary reads portfolioState + _wapBuildState +
-           _wapDeriveContext + lock state and writes the fact card. */
-        content.innerHTML = '<div id="whyDcSlot" class="dc-why-slot"></div>';
+           _wapDeriveContext + lock state and writes the fact card.
+           Phase 11.5 — tab intro prepended above the slot. */
+        content.innerHTML =
+          _dcTabIntro(
+            'Why This Decision',
+            'See the portfolio facts behind the weekly move — concentration, underweights, contribution, and discipline.'
+          ) +
+          '<div id="whyDcSlot" class="dc-why-slot"></div>';
       } else {
         var p = TAB_PLACEHOLDERS[name] || TAB_PLACEHOLDERS[DEFAULT_TAB];
         content.innerHTML =
