@@ -6223,9 +6223,15 @@ function parseCSV(csv){
     var parts=splitCsvLine(cleaned);
     if(parts.length<2){ result.errors.push('line '+(li+1)+': too few fields: "'+line+'"'); continue; }
 
-    var sym=(parts[0]||'').toUpperCase().replace(/[^A-Z.]/g,'');
+    // Strict ticker normalization — preserves digits, dots, hyphens (BRK.B, BRK-B, BF-B, RDS-A).
+    var symRaw=(parts[0]||'').toUpperCase();
+    var sym=symRaw.replace(/[^A-Z0-9.\-]/g,'');
+    // Drop non-position summary rows (Total, Equities, Cash & Money Market, etc.)
+    if(!_isPositionRow(sym, line)){
+      result.errors.push('line '+(li+1)+': skipped non-position row "'+symRaw.trim()+'"');
+      continue;
+    }
     if(!sym||sym.length<1||sym.length>7){ result.errors.push('line '+(li+1)+': invalid symbol "'+parts[0]+'"'); continue; }
-    if(/^(SYMBOL|TICKER|NAME|STOCK|DESC|EQUIT)/i.test(sym))continue;
 
     var shares=toNumber(parts[1]);
     if(!isFinite(shares)||shares<=0){ result.errors.push('line '+(li+1)+': invalid shares "'+parts[1]+'" for '+sym); continue; }
@@ -6266,7 +6272,35 @@ function parseCSV(csv){
   result.forEach(function(h){ if(!h.pct) h.pct=total>0?(h.mktVal/total*100):0; });
 
   result.parsedCount=result.rows.length;
+
+  // Diagnostic: how many rows the filter dropped (forbidden labels, no ticker, etc.)
+  var beforeCount = lines.length - dataStart;
+  var removedCount = (result.errors||[]).filter(function(e){
+    return /skipped non-position row|invalid symbol|too few fields|invalid shares|skipped worthless|skipped delisted|duplicate symbol/i.test(e);
+  }).length;
+  try{ console.log('[extract filter]', { before: beforeCount, after: result.length, removed: removedCount, summary_keys: Object.keys(result.summary||{}) }); }catch(e){}
+
   return result;
+}
+
+// Holdings-row validator — rejects table-summary rows (Total, Equities,
+// Cash & Money Market, etc.) so they never enter _holdings. Preserves
+// legitimate tickers including BRK.B, BRK-B, BF-B, LKNCY, GOOGL.
+function _isPositionRow(sym, fullLine){
+  var s = String(sym||'').toUpperCase().trim();
+  if(!s) return false;
+  // Hard-block exact-match summary tokens that some brokerages emit as a "symbol"
+  var BLOCK = ['TOTAL','POSITIONS','EQUITIES','EQUITY','CASH','INVESTMENTS','SUMMARY','MARKET','VALUE','COST','BASIS','GAIN','LOSS','RETURN','PRICE','CHANGE','DAY','RATING','RATINGS','SHARES','QTY','QUANTITY','SYMBOL','TICKER','NAME','DESC','DESCRIPTION','MONEY','ACCOUNT'];
+  if(BLOCK.indexOf(s) >= 0) return false;
+  // Phrase match in the full row text — catches "Cash & Money Market" / "Positions Total" / etc.
+  var line = String(fullLine||'').toUpperCase();
+  var BLOCK_PHRASES = ['POSITIONS TOTAL','TOTAL EQUITIES','TOTAL EQUITY','CASH & MONEY MARKET','CASH & CASH INVESTMENTS','CASH AND MONEY MARKET','CASH AND CASH INVESTMENTS','TOTAL CASH','MONEY MARKET','ACCOUNT SUMMARY','TOTAL ACCOUNT','POSITION TOTAL'];
+  for(var i=0;i<BLOCK_PHRASES.length;i++){
+    if(line.indexOf(BLOCK_PHRASES[i]) >= 0) return false;
+  }
+  // Symbol must start with a letter and look like a ticker (1-7 chars, letters+digits+. -)
+  if(!/^[A-Z][A-Z0-9.\-]{0,6}$/.test(s)) return false;
+  return true;
 }
 
 // Strict CSV line splitter — handles quoted fields and "" escapes.
@@ -6490,6 +6524,33 @@ async function queueImagesForExtraction(files){
     var parsed=parseCSV(holdingsText);
     // Parse recurring investments
     var recurring=parseRecurring(recurringText);
+
+    // AUTO-CORRECT — When the AI emits the brokerage's TOTAL Cost Basis column
+    // as cost_per_share (a known model failure mode that produces ~$6.5M cost
+    // basis with -98% return), parsed[i].cost = costPS×shares explodes to ~50×
+    // the true value. Use SUMMARY.COST_BASIS as ground truth: if treating the
+    // emitted costPerShare as TOTAL gives a closer match than treating it as
+    // per-share, divide by shares row-by-row.
+    if(parsed.summary && parsed.summary.COST_BASIS && parsed.length){
+      var brokerCost = parsed.summary.COST_BASIS;
+      var sumIfPerShare = parsed.reduce(function(s,h){return s+(Number(h.costPerShare)||0)*(Number(h.shares)||0);},0);
+      var sumIfTotal    = parsed.reduce(function(s,h){return s+(Number(h.costPerShare)||0);},0);
+      var matchPerShare = brokerCost ? 1 - Math.min(1, Math.abs(sumIfPerShare-brokerCost)/brokerCost) : 0;
+      var matchTotal    = brokerCost ? 1 - Math.min(1, Math.abs(sumIfTotal-brokerCost)/brokerCost)    : 0;
+      if(matchTotal > 0.85 && matchTotal > matchPerShare + 0.20){
+        try{console.log('[extract auto-correct]','AI emitted total cost as costPerShare — dividing by shares', {brokerCost:brokerCost, sumIfPerShare:sumIfPerShare, sumIfTotal:sumIfTotal, matchPerShare:matchPerShare, matchTotal:matchTotal});}catch(e){}
+        parsed.forEach(function(h){
+          var sh = Number(h.shares)||0;
+          var cps = Number(h.costPerShare)||0;
+          if(sh > 0 && cps > 0){
+            var trueTotal = cps;                  // The emitted "per-share" was actually TOTAL
+            h.costPerShare = trueTotal / sh;      // True per-share = total / shares
+            h.cost = trueTotal;                   // True total cost basis for this row
+            h.gain = (Number(h.mktVal)||0) - h.cost;
+          }
+        });
+      }
+    }
 
     // Phase 3 — Preparing the weekly decision (cross-check vs brokerage totals)
     status.innerHTML = _scanStep('Preparing your weekly decision…','Cross-checking positions against your account totals.', 2);
