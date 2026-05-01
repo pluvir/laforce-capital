@@ -188,6 +188,41 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
 .tour-target-on{position:relative;z-index:99955;box-shadow:0 0 0 1px rgba(201,168,76,.55),0 0 24px rgba(201,168,76,.32);transition:box-shadow .25s ease}
 /* ── Site footer — minimal resource block ──────────────────────────── */
 .lfc-foot{margin:48px 28px 32px;padding:28px 30px 22px;border-top:1px solid var(--border);border-radius:14px;background:linear-gradient(180deg,rgba(20,16,12,.32),rgba(12,10,8,.18))}
+
+/* ===== Phase 12 — Hide site footer during core app usage ===================
+   The site footer (.lfc-foot at the bottom of body) was a long block of
+   resource links + legal disclaimer that read as a "dead-end" after panel
+   content. With Phase 11's overflow:hidden on html/body, the footer is
+   already visually clipped, but DOM still occupies layout below the fold.
+
+   This rule removes the footer from layout whenever any of the 6 core panels
+   is active (which is always, in normal app flow). Footer DOM is NOT deleted
+   — disclaimer text + links remain in source for archive / legal preservation
+   and could be surfaced later as a small "Legal" link if needed.
+
+   Targets the body via :has() so the rule auto-engages whenever a core panel
+   is active. Hidden legacy panels (Intelligence, Capital Deployment, Live
+   Market, Stock Analysis, Compare) are NOT in this list — they're also
+   workspace surfaces and should not show footer either, but they're only
+   reached via internal CTAs and the user is still "in app." For safety, the
+   simpler always-hide behavior applies via the catch-all rule below.
+
+   No JS, no DOM mutation, no engine touch. Pure presentation.
+   ============================================================================ */
+body:has(#panel-dashboard.active)      .lfc-foot,
+body:has(#panel-decisioncenter.active) .lfc-foot,
+body:has(#panel-portfolio.active)      .lfc-foot,
+body:has(#panel-discovery.active)      .lfc-foot,
+body:has(#panel-cadence.active)        .lfc-foot,
+body:has(#panel-watchlist.active)      .lfc-foot,
+/* Catch-all so legacy hidden panels also suppress the footer when active. */
+body:has(#panel-intelligence.active)   .lfc-foot,
+body:has(#panel-deploy.active)         .lfc-foot,
+body:has(#panel-market.active)         .lfc-foot,
+body:has(#panel-stockcheck.active)     .lfc-foot,
+body:has(#panel-compare.active)        .lfc-foot {
+  display: none;
+}
 .lfc-foot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
 @media (max-width:880px){.lfc-foot-grid{grid-template-columns:repeat(2,1fr);gap:22px}}
 @media (max-width:520px){.lfc-foot-grid{grid-template-columns:1fr;gap:18px}}
@@ -1019,6 +1054,147 @@ html, body { overflow: hidden; }
 }
 /* Phase 3 focus-mode dim — intro fades along with .ph and .dc-context. */
 #panel-decisioncenter.is-wap-active .dc-tab-intro { opacity: 0.55; }
+
+/* ===== Phase 13 — Starter Mode (No Portfolio) ==============================
+   Conditional UI shown when _holdings is empty. Static allocation, no engine
+   call, no API. Aggression selector persists in localStorage. Visual rhythm
+   matches the existing Compare/Why card pattern so the surface feels native.
+   ============================================================================ */
+#panel-decisioncenter .dc-starter-card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: linear-gradient(145deg, var(--noir-2), var(--noir-1));
+  padding: 22px 24px;
+}
+#panel-decisioncenter .dc-starter-header { margin-bottom: 16px; }
+#panel-decisioncenter .dc-starter-eye {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  letter-spacing: .18em; text-transform: uppercase; font-weight: 700;
+  color: var(--gold-dim); margin-bottom: 6px;
+}
+#panel-decisioncenter .dc-starter-sub {
+  font-size: 13px; color: var(--text-2); line-height: 1.55;
+}
+#panel-decisioncenter .dc-starter-aggression {
+  display: flex; gap: 4px;
+  padding: 4px;
+  margin-bottom: 16px;
+  background: rgba(0,0,0,.30);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+}
+#panel-decisioncenter .dc-aggression-btn {
+  flex: 1;
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
+  padding: 8px 12px; border-radius: 6px;
+  background: transparent; color: var(--text-2);
+  border: 1px solid transparent;
+  cursor: pointer; transition: color .18s ease, background-color .18s ease, border-color .18s ease;
+}
+#panel-decisioncenter .dc-aggression-btn:hover { color: var(--cream-dim); background: rgba(255,255,255,.03); }
+#panel-decisioncenter .dc-aggression-btn.is-active {
+  background: linear-gradient(135deg, rgba(201,168,76,.18), rgba(201,168,76,.06));
+  color: var(--gold-light);
+  border-color: rgba(201,168,76,.40);
+}
+#panel-decisioncenter .dc-aggression-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px rgba(201,168,76,.45);
+}
+#panel-decisioncenter .dc-starter-allocation {
+  display: flex; flex-direction: column; gap: 9px;
+  padding: 14px 0 4px;
+  border-top: 1px solid var(--border);
+}
+#panel-decisioncenter .dc-starter-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 56px minmax(0, 1fr);
+  gap: 12px; align-items: center;
+}
+#panel-decisioncenter .dc-starter-ticker {
+  font-family: 'DM Mono', monospace; font-size: 13px;
+  font-weight: 700; color: var(--gold-light);
+  letter-spacing: .04em;
+}
+#panel-decisioncenter .dc-starter-bar {
+  height: 6px; border-radius: 3px;
+  background: rgba(255,255,255,.04);
+  overflow: hidden;
+}
+#panel-decisioncenter .dc-starter-fill {
+  height: 100%; border-radius: inherit;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold-light));
+  transition: width .35s ease;
+}
+#panel-decisioncenter .dc-starter-pct {
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  color: var(--cream-dim);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+#panel-decisioncenter .dc-starter-role {
+  font-size: 11px; color: var(--text-3);
+  font-style: italic; line-height: 1.4;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+#panel-decisioncenter .dc-starter-foot {
+  margin-top: 14px; padding-top: 12px;
+  border-top: 1px dashed rgba(201,168,76,.14);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 13px; color: var(--cream-dim);
+  line-height: 1.55;
+}
+#panel-decisioncenter .dc-starter-cta {
+  display: inline-block;
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
+  padding: 10px 18px; margin-top: 4px;
+  background: linear-gradient(135deg, rgba(201,168,76,.18), rgba(201,168,76,.06));
+  color: var(--gold-light);
+  border: 1px solid rgba(201,168,76,.40);
+  border-radius: var(--r);
+  cursor: pointer; transition: background-color .16s, border-color .16s;
+}
+#panel-decisioncenter .dc-starter-cta:hover,
+#panel-decisioncenter .dc-starter-cta:focus-visible {
+  background: linear-gradient(135deg, rgba(201,168,76,.28), rgba(201,168,76,.10));
+  border-color: rgba(201,168,76,.60);
+  outline: none;
+}
+#panel-decisioncenter .dc-explore-chips {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+#panel-decisioncenter .dc-explore-chip {
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  letter-spacing: .04em; font-weight: 600;
+  padding: 7px 12px; border-radius: var(--r);
+  background: rgba(255,255,255,.03); color: var(--cream-dim);
+  border: 1px solid var(--border);
+  cursor: pointer; transition: color .18s ease, background-color .18s ease, border-color .18s ease;
+}
+#panel-decisioncenter .dc-explore-chip:hover,
+#panel-decisioncenter .dc-explore-chip:focus-visible {
+  color: var(--gold-light);
+  border-color: rgba(201,168,76,.45);
+  background: rgba(201,168,76,.06);
+  outline: none;
+}
+@media (max-width: 620px) {
+  #panel-decisioncenter .dc-starter-row {
+    grid-template-columns: 52px 1fr 48px;
+  }
+  #panel-decisioncenter .dc-starter-role { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #panel-decisioncenter .dc-starter-fill,
+  #panel-decisioncenter .dc-aggression-btn,
+  #panel-decisioncenter .dc-explore-chip,
+  #panel-decisioncenter .dc-starter-cta { transition: none; }
+}
 
 /* ===== Pass B — Flow Layer scaffolding =====================================
    Adds staggered fade-in for the 5 marked flow steps inside #panel-dashboard.
@@ -2073,14 +2249,14 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     <div class="nav-item active" data-panel="dashboard" onclick="showPanel('dashboard',this)">
       <span class="nav-icon">&#9670;</span>Dashboard
     </div>
-    <div class="nav-item" data-panel="discovery" onclick="showPanel('discovery',this)">
-      <span class="nav-icon">&#9758;</span>Discovery
-    </div>
     <div class="nav-item" data-panel="portfolio" onclick="showPanel('portfolio',this)">
       <span class="nav-icon">&#10022;</span>Portfolio Lab
     </div>
     <div class="nav-item" data-panel="decisioncenter" onclick="showPanel('decisioncenter',this)">
       <span class="nav-icon">&#9678;</span>Decision Center
+    </div>
+    <div class="nav-item" data-panel="discovery" onclick="showPanel('discovery',this)">
+      <span class="nav-icon">&#9758;</span>Discovery
     </div>
     <div class="nav-item" data-panel="intelligence" onclick="showPanel('intelligence',this)">
       <span class="nav-icon">&#9775;</span>Intelligence
@@ -2639,10 +2815,11 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
   <div id="welcomeHero" class="wh">
     <div class="wh-eye">Institutional Grade &middot; Private &middot; Disciplined</div>
     <h1 class="wh-title">The institutional edge,<br><em>translated for everyday investors.</em></h1>
-    <p class="wh-lede">Fortis turns market data into structured clarity &mdash; so you can think, not guess.</p>
+    <p class="wh-lede">Start building your strategy or upload an existing portfolio &mdash; either way, Fortis gives you structured clarity.</p>
     <div class="wh-trust">We don&rsquo;t give advice. We give clarity.</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn-p" onclick="showPanel('portfolio',getNavForPanel('portfolio'))">Upload Portfolio &rarr;</button>
+      <button class="btn-p" onclick="showPanel('decisioncenter',getNavForPanel('decisioncenter'));if(typeof dcSetTab==='function')setTimeout(function(){dcSetTab('wap');},80)">Start Building &rarr;</button>
+      <button class="btn-s" onclick="showPanel('portfolio',getNavForPanel('portfolio'))">Upload Portfolio</button>
       <button class="btn-s" onclick="showPanel('stockcheck',getNavForPanel('stockcheck'))">Analyze a Stock</button>
     </div>
   </div>
@@ -12842,6 +13019,152 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     try { localStorage.setItem(TAB_KEY, name); } catch (_) {}
   }
 
+  /* ===== Phase 13 — Starter Mode (No Portfolio) ============================
+     Provides starter UI when _holdings is empty. Static allocations only,
+     no engine, no API. Aggression selector (Conservative / Moderate /
+     Aggressive) persists in localStorage. Re-rendering the current tab
+     re-paints the starter content with the new aggression. */
+  var STARTER_KEY     = 'fortis_dc_starter_aggression';
+  var STARTER_VALID   = ['conservative','moderate','aggressive'];
+  var STARTER_DEFAULT = 'moderate';
+  /* Static allocations — index-grade names, weighted to sum to 100%. */
+  var STARTER_ALLOCATIONS = {
+    conservative: [
+      { ticker: 'VOO',  weight: 60, role: 'Core · S&P 500 index' },
+      { ticker: 'SCHD', weight: 30, role: 'Income · Dividend ETF' },
+      { ticker: 'BND',  weight: 10, role: 'Stability · Total bond market' }
+    ],
+    moderate: [
+      { ticker: 'VOO',  weight: 50, role: 'Core · S&P 500 index' },
+      { ticker: 'QQQ',  weight: 25, role: 'Growth · NASDAQ-100' },
+      { ticker: 'SCHD', weight: 15, role: 'Income · Dividend ETF' },
+      { ticker: 'NVDA', weight: 10, role: 'Conviction · AI compounder' }
+    ],
+    aggressive: [
+      { ticker: 'QQQ',   weight: 35, role: 'Growth · NASDAQ-100' },
+      { ticker: 'NVDA',  weight: 25, role: 'Conviction · AI infrastructure' },
+      { ticker: 'GOOGL', weight: 15, role: 'Conviction · Mega-cap platform' },
+      { ticker: 'AMZN',  weight: 15, role: 'Conviction · Mega-cap platform' },
+      { ticker: 'VOO',   weight: 10, role: 'Core · S&P 500 index' }
+    ]
+  };
+  var STARTER_EXPLORE_TICKERS = ['NVDA','GOOGL','AMZN','VOO','QQQ','SCHD','MSFT','META','AVGO','LMT'];
+  var STARTER_DEFAULT_WEEKLY  = 100; /* illustrative weekly contribution */
+
+  function _dcIsStarterMode(){
+    return !global._holdings || global._holdings.length === 0;
+  }
+  function _dcGetStarterAggression(){
+    try {
+      var v = localStorage.getItem(STARTER_KEY);
+      return STARTER_VALID.indexOf(v) > -1 ? v : STARTER_DEFAULT;
+    } catch(_) { return STARTER_DEFAULT; }
+  }
+  function _dcSaveStarterAggression(name){
+    try { localStorage.setItem(STARTER_KEY, name); } catch(_){}
+  }
+
+  /* Public — buttons in the starter UI call this to change aggression. */
+  global._dcSetStarterAggression = function(name){
+    if (STARTER_VALID.indexOf(name) === -1) return;
+    _dcSaveStarterAggression(name);
+    /* Re-render current tab so the starter UI reflects the new aggression. */
+    var current = STARTER_DEFAULT;
+    try { current = localStorage.getItem(TAB_KEY) || 'wap'; } catch(_) { current = 'wap'; }
+    if (TABS.indexOf(current) === -1) current = 'wap';
+    if (typeof global.dcSetTab === 'function') global.dcSetTab(current);
+  };
+
+  function _dcStarterAggressionPicker(){
+    var current = _dcGetStarterAggression();
+    return '<div class="dc-starter-aggression" role="tablist" aria-label="Starter aggression level">' +
+      STARTER_VALID.map(function(name){
+        var label = name.charAt(0).toUpperCase() + name.slice(1);
+        var on = name === current;
+        return '<button type="button" class="dc-aggression-btn' + (on ? ' is-active' : '') + '" ' +
+          'data-aggression="' + name + '" role="tab" aria-selected="' + (on ? 'true' : 'false') + '" ' +
+          'onclick="_dcSetStarterAggression(\'' + name + '\')">' + _esc(label) + '</button>';
+      }).join('') +
+    '</div>';
+  }
+
+  function _dcStarterAllocRows(aggression, mode){
+    /* mode: 'weight' (shows %) or 'amount' (shows $ from STARTER_DEFAULT_WEEKLY) */
+    var alloc = STARTER_ALLOCATIONS[aggression] || STARTER_ALLOCATIONS[STARTER_DEFAULT];
+    return alloc.map(function(a){
+      var rightCol;
+      if (mode === 'amount'){
+        var amt = Math.round((a.weight/100) * STARTER_DEFAULT_WEEKLY);
+        rightCol = '$' + amt;
+      } else {
+        rightCol = a.weight + '%';
+      }
+      return '<div class="dc-starter-row">' +
+               '<span class="dc-starter-ticker">' + _esc(a.ticker) + '</span>' +
+               '<div class="dc-starter-bar" aria-hidden="true">' +
+                 '<div class="dc-starter-fill" style="width:' + a.weight + '%"></div>' +
+               '</div>' +
+               '<span class="dc-starter-pct">' + _esc(rightCol) + '</span>' +
+               '<span class="dc-starter-role">' + _esc(a.role) + '</span>' +
+             '</div>';
+    }).join('');
+  }
+
+  function _dcRenderStarterWap(){
+    var aggression = _dcGetStarterAggression();
+    return '<div class="dc-starter-card">' +
+             '<div class="dc-starter-header">' +
+               '<div class="dc-starter-eye">Starter Strategy · No portfolio yet</div>' +
+               '<div class="dc-starter-sub">A simple, index-grade allocation. Pick an aggression level to see the structure.</div>' +
+             '</div>' +
+             _dcStarterAggressionPicker() +
+             '<div class="dc-starter-allocation">' + _dcStarterAllocRows(aggression, 'weight') + '</div>' +
+             '<div class="dc-starter-foot">Static allocation. No engine call. Upload a portfolio to unlock the live weekly plan tied to your actual positions.</div>' +
+           '</div>';
+  }
+
+  function _dcRenderStarterDeploy(){
+    var aggression = _dcGetStarterAggression();
+    var label = aggression.charAt(0).toUpperCase() + aggression.slice(1);
+    return '<div class="dc-starter-card">' +
+             '<div class="dc-starter-header">' +
+               '<div class="dc-starter-eye">Simulated Deployment · No portfolio yet</div>' +
+               '<div class="dc-starter-sub">If you deployed $' + STARTER_DEFAULT_WEEKLY + ' weekly into your starter strategy, here’s how it would split. Aggression: ' + _esc(label) + '.</div>' +
+             '</div>' +
+             _dcStarterAggressionPicker() +
+             '<div class="dc-starter-allocation">' + _dcStarterAllocRows(aggression, 'amount') + '</div>' +
+             '<div class="dc-starter-foot">Numbers are illustrative. Upload a portfolio to deploy real cash through the live engine.</div>' +
+           '</div>';
+  }
+
+  function _dcRenderStarterAnalyze(){
+    var chips = STARTER_EXPLORE_TICKERS.map(function(t){
+      return '<button type="button" class="dc-explore-chip" ' +
+        'onclick="if(typeof quickTick===\'function\')quickTick(\'' + _esc(t) + '\');showPanel(\'stockcheck\',getNavForPanel(\'stockcheck\'));setTimeout(function(){if(typeof runStock===\'function\')runStock();},220)">' +
+        _esc(t) +
+      '</button>';
+    }).join('');
+    return '<div class="dc-starter-card">' +
+             '<div class="dc-starter-header">' +
+               '<div class="dc-starter-eye">Explore Ideas · No portfolio yet</div>' +
+               '<div class="dc-starter-sub">Run a deep, institutional-grade read on any of these names — no portfolio required.</div>' +
+             '</div>' +
+             '<div class="dc-explore-chips">' + chips + '</div>' +
+             '<div class="dc-starter-foot">Click any ticker to jump into Stock Analysis. Upload your portfolio to get reads tailored to your positions.</div>' +
+           '</div>';
+  }
+
+  function _dcRenderStarterCompare(){
+    return '<div class="dc-starter-card">' +
+             '<div class="dc-starter-header">' +
+               '<div class="dc-starter-eye">Build Your Shortlist · No portfolio yet</div>' +
+               '<div class="dc-starter-sub">Rank a list of candidates to see which clear the screen, or run a head-to-head between two names.</div>' +
+             '</div>' +
+             '<button type="button" class="dc-starter-cta" onclick="showPanel(\'compare\',getNavForPanel(\'compare\'))">Open full Compare &rarr;</button>' +
+             '<div class="dc-starter-foot">Upload a portfolio later to see how a ranked list interacts with your actual positions.</div>' +
+           '</div>';
+  }
+
   /* Phase 11.5 — reusable tab intro builder.
      Returns a small Cormorant + DM Sans header block prepended to each tab's
      content area. Pure HTML string. No state, no JS logic, no engine touch.
@@ -12871,65 +13194,88 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
       if (name === 'wap') {
         /* Phase 2 — render mount slot for the re-parented singleton #wapContainer.
            The container itself is not duplicated; _dcRelocateWap moves it here.
-           Phase 11.5 — tab intro prepended above the slot. */
-        content.innerHTML =
-          _dcTabIntro(
-            "This Week's Move",
-            'Your portfolio is translated into one weekly action based on structure, concentration, and available cash.'
-          ) +
-          '<div id="wapDcSlot" class="dc-wap-slot"></div>';
+           Phase 11.5 — tab intro prepended above the slot.
+           Phase 13 — when no portfolio, replace the slot with the Starter
+           Strategy card. The relocator falls through (no #wapDcSlot found)
+           and keeps #wapContainer in the dashboard slot. */
+        var wapIntro = _dcTabIntro(
+          "This Week's Move",
+          'Your portfolio is translated into one weekly action based on structure, concentration, and available cash.'
+        );
+        if (_dcIsStarterMode()) {
+          content.innerHTML = wapIntro + _dcRenderStarterWap();
+        } else {
+          content.innerHTML = wapIntro + '<div id="wapDcSlot" class="dc-wap-slot"></div>';
+        }
       } else if (name === 'deploy') {
         /* Phase 4 — render mount slot for the re-parented singleton
            #deployContent. Singleton; _dcRelocateDeploy moves it here.
            Phase 11 — empty-state fallback inside the slot. CSS :has()
            hides it once the singleton arrives. No JS branching needed.
-           Phase 11.5 — tab intro prepended above the slot. */
-        content.innerHTML =
-          _dcTabIntro(
-            'Deploy Capital',
-            'Adjust how much cash you want to deploy and see how the weekly plan allocates it.'
-          ) +
-          '<div id="deployDcSlot" class="dc-deploy-slot">' +
-            '<div class="dc-empty-fallback">' +
-              '<div class="dc-empty-msg">Upload your portfolio to generate a deployment plan.</div>' +
-              '<button type="button" class="dc-empty-cta" ' +
-                'onclick="showPanel(\'portfolio\', getNavForPanel(\'portfolio\'))">' +
-                'Upload Portfolio &rarr;' +
-              '</button>' +
-            '</div>' +
-          '</div>';
+           Phase 11.5 — tab intro prepended above the slot.
+           Phase 13 — when no portfolio, render simulated deployment
+           instead of the slot. Relocator falls through. */
+        var deployIntro = _dcTabIntro(
+          'Deploy Capital',
+          'Adjust how much cash you want to deploy and see how the weekly plan allocates it.'
+        );
+        if (_dcIsStarterMode()) {
+          content.innerHTML = deployIntro + _dcRenderStarterDeploy();
+        } else {
+          content.innerHTML = deployIntro +
+            '<div id="deployDcSlot" class="dc-deploy-slot">' +
+              '<div class="dc-empty-fallback">' +
+                '<div class="dc-empty-msg">Upload your portfolio to generate a deployment plan.</div>' +
+                '<button type="button" class="dc-empty-cta" ' +
+                  'onclick="showPanel(\'portfolio\', getNavForPanel(\'portfolio\'))">' +
+                  'Upload Portfolio &rarr;' +
+                '</button>' +
+              '</div>' +
+            '</div>';
+        }
       } else if (name === 'analyze') {
         /* Phase 5 — render mount slot for the re-parented singleton
            #stockContent. Singleton; _dcRelocateStock moves it here.
            Phase 11 — empty-state fallback inside the slot. CSS :has()
            hides it once the singleton arrives. No JS branching needed.
-           Phase 11.5 — tab intro prepended above the slot. */
-        content.innerHTML =
-          _dcTabIntro(
-            'Analyze a Stock',
-            'Check an individual ticker before adding it to your plan or comparing it against alternatives.'
-          ) +
-          '<div id="stockDcSlot" class="dc-stock-slot">' +
-            '<div class="dc-empty-fallback">' +
-              '<div class="dc-empty-msg">Pick a ticker to run an institutional-grade read.</div>' +
-              '<button type="button" class="dc-empty-cta" ' +
-                'onclick="showPanel(\'stockcheck\', getNavForPanel(\'stockcheck\'))">' +
-                'Open Stock Analysis &rarr;' +
-              '</button>' +
-            '</div>' +
-          '</div>';
+           Phase 11.5 — tab intro prepended above the slot.
+           Phase 13 — when no portfolio, render Explore Ideas instead.
+           Relocator falls through (no #stockDcSlot in DOM). */
+        var analyzeIntro = _dcTabIntro(
+          'Analyze a Stock',
+          'Check an individual ticker before adding it to your plan or comparing it against alternatives.'
+        );
+        if (_dcIsStarterMode()) {
+          content.innerHTML = analyzeIntro + _dcRenderStarterAnalyze();
+        } else {
+          content.innerHTML = analyzeIntro +
+            '<div id="stockDcSlot" class="dc-stock-slot">' +
+              '<div class="dc-empty-fallback">' +
+                '<div class="dc-empty-msg">Pick a ticker to run an institutional-grade read.</div>' +
+                '<button type="button" class="dc-empty-cta" ' +
+                  'onclick="showPanel(\'stockcheck\', getNavForPanel(\'stockcheck\'))">' +
+                  'Open Stock Analysis &rarr;' +
+                '</button>' +
+              '</div>' +
+            '</div>';
+        }
       } else if (name === 'compare') {
         /* Phase 6 — Render slot for the Compare summary card. The card is
            NOT a relocated singleton — it's a freshly rendered summary that
            reads from cached state and links out to the existing Compare
            panel. _dcRenderCompareSummary populates it.
-           Phase 11.5 — tab intro prepended above the slot. */
-        content.innerHTML =
-          _dcTabIntro(
-            'Compare & Rank',
-            'Rank a short list of candidates before deciding what deserves capital.'
-          ) +
-          '<div id="compareDcSlot" class="dc-compare-slot"></div>';
+           Phase 11.5 — tab intro prepended above the slot.
+           Phase 13 — when no portfolio, render Build Your Shortlist
+           prompt instead of the summary slot. */
+        var compareIntro = _dcTabIntro(
+          'Compare & Rank',
+          'Rank a short list of candidates before deciding what deserves capital.'
+        );
+        if (_dcIsStarterMode()) {
+          content.innerHTML = compareIntro + _dcRenderStarterCompare();
+        } else {
+          content.innerHTML = compareIntro + '<div id="compareDcSlot" class="dc-compare-slot"></div>';
+        }
       } else if (name === 'why') {
         /* Phase 7 — Render slot for the Why summary card. Deterministic only.
            _dcRenderWhySummary reads portfolioState + _wapBuildState +
