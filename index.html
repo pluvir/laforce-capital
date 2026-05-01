@@ -742,6 +742,43 @@ html, body, #app, #main { background: var(--noir); }
    margin/halo above does not apply (descendant selector requires #panel-dashboard).
    Reset margin so it sits cleanly inside the tab content area. */
 #panel-decisioncenter #wapContainer { margin: 0; }
+
+/* ===== Phase 16 — Decision Memory strip ====================================
+   Compact "what changed" indicator inside the WAP card. Sits directly under
+   the main decision area (.wap__main). Dark glass background, thin token
+   border, small uppercase labels, gold accent reserved for a changed
+   confidence arrow. No animation beyond hover-equivalent color shift. */
+#wapContainer .wap__memory {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 10px; row-gap: 6px;
+  margin: 14px 0 0;
+  padding: 8px 12px;
+  background: rgba(0,0,0,.22);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font-family: 'DM Mono', monospace;
+}
+#wapContainer .wap__memory-row {
+  display: inline-flex; align-items: baseline; gap: 6px;
+}
+#wapContainer .wap__memory-label {
+  font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase;
+  font-weight: 700; color: var(--text-3);
+}
+#wapContainer .wap__memory-value {
+  font-size: 11px; font-weight: 600;
+  color: var(--cream-dim); letter-spacing: .04em;
+}
+#wapContainer .wap__memory-now { color: var(--cream); }
+#wapContainer .wap__memory-arrow {
+  font-family: inherit; font-weight: 700; min-width: 12px; text-align: center;
+}
+#wapContainer .wap__memory-arrow.is-changed { color: var(--gold); }
+#wapContainer .wap__memory-sep { color: var(--text-3); opacity: .5; }
+@media (prefers-reduced-motion: reduce) {
+  #wapContainer .wap__memory,
+  #wapContainer .wap__memory-arrow { transition: none; }
+}
 #panel-decisioncenter #wapDcSlot { width: 100%; }
 /* Phase 4 — Deploy slot. Hosts #deployContent when DC → Deploy is active. */
 #panel-decisioncenter #deployDcSlot { width: 100%; padding-top: 4px; }
@@ -3043,10 +3080,10 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     <div class="wh-eye" id="welcomeHeroEye">Today &middot; — &middot; —</div>
     <h1 class="wh-title">What&rsquo;s the move<br><em>this week?</em></h1>
     <p class="wh-lede">Build a starter strategy or upload your portfolio. Either way, Fortis gives you one clear move.</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
-      <button class="btn-p" onclick="showPanel('decisioncenter',getNavForPanel('decisioncenter'));if(typeof dcSetTab==='function')setTimeout(function(){dcSetTab('wap');},80)">Start Building &rarr;</button>
-      <button class="btn-s" onclick="showPanel('portfolio',getNavForPanel('portfolio'))">Upload Portfolio</button>
-      <button class="btn-s" onclick="showPanel('stockcheck',getNavForPanel('stockcheck'))">Analyze a Stock</button>
+    <!-- Single clear entry path: primary = upload (dominant), secondary = start without one (text-style). -->
+    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:20px">
+      <button class="btn-p" style="font-size:15px;padding:14px 28px;letter-spacing:.02em" onclick="openPortfolioUploadModal('dashboard')">Start with your portfolio</button>
+      <button type="button" onclick="showPanel('decisioncenter',getNavForPanel('decisioncenter'));if(typeof dcSetTab==='function')setTimeout(function(){dcSetTab('wap');},80)" style="background:transparent;border:none;padding:4px 2px;font-family:'DM Sans',system-ui,sans-serif;font-size:12.5px;color:var(--text-2);cursor:pointer;letter-spacing:.02em;transition:color .18s ease" onmouseover="this.style.color='var(--gold-light)'" onmouseout="this.style.color='var(--text-2)'" onfocus="this.style.color='var(--gold-light)'" onblur="this.style.color='var(--text-2)'">or start without one &rarr;</button>
     </div>
   </div>
   <!-- TODAY'S PULSE — slim banner directly under hero -->
@@ -3252,7 +3289,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
         <span class="ds-tag sage">Classification</span>
         <span class="ds-tag gold">Concentration Check</span>
       </div>
-      <button class="ds-action" onclick="event.stopPropagation();showPanel('portfolio',getNavForPanel('portfolio'))">Upload portfolio &rarr;</button>
+      <button class="ds-action" onclick="event.stopPropagation();openPortfolioUploadModal('dashboard')">Upload portfolio &rarr;</button>
     </div>
   </div>
 </div>
@@ -3436,6 +3473,9 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     <h1 class="ph-title">Decision <em>Center</em></h1>
     <p class="ph-sub">Where every move is decided.</p>
   </div>
+
+  <!-- Micro-guidance — single line orienting the user before tabs. -->
+  <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--cream-dim);line-height:1.55;max-width:560px;margin:-6px 0 18px;letter-spacing:.005em">Pick how aggressive you want to be. Fortis builds your plan.</p>
 
   <!-- Context strip — placeholders only in Phase 1. Phase 2 fills from
        _marketCtx + portfolioState. -->
@@ -4635,35 +4675,40 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     <p class="ph-sub">Upload any portfolio file. AI extracts holdings, runs a feasibility study, and builds your action plan.</p>
   </div>
 
-  <div class="card" style="margin-bottom:16px">
-    <div class="card-title">Upload Holdings</div>
-    <div class="dz" id="dropzone" onclick="document.getElementById('fileInput').click()"
-      ondragover="event.preventDefault();this.classList.add('drag')"
-      ondragleave="this.classList.remove('drag')"
-      ondrop="handleDrop(event)">
-      <div class="dz-icon">&#128193;</div>
-      <div class="dz-title">Drop any portfolio file here</div>
-      <div class="dz-sub">Drop <strong style="color:var(--gold-light)">multiple screenshots</strong> at once &mdash; Robinhood &middot; Schwab &middot; Fidelity &middot; IBKR<br>PNG &middot; JPG &middot; CSV &mdash; AI reads all screens, merges accounts<br>Handles fractional shares, recurring investments &amp; bankrupt positions</div>
-    </div>
-    <input type="file" id="fileInput" style="display:none" accept=".csv,.png,.jpg,.jpeg,.webp,.txt"
-      multiple onchange="showImagePreviews(this.files);handleFileInput(this.files)"/>
-    <!-- Image preview queue &mdash; shows thumbnails of dropped screenshots -->
-    <div id="imgPreviewQueue" style="display:none;margin-top:12px">
-      <div style="font-size:11px;letter-spacing:.15em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:8px">Queued screenshots</div>
-      <div id="imgPreviewList" style="display:flex;flex-wrap:wrap;gap:8px"></div>
-    </div>
-    <div id="portExtractStatus" style="margin-top:10px"></div>
+  <!-- Phase 15 — Upload card lives inside #uploadCardSlot. The same card is
+       relocated into the inline upload modal when openPortfolioUploadModal()
+       is invoked and moved back here on close. Singleton; IDs preserved. -->
+  <div id="uploadCardSlot">
+    <div class="card" id="uploadCardInner" style="margin-bottom:16px">
+      <div class="card-title">Upload Holdings</div>
+      <div class="dz" id="dropzone" onclick="document.getElementById('fileInput').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleDrop(event)">
+        <div class="dz-icon">&#128193;</div>
+        <div class="dz-title">Drop any portfolio file here</div>
+        <div class="dz-sub">Drop <strong style="color:var(--gold-light)">multiple screenshots</strong> at once &mdash; Robinhood &middot; Schwab &middot; Fidelity &middot; IBKR<br>PNG &middot; JPG &middot; CSV &mdash; AI reads all screens, merges accounts<br>Handles fractional shares, recurring investments &amp; bankrupt positions</div>
+      </div>
+      <input type="file" id="fileInput" style="display:none" accept=".csv,.png,.jpg,.jpeg,.webp,.txt"
+        multiple onchange="showImagePreviews(this.files);handleFileInput(this.files)"/>
+      <!-- Image preview queue &mdash; shows thumbnails of dropped screenshots -->
+      <div id="imgPreviewQueue" style="display:none;margin-top:12px">
+        <div style="font-size:11px;letter-spacing:.15em;color:var(--text-3);text-transform:uppercase;font-weight:600;margin-bottom:8px">Queued screenshots</div>
+        <div id="imgPreviewList" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+      </div>
+      <div id="portExtractStatus" style="margin-top:10px"></div>
 
-    <div class="orn"><hr><span>or paste manually</span><hr></div>
+      <div class="orn"><hr><span>or paste manually</span><hr></div>
 
-    <div class="ig">
-      <label class="il">Manual Holdings &mdash; SYMBOL, SHARES, COST, MARKET VALUE per line</label>
-      <textarea id="manualInput" placeholder="AAPL, 50, 175.20, 9500&#10;NVDA, 20, 420.00, 18000&#10;VOO, 30, 380.00, 12000"
-        style="height:90px;font-family:DM Mono,monospace;font-size:12px"></textarea>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn-p" onclick="loadManual()">Load Holdings</button>
-      <button class="btn-d" onclick="clearAll()">Clear All</button>
+      <div class="ig">
+        <label class="il">Manual Holdings &mdash; SYMBOL, SHARES, COST, MARKET VALUE per line</label>
+        <textarea id="manualInput" placeholder="AAPL, 50, 175.20, 9500&#10;NVDA, 20, 420.00, 18000&#10;VOO, 30, 380.00, 12000"
+          style="height:90px;font-family:DM Mono,monospace;font-size:12px"></textarea>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-p" onclick="loadManual()">Load Holdings</button>
+        <button class="btn-d" onclick="clearAll()">Clear All</button>
+      </div>
     </div>
   </div>
 
@@ -5325,7 +5370,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       <div style="font-size:22px;margin-bottom:8px;opacity:.2">&#9670;</div>
       <div style="font-size:11px;font-weight:600;color:var(--text-2);margin-bottom:5px">Upload portfolio to unlock</div>
       <div style="font-size:10px;color:var(--text-3);line-height:1.6;margin-bottom:12px">Opportunities are generated from your actual holdings &mdash; gaps, missing layers, and overweights.</div>
-      <button class="btn-g" style="font-size:10px;width:100%;padding:7px" onclick="showPanel('portfolio',getNavForPanel('portfolio'))">Upload portfolio &rarr;</button>
+      <button class="btn-g" style="font-size:10px;width:100%;padding:7px" onclick="openPortfolioUploadModal('dashboard')">Upload portfolio &rarr;</button>
     </div>
   </div>
 
@@ -12183,6 +12228,116 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
   .lfc-about-list li::before { content:''; position:absolute; left:2px; top:9px; width:5px; height:5px; border-radius:50%; background:var(--gold); }
   .lfc-about-disclaim { margin-top:18px; padding:11px 14px; border-radius:8px; background:rgba(192,113,79,.05); border:1px solid rgba(192,113,79,.22); border-left:3px solid var(--clay); font-size:11.5px; color:var(--cream-dim); line-height:1.6; font-style:italic; }
 </style>
+<!-- Phase 15 — Inline Portfolio Upload Modal.
+     The upload card is relocated from #uploadCardSlot in panel-portfolio
+     into #uploadModalMount when openPortfolioUploadModal() fires. All IDs
+     and inline handlers (#fileInput, handleDrop, loadManual, clearAll, etc.)
+     are preserved by the move — no duplication. -->
+<style>
+  .upload-modal-bg {
+    position: fixed; inset: 0; z-index: 100050;
+    display: none;
+    background: rgba(8, 6, 4, .76);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    align-items: flex-start; justify-content: center;
+    padding: 60px 18px 24px;
+    overflow-y: auto;
+  }
+  .upload-modal-bg.on { display: flex; animation: uploadModalBgIn .20s ease; }
+  @keyframes uploadModalBgIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .upload-modal-card {
+    position: relative;
+    width: 100%; max-width: 640px;
+    background: linear-gradient(180deg, var(--noir-2), var(--noir-1));
+    border: 1px solid rgba(201,168,76,.32);
+    border-radius: 14px;
+    padding: 30px 30px 26px;
+    box-shadow: 0 28px 70px rgba(0,0,0,.60),
+                0 0 0 1px rgba(201,168,76,.08) inset,
+                0 0 32px rgba(201,168,76,.06);
+    animation: uploadModalCardIn .24s cubic-bezier(.2,.9,.3,1.05);
+    color: var(--cream);
+    margin-bottom: 24px;
+  }
+  @keyframes uploadModalCardIn {
+    from { opacity: 0; transform: translateY(10px) scale(.985); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+  }
+  .upload-modal-head {
+    margin-bottom: 22px;
+    padding-right: 40px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .upload-modal-eye {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: .20em; text-transform: uppercase; font-weight: 700;
+    color: var(--gold-dim); margin-bottom: 8px;
+  }
+  .upload-modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 500;
+    color: var(--cream); line-height: 1.15;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .upload-modal-title em { font-style: italic; color: var(--gold-light); }
+  .upload-modal-sub {
+    margin: 0;
+    font-size: 13px; color: var(--text-2); line-height: 1.6;
+    max-width: 520px;
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 14.5px;
+  }
+  .upload-modal-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 32px; height: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    cursor: pointer;
+    font-size: 18px; line-height: 1;
+    font-family: inherit;
+    transition: color .15s, border-color .15s, background-color .15s;
+    z-index: 1;
+  }
+  .upload-modal-close:hover,
+  .upload-modal-close:focus-visible {
+    color: var(--cream); border-color: var(--border-2);
+    background: rgba(255,255,255,.04);
+    outline: none;
+  }
+  /* Inside the modal, drop the card's outer chrome — the modal itself is the
+     card now. Strip border/bg/padding from the relocated #uploadCardInner so
+     the dropzone + textarea + buttons sit cleanly inside the modal frame. */
+  #uploadModalMount #uploadCardInner {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  #uploadModalMount .card-title { display: none; } /* modal title replaces it */
+
+  @media (prefers-reduced-motion: reduce) {
+    .upload-modal-bg, .upload-modal-card { animation: none; }
+  }
+</style>
+<div id="portfolioUploadModal" class="upload-modal-bg" role="dialog" aria-modal="true" aria-labelledby="uploadModalTitle" aria-hidden="true">
+  <div class="upload-modal-card" role="document">
+    <button type="button" class="upload-modal-close" aria-label="Close upload" onclick="closePortfolioUploadModal()">&times;</button>
+    <div class="upload-modal-head">
+      <div class="upload-modal-eye">Portfolio</div>
+      <h3 class="upload-modal-title" id="uploadModalTitle">Add your portfolio</h3>
+      <p class="upload-modal-sub">Upload a screenshot or file to unlock your weekly plan.</p>
+    </div>
+    <div id="uploadModalMount"></div>
+  </div>
+</div>
+
 <div id="aboutLfcOverlay" role="dialog" aria-modal="true" aria-labelledby="aboutLfcTitle" onclick="if(event.target===this)closeAboutLaForce()">
   <div class="lfc-about" role="document">
     <button type="button" class="lfc-about-x" onclick="closeAboutLaForce()" aria-label="Close">&times;</button>
@@ -12666,6 +12821,16 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     var ctaBtn = container.querySelector('.wap-empty__cta');
     if (ctaBtn) ctaBtn.addEventListener('click', function(){
       var target = ctaBtn.getAttribute('data-wap-target') || 'portfolio';
+      /* Phase 15 — Upload-related CTA opens the inline modal instead of
+         routing to Portfolio Lab. Source is the panel WAP currently lives
+         in (dashboard or decisioncenter) so post-upload navigation lands
+         where the user actually was. */
+      if (target === 'portfolio' && typeof window.openPortfolioUploadModal === 'function') {
+        var dcPanel = document.getElementById('panel-decisioncenter');
+        var src = (dcPanel && dcPanel.classList.contains('active')) ? 'decisioncenter' : 'dashboard';
+        try { window.openPortfolioUploadModal(src); } catch(_){}
+        return;
+      }
       try { if (typeof showPanel === 'function') showPanel(target, null); } catch(_){}
     });
   }
@@ -12852,6 +13017,104 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
   function _wapWriteLastAction(action){ try { localStorage.setItem(WAP_LAST_ACTION_KEY, JSON.stringify(action)); } catch(_){} }
   function _wapIncStreak(){ try { var n = _wapReadStreak() + 1; localStorage.setItem(WAP_STREAK_KEY, String(n)); return n; } catch(_) { return 0; } }
   function _wapDaysUntil(d){ var ms = d.getTime() - Date.now(); return Math.max(0, Math.ceil(ms / (24*60*60*1000))); }
+
+  /* ===== Phase 16 — Decision Memory (local-first) =========================
+     Stores the previous WAP decision snapshot in localStorage and renders a
+     compact "what changed" strip inside the WAP card on subsequent renders.
+     Helpers are idempotent; the strip is removed and re-inserted on every
+     render so relocations between Dashboard ↔ Decision Center can't duplicate
+     it. UNAVAILABLE states are persisted ONLY when no prior snapshot exists,
+     so a first-time empty user gets a baseline but a returning user with a
+     real decision history is never overwritten by a transient empty state.
+     ======================================================================= */
+  var WAP_DECISION_MEMORY_KEY = 'fortis_wap_decision_memory_v1';
+
+  function _wapReadDecisionMemory(){
+    try {
+      var raw = localStorage.getItem(WAP_DECISION_MEMORY_KEY);
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object' || !parsed.action) return null;
+      return parsed;
+    } catch(_) { return null; }
+  }
+
+  function _wapWriteDecisionMemory(snapshot){
+    try {
+      if (!snapshot || typeof snapshot !== 'object' || !snapshot.action) return;
+      localStorage.setItem(WAP_DECISION_MEMORY_KEY, JSON.stringify(snapshot));
+    } catch(_) {}
+  }
+
+  function _wapNormalizeDecision(result){
+    var ps = window.portfolioState || {};
+    var cRaw = (ps.market && ps.market.confidence != null) ? parseFloat(ps.market.confidence) : NaN;
+    var conf = isFinite(cRaw) ? cRaw : null;
+    var nowIso = new Date().toISOString();
+    if (!result || typeof result !== 'object' || !result.type) {
+      return { action: 'UNAVAILABLE', ticker: null, amount: null, confidence: null, savedAt: nowIso };
+    }
+    var t = String(result.type || '').toUpperCase();
+    if (t === 'BUY')        return { action: 'BUY',        ticker: result.ticker || null, amount: (result.amount_usd != null ? Number(result.amount_usd) : null), confidence: conf, savedAt: nowIso };
+    if (t === 'PARK_CASH')  return { action: 'PARK',       ticker: null,                  amount: null,                                                            confidence: conf, savedAt: nowIso };
+    if (t === 'REBALANCE')  return { action: 'REBALANCE',  ticker: result.ticker || null, amount: null,                                                            confidence: conf, savedAt: nowIso };
+    return { action: 'UNAVAILABLE', ticker: null, amount: null, confidence: null, savedAt: nowIso };
+  }
+
+  function _wapApplyDecisionMemory(container, result){
+    if (!container) return;
+    var current = _wapNormalizeDecision(result);
+    /* For UNAVAILABLE: seed-only — save iff no prior snapshot. Never render strip. */
+    if (current.action === 'UNAVAILABLE') {
+      if (!_wapReadDecisionMemory()) _wapWriteDecisionMemory(current);
+      /* Idempotent cleanup — defensive removal in case a stale strip lingers in DOM */
+      var stale = container.querySelector('.wap__memory');
+      if (stale && stale.parentNode) stale.parentNode.removeChild(stale);
+      return;
+    }
+    /* Idempotent — drop any existing strip before re-inserting (handles relocation re-renders) */
+    var prev = container.querySelector('.wap__memory');
+    if (prev && prev.parentNode) prev.parentNode.removeChild(prev);
+    var memory = _wapReadDecisionMemory();
+    /* First-real-decision gate — if the prior snapshot is the seeded UNAVAILABLE
+       (user came from empty-state Dashboard), suppress the strip on this render.
+       The save below still fires, so the next render compares against a real action. */
+    if (memory && memory.action && memory.action !== 'UNAVAILABLE') {
+      var arrow = '—';
+      if (current.confidence != null && memory.confidence != null) {
+        if (current.confidence > memory.confidence) arrow = '↑';
+        else if (current.confidence < memory.confidence) arrow = '↓';
+      }
+      /* Insert directly under the main decision area (Phase 2's .wap__main).
+         Falls back to the container's first child for defensive recovery. */
+      var anchor = container.querySelector('.wap__main');
+      if (anchor && anchor.parentNode) {
+        var strip = document.createElement('div');
+        strip.className = 'wap__memory';
+        strip.setAttribute('aria-label', 'Decision memory');
+        var arrowCls = (arrow === '—') ? '' : ' is-changed';
+        strip.innerHTML =
+          '<span class="wap__memory-row">' +
+            '<span class="wap__memory-label">Last time</span>' +
+            '<span class="wap__memory-value">' + _wapEsc(memory.action) + '</span>' +
+          '</span>' +
+          '<span class="wap__memory-sep" aria-hidden="true">·</span>' +
+          '<span class="wap__memory-row">' +
+            '<span class="wap__memory-label">Now</span>' +
+            '<span class="wap__memory-value wap__memory-now">' + _wapEsc(current.action) + '</span>' +
+          '</span>' +
+          '<span class="wap__memory-sep" aria-hidden="true">·</span>' +
+          '<span class="wap__memory-row">' +
+            '<span class="wap__memory-label">Confidence</span>' +
+            '<span class="wap__memory-value wap__memory-arrow' + arrowCls + '">' + _wapEsc(arrow) + '</span>' +
+          '</span>';
+        anchor.parentNode.insertBefore(strip, anchor.nextSibling);
+      }
+    }
+    /* Always save the current snapshot AFTER rendering, so the next render
+       compares against this one. */
+    _wapWriteDecisionMemory(current);
+  }
 
   /* SVG icon library (shared by locked templates) */
   var _wapIconCalSm  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
@@ -13196,6 +13459,10 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
         try { _wapApplyExpandableWhy(container, view.portfolioContext, view.result); } catch(_){}
         try { _wapRebindBuyActions(container, view); } catch(_){}
       }
+      /* Phase 16 — apply decision-memory strip for any non-FAIL_CLOSED state.
+         Idempotent; safe across BUY / PARK_CASH / REBALANCE renders and
+         WAP relocation between Dashboard and Decision Center. */
+      try { _wapApplyDecisionMemory(container, view && view.result); } catch(_){}
     };
     window.WAPUi.__wapWrapped = true;
   }
@@ -13360,6 +13627,7 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
              _dcStarterAggressionPicker() +
              '<div class="dc-starter-allocation">' + _dcStarterAllocRows(aggression, 'amount') + '</div>' +
              '<div class="dc-starter-foot">Numbers are illustrative. Upload a portfolio to deploy real cash through the live engine.</div>' +
+             '<button type="button" class="dc-starter-cta" onclick="openPortfolioUploadModal(\'decisioncenter\')">Upload Portfolio &rarr;</button>' +
            '</div>';
   }
 
@@ -13453,7 +13721,7 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
               '<div class="dc-empty-fallback">' +
                 '<div class="dc-empty-msg">Upload your portfolio to generate a deployment plan.</div>' +
                 '<button type="button" class="dc-empty-cta" ' +
-                  'onclick="showPanel(\'portfolio\', getNavForPanel(\'portfolio\'))">' +
+                  'onclick="openPortfolioUploadModal(\'decisioncenter\')">' +
                   'Upload Portfolio &rarr;' +
                 '</button>' +
               '</div>' +
@@ -13946,6 +14214,143 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _fortisSetTodayStrings);
   else _fortisSetTodayStrings();
+
+  /* ===== Phase 15 — Inline Portfolio Upload Modal ============================
+     Opens a premium modal containing the SAME upload card that lives inside
+     Portfolio Lab. The card is relocated (not duplicated) — IDs, inline
+     handlers, and existing extraction/parsing logic are preserved verbatim.
+
+     API:
+       openPortfolioUploadModal(source)      — 'dashboard' | 'decisioncenter' | …
+       closePortfolioUploadModal()           — idempotent
+       afterPortfolioUploadSuccess(source)   — runs the post-upload navigation
+                                               (called automatically on success;
+                                                exposed for explicit triggering)
+
+     Source-aware close: if source === 'decisioncenter', after a successful
+     upload we route to DC → "This Week's Move". Otherwise we stay put —
+     renderDashboard fires automatically through the existing flow.
+     ============================================================================ */
+  var _uploadModalState = { isOpen: false, source: null };
+  var UPLOAD_MODAL_ID = 'portfolioUploadModal';
+
+  function _uploadModalMoveCardInto(targetEl){
+    var slot = document.getElementById('uploadCardSlot');
+    if (!slot || !targetEl) return false;
+    while (slot.firstChild) targetEl.appendChild(slot.firstChild);
+    return true;
+  }
+  function _uploadModalRestoreCard(){
+    var slot = document.getElementById('uploadCardSlot');
+    var mount = document.getElementById('uploadModalMount');
+    if (!slot || !mount) return;
+    while (mount.firstChild) slot.appendChild(mount.firstChild);
+  }
+
+  global.openPortfolioUploadModal = function(source){
+    var bg = document.getElementById(UPLOAD_MODAL_ID);
+    var mount = document.getElementById('uploadModalMount');
+    if (!bg || !mount) return;
+    if (_uploadModalState.isOpen) return; /* idempotent — no DOM duplication */
+    /* Source is the explicit hint passed by the caller. Falls back to the
+       active panel ID when not provided, so legacy callers without a source
+       arg still work. */
+    if (typeof source === 'string' && source) {
+      _uploadModalState.source = source;
+    } else {
+      var p = document.querySelector('.panel.active');
+      var pid = p ? p.id : '';
+      _uploadModalState.source = pid === 'panel-decisioncenter' ? 'decisioncenter' : 'dashboard';
+    }
+    /* Move the upload card into the modal. Idempotent — if already mounted
+       (recovery from a partial state), the move is a no-op. */
+    if (mount.children.length === 0) {
+      if (!_uploadModalMoveCardInto(mount)) return;
+    }
+    _uploadModalState.isOpen = true;
+    bg.setAttribute('aria-hidden', 'false');
+    bg.classList.add('on');
+    /* Focus the close button so keyboard nav works immediately. */
+    setTimeout(function(){
+      var c = bg.querySelector('.upload-modal-close');
+      if (c) c.focus();
+    }, 60);
+  };
+
+  global.closePortfolioUploadModal = function(){
+    var bg = document.getElementById(UPLOAD_MODAL_ID);
+    if (!bg) return;
+    if (!_uploadModalState.isOpen) return; /* idempotent */
+    _uploadModalRestoreCard();
+    bg.classList.remove('on');
+    bg.setAttribute('aria-hidden', 'true');
+    _uploadModalState.isOpen = false;
+    _uploadModalState.source = null;
+  };
+
+  /* Public helper for explicit success-flow triggering. Closes the modal and
+     navigates per-source. Existing renderLabTable wrap calls this implicitly
+     after every successful upload, but external callers (e.g., a future
+     "Save" button inside the modal) can call this directly. */
+  global.afterPortfolioUploadSuccess = function(source){
+    var src = source || _uploadModalState.source || 'dashboard';
+    if (_uploadModalState.isOpen) global.closePortfolioUploadModal();
+    if (src === 'decisioncenter') {
+      try {
+        if (typeof showPanel === 'function' && typeof getNavForPanel === 'function') {
+          showPanel('decisioncenter', getNavForPanel('decisioncenter'));
+        }
+        if (typeof global.dcSetTab === 'function') {
+          /* Tiny delay so showPanel's panel-active class settles before the
+             tab switch (Phase 3 focus-mode reads .active). */
+          setTimeout(function(){ try { global.dcSetTab('wap'); } catch(_){} }, 60);
+        }
+      } catch(_){}
+    }
+    /* For 'dashboard' (or any other source): no panel switch — renderDashboard
+       has already fired through the existing extraction success path and the
+       WAP card on Dashboard is already populated. */
+  };
+
+  /* Auto-close on successful upload. Wraps renderLabTable, which fires after
+     every extraction/manual-load that produces holdings. If the modal is open
+     AND _holdings has entries, fire afterPortfolioUploadSuccess(). */
+  function _uploadModalHookSuccess(){
+    if (typeof global.renderLabTable !== 'function' || global.renderLabTable.__phase15Wrapped) return;
+    var orig = global.renderLabTable;
+    var wrapped = function(){
+      var r = orig.apply(this, arguments);
+      try {
+        if (_uploadModalState.isOpen && global._holdings && global._holdings.length > 0) {
+          var src = _uploadModalState.source;
+          global.afterPortfolioUploadSuccess(src);
+        }
+      } catch(_){}
+      return r;
+    };
+    wrapped.__phase15Wrapped = true;
+    global.renderLabTable = wrapped;
+  }
+
+  /* Backdrop click + Escape close. Bound once, idempotent via flag. */
+  function _uploadModalBindHandlers(){
+    var bg = document.getElementById(UPLOAD_MODAL_ID);
+    if (!bg || bg.__phase15Bound) return;
+    bg.__phase15Bound = true;
+    bg.addEventListener('click', function(e){
+      if (e.target === bg) global.closePortfolioUploadModal();
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && _uploadModalState.isOpen) global.closePortfolioUploadModal();
+    });
+  }
+
+  function _uploadModalStart(){
+    _uploadModalHookSuccess();
+    _uploadModalBindHandlers();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _uploadModalStart);
+  else _uploadModalStart();
 
   function _init(){
     if (!document.getElementById('panel-decisioncenter')) return;
