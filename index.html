@@ -349,6 +349,151 @@ body::after{content:"";position:fixed;top:-200px;left:50%;transform:translateX(-
 .panel{display:none;padding:26px 30px}
 .panel.active{display:block;animation:fadeUp .3s ease}
 
+/* ===== Phase 10 — Visual polish pass =======================================
+   CSS-only refinements. No feature changes, no DOM mutation, no JS, no
+   engine touch. Targets rhythm, refined active states, smoother transitions,
+   and visual consistency across Decision Center tabs. Apple-level quiet —
+   transitions ≤ 250ms, no neon, no new gradients beyond existing token
+   patterns, no layout-shifting changes.
+   =========================================================================== */
+
+/* Smoother nav transitions + tightened item rhythm. */
+#sidenav .nav-item {
+  transition: background-color .22s ease, color .22s ease,
+              border-color .22s ease, box-shadow .22s ease;
+  margin-bottom: 3px;
+}
+/* Active nav item — keep the existing gold-muted bg, layer a subtle inset
+   left accent so the selected item reads as anchored without being loud. */
+#sidenav .nav-item.active {
+  box-shadow: inset 2px 0 0 var(--gold);
+}
+
+/* Section labels + divider — calmer spacing, softer divider opacity. */
+.nav-sec-lbl { letter-spacing: .22em; opacity: .68; margin-bottom: 9px; }
+.nav-div     { margin: 14px 14px; opacity: .55; }
+
+/* Dashboard rhythm — Phase 9 set flex column; add a calm vertical gap so
+   hero + WAP feel intentional rather than stacked. */
+#panel-dashboard.active { gap: 26px; }
+
+/* Decision Center tabs — replace the bottom-border underline with a pill
+   indicator pseudo-element. Apple-level: scales in, fades, no thickness flash. */
+#panel-decisioncenter .dc-tabs {
+  gap: 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+#panel-decisioncenter .dc-tab {
+  position: relative;
+  border-bottom: none;
+  padding: 12px 18px;
+  letter-spacing: .12em;
+  transition: color .22s ease;
+}
+#panel-decisioncenter .dc-tab::after {
+  content: '';
+  position: absolute;
+  left: 18px; right: 18px;
+  bottom: -1px;
+  height: 1.5px;
+  background: var(--gold);
+  border-radius: 1px;
+  opacity: 0;
+  transform: scaleX(.55);
+  transform-origin: center;
+  transition: opacity .22s ease, transform .22s ease;
+}
+#panel-decisioncenter .dc-tab.is-active {
+  color: var(--cream);
+}
+#panel-decisioncenter .dc-tab.is-active::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+#panel-decisioncenter .dc-tab:focus-visible {
+  border-radius: 6px;
+  background: rgba(201,168,76,.05);
+}
+
+/* Decision Center slot consistency — Deploy + Analyze get a subtle wrapper
+   frame so they feel as polished as the freshly-rendered Compare/Why cards.
+   Re-uses the same gradient pattern as existing token cards. */
+#panel-decisioncenter #deployDcSlot,
+#panel-decisioncenter #stockDcSlot {
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: linear-gradient(145deg, rgba(20,16,12,.42), rgba(35,28,18,.18));
+}
+
+/* Compare + Why cards — subtle hover lift. Calm, ≤ 250ms. */
+#panel-decisioncenter .dc-compare-card,
+#panel-decisioncenter .dc-why-card {
+  box-shadow: 0 4px 18px rgba(0,0,0,.20);
+  transition: box-shadow .25s ease, border-color .22s ease;
+}
+#panel-decisioncenter .dc-compare-card:hover,
+#panel-decisioncenter .dc-why-card:hover {
+  box-shadow: 0 8px 26px rgba(0,0,0,.30);
+  border-color: var(--border-2);
+}
+
+/* Reduced motion — neutralize the new transitions for users who opt out. */
+@media (prefers-reduced-motion: reduce) {
+  #sidenav .nav-item,
+  #panel-decisioncenter .dc-tab,
+  #panel-decisioncenter .dc-tab::after,
+  #panel-decisioncenter .dc-compare-card,
+  #panel-decisioncenter .dc-why-card { transition: none; }
+}
+
+/* ===== Phase 9 — Dashboard simplification (entry surface, not workspace) =====
+   Dashboard now shows ONLY the Welcome hero and the WAP card. All other
+   surfaces (Today's Pulse banner, decision-sequence onboarding, Status g3,
+   Strategy Paths, Allocation, Risk Flags, Action Plan, Deployment Plan,
+   Stock Decision Engine, Opportunity layer, etc.) are hidden via CSS only.
+
+   DOM is preserved so that:
+   - Phase 4 #deployContent still relocates between #deployDashboardSlot
+     (now hidden) and #deployDcSlot when the user opens DC → Deploy.
+   - Pass C collapsible decorations stay valid on hidden cards.
+   - Pass B flow-step fade-in still binds without harm.
+   - Engine, extraction, deployment, trust modal logic — all unaffected.
+
+   Visual order is forced via flex `order` so Hero appears ABOVE WAP even
+   though #wapDashboardSlot precedes #welcomeHero in DOM (Phase 2 layout).
+   .panel.active uses `display: block` by default; we override to flex on
+   #panel-dashboard.active only. The fade-in animation cascades through.
+   ============================================================================ */
+#panel-dashboard.active {
+  display: flex;
+  flex-direction: column;
+}
+#panel-dashboard > #welcomeHero      { order: 1; }
+#panel-dashboard > #wapDashboardSlot { order: 2; }
+#panel-dashboard > *:not(#welcomeHero):not(#wapDashboardSlot) {
+  display: none !important;
+}
+
+/* ===== Phase 8 — Sidebar simplification =====================================
+   Hide the five nav items absorbed into Decision Center. Panels remain alive
+   in DOM and showPanel() still routes to them when called internally (e.g.,
+   from inline buttons in templates, or from Phase 6's "Open full Compare →"
+   CTA). No DOM changes, no JS changes — CSS-only.
+
+   After this rule, sidebar shows only:
+     Dashboard · Discovery · Portfolio Lab · Decision Center · Cadence Plan
+     [divider]
+     Watchlist
+   =========================================================================== */
+#sidenav .nav-item[data-panel="intelligence"],
+#sidenav .nav-item[data-panel="deploy"],
+#sidenav .nav-item[data-panel="market"],
+#sidenav .nav-item[data-panel="stockcheck"],
+#sidenav .nav-item[data-panel="compare"] {
+  display: none;
+}
+
 /* ===== Pass C — Dark scrollbar + dark surface to all edges ===================
    Eliminates the white scroll gutter / flash that appears at the right and
    bottom of the viewport. Uses existing tokens. Webkit + Firefox.
@@ -370,6 +515,136 @@ html, body, #app, #main { background: var(--noir); }
   border-radius: 12px;
   box-shadow: 0 0 0 1px rgba(201,168,76,.10), 0 18px 52px rgba(0,0,0,.40);
   transition: box-shadow .35s ease;
+}
+/* Phase 2 — when wapContainer is re-parented into Decision Center, the dashboard
+   margin/halo above does not apply (descendant selector requires #panel-dashboard).
+   Reset margin so it sits cleanly inside the tab content area. */
+#panel-decisioncenter #wapContainer { margin: 0; }
+#panel-decisioncenter #wapDcSlot { width: 100%; }
+/* Phase 4 — Deploy slot. Hosts #deployContent when DC → Deploy is active. */
+#panel-decisioncenter #deployDcSlot { width: 100%; padding-top: 4px; }
+#panel-decisioncenter #deployDcSlot #deployContent { display: block; }
+/* Phase 5 — Analyze slot. Hosts #stockContent when DC → Analyze is active. */
+#panel-decisioncenter #stockDcSlot { width: 100%; padding-top: 4px; }
+#panel-decisioncenter #stockDcSlot #stockContent { display: block; }
+/* Phase 6 — Compare summary card. Not a relocated singleton — a freshly
+   rendered card with cached state and a link to the full Compare panel. */
+#panel-decisioncenter #compareDcSlot { width: 100%; padding-top: 4px; }
+#panel-decisioncenter .dc-compare-card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: linear-gradient(145deg, var(--noir-2), var(--noir-1));
+  padding: 22px 24px;
+}
+#panel-decisioncenter .dc-compare-header { margin-bottom: 16px; }
+#panel-decisioncenter .dc-compare-eye {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  letter-spacing: .18em; text-transform: uppercase; font-weight: 700;
+  color: var(--gold-dim); margin-bottom: 6px;
+}
+#panel-decisioncenter .dc-compare-sub {
+  font-size: 13px; color: var(--text-2); line-height: 1.55;
+}
+#panel-decisioncenter .dc-compare-body {
+  border-top: 1px solid var(--border);
+  padding: 14px 0 18px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+#panel-decisioncenter .dc-compare-section {
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+}
+#panel-decisioncenter .dc-compare-label {
+  font-family: 'DM Mono', monospace; font-size: 10.5px;
+  letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
+  color: var(--text-3); flex: 0 0 110px;
+}
+#panel-decisioncenter .dc-compare-value {
+  font-size: 13px; color: var(--cream-dim);
+  font-family: 'DM Mono', monospace; letter-spacing: .04em;
+}
+#panel-decisioncenter .dc-compare-value.dc-compare-top {
+  color: var(--gold-light); font-weight: 700;
+}
+#panel-decisioncenter .dc-compare-vs {
+  color: var(--text-3); font-style: italic;
+  font-family: 'Cormorant Garamond', serif; font-weight: 400;
+  margin: 0 4px;
+}
+#panel-decisioncenter .dc-compare-empty {
+  font-family: 'Cormorant Garamond', serif; font-style: italic;
+  font-size: 14.5px; color: var(--cream-dim); line-height: 1.55;
+}
+#panel-decisioncenter .dc-compare-cta {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, rgba(201,168,76,.18), rgba(201,168,76,.06));
+  color: var(--gold-light);
+  border: 1px solid rgba(201,168,76,.40);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: background .16s, border-color .16s;
+}
+#panel-decisioncenter .dc-compare-cta:hover,
+#panel-decisioncenter .dc-compare-cta:focus-visible {
+  background: linear-gradient(135deg, rgba(201,168,76,.28), rgba(201,168,76,.10));
+  border-color: rgba(201,168,76,.60);
+  outline: none;
+}
+/* Phase 7 — Why summary card. Deterministic facts only. Same visual rhythm
+   as the Compare card so the two summary tabs feel cohesive. Token-only. */
+#panel-decisioncenter #whyDcSlot { width: 100%; padding-top: 4px; }
+#panel-decisioncenter .dc-why-card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: linear-gradient(145deg, var(--noir-2), var(--noir-1));
+  padding: 22px 24px;
+}
+#panel-decisioncenter .dc-why-card.is-locked {
+  border-color: rgba(201,168,76,.32);
+}
+#panel-decisioncenter .dc-why-header { margin-bottom: 16px; }
+#panel-decisioncenter .dc-why-eye {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  letter-spacing: .18em; text-transform: uppercase; font-weight: 700;
+  color: var(--gold-dim); margin-bottom: 6px;
+}
+#panel-decisioncenter .dc-why-sub {
+  font-size: 13px; color: var(--text-2); line-height: 1.55;
+}
+#panel-decisioncenter .dc-why-body {
+  border-top: 1px solid var(--border);
+  padding: 14px 0 4px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+#panel-decisioncenter .dc-why-section {
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+}
+#panel-decisioncenter .dc-why-label {
+  font-family: 'DM Mono', monospace; font-size: 10.5px;
+  letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
+  color: var(--text-3); flex: 0 0 130px;
+}
+#panel-decisioncenter .dc-why-value {
+  font-size: 13px; color: var(--cream-dim);
+  font-family: 'DM Mono', monospace; letter-spacing: .04em;
+}
+#panel-decisioncenter .dc-why-value.dc-why-accent {
+  color: var(--gold-light); font-weight: 700;
+}
+#panel-decisioncenter .dc-why-narrative {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--cream-dim);
+  line-height: 1.55;
+}
+#panel-decisioncenter .dc-why-empty {
+  font-family: 'Cormorant Garamond', serif; font-style: italic;
+  font-size: 14.5px; color: var(--cream-dim); line-height: 1.55;
 }
 
 /* ===== Pass C — Hero collapse on portfolio active ============================
@@ -442,6 +717,186 @@ html, body, #app, #main { background: var(--noir); }
   .fortis-collapsible-arrow,
   .fortis-collapsible-card,
   #panel-dashboard #wapContainer { transition: none !important; }
+}
+
+/* ===== Phase 1 — Decision Center shell ======================================
+   Static structure only. Tabs switch placeholder content via dcSetTab.
+   Token-only: --noir-1, --border, --border-2, --gold, --gold-light, --gold-dim,
+   --cream, --cream-dim, --text-2, --text-3, --r-lg.
+   No engine touch. No WAP touch. No real surface mounted yet (Phase 2).
+   =========================================================================== */
+#panel-decisioncenter .dc-context {
+  display: flex; flex-wrap: wrap;
+  align-items: center; gap: 8px;
+  padding: 10px 14px;
+  margin-bottom: 22px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(0,0,0,.18);
+  font-family: 'DM Mono', monospace;
+  font-size: 11.5px;
+  color: var(--cream-dim);
+}
+#panel-decisioncenter .dc-context-block { display: inline-flex; align-items: baseline; gap: 8px; }
+#panel-decisioncenter .dc-context-eye {
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-weight: 700;
+  font-size: 10.5px;
+}
+#panel-decisioncenter .dc-context-val { color: var(--cream); font-weight: 600; font-variant-numeric: tabular-nums; }
+#panel-decisioncenter .dc-context-sep { color: var(--text-3); margin: 0 2px; }
+
+#panel-decisioncenter .dc-tabs {
+  display: flex; gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 22px;
+  overflow-x: auto;
+}
+#panel-decisioncenter .dc-tab {
+  font-family: 'DM Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 11px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: color .18s ease, border-color .18s ease, background-color .15s ease;
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+#panel-decisioncenter .dc-tab:hover { color: var(--cream-dim); }
+#panel-decisioncenter .dc-tab.is-active {
+  color: var(--gold-light);
+  border-bottom-color: var(--gold);
+}
+#panel-decisioncenter .dc-tab:focus-visible {
+  outline: none;
+  background: rgba(201,168,76,.04);
+  color: var(--cream);
+}
+
+#panel-decisioncenter .dc-content {
+  min-height: 220px;
+  padding: 6px 0;
+  animation: fadeUp .22s ease;
+}
+#panel-decisioncenter .dc-placeholder {
+  padding: 44px 20px;
+  border: 1px dashed var(--border);
+  border-radius: var(--r-lg);
+  background: rgba(0,0,0,.18);
+  text-align: center;
+}
+#panel-decisioncenter .dc-placeholder-eye {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+#panel-decisioncenter .dc-placeholder-msg {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--cream-dim);
+  line-height: 1.55;
+  max-width: 480px;
+  margin: 0 auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  #panel-decisioncenter .dc-content { animation: none; }
+}
+
+/* ===== Phase 3 — Decision Mode (focus experience) ===========================
+   Scoped to #panel-decisioncenter.is-wap-active. Class is toggled by JS based
+   on (panel active) AND (tab === 'wap'). When inactive, all rules below are
+   dormant and the panel renders identically to its Phase 1 state.
+
+   Strategy:
+   - Dim everything that is NOT the WAP card (header, context strip, non-active
+     tabs) to ~55% so WAP becomes the visual anchor.
+   - Elevate WAP with a calm scale(1.03) plus more vertical breathing room.
+   - One-shot entry animation (fade + 10px translate) when the class is added.
+   - Exit is instant — class removal returns everything to base state.
+   - All rules use existing tokens. No new colors.
+   ============================================================================ */
+#panel-decisioncenter .ph,
+#panel-decisioncenter .dc-context,
+#panel-decisioncenter .dc-tab {
+  transition: opacity .25s ease;
+}
+#panel-decisioncenter.is-wap-active .ph,
+#panel-decisioncenter.is-wap-active .dc-context {
+  opacity: 0.55;
+}
+#panel-decisioncenter.is-wap-active .dc-tab:not(.is-active) {
+  opacity: 0.55;
+}
+/* WAP elevation. The selector targets #wapContainer when it is inside
+   Decision Center (post-Phase-2). Until then, the rule is dormant. */
+@keyframes dcWapFocusEnter {
+  from { opacity: 0; transform: translateY(10px) scale(.99); }
+  to   { opacity: 1; transform: translateY(0)   scale(1.03); }
+}
+#panel-decisioncenter.is-wap-active #wapContainer {
+  transform: scale(1.03);
+  margin-top: 48px;
+  margin-bottom: 64px;
+  animation: dcWapFocusEnter .26s ease-out;
+}
+/* Same one-shot entry animation for the placeholder card while Phase 2 is
+   still pending — gives Rod a faithful preview of the focus feel without
+   needing the real WAP mounted yet. */
+#panel-decisioncenter.is-wap-active .dc-content {
+  animation: dcWapFocusEnter .26s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  #panel-decisioncenter .ph,
+  #panel-decisioncenter .dc-context,
+  #panel-decisioncenter .dc-tab,
+  #panel-decisioncenter.is-wap-active #wapContainer,
+  #panel-decisioncenter.is-wap-active .dc-content {
+    transition: none; animation: none;
+  }
+}
+
+/* ===== Phase 10.1 — Decision Center tab override (final-win) ================
+   Earlier Phase 10 polish (line 382 region) was being overridden by the Phase 1
+   base block (line 757) and Phase 3 transition (line 833) due to source order.
+   This block runs LAST so the polish actually applies:
+     - .dc-tabs container gets the softer Phase 10 border + gap
+     - .dc-tab gets Phase 10 padding, letter-spacing, no border-bottom underline
+     - .dc-tab.is-active color stays calm cream (Phase 10 intent), no gold
+       border-bottom (the new ::after pill is the only underline)
+     - Transition merges Phase 10's color fade with Phase 3's opacity fade so
+       focus-mode dimming on non-active tabs continues to work cleanly
+   No JS, no functional change, no layout shift (the pill ::after lives at the
+   same vertical position the old border-bottom occupied).
+   ============================================================================ */
+#panel-decisioncenter .dc-tabs {
+  gap: 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+#panel-decisioncenter .dc-tab {
+  padding: 12px 18px;
+  letter-spacing: .12em;
+  border-bottom: none;
+  transition: color .22s ease, opacity .25s ease;
+}
+#panel-decisioncenter .dc-tab.is-active {
+  color: var(--cream);
+  border-bottom-color: transparent;
+}
+@media (prefers-reduced-motion: reduce) {
+  #panel-decisioncenter .dc-tab { transition: none; }
 }
 
 /* ===== Pass B — Flow Layer scaffolding =====================================
@@ -1494,38 +1949,41 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
 <nav id="sidenav">
   <div class="nav-sec">
     <div class="nav-sec-lbl">Workspace</div>
-    <div class="nav-item active" onclick="showPanel('dashboard',this)">
+    <div class="nav-item active" data-panel="dashboard" onclick="showPanel('dashboard',this)">
       <span class="nav-icon">&#9670;</span>Dashboard
     </div>
-    <div class="nav-item" onclick="showPanel('discovery',this)">
+    <div class="nav-item" data-panel="discovery" onclick="showPanel('discovery',this)">
       <span class="nav-icon">&#9758;</span>Discovery
     </div>
-    <div class="nav-item" onclick="showPanel('portfolio',this)">
+    <div class="nav-item" data-panel="portfolio" onclick="showPanel('portfolio',this)">
       <span class="nav-icon">&#10022;</span>Portfolio Lab
     </div>
-    <div class="nav-item" onclick="showPanel('intelligence',this)">
+    <div class="nav-item" data-panel="decisioncenter" onclick="showPanel('decisioncenter',this)">
+      <span class="nav-icon">&#9678;</span>Decision Center
+    </div>
+    <div class="nav-item" data-panel="intelligence" onclick="showPanel('intelligence',this)">
       <span class="nav-icon">&#9775;</span>Intelligence
     </div>
-    <div class="nav-item" onclick="showPanel('deploy',this)">
+    <div class="nav-item" data-panel="deploy" onclick="showPanel('deploy',this)">
       <span class="nav-icon">&#9832;</span>Capital Deployment
     </div>
-    <div class="nav-item" onclick="showPanel('cadence',this)">
+    <div class="nav-item" data-panel="cadence" onclick="showPanel('cadence',this)">
       <span class="nav-icon">&#9684;</span>Cadence Plan
     </div>
   </div>
   <div class="nav-div"></div>
   <div class="nav-sec">
-    <div class="nav-sec-lbl">Intelligence</div>
-    <div class="nav-item" onclick="showPanel('market',this)">
+    <div class="nav-sec-lbl">Lists</div>
+    <div class="nav-item" data-panel="market" onclick="showPanel('market',this)">
       <span class="nav-icon">&#9737;</span>Live Market
     </div>
-    <div class="nav-item" onclick="showPanel('stockcheck',this)">
+    <div class="nav-item" data-panel="stockcheck" onclick="showPanel('stockcheck',this)">
       <span class="nav-icon">&#9671;</span>Stock Analysis
     </div>
-    <div class="nav-item" onclick="showPanel('compare',this)">
+    <div class="nav-item" data-panel="compare" onclick="showPanel('compare',this)">
       <span class="nav-icon">&#11014;</span>Compare
     </div>
-    <div class="nav-item" onclick="showPanel('watchlist',this)">
+    <div class="nav-item" data-panel="watchlist" onclick="showPanel('watchlist',this)">
       <span class="nav-icon">&#9711;</span>Watchlist
     </div>
   </div>
@@ -1738,10 +2196,122 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       font-size: 11px; line-height: 1.5; color: var(--text-2);
       animation: fadeUp .18s ease;
     }
+    /* Hover/focus still reveal the inline preview. The .is-pinned rule is
+       retained for backward compatibility but is no longer triggered (click
+       now opens the modal — see .wap-trust-modal below). */
     #wapContainer .wap-empty__trust-item:hover .wap-empty__trust-detail,
     #wapContainer .wap-empty__trust-item:focus-visible .wap-empty__trust-detail,
     #wapContainer .wap-empty__trust-item.is-pinned .wap-empty__trust-detail {
       display: block;
+    }
+    /* ===== Pass C — Trust modal (replaces click-pin inline reveal) ============
+       Modal lives in document.body, NOT under #wapContainer scope.
+       Token-only: --noir-1, --noir-2, --border, --border-2, --gold, --gold-light,
+       --gold-dim, --cream, --cream-dim, --text-2.
+       Animation capped at 200ms (fade + scale). prefers-reduced-motion → none. */
+    .wap-trust-modal-bg {
+      position: fixed; inset: 0; z-index: 100050;
+      display: none;
+      background: rgba(8, 6, 4, .72);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+      padding: 18px;
+      animation: wapTrustBgIn .18s ease;
+    }
+    .wap-trust-modal-bg.on { display: flex; }
+    @keyframes wapTrustBgIn { from { opacity: 0; } to { opacity: 1; } }
+    .wap-trust-modal {
+      position: relative;
+      width: 100%; max-width: 460px;
+      background: linear-gradient(180deg, var(--noir-2), var(--noir-1));
+      border: 1px solid var(--border-2);
+      border-radius: 12px;
+      padding: 26px 26px 22px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(201,168,76,.10) inset;
+      animation: wapTrustCardIn .20s cubic-bezier(.2,.9,.3,1.1);
+      color: var(--cream);
+      font-family: 'DM Sans', system-ui, sans-serif;
+    }
+    @keyframes wapTrustCardIn {
+      from { opacity: 0; transform: scale(.96); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .wap-trust-modal-head {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 18px; padding-right: 32px;
+    }
+    .wap-trust-modal-icon {
+      width: 32px; height: 32px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 8px;
+      background: rgba(201,168,76,.10);
+      border: 1px solid rgba(201,168,76,.30);
+      color: var(--gold-light);
+      flex-shrink: 0;
+    }
+    .wap-trust-modal-icon svg { width: 18px; height: 18px; }
+    .wap-trust-modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 500;
+      color: var(--cream); line-height: 1.2;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .wap-trust-modal-close {
+      position: absolute; top: 10px; right: 10px;
+      width: 28px; height: 28px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      cursor: pointer;
+      font-size: 18px; line-height: 1;
+      font-family: inherit;
+      transition: color .15s, border-color .15s, background-color .15s;
+    }
+    .wap-trust-modal-close:hover,
+    .wap-trust-modal-close:focus-visible {
+      color: var(--cream); border-color: var(--border-2);
+      background: rgba(255,255,255,.04);
+      outline: none;
+    }
+    .wap-trust-modal-bullets {
+      list-style: none; padding: 0; margin: 0 0 18px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .wap-trust-modal-bullets li {
+      display: flex; gap: 11px; align-items: flex-start;
+      font-size: 13.5px; line-height: 1.55;
+      color: var(--cream-dim);
+    }
+    .wap-trust-modal-bullets li::before {
+      content: '·'; flex-shrink: 0;
+      width: 14px; text-align: center;
+      font-family: 'DM Mono', monospace;
+      color: var(--gold); font-weight: 700;
+      padding-top: 1px;
+    }
+    .wap-trust-modal-meaning {
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 14.5px; line-height: 1.55;
+      color: var(--gold-light);
+    }
+    .wap-trust-modal-meaning-eye {
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: .18em;
+      text-transform: uppercase; font-weight: 700;
+      color: var(--gold-dim);
+      margin-bottom: 6px;
+      font-style: normal;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .wap-trust-modal-bg, .wap-trust-modal { animation: none; }
     }
     @media (max-width: 720px) {
       #wapContainer .wap-empty__trust-item { margin: 0; padding: 0 0 12px; border-radius: 0; }
@@ -1939,15 +2509,20 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     }
     #wapContainer .wap__skip-confirm-actions button:hover { filter: brightness(1.1); }
   </style>
-  <section class="wap fortis-flow-step" data-flow-step="4" id="wapContainer" aria-label="Weekly Action Plan"></section>
+  <!-- Phase 2 (Decision Center) — stable Dashboard slot for the singleton #wapContainer.
+       The same element is re-parented into #wapDcSlot when Decision Center → "This Week's Move"
+       is active, and back here on every other condition. See _dcRelocateWap. -->
+  <div id="wapDashboardSlot" aria-label="Weekly Action Plan dashboard slot">
+    <section class="wap fortis-flow-step" data-flow-step="4" id="wapContainer" aria-label="Weekly Action Plan"></section>
+  </div>
   <div id="welcomeHero" class="wh">
     <div class="wh-eye">Institutional Grade &middot; Private &middot; Disciplined</div>
     <h1 class="wh-title">The institutional edge,<br><em>translated for everyday investors.</em></h1>
     <p class="wh-lede">Fortis turns market data into structured clarity &mdash; so you can think, not guess.</p>
     <div class="wh-trust">We don&rsquo;t give advice. We give clarity.</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn-p" onclick="showPanel('portfolio',document.querySelectorAll('.nav-item')[1])">Upload Portfolio &rarr;</button>
-      <button class="btn-s" onclick="showPanel('stockcheck',document.querySelectorAll('.nav-item')[2])">Analyze a Stock</button>
+      <button class="btn-p" onclick="showPanel('portfolio',getNavForPanel('portfolio'))">Upload Portfolio &rarr;</button>
+      <button class="btn-s" onclick="showPanel('stockcheck',getNavForPanel('stockcheck'))">Analyze a Stock</button>
     </div>
   </div>
   <!-- TODAY'S PULSE — slim banner directly under hero -->
@@ -1956,7 +2531,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       <span style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--sage)"><span style="width:5px;height:5px;border-radius:50%;background:var(--sage);box-shadow:0 0 5px var(--sage);animation:dashPulseDot 2.2s ease-in-out infinite"></span>Today's Pulse · Risk-on</span>
       <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--cream-dim);line-height:1.5">Markets are <em style="color:var(--gold-light);font-style:italic">risk-on</em> as the Fed signals one more cut and oil tightens. Tech leads, banks lag.</span>
     </div>
-    <button type="button" onclick="showPanel('discovery',document.querySelectorAll('.nav-item')[1])" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;font-weight:600;padding:5px 11px;border-radius:5px;background:transparent;border:1px solid rgba(201,168,76,.32);cursor:pointer;flex-shrink:0;transition:all .18s">Open Discovery →</button>
+    <button type="button" onclick="showPanel('discovery',getNavForPanel('discovery'))" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;font-weight:600;padding:5px 11px;border-radius:5px;background:transparent;border:1px solid rgba(201,168,76,.32);cursor:pointer;flex-shrink:0;transition:all .18s">Open Discovery →</button>
   </div>
   <style>@keyframes dashPulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}</style>
 
@@ -2132,7 +2707,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
         <span class="ds-tag gold">Trend Detection</span>
         <span class="ds-tag sage">Momentum Bias</span>
       </div>
-      <button class="ds-action" onclick="event.stopPropagation();showPanel('market',document.querySelectorAll('.nav-item')[6])">Set market context &rarr;</button>
+      <button class="ds-action" onclick="event.stopPropagation();showPanel('market',getNavForPanel('market'))">Set market context &rarr;</button>
     </div>
   </div>
 </div>
@@ -2153,7 +2728,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
         <span class="ds-tag sage">Classification</span>
         <span class="ds-tag gold">Concentration Check</span>
       </div>
-      <button class="ds-action" onclick="event.stopPropagation();showPanel('portfolio',document.querySelectorAll('.nav-item')[1])">Upload portfolio &rarr;</button>
+      <button class="ds-action" onclick="event.stopPropagation();showPanel('portfolio',getNavForPanel('portfolio'))">Upload portfolio &rarr;</button>
     </div>
   </div>
 </div>
@@ -2173,7 +2748,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
         <span class="ds-tag clay">Trim Signals</span>
         <span class="ds-tag gold">Target Weights</span>
       </div>
-      <button class="ds-action" onclick="event.stopPropagation();showPanel('intelligence',document.querySelectorAll('.nav-item')[4])">View intelligence &rarr;</button>
+      <button class="ds-action" onclick="event.stopPropagation();showPanel('intelligence',getNavForPanel('intelligence'))">View intelligence &rarr;</button>
     </div>
   </div>
 </div>
@@ -2193,7 +2768,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
         <span class="ds-tag gold">Balanced</span>
         <span class="ds-tag clay">Aggressive</span>
       </div>
-      <button class="ds-action" onclick="event.stopPropagation();showPanel('deploy',document.querySelectorAll('.nav-item')[3])">Deploy capital &rarr;</button>
+      <button class="ds-action" onclick="event.stopPropagation();showPanel('deploy',getNavForPanel('deploy'))">Deploy capital &rarr;</button>
     </div>
   </div>
 </div>
@@ -2213,7 +2788,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
         <span class="ds-tag gold">Compare</span>
         <span class="ds-tag sage">Watchlist</span>
       </div>
-      <button class="ds-action" onclick="event.stopPropagation();showPanel('stockcheck',document.querySelectorAll('.nav-item')[2])">Analyze a stock &rarr;</button>
+      <button class="ds-action" onclick="event.stopPropagation();showPanel('stockcheck',getNavForPanel('stockcheck'))">Analyze a stock &rarr;</button>
     </div>
   </div>
 </div>
@@ -2271,8 +2846,8 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       <div class="sec-hdr">
         <div class="card-title">Holdings</div>
         <div style="display:flex;gap:8px">
-          <button class="btn-g btn-sm" onclick="showPanel('portfolio',document.querySelectorAll('.nav-item')[1])">Full Lab &rarr;</button>
-          <button class="btn-p btn-sm" onclick="showPanel('portfolio',document.querySelectorAll('.nav-item')[1]);setTimeout(runFeasibility,300)">AI Study</button>
+          <button class="btn-g btn-sm" onclick="showPanel('portfolio',getNavForPanel('portfolio'))">Full Lab &rarr;</button>
+          <button class="btn-p btn-sm" onclick="showPanel('portfolio',getNavForPanel('portfolio'));setTimeout(runFeasibility,300)">AI Study</button>
         </div>
       </div>
       <div style="overflow-x:auto">
@@ -2310,9 +2885,9 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     </div>
 
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn-p" onclick="showPanel('portfolio',document.querySelectorAll('.nav-item')[1]);setTimeout(runFeasibility,400)">Run Full AI Feasibility Study &rarr;</button>
-      <button class="btn-s" onclick="showPanel('stockcheck',document.querySelectorAll('.nav-item')[2])">Check a Stock</button>
-      <button class="btn-g" onclick="showPanel('deploy',document.querySelectorAll('.nav-item')[3])">Deploy Capital</button>
+      <button class="btn-p" onclick="showPanel('portfolio',getNavForPanel('portfolio'));setTimeout(runFeasibility,400)">Run Full AI Feasibility Study &rarr;</button>
+      <button class="btn-s" onclick="showPanel('stockcheck',getNavForPanel('stockcheck'))">Check a Stock</button>
+      <button class="btn-g" onclick="showPanel('deploy',getNavForPanel('deploy'))">Deploy Capital</button>
     </div>
 
     <!-- V2.1 INTENT BANNER -->
@@ -2327,6 +2902,54 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
 </div>
 
 </div>
+
+<!-- DECISION CENTER — Phase 1 shell only. No wiring to WAP / Deploy / Analyze /
+     Compare / Why surfaces yet (those land in Phase 2). Tabs switch in-panel
+     placeholders. localStorage key: fortis_dc_tab (default: "wap"). -->
+<div class="panel" id="panel-decisioncenter">
+  <div class="ph">
+    <div class="ph-eye">Workspace</div>
+    <h1 class="ph-title">Decision <em>Center</em></h1>
+    <p class="ph-sub">Where every move is decided.</p>
+  </div>
+
+  <!-- Context strip — placeholders only in Phase 1. Phase 2 fills from
+       _marketCtx + portfolioState. -->
+  <div class="dc-context" aria-label="Current context">
+    <span class="dc-context-block">
+      <span class="dc-context-eye">Regime</span>
+      <span class="dc-context-val" id="dcRegime">—</span>
+    </span>
+    <span class="dc-context-sep" aria-hidden="true">·</span>
+    <span class="dc-context-block">
+      <span class="dc-context-eye">Portfolio</span>
+      <span class="dc-context-val" id="dcPortfolio">—</span>
+    </span>
+    <span class="dc-context-sep" aria-hidden="true">·</span>
+    <span class="dc-context-block">
+      <span class="dc-context-eye">Cash</span>
+      <span class="dc-context-val" id="dcCash">—</span>
+    </span>
+  </div>
+
+  <!-- Tab row — order locked: WAP | Deploy | Analyze | Compare | Why. -->
+  <div class="dc-tabs" role="tablist" aria-label="Decision Center sections">
+    <button type="button" class="dc-tab" role="tab" data-dc-tab="wap"
+      aria-controls="dcContent" onclick="dcSetTab('wap')">This Week's Move</button>
+    <button type="button" class="dc-tab" role="tab" data-dc-tab="deploy"
+      aria-controls="dcContent" onclick="dcSetTab('deploy')">Deploy</button>
+    <button type="button" class="dc-tab" role="tab" data-dc-tab="analyze"
+      aria-controls="dcContent" onclick="dcSetTab('analyze')">Analyze</button>
+    <button type="button" class="dc-tab" role="tab" data-dc-tab="compare"
+      aria-controls="dcContent" onclick="dcSetTab('compare')">Compare</button>
+    <button type="button" class="dc-tab" role="tab" data-dc-tab="why"
+      aria-controls="dcContent" onclick="dcSetTab('why')">Why</button>
+  </div>
+
+  <!-- Active tab content area — populated by dcSetTab(). -->
+  <div id="dcContent" class="dc-content" role="tabpanel" aria-live="polite"></div>
+</div>
+
 <!-- DISCOVERY PANEL — own page, accessible via sidenav -->
 <div class="panel" id="panel-discovery">
   <div class="ph">
@@ -3169,8 +3792,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
           if(typeof quickTick==='function') quickTick(sym);
           if(typeof setStockMode==='function') setStockMode('quick');
           if(typeof showPanel==='function'){
-            var items=document.querySelectorAll('.nav-item');
-            showPanel('stockcheck',items&&items[2]?items[2]:null);
+            showPanel('stockcheck',getNavForPanel('stockcheck'));
           }
           if(typeof runStock==='function'){
             clearTimeout(window._discOpenSymRunT);
@@ -3574,43 +4196,50 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
     <p class="ph-sub">Enter any ticker for an institutional-grade analysis &mdash; valuation, momentum, catalysts, risk, and a clear verdict.</p>
   </div>
 
-  <div class="stock-search">
-    <input type="text" id="tickerInput" placeholder="NVDA"
-      style="font-family:DM Mono,monospace;font-size:17px;text-transform:uppercase;letter-spacing:.07em;font-weight:500"
-      onkeydown="if(event.key==='Enter')runStock()"/>
-    <div style="display:flex;flex-direction:column;gap:5px">
-      <button class="btn-g btn-sm" id="modeQuickBtn" onclick="setStockMode('quick')" style="border-color:var(--border-2);color:var(--gold)">Quick</button>
-      <button class="btn-g btn-sm" id="modeFullBtn" onclick="setStockMode('full')">Full</button>
-    </div>
-    <button class="btn-p" onclick="runStock()">Analyze &rarr;</button>
-  </div>
+  <!-- Phase 5 — slot pattern. The same singleton #stockContent moves between
+       #stockcheckPanelSlot (here) and #stockDcSlot (Decision Center → Analyze
+       tab). Functions, IDs, and inline handlers preserved. -->
+  <div id="stockcheckPanelSlot">
+    <div id="stockContent">
+      <div class="stock-search">
+        <input type="text" id="tickerInput" placeholder="NVDA"
+          style="font-family:DM Mono,monospace;font-size:17px;text-transform:uppercase;letter-spacing:.07em;font-weight:500"
+          onkeydown="if(event.key==='Enter')runStock()"/>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <button class="btn-g btn-sm" id="modeQuickBtn" onclick="setStockMode('quick')" style="border-color:var(--border-2);color:var(--gold)">Quick</button>
+          <button class="btn-g btn-sm" id="modeFullBtn" onclick="setStockMode('full')">Full</button>
+        </div>
+        <button class="btn-p" onclick="runStock()">Analyze &rarr;</button>
+      </div>
 
-  <div class="qtickers">
-    <div class="qt" onclick="quickTick('NVDA')">NVDA</div>
-    <div class="qt" onclick="quickTick('AAPL')">AAPL</div>
-    <div class="qt" onclick="quickTick('GOOGL')">GOOGL</div>
-    <div class="qt" onclick="quickTick('MSFT')">MSFT</div>
-    <div class="qt" onclick="quickTick('AMZN')">AMZN</div>
-    <div class="qt" onclick="quickTick('TSLA')">TSLA</div>
-    <div class="qt" onclick="quickTick('META')">META</div>
-    <div class="qt" onclick="quickTick('JPM')">JPM</div>
-    <div class="qt" onclick="quickTick('AVGO')">AVGO</div>
-    <div class="qt" onclick="quickTick('VOO')">VOO</div>
-    <div class="qt" onclick="quickTick('SCHD')">SCHD</div>
-    <div class="qt" onclick="quickTick('AMD')">AMD</div>
-  </div>
+      <div class="qtickers">
+        <div class="qt" onclick="quickTick('NVDA')">NVDA</div>
+        <div class="qt" onclick="quickTick('AAPL')">AAPL</div>
+        <div class="qt" onclick="quickTick('GOOGL')">GOOGL</div>
+        <div class="qt" onclick="quickTick('MSFT')">MSFT</div>
+        <div class="qt" onclick="quickTick('AMZN')">AMZN</div>
+        <div class="qt" onclick="quickTick('TSLA')">TSLA</div>
+        <div class="qt" onclick="quickTick('META')">META</div>
+        <div class="qt" onclick="quickTick('JPM')">JPM</div>
+        <div class="qt" onclick="quickTick('AVGO')">AVGO</div>
+        <div class="qt" onclick="quickTick('VOO')">VOO</div>
+        <div class="qt" onclick="quickTick('SCHD')">SCHD</div>
+        <div class="qt" onclick="quickTick('AMD')">AMD</div>
+      </div>
 
-  <div id="beginToggle" style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:16px;cursor:pointer" onclick="toggleBegin()">
-    <div id="togTrack" style="width:36px;height:20px;border-radius:10px;background:var(--noir-4);border:1px solid var(--border);position:relative;transition:all .2s;flex-shrink:0">
-      <div id="togThumb" style="width:14px;height:14px;border-radius:50%;background:var(--text-3);position:absolute;top:2px;left:2px;transition:all .25s"></div>
-    </div>
-    <div>
-      <div style="font-size:13px;font-weight:500;color:var(--cream)">Beginner Mode</div>
-      <div style="font-size:11px;color:var(--text-2)">Plain English &mdash; no jargon, just clear guidance</div>
+      <div id="beginToggle" style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--noir-2);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:16px;cursor:pointer" onclick="toggleBegin()">
+        <div id="togTrack" style="width:36px;height:20px;border-radius:10px;background:var(--noir-4);border:1px solid var(--border);position:relative;transition:all .2s;flex-shrink:0">
+          <div id="togThumb" style="width:14px;height:14px;border-radius:50%;background:var(--text-3);position:absolute;top:2px;left:2px;transition:all .25s"></div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--cream)">Beginner Mode</div>
+          <div style="font-size:11px;color:var(--text-2)">Plain English &mdash; no jargon, just clear guidance</div>
+        </div>
+      </div>
+
+      <div id="stockOutput"></div>
     </div>
   </div>
-
-  <div id="stockOutput"></div>
 </div>
 
 <!-- DEPLOY CAPITAL -->
@@ -3875,16 +4504,23 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
   <div class="g2 fortis-flow-step" data-flow-step="5" style="margin-bottom:14px">
     <div class="card" data-fortis-collapsible="deployment">
       <div class="card-title">Deployment Plan</div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <div style="flex:1">
-          <label class="il">Cash to deploy ($)</label>
-          <input type="number" id="intelCashInput" value="1000" min="0" oninput="setPortfolioCash(this.value);updateDeployment()" style="font-family:DM Mono,monospace;font-size:15px"/>
-        </div>
-        <div style="flex:0 0 auto;padding-top:20px">
-          <div style="font-size:10px;color:var(--text-2)">Regime: <span id="deployRegimeLbl" style="color:var(--gold)">-</span></div>
+      <!-- Phase 4 — slot pattern. Same singleton #deployContent moves between
+           #deployDashboardSlot (here) and #deployDcSlot (Decision Center →
+           Deploy tab). Functions, IDs, and inline handlers preserved. -->
+      <div id="deployDashboardSlot">
+        <div id="deployContent">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <div style="flex:1">
+              <label class="il">Cash to deploy ($)</label>
+              <input type="number" id="intelCashInput" value="1000" min="0" oninput="setPortfolioCash(this.value);updateDeployment()" style="font-family:DM Mono,monospace;font-size:15px"/>
+            </div>
+            <div style="flex:0 0 auto;padding-top:20px">
+              <div style="font-size:10px;color:var(--text-2)">Regime: <span id="deployRegimeLbl" style="color:var(--gold)">-</span></div>
+            </div>
+          </div>
+          <div id="deployPlanEl"></div>
         </div>
       </div>
-      <div id="deployPlanEl"></div>
     </div>
 
     <div class="card" data-fortis-collapsible="stock-decision">
@@ -4106,7 +4742,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
   <div class="sc">
     <div class="sc-hdr">
       <div class="sc-title"><div class="sc-dot"></div>Recent Verdicts</div>
-      <button class="sc-act" onclick="showPanel('stockcheck',document.querySelectorAll('.nav-item')[2])">Analyze</button>
+      <button class="sc-act" onclick="showPanel('stockcheck',getNavForPanel('stockcheck'))">Analyze</button>
     </div>
     <div id="sideVerdicts"><div style="font-size:11px;color:var(--text-3);padding:4px 0">No stocks analyzed yet.</div></div>
   </div>
@@ -4114,7 +4750,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
   <div class="sc">
     <div class="sc-hdr">
       <div class="sc-title"><div class="sc-dot"></div>Market Pulse</div>
-      <button class="sc-act" onclick="showPanel('market',document.querySelectorAll('.nav-item')[6])">Update</button>
+      <button class="sc-act" onclick="showPanel('market',getNavForPanel('market'))">Update</button>
     </div>
     <svg class="mp-gauge-svg" width="100%" height="120" viewBox="0 -50 240 120" preserveAspectRatio="xMidYMid meet">
       <defs><linearGradient id="gaugeG" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -4139,7 +4775,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
   <div class="sc">
     <div class="sc-hdr">
       <div class="sc-title"><div class="sc-dot"></div>Watchlist</div>
-      <button class="sc-act" onclick="showPanel('watchlist',document.querySelectorAll('.nav-item')[8])">View all</button>
+      <button class="sc-act" onclick="showPanel('watchlist',getNavForPanel('watchlist'))">View all</button>
     </div>
     <div id="sideWl"><div class="wlrow"><span class="wlsym" style="color:var(--text-3)">-</span><span style="font-size:11px;color:var(--text-3)">Add tickers</span></div></div>
   </div>
@@ -4165,7 +4801,7 @@ details.pf-collapsible .pf-collapsible-body{padding:18px 22px;animation:fadeUp .
       <div style="font-size:22px;margin-bottom:8px;opacity:.2">&#9670;</div>
       <div style="font-size:11px;font-weight:600;color:var(--text-2);margin-bottom:5px">Upload portfolio to unlock</div>
       <div style="font-size:10px;color:var(--text-3);line-height:1.6;margin-bottom:12px">Opportunities are generated from your actual holdings &mdash; gaps, missing layers, and overweights.</div>
-      <button class="btn-g" style="font-size:10px;width:100%;padding:7px" onclick="showPanel('portfolio',document.querySelectorAll('.nav-item')[1])">Upload portfolio &rarr;</button>
+      <button class="btn-g" style="font-size:10px;width:100%;padding:7px" onclick="showPanel('portfolio',getNavForPanel('portfolio'))">Upload portfolio &rarr;</button>
     </div>
   </div>
 
@@ -4835,10 +5471,16 @@ function clearKey(){_apiKey='';try{sessionStorage.removeItem('lfc_key');localSto
  * from real app state — holdings count, market context, deploy data.
  * Future: server-backed "journey" persisted per user.
  * ================================================================= */
-/* Resolve the correct nav-item for a given panel id by inspecting onclick attributes.
-   Source of truth = the rendered nav itself, not hard-coded indices. Safe across reorders. */
+/* Resolve the correct nav-item for a given panel id.
+   Source of truth = the rendered nav itself, not hard-coded indices.
+   Phase 0 — prefer the data-panel attribute (added on every nav-item).
+   Falls back to onclick-string matching for any nav-item not yet migrated. */
 function getNavForPanel(panelId){
   if (!panelId) return null;
+  /* Fast path — single-attribute selector. */
+  var byAttr = document.querySelector('.nav-item[data-panel="' + panelId + '"]');
+  if (byAttr) return byAttr;
+  /* Fallback — parse onclick attribute string for legacy nav-items. */
   var items = document.querySelectorAll('.nav-item');
   var needle1 = "showPanel('" + panelId + "'";
   var needle2 = 'showPanel("' + panelId + '"';
@@ -4860,6 +5502,15 @@ function showPanel(id,navEl){
   if(id==='watchlist')renderWatchlist();
   if(id==='intelligence')renderIntelligencePanel();
   if(id==='cadence')updateCadence();
+  /* Phase 2 + Phase 4 + Phase 5 — keep singleton #wapContainer, #deployContent,
+     and #stockContent in their right slots whenever the user transitions to
+     Dashboard, Decision Center, or the legacy stockcheck panel. All three
+     relocators are idempotent: no-op when already in the correct slot. */
+  if (id === 'dashboard' || id === 'decisioncenter' || id === 'stockcheck') {
+    try { if (typeof window._dcRelocateWap === 'function') window._dcRelocateWap(); } catch(_){}
+    try { if (typeof window._dcRelocateDeploy === 'function') window._dcRelocateDeploy(); } catch(_){}
+    try { if (typeof window._dcRelocateStock === 'function') window._dcRelocateStock(); } catch(_){}
+  }
   // Render flow indicator + next-step footer on every panel switch
   renderFlowIndicator(id);
   renderNextStepFooter(id);
@@ -4912,18 +5563,18 @@ function renderNextStepFooter(activePanel){
   var hasPortfolio=_holdings && _holdings.length>0;
   var footers={
     dashboard: stage<2
-      ? {eye:'Start here',text:'Set your <em>market regime</em> in Live Market so every recommendation downstream has context.',btn:'Go to Live Market →',action:"showPanel('market',document.querySelectorAll('.nav-item')[6])"}
+      ? {eye:'Start here',text:'Set your <em>market regime</em> in Live Market so every recommendation downstream has context.',btn:'Go to Live Market →',action:"showPanel('market',getNavForPanel('market'))"}
       : !hasPortfolio
-        ? {eye:'Next step',text:'Upload your <em>portfolio</em> so the system can diagnose concentration, gaps, and fit.',btn:'Upload portfolio →',action:"showPanel('portfolio',document.querySelectorAll('.nav-item')[1])"}
-        : {eye:'Next step',text:'View your full <em>action plan</em> — health score, regime fit, deployment recommendations.',btn:'View Intelligence →',action:"showPanel('intelligence',document.querySelectorAll('.nav-item')[4])"},
+        ? {eye:'Next step',text:'Upload your <em>portfolio</em> so the system can diagnose concentration, gaps, and fit.',btn:'Upload portfolio →',action:"showPanel('portfolio',getNavForPanel('portfolio'))"}
+        : {eye:'Next step',text:'View your full <em>action plan</em> — health score, regime fit, deployment recommendations.',btn:'View Intelligence →',action:"showPanel('intelligence',getNavForPanel('intelligence'))"},
     portfolio: hasPortfolio
-      ? {eye:'Diagnosis ready',text:'Holdings loaded. Next, generate the <em>feasibility study</em> or jump to Intelligence for the full diagnosis.',btn:'View Intelligence →',action:"showPanel('intelligence',document.querySelectorAll('.nav-item')[4])"}
+      ? {eye:'Diagnosis ready',text:'Holdings loaded. Next, generate the <em>feasibility study</em> or jump to Intelligence for the full diagnosis.',btn:'View Intelligence →',action:"showPanel('intelligence',getNavForPanel('intelligence'))"}
       : null,
     intelligence: hasPortfolio
-      ? {eye:'When ready',text:'Turn the diagnosis into a <em>deployment plan</em> — three risk lanes with specific tickers and sizing.',btn:'Deploy capital →',action:"showPanel('deploy',document.querySelectorAll('.nav-item')[3])"}
-      : {eye:'Before deploying',text:'Upload a portfolio first so the intelligence engine can read your actual positions.',btn:'Upload portfolio →',action:"showPanel('portfolio',document.querySelectorAll('.nav-item')[1])"},
-    deploy: {eye:'Deep dive',text:'Click any allocation row or donut segment above for the <em>stock-level drill-down</em> — why this, why now, what breaks it.',btn:'Stock Analysis →',action:"showPanel('stockcheck',document.querySelectorAll('.nav-item')[2])"},
-    stockcheck: hasPortfolio?{eye:'Structural view',text:'Stepping back from the single name — check the <em>portfolio-level</em> diagnosis for how this fits.',btn:'View Intelligence →',action:"showPanel('intelligence',document.querySelectorAll('.nav-item')[4])"}:null
+      ? {eye:'When ready',text:'Turn the diagnosis into a <em>deployment plan</em> — three risk lanes with specific tickers and sizing.',btn:'Deploy capital →',action:"showPanel('deploy',getNavForPanel('deploy'))"}
+      : {eye:'Before deploying',text:'Upload a portfolio first so the intelligence engine can read your actual positions.',btn:'Upload portfolio →',action:"showPanel('portfolio',getNavForPanel('portfolio'))"},
+    deploy: {eye:'Deep dive',text:'Click any allocation row or donut segment above for the <em>stock-level drill-down</em> — why this, why now, what breaks it.',btn:'Stock Analysis →',action:"showPanel('stockcheck',getNavForPanel('stockcheck'))"},
+    stockcheck: hasPortfolio?{eye:'Structural view',text:'Stepping back from the single name — check the <em>portfolio-level</em> diagnosis for how this fits.',btn:'View Intelligence →',action:"showPanel('intelligence',getNavForPanel('intelligence'))"}:null
   };
   var f=footers[activePanel]; if(!f) return;
   var html='<div class="next-step-footer">'
@@ -5389,8 +6040,7 @@ function _execToggleDone(encodedStep,btn){
 }
 function _execAnalyze(sym){
   if(typeof quickTick==='function')quickTick(sym);
-  var navItems=document.querySelectorAll('.nav-item');
-  if(typeof showPanel==='function'&&navItems[2])showPanel('stockcheck',navItems[2]);
+  if(typeof showPanel==='function')showPanel('stockcheck',getNavForPanel('stockcheck'));
 }
 
 /* ----- Meta card explainers (Execute within / Worst case scenario) ----- */
@@ -5676,7 +6326,7 @@ function loadManual(){
     var stats={found:parsed.length,files:1,new:Math.max(0,_holdings.length-beforeCount),merged:Math.max(0,parsed.length-(Math.max(0,_holdings.length-beforeCount))),skipped:0};
     status.innerHTML=renderExtractionReceipt(stats,[]);
   }
-  showPanel('portfolio',document.querySelectorAll('.nav-item')[1]);
+  showPanel('portfolio',getNavForPanel('portfolio'));
 }
 
 function clearAll(){
@@ -6105,7 +6755,7 @@ function renderLabTable(){
   if(tbody)tbody.innerHTML=rows.map(function(h,i){
     var cls=classify(h.sym);var col=CLS_C[cls]||'#8b7d5a';var gPct=h.cost>0?(h.gain/h.cost*100):0;
     return '<tr>'+
-      '<td><span class="hsym" onclick="quickTick(\''+esc(h.sym)+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2])">'+esc(h.sym)+'</span></td>'+
+      '<td><span class="hsym" onclick="quickTick(\''+esc(h.sym)+'\');showPanel(\'stockcheck\',getNavForPanel(\'stockcheck\'))">'+esc(h.sym)+'</span></td>'+
       '<td style="font-family:\'DM Mono\',monospace;font-size:11px">'+h.shares.toLocaleString()+'</td>'+
       '<td class="r" style="font-family:\'DM Mono\',monospace;font-size:11px">'+fmt$(h.costPerShare)+'</td>'+
       '<td class="r" style="font-family:\'DM Mono\',monospace;font-size:11px">'+fmt$(h.mktVal)+'</td>'+
@@ -6283,8 +6933,7 @@ function _allocHandlers(r,i,p,gPct,clsName,color){
         return;
       }
       if(typeof quickTick==='function')quickTick(r.symRaw||r.sym);
-      var navItems=document.querySelectorAll('.nav-item');
-      if(typeof showPanel==='function'&&navItems[2])showPanel('stockcheck',navItems[2]);
+      if(typeof showPanel==='function')showPanel('stockcheck',getNavForPanel('stockcheck'));
     }
   };
 }
@@ -6295,7 +6944,7 @@ function renderDashHoldings(total){
   tbody.innerHTML=sorted.map(function(h){
     var cls=classify(h.sym);var col=CLS_C[cls]||'#8b7d5a';var gPct=h.cost>0?(h.gain/h.cost*100):0;var w=h.mktVal/total*100;
     return '<tr>'+
-      '<td><span class="hsym" onclick="quickTick(\''+esc(h.sym)+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2])">'+esc(h.sym)+'</span></td>'+
+      '<td><span class="hsym" onclick="quickTick(\''+esc(h.sym)+'\');showPanel(\'stockcheck\',getNavForPanel(\'stockcheck\'))">'+esc(h.sym)+'</span></td>'+
       '<td><div style="font-size:11px;color:var(--text-3);margin-bottom:2px">'+w.toFixed(1)+'%</div><div class="hbar-w"><div class="hbar-f" style="width:'+Math.min(100,w/40*100)+'%;background:'+col+'"></div></div></td>'+
       '<td class="r" style="font-family:\'DM Mono\',monospace;font-size:11px">'+fmt$(h.mktVal)+'</td>'+
       '<td class="r" style="font-family:\'DM Mono\',monospace;font-size:11px;color:'+(h.gain>=0?'var(--sage)':'var(--clay)')+'">'+(h.gain>=0?'+':'')+fmt$(h.gain)+'</td>'+
@@ -6397,7 +7046,7 @@ function renderWatchlist(){
   el.innerHTML='<div class="card"><table class="htbl"><thead><tr><th>Symbol</th><th>Verdict</th><th></th></tr></thead><tbody>'+
     _watchlist.map(function(sym){
       var v=_verdicts.find(function(x){return x.sym===sym;});
-      return '<tr><td><span class="hsym" onclick="quickTick(\''+esc(sym)+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2])">'+esc(sym)+'</span></td>'+
+      return '<tr><td><span class="hsym" onclick="quickTick(\''+esc(sym)+'\');showPanel(\'stockcheck\',getNavForPanel(\'stockcheck\'))">'+esc(sym)+'</span></td>'+
         '<td>'+(v?'<span class="vbadge '+(v.verdict==='BUY'?'vb-b':v.verdict==='AVOID'?'vb-a':'vb-w')+'">'+esc(v.verdict)+'</span>':'<span style="font-size:11px;color:var(--text-3)">Not analyzed</span>')+'</td>'+
         '<td><button class="btn-d" onclick="removeFromWatchlist(\''+esc(sym)+'\')">Remove</button></td></tr>';
     }).join('')+'</tbody></table></div>';
@@ -6636,8 +7285,8 @@ function renderStockOutput(ticker,text,full){
   var actionsHTML='<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">'
     +'<button class="btn-s btn-sm" onclick="addWl2(\''+esc(ticker)+'\',\''+esc(verdict)+'\',\''+esc((S.thesis||S.whatThey||'').substring(0,80))+'\')">+ Watchlist</button>'
     +(!full&&!_beginMode2?'<button class="btn-p btn-sm" onclick="setStockMode(\'full\');runStock()">Run Full Report →</button>':'')
-    +'<button class="btn-g btn-sm" onclick="showPanel(\'deploy\',document.querySelectorAll(\'.nav-item\')[3])">Deploy capital →</button>'
-    +'<button class="btn-g btn-sm" onclick="showPanel(\'compare\',document.querySelectorAll(\'.nav-item\')[7]);document.getElementById(\'compA\').value=\''+esc(ticker)+'\'">Compare vs peer →</button>'
+    +'<button class="btn-g btn-sm" onclick="showPanel(\'deploy\',getNavForPanel(\'deploy\'))">Deploy capital →</button>'
+    +'<button class="btn-g btn-sm" onclick="showPanel(\'compare\',getNavForPanel(\'compare\'));document.getElementById(\'compA\').value=\''+esc(ticker)+'\'">Compare vs peer →</button>'
   +'</div>';
 
   out.innerHTML = heroHTML + timingHTML + bodyHTML + finalHTML + actionsHTML;
@@ -8146,7 +8795,7 @@ async function drillDownStock(sym, style){
           +'<div style="font-size:11px;color:var(--text-2);font-style:italic">via '+esc(style)+' lens · '+allocPct+'% · '+allocAmt+'</div>'
         +'</div>'
         +'<div style="display:flex;gap:8px">'
-          +'<button onclick="quickTick(\''+esc(sym)+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2])" style="padding:6px 12px;border-radius:var(--r);font-size:11px;font-weight:600;cursor:pointer;background:var(--gold-muted);border:1px solid var(--border-2);color:var(--gold-light);font-family:DM Sans,sans-serif">Full Analysis &rarr;</button>'
+          +'<button onclick="quickTick(\''+esc(sym)+'\');showPanel(\'stockcheck\',getNavForPanel(\'stockcheck\'))" style="padding:6px 12px;border-radius:var(--r);font-size:11px;font-weight:600;cursor:pointer;background:var(--gold-muted);border:1px solid var(--border-2);color:var(--gold-light);font-family:DM Sans,sans-serif">Full Analysis &rarr;</button>'
           +'<button onclick="addWl2(\''+esc(sym)+'\')" style="padding:6px 12px;border-radius:var(--r);font-size:11px;font-weight:600;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--text-2);font-family:DM Sans,sans-serif">+ Watchlist</button>'
           +'<button onclick="document.getElementById(\'cdDrillDown\').style.display=\'none\'" style="padding:6px 10px;border-radius:var(--r);font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--text-3);font-family:DM Sans,sans-serif" title="Close">&times;</button>'
         +'</div>'
@@ -8682,7 +9331,7 @@ function selectStrategy(key){
 
       '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
         '<button class="btn-p" onclick="runStrategyStudy()">Run Full AI Study with This Strategy &rarr;</button>' +
-        '<button class="btn-g" onclick="showPanel(&quot;cadence&quot;,document.querySelectorAll(&quot;.nav-item&quot;)[5])">Build Cadence Plan</button>' +
+        '<button class="btn-g" onclick="showPanel(&quot;cadence&quot;,getNavForPanel(&quot;cadence&quot;))">Build Cadence Plan</button>' +
         '<button class="btn-g" onclick="var sp=document.getElementById(&quot;selectedStrategyPanel&quot;);if(sp)sp.remove();document.querySelectorAll(&quot;.sc2&quot;).forEach(function(el){el.style.opacity=&quot;1&quot;;el.style.transform=&quot;&quot;;el.style.boxShadow=&quot;&quot;;});">Change Strategy</button>' +
       '</div>' +
       '<div id="strategyStudyOutput" style="margin-top:18px"></div>' +
@@ -10293,9 +10942,9 @@ function renderCadenceSymDetail(row){
     // Actions
     +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
       +(isTicker
-        ? '<button class="btn-p btn-sm" onclick="event.stopPropagation();quickTick(\''+esc(row.sym)+'\');showPanel(\'stockcheck\',document.querySelectorAll(\'.nav-item\')[2]);setTimeout(runStock,250)">Full AI analysis →</button>'
+        ? '<button class="btn-p btn-sm" onclick="event.stopPropagation();quickTick(\''+esc(row.sym)+'\');showPanel(\'stockcheck\',getNavForPanel(\'stockcheck\'));setTimeout(runStock,250)">Full AI analysis →</button>'
           +'<button class="btn-g btn-sm" onclick="event.stopPropagation();addWl2(\''+esc(row.sym)+'\')">+ Watchlist</button>'
-        : '<button class="btn-g btn-sm" onclick="event.stopPropagation();showPanel(\'deploy\',document.querySelectorAll(\'.nav-item\')[3])">Deploy reserve →</button>')
+        : '<button class="btn-g btn-sm" onclick="event.stopPropagation();showPanel(\'deploy\',getNavForPanel(\'deploy\'))">Deploy reserve →</button>')
       +'<button class="btn-g btn-sm" onclick="event.stopPropagation();window._cadenceSelectedSym=null;updateCadence()">Collapse</button>'
     +'</div>'
   +'</div>';
@@ -11188,7 +11837,7 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     /* Trigger spotlight tour when "How to use this system" is opened */
     (function(){
       var d = document.getElementById('howToUseDetails');
-      if (d) d.addEventListener('toggle', function(){ if (d.open) { try { if (typeof showPanel==='function') showPanel('intelligence', document.querySelectorAll('.nav-item')[3]); } catch(_){} setTimeout(startSpotlightTour, 340); } });
+      if (d) d.addEventListener('toggle', function(){ if (d.open) { try { if (typeof showPanel==='function') showPanel('intelligence', getNavForPanel('intelligence')); } catch(_){} setTimeout(startSpotlightTour, 340); } });
     })();
     function nextTourStep(){
       _idx++;
@@ -11215,7 +11864,7 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
           tourSteps[2].text = 'Suggested next steps will appear here once a portfolio is loaded.';
         }
         setTimeout(function(){
-          try { if (typeof showPanel === 'function') showPanel('intelligence', document.querySelectorAll('.nav-item')[3]); } catch(_){}
+          try { if (typeof showPanel === 'function') showPanel('intelligence', getNavForPanel('intelligence')); } catch(_){}
           setTimeout(startProductTour, 340);
         }, 1200);
       } catch(_){}
@@ -11450,26 +12099,136 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
              '<div class="wap-empty__trust-detail">'+_wapEsc(detail)+'</div>' +
            '</div>';
   }
-  /* Bind hover/focus/click pin behavior — single delegated handler per container.
-     Click toggles .is-pinned (one at a time); Enter/Space same as click. */
+  /* Refined behavior:
+     - Hover/focus → inline preview (CSS-only, unchanged).
+     - Click / Enter / Space → centered modal with deeper context.
+     - .is-pinned class is no longer applied, so the row never expands
+       downward on click. The CSS rule for .is-pinned is left intact
+       (dormant) to avoid touching unrelated styles. */
+  var WAP_TRUST_MODAL_CONTENT = {
+    'Private & Secure': {
+      bullets: [
+        'Your portfolio data stays local during the session.',
+        'Saving or deploying an action is the only time Fortis writes persistent state.',
+        'No decision logic is sent to a human advisor.'
+      ],
+      meaning: 'Fortis is designed to help you operate with confidence without exposing unnecessary data.'
+    },
+    'One Clear Action': {
+      bullets: [
+        'Fortis gives one weekly move instead of a menu of competing ideas.',
+        'The goal is to reduce second-guessing, not create more decisions.',
+        'If no move clears the rules, Fortis tells you to park cash.'
+      ],
+      meaning: 'You are not here to browse. You are here to execute a disciplined plan.'
+    },
+    'Deterministic System': {
+      bullets: [
+        'Same inputs produce the same outcome.',
+        'AI can explain, but it does not control the decision.',
+        'The rules are designed to enforce consistency over emotion.'
+      ],
+      meaning: 'The system is predictable on purpose.'
+    }
+  };
+
+  var _wapTrustModalEl = null;
+  var _wapTrustModalReturnFocus = null;
+
+  function _wapTrustModalEnsure(){
+    if (_wapTrustModalEl) return _wapTrustModalEl;
+    var bg = document.createElement('div');
+    bg.className = 'wap-trust-modal-bg';
+    bg.setAttribute('role', 'dialog');
+    bg.setAttribute('aria-modal', 'true');
+    bg.setAttribute('aria-labelledby', 'wapTrustModalTitle');
+    bg.setAttribute('aria-hidden', 'true');
+    bg.innerHTML =
+      '<div class="wap-trust-modal" role="document">' +
+        '<button type="button" class="wap-trust-modal-close" aria-label="Close">×</button>' +
+        '<div class="wap-trust-modal-head">' +
+          '<span class="wap-trust-modal-icon" id="wapTrustModalIcon" aria-hidden="true"></span>' +
+          '<h3 class="wap-trust-modal-title" id="wapTrustModalTitle"></h3>' +
+        '</div>' +
+        '<ul class="wap-trust-modal-bullets" id="wapTrustModalBullets"></ul>' +
+        '<div class="wap-trust-modal-meaning">' +
+          '<span class="wap-trust-modal-meaning-eye">What this means for you</span>' +
+          '<span id="wapTrustModalMeaning"></span>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(bg);
+    /* Backdrop click closes (only when the click is on the backdrop itself). */
+    bg.addEventListener('click', function(e){ if (e.target === bg) _wapTrustModalClose(); });
+    /* Close button. */
+    bg.querySelector('.wap-trust-modal-close').addEventListener('click', _wapTrustModalClose);
+    /* Escape key closes when modal is open. Document-level so any focus works. */
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && bg.classList.contains('on')) _wapTrustModalClose();
+    });
+    /* Simple focus trap — Tab cycles between close button and the modal card. */
+    bg.addEventListener('keydown', function(e){
+      if (e.key !== 'Tab' || !bg.classList.contains('on')) return;
+      var closeBtn = bg.querySelector('.wap-trust-modal-close');
+      if (!closeBtn) return;
+      /* Only one focusable in the modal — keep focus on close button. */
+      e.preventDefault();
+      closeBtn.focus();
+    });
+    _wapTrustModalEl = bg;
+    return bg;
+  }
+
+  function _wapTrustModalOpen(title, iconHtml){
+    var content = WAP_TRUST_MODAL_CONTENT[title];
+    if (!content) return;
+    var bg = _wapTrustModalEnsure();
+    var titleEl = document.getElementById('wapTrustModalTitle');
+    var iconEl  = document.getElementById('wapTrustModalIcon');
+    var blEl    = document.getElementById('wapTrustModalBullets');
+    var mnEl    = document.getElementById('wapTrustModalMeaning');
+    if (titleEl) titleEl.textContent = title;
+    if (iconEl)  iconEl.innerHTML = iconHtml || '';
+    if (blEl)    blEl.innerHTML = content.bullets.map(function(b){ return '<li>' + _wapEsc(b) + '</li>'; }).join('');
+    if (mnEl)    mnEl.textContent = content.meaning;
+    _wapTrustModalReturnFocus = document.activeElement;
+    bg.setAttribute('aria-hidden', 'false');
+    bg.classList.add('on');
+    /* Focus the close button after the open transition starts. */
+    setTimeout(function(){
+      var c = bg.querySelector('.wap-trust-modal-close');
+      if (c) c.focus();
+    }, 50);
+  }
+
+  function _wapTrustModalClose(){
+    if (!_wapTrustModalEl) return;
+    _wapTrustModalEl.classList.remove('on');
+    _wapTrustModalEl.setAttribute('aria-hidden', 'true');
+    if (_wapTrustModalReturnFocus && _wapTrustModalReturnFocus.focus){
+      try { _wapTrustModalReturnFocus.focus(); } catch(_){}
+    }
+    _wapTrustModalReturnFocus = null;
+  }
+
+  /* Single delegated click + key handler per trust container.
+     Replaces inline pin behavior with the modal opener. */
   function _wapBindTrustToggle(container){
     try {
       var trust = container && container.querySelector('.wap-empty__trust');
       if (!trust || trust.__wapTrustBound) return;
       trust.__wapTrustBound = true;
-      function toggle(item){
+      function open(item){
         if (!item) return;
-        var wasPinned = item.classList.contains('is-pinned');
-        trust.querySelectorAll('.wap-empty__trust-item.is-pinned').forEach(function(r){
-          r.classList.remove('is-pinned'); r.setAttribute('aria-expanded','false');
-        });
-        if (!wasPinned) { item.classList.add('is-pinned'); item.setAttribute('aria-expanded','true'); }
+        var titleEl = item.querySelector('.wap-empty__trust-title');
+        var iconEl  = item.querySelector('.wap-empty__trust-icon');
+        var title   = titleEl ? (titleEl.textContent || '').trim() : '';
+        _wapTrustModalOpen(title, iconEl ? iconEl.innerHTML : '');
       }
-      trust.addEventListener('click', function(e){ toggle(e.target.closest('.wap-empty__trust-item')); });
+      trust.addEventListener('click', function(e){ open(e.target.closest('.wap-empty__trust-item')); });
       trust.addEventListener('keydown', function(e){
         if (e.key !== 'Enter' && e.key !== ' ') return;
         var item = e.target.closest('.wap-empty__trust-item'); if (!item) return;
-        e.preventDefault(); toggle(item);
+        e.preventDefault(); open(item);
       });
     } catch(_){}
   }
@@ -11855,10 +12614,564 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     };
     window.WAPUi.__wapWrapped = true;
   }
+  /* Phase 7 — expose deterministic helpers so the DC Why tab can read the
+     same state the WAP renderer uses. No engine touch — these are integrator
+     helpers built on top of WAP / WAPAdapters / portfolioState. */
+  window._wapBuildState     = _wapBuildState;
+  window._wapDeriveContext  = _wapDeriveContext;
+  window._wapReadLock       = _wapReadLock;
+  window._wapReadLastAction = _wapReadLastAction;
+  window._wapReadStreak     = _wapReadStreak;
+  window._wapDaysUntil      = _wapDaysUntil;
   function _wapBoot(){ _wapInstallWrapper(); window._renderWAP(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _wapBoot);
   else _wapBoot();
 })();
+
+/* =============================================================================
+ * Phase 1 — Decision Center tab controller
+ * Pure shell. Switches placeholder content per tab. Persists last-active tab
+ * to localStorage. NO wiring to WAP / Deploy / Analyze / Compare / Why
+ * surfaces — that's Phase 2. NO touching of #panel-dashboard, #wapContainer,
+ * or any existing renderer in this pass.
+ * ========================================================================== */
+(function(global){
+  'use strict';
+  var TAB_KEY = 'fortis_dc_tab';
+  var TABS = ['wap', 'deploy', 'analyze', 'compare', 'why'];
+  var DEFAULT_TAB = 'wap';
+  var TAB_PLACEHOLDERS = {
+    wap:     { eye: "This Week's Move", msg: 'The WAP card lands here in Phase 2. For now it stays on the Dashboard.' },
+    deploy:  { eye: 'Deploy',           msg: 'The capital deployment input + plan will mount here in Phase 2.' },
+    analyze: { eye: 'Analyze',          msg: 'The Stock Decision Engine will mount here in Phase 2.' },
+    compare: { eye: 'Compare',          msg: 'A compact Compare summary plus a link to the full panel will mount here in Phase 2.' },
+    why:     { eye: 'Why',              msg: 'The deterministic context behind today’s move — derived from _wapDeriveContext — will mount here in Phase 2.' }
+  };
+
+  function _esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+  function _getStored(){
+    try {
+      var v = localStorage.getItem(TAB_KEY);
+      return TABS.indexOf(v) > -1 ? v : DEFAULT_TAB;
+    } catch (_) { return DEFAULT_TAB; }
+  }
+  function _setStored(name){
+    try { localStorage.setItem(TAB_KEY, name); } catch (_) {}
+  }
+
+  global.dcSetTab = function(name){
+    if (TABS.indexOf(name) === -1) name = DEFAULT_TAB;
+    var panel = document.getElementById('panel-decisioncenter');
+    if (!panel) return;
+    var tabs = panel.querySelectorAll('.dc-tab');
+    Array.prototype.forEach.call(tabs, function(t){
+      var on = t.getAttribute('data-dc-tab') === name;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.setAttribute('tabindex', on ? '0' : '-1');
+    });
+    var content = document.getElementById('dcContent');
+    if (content){
+      if (name === 'wap') {
+        /* Phase 2 — render mount slot for the re-parented singleton #wapContainer.
+           The container itself is not duplicated; _dcRelocateWap moves it here. */
+        content.innerHTML = '<div id="wapDcSlot" class="dc-wap-slot"></div>';
+      } else if (name === 'deploy') {
+        /* Phase 4 — render mount slot for the re-parented singleton
+           #deployContent. Singleton; _dcRelocateDeploy moves it here. */
+        content.innerHTML = '<div id="deployDcSlot" class="dc-deploy-slot"></div>';
+      } else if (name === 'analyze') {
+        /* Phase 5 — render mount slot for the re-parented singleton
+           #stockContent. Singleton; _dcRelocateStock moves it here. */
+        content.innerHTML = '<div id="stockDcSlot" class="dc-stock-slot"></div>';
+      } else if (name === 'compare') {
+        /* Phase 6 — Render slot for the Compare summary card. The card is
+           NOT a relocated singleton — it's a freshly rendered summary that
+           reads from cached state and links out to the existing Compare
+           panel. _dcRenderCompareSummary populates it. */
+        content.innerHTML = '<div id="compareDcSlot" class="dc-compare-slot"></div>';
+      } else if (name === 'why') {
+        /* Phase 7 — Render slot for the Why summary card. Deterministic only.
+           _dcRenderWhySummary reads portfolioState + _wapBuildState +
+           _wapDeriveContext + lock state and writes the fact card. */
+        content.innerHTML = '<div id="whyDcSlot" class="dc-why-slot"></div>';
+      } else {
+        var p = TAB_PLACEHOLDERS[name] || TAB_PLACEHOLDERS[DEFAULT_TAB];
+        content.innerHTML =
+          '<div class="dc-placeholder">' +
+            '<div class="dc-placeholder-eye">' + _esc(p.eye) + '</div>' +
+            '<div class="dc-placeholder-msg">' + _esc(p.msg) + '</div>' +
+          '</div>';
+      }
+    }
+    _setStored(name);
+    /* Phase 2 + Phase 4 + Phase 5 — apply re-parent rules after DOM is in
+       the new tab state. Phase 6 — populate Compare summary if its slot
+       just rendered. Phase 7 — populate Why summary if its slot just rendered. */
+    _dcRelocateWap();
+    _dcRelocateDeploy();
+    _dcRelocateStock();
+    if (typeof global._dcRenderCompareSummary === 'function') {
+      global._dcRenderCompareSummary();
+    }
+    if (typeof global._dcRenderWhySummary === 'function') {
+      global._dcRenderWhySummary();
+    }
+  };
+
+  /* Phase 2 — singleton WAP relocator.
+     Invariant: exactly one #wapContainer exists in the document at all times.
+     If Decision Center is active AND the active tab is "wap" AND the wap slot
+     exists, the singleton lives in #wapDcSlot. Otherwise it lives in
+     #wapDashboardSlot. _renderWAP is invoked after each relocation so the
+     locked/streak/buy state stays in sync with the current portfolio state. */
+  function _dcRelocateWap(){
+    var wapEl = document.getElementById('wapContainer');
+    if (!wapEl) return;
+    var dcPanel = document.getElementById('panel-decisioncenter');
+    var dcActive = !!(dcPanel && dcPanel.classList.contains('active'));
+    var activeTab = dcPanel && dcPanel.querySelector('.dc-tab.is-active');
+    var tabName = activeTab ? activeTab.getAttribute('data-dc-tab') : null;
+    var dcSlot = document.getElementById('wapDcSlot');
+    var dashSlot = document.getElementById('wapDashboardSlot');
+    if (dcActive && tabName === 'wap' && dcSlot) {
+      if (wapEl.parentNode !== dcSlot) {
+        dcSlot.appendChild(wapEl);
+        try { if (typeof global._renderWAP === 'function') global._renderWAP(); } catch(_){}
+      }
+    } else if (dashSlot) {
+      if (wapEl.parentNode !== dashSlot) {
+        dashSlot.appendChild(wapEl);
+        try { if (typeof global._renderWAP === 'function') global._renderWAP(); } catch(_){}
+      }
+    }
+  }
+  global._dcRelocateWap = _dcRelocateWap;
+
+  /* Phase 4 — singleton Deployment relocator.
+     Invariant: exactly one #deployContent exists in the document. Moves
+     between #deployDashboardSlot and #deployDcSlot based on (panel active)
+     AND (active tab === 'deploy'). updateDeployment is invoked after each
+     relocation so the plan reflects the current portfolio state in the new
+     location. IDs (#intelCashInput, #deployPlanEl, #deployRegimeLbl) and
+     inline handlers (oninput="setPortfolioCash(...)") survive the move. */
+  function _dcRelocateDeploy(){
+    var deployEl = document.getElementById('deployContent');
+    if (!deployEl) return;
+    var dcPanel = document.getElementById('panel-decisioncenter');
+    var dcActive = !!(dcPanel && dcPanel.classList.contains('active'));
+    var activeTab = dcPanel && dcPanel.querySelector('.dc-tab.is-active');
+    var tabName = activeTab ? activeTab.getAttribute('data-dc-tab') : null;
+    var dcSlot = document.getElementById('deployDcSlot');
+    var dashSlot = document.getElementById('deployDashboardSlot');
+    if (dcActive && tabName === 'deploy' && dcSlot) {
+      if (deployEl.parentNode !== dcSlot) {
+        dcSlot.appendChild(deployEl);
+        try { if (typeof global.updateDeployment === 'function') global.updateDeployment(); } catch(_){}
+      }
+    } else if (dashSlot) {
+      if (deployEl.parentNode !== dashSlot) {
+        dashSlot.appendChild(deployEl);
+        try { if (typeof global.updateDeployment === 'function') global.updateDeployment(); } catch(_){}
+      }
+    }
+  }
+  global._dcRelocateDeploy = _dcRelocateDeploy;
+
+  /* Phase 5 — singleton Stock Analysis relocator.
+     Invariant: exactly one #stockContent exists in the document. Moves
+     between #stockcheckPanelSlot (inside panel-stockcheck) and #stockDcSlot
+     (Decision Center → Analyze tab) based on (DC active AND tab === analyze)
+     vs everything else. IDs (#tickerInput, #stockOutput, #modeQuickBtn,
+     #modeFullBtn, #togTrack, #togThumb, #beginToggle) and inline handlers
+     (onkeydown="if(event.key==='Enter')runStock()", onclick="setStockMode(...)",
+     onclick="quickTick(...)", onclick="toggleBegin()") all survive the move. */
+  function _dcRelocateStock(){
+    var stockEl = document.getElementById('stockContent');
+    if (!stockEl) return;
+    var dcPanel = document.getElementById('panel-decisioncenter');
+    var dcActive = !!(dcPanel && dcPanel.classList.contains('active'));
+    var activeTab = dcPanel && dcPanel.querySelector('.dc-tab.is-active');
+    var tabName = activeTab ? activeTab.getAttribute('data-dc-tab') : null;
+    var dcSlot = document.getElementById('stockDcSlot');
+    var fallbackSlot = document.getElementById('stockcheckPanelSlot');
+    if (dcActive && tabName === 'analyze' && dcSlot) {
+      if (stockEl.parentNode !== dcSlot) {
+        dcSlot.appendChild(stockEl);
+      }
+    } else if (fallbackSlot) {
+      if (stockEl.parentNode !== fallbackSlot) {
+        fallbackSlot.appendChild(stockEl);
+      }
+    }
+  }
+  global._dcRelocateStock = _dcRelocateStock;
+
+  /* Phase 6 — Compare summary state.
+     Tracks the most recent Compare or Rank operation so the DC Compare tab
+     can show a calm summary card without duplicating Compare DOM. State is
+     persisted to localStorage so reloads keep the summary in view. */
+  var DC_COMPARE_STATE_KEY = 'fortis_dc_compare_state';
+  function _dcLoadCompareState(){
+    try {
+      var raw = localStorage.getItem(DC_COMPARE_STATE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch(_) { return null; }
+  }
+  function _dcSaveCompareState(s){
+    try { localStorage.setItem(DC_COMPARE_STATE_KEY, JSON.stringify(s)); } catch(_) {}
+  }
+  global._dcLoadCompareState = _dcLoadCompareState;
+
+  /* Render the Compare summary card into #compareDcSlot. Reads from the cached
+     state above. Empty state when nothing has been run. */
+  global._dcRenderCompareSummary = function(){
+    var slot = document.getElementById('compareDcSlot');
+    if (!slot) return; /* No-op when Compare tab isn't the active tab. */
+    var state = _dcLoadCompareState();
+    var emptyHtml = '<div class="dc-compare-empty">Run Compare &amp; Rank to generate a ranked list.</div>';
+    var bodyHtml;
+    if (!state || !state.lastUpdated) {
+      bodyHtml = emptyHtml;
+    } else if (state.mode === 'rank' && state.rankList && state.rankList.length) {
+      var listStr = state.rankList.slice(0, 6).join(', ') + (state.rankList.length > 6 ? '…' : '');
+      bodyHtml =
+        '<div class="dc-compare-section">' +
+          '<span class="dc-compare-label">Last list</span>' +
+          '<span class="dc-compare-value">' + _esc(listStr) + '</span>' +
+        '</div>' +
+        (state.rankTop ?
+          '<div class="dc-compare-section">' +
+            '<span class="dc-compare-label">Top ranked</span>' +
+            '<span class="dc-compare-value dc-compare-top">' + _esc(state.rankTop) + '</span>' +
+          '</div>' : '');
+    } else if (state.mode === 'compare' && state.comparePair && state.comparePair.length === 2) {
+      bodyHtml =
+        '<div class="dc-compare-section">' +
+          '<span class="dc-compare-label">Last head-to-head</span>' +
+          '<span class="dc-compare-value">' + _esc(state.comparePair[0]) +
+            ' <span class="dc-compare-vs">vs</span> ' + _esc(state.comparePair[1]) + '</span>' +
+        '</div>';
+    } else {
+      bodyHtml = emptyHtml;
+    }
+    slot.innerHTML =
+      '<div class="dc-compare-card">' +
+        '<div class="dc-compare-header">' +
+          '<div class="dc-compare-eye">Compare &amp; Rank</div>' +
+          '<div class="dc-compare-sub">Rank a short list before deciding what deserves capital.</div>' +
+        '</div>' +
+        '<div class="dc-compare-body">' + bodyHtml + '</div>' +
+        '<button type="button" class="dc-compare-cta" ' +
+          'onclick="showPanel(\'compare\', getNavForPanel(\'compare\'))">' +
+          'Open full Compare &rarr;' +
+        '</button>' +
+      '</div>';
+  };
+
+  /* Phase 7 — Why summary renderer.
+     Deterministic only. Pulls from portfolioState + _wapBuildState +
+     _wapDeriveContext + WAP.generateWeeklyActionPlan + lock-state readers.
+     No AI. No engine changes. Empty state when no portfolio or engine
+     unavailable. Re-runs on every Why-tab switch. */
+  global._dcRenderWhySummary = function(){
+    var slot = document.getElementById('whyDcSlot');
+    if (!slot) return; /* No-op when Why tab isn't active. */
+
+    var ps = global.portfolioState || {};
+    var holdings = ps.holdings || [];
+    var contribution = (typeof ps.cash === 'number') ? ps.cash : 0;
+
+    /* Empty-state gate — no portfolio at all. */
+    if (!holdings.length) {
+      slot.innerHTML =
+        '<div class="dc-why-card">' +
+          '<div class="dc-why-header">' +
+            '<div class="dc-why-eye">Why this move</div>' +
+            '<div class="dc-why-sub">The reasoning behind your weekly decision.</div>' +
+          '</div>' +
+          '<div class="dc-why-empty">Upload a portfolio to generate the reasoning behind this week’s move.</div>' +
+        '</div>';
+      return;
+    }
+
+    /* Build deterministic state + run engine. */
+    var state = null, result = null, ctx = null, locked = null, lastAction = null, streak = 0;
+    try { if (typeof global._wapBuildState === 'function') state = global._wapBuildState(); } catch(_){}
+    if (state) {
+      try {
+        if (global.WAP && typeof global.WAP.generateWeeklyActionPlan === 'function') {
+          result = global.WAP.generateWeeklyActionPlan(state);
+        }
+      } catch(_){}
+      try { if (typeof global._wapDeriveContext === 'function') ctx = global._wapDeriveContext(state, result); } catch(_){}
+    }
+    try { if (typeof global._wapReadLock === 'function') locked = global._wapReadLock(); } catch(_){}
+    try { if (typeof global._wapReadLastAction === 'function') lastAction = global._wapReadLastAction(); } catch(_){}
+    try { if (typeof global._wapReadStreak === 'function') streak = global._wapReadStreak() || 0; } catch(_){}
+
+    /* If the engine couldn't produce a result and there's no lock, show empty. */
+    if (!result && !locked) {
+      slot.innerHTML =
+        '<div class="dc-why-card">' +
+          '<div class="dc-why-header">' +
+            '<div class="dc-why-eye">Why this move</div>' +
+            '<div class="dc-why-sub">The reasoning behind your weekly decision.</div>' +
+          '</div>' +
+          '<div class="dc-why-empty">Upload a portfolio to generate the reasoning behind this week’s move.</div>' +
+        '</div>';
+      return;
+    }
+
+    /* Build the fact rows. */
+    var rows = [];
+
+    /* Row: This week's move (or locked-state caption). */
+    var moveLine = '';
+    if (locked) {
+      var daysLeft = (typeof global._wapDaysUntil === 'function') ? global._wapDaysUntil(locked) : null;
+      if (lastAction && lastAction.type === 'DEPLOYED') {
+        moveLine = 'Deployed ' + (lastAction.ticker ? _esc(lastAction.ticker) : '') +
+          (lastAction.amount ? ' · $' + Math.round(lastAction.amount) : '') +
+          (daysLeft != null ? ' · unlocks in ' + daysLeft + 'd' : '');
+      } else if (lastAction && lastAction.type === 'SKIPPED') {
+        moveLine = 'Skipped this week' + (daysLeft != null ? ' · unlocks in ' + daysLeft + 'd' : '');
+      } else {
+        moveLine = 'Locked' + (daysLeft != null ? ' · unlocks in ' + daysLeft + 'd' : '');
+      }
+    } else if (result) {
+      if (result.type === 'BUY') {
+        moveLine = 'Buy ' + _esc(result.ticker || '') +
+          (result.amount_usd ? ' · $' + Math.round(result.amount_usd) : '');
+      } else if (result.type === 'PARK_CASH') {
+        moveLine = 'Park cash this week';
+      } else if (result.type === 'REBALANCE') {
+        moveLine = 'Rebalance ' + _esc(result.ticker || '');
+      } else {
+        moveLine = _esc(String(result.type || ''));
+      }
+    }
+    if (moveLine) rows.push({ lbl: 'This week', val: moveLine, accent: !locked });
+
+    /* Row: Largest position (from ctx.largest). */
+    if (ctx && ctx.largest) {
+      var lw = (ctx.largest.currentWeight || 0).toFixed(1);
+      rows.push({ lbl: 'Largest', val: _esc(ctx.largest.ticker || '') + ' · ' + lw + '%' });
+    }
+
+    /* Row: Most underweight eligible. */
+    if (ctx && ctx.underweight) {
+      var ug = (ctx.underweight.gap || 0).toFixed(1);
+      rows.push({ lbl: 'Most underweight', val: _esc(ctx.underweight.ticker || '') + ' · +' + ug + 'pp behind target' });
+    }
+
+    /* Row: Focus narrative (deterministic branch from _wapDeriveContext). */
+    if (ctx && ctx.focus) {
+      rows.push({ lbl: 'Focus', val: _esc(ctx.focus.charAt(0).toUpperCase() + ctx.focus.slice(1)) });
+    }
+
+    /* Row: Contribution amount (from portfolioState.cash). */
+    rows.push({ lbl: 'Contribution', val: '$' + Math.round(contribution) + ' ready to deploy' });
+
+    /* Row: Streak (only when > 0). */
+    if (streak > 0) {
+      rows.push({ lbl: 'Discipline streak', val: streak + ' ' + (streak === 1 ? 'week' : 'weeks') });
+    }
+
+    /* Optional "Why it matters" line — deterministic, derived from ctx + result. */
+    var why = '';
+    if (ctx && ctx.pick && result && result.type === 'BUY') {
+      if (ctx.pick.helpsConcentration && ctx.pick.helpsBalance) {
+        why = 'This move improves both lane balance and concentration in the current portfolio.';
+      } else if (ctx.pick.helpsConcentration) {
+        why = 'This move reduces dependence on the largest holding.';
+      } else if (ctx.pick.helpsBalance) {
+        why = 'This move pulls allocation closer to the target structure.';
+      } else {
+        why = 'This move continues building toward the target structure.';
+      }
+    } else if (result && result.type === 'PARK_CASH') {
+      why = 'No candidate cleared all guardrails this week. Holding cash protects the plan.';
+    } else if (result && result.type === 'REBALANCE') {
+      why = 'A position drifted past its rebalance threshold. Trimming first restores discipline.';
+    } else if (locked) {
+      why = 'Plan resumes when the lock window closes.';
+    }
+
+    var rowsHtml = rows.map(function(r){
+      var valCls = r.accent ? 'dc-why-value dc-why-accent' : 'dc-why-value';
+      return '<div class="dc-why-section">' +
+               '<span class="dc-why-label">' + _esc(r.lbl) + '</span>' +
+               '<span class="' + valCls + '">' + r.val + '</span>' +
+             '</div>';
+    }).join('');
+
+    slot.innerHTML =
+      '<div class="dc-why-card' + (locked ? ' is-locked' : '') + '">' +
+        '<div class="dc-why-header">' +
+          '<div class="dc-why-eye">Why this move</div>' +
+          '<div class="dc-why-sub">The reasoning behind your weekly decision.</div>' +
+        '</div>' +
+        '<div class="dc-why-body">' + rowsHtml + '</div>' +
+        (why ? '<div class="dc-why-narrative">' + _esc(why) + '</div>' : '') +
+      '</div>';
+  };
+
+  /* Wrap runRankList — cache the input list + top-ranked ticker post-render. */
+  if (typeof global.runRankList === 'function' && !global.runRankList.__phase6Wrapped) {
+    var origRankList = global.runRankList;
+    var wrappedRankList = function(){
+      var r = origRankList.apply(this, arguments);
+      try {
+        var ta = document.getElementById('rankInput');
+        var listText = ta ? (ta.value || '').trim() : '';
+        var symbols = listText.split(/[\s,]+/)
+          .map(function(s){ return s.replace(/[^A-Za-z.]/g,'').toUpperCase(); })
+          .filter(Boolean)
+          .slice(0, 30);
+        /* The rendered table uses tr[data-rk-sym] in score-descending order;
+           first one is the top-ranked. Read from DOM rather than re-running
+           the scoring inside the wrapper. */
+        var firstRow = document.querySelector('#rankOutput .rk-tbl tr[data-rk-sym]');
+        var topSym = firstRow ? firstRow.getAttribute('data-rk-sym') : null;
+        if (symbols.length || topSym) {
+          _dcSaveCompareState({
+            mode: 'rank',
+            rankList: symbols,
+            rankTop: topSym,
+            comparePair: null,
+            lastUpdated: Date.now()
+          });
+          if (typeof global._dcRenderCompareSummary === 'function') {
+            global._dcRenderCompareSummary();
+          }
+        }
+      } catch(_){}
+      return r;
+    };
+    wrappedRankList.__phase6Wrapped = true;
+    global.runRankList = wrappedRankList;
+  }
+
+  /* Wrap runCompare — cache the head-to-head pair as soon as it's invoked. */
+  if (typeof global.runCompare === 'function' && !global.runCompare.__phase6Wrapped) {
+    var origCompare = global.runCompare;
+    var wrappedCompare = function(){
+      var r = origCompare.apply(this, arguments);
+      try {
+        var aEl = document.getElementById('compA');
+        var bEl = document.getElementById('compB');
+        var a = aEl ? (aEl.value || '').trim().toUpperCase() : '';
+        var b = bEl ? (bEl.value || '').trim().toUpperCase() : '';
+        if (a && b) {
+          _dcSaveCompareState({
+            mode: 'compare',
+            rankList: null,
+            rankTop: null,
+            comparePair: [a, b],
+            lastUpdated: Date.now()
+          });
+          if (typeof global._dcRenderCompareSummary === 'function') {
+            global._dcRenderCompareSummary();
+          }
+        }
+      } catch(_){}
+      return r;
+    };
+    wrappedCompare.__phase6Wrapped = true;
+    global.runCompare = wrappedCompare;
+  }
+
+  /* Phase 4 — propagate cash-input changes to WAP.
+     setPortfolioCash mutates portfolioState.cash. WAP reads from portfolioState
+     for amount sizing. Without this wrap, WAP would only refresh on full panel
+     transitions. With the wrap, every contribution change reflects immediately
+     in the WAP card (whether it lives in Dashboard or Decision Center). */
+  if (typeof global.setPortfolioCash === 'function' && !global.setPortfolioCash.__phase4Wrapped) {
+    var origSetCash = global.setPortfolioCash;
+    var wrappedSetCash = function(n){
+      var r = origSetCash.apply(this, arguments);
+      try { if (typeof global._renderWAP === 'function') global._renderWAP(); } catch(_){}
+      return r;
+    };
+    wrappedSetCash.__phase4Wrapped = true;
+    global.setPortfolioCash = wrappedSetCash;
+  }
+
+  function _init(){
+    if (!document.getElementById('panel-decisioncenter')) return;
+    /* Restore last-active tab on first paint. */
+    global.dcSetTab(_getStored());
+    /* On initial load the user is on Dashboard, not Decision Center, so the
+       relocator inside dcSetTab will leave wapContainer in the dashboard slot
+       (dcActive === false). No flicker. */
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _init);
+  else _init();
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* =============================================================================
+ * Phase 3 — Decision Mode (focus experience) controller
+ * Toggles `.is-wap-active` on #panel-decisioncenter when (panel active) AND
+ * (tab === 'wap'). Wrapping pattern — does not modify Phase 1 dcSetTab or
+ * Phase 2 showPanel-relocator hook. Idempotent via two named guards.
+ * ========================================================================== */
+(function(global){
+  'use strict';
+  var VALID_TABS = ['wap','deploy','analyze','compare','why'];
+
+  function _setMode(active, replay){
+    var panel = document.getElementById('panel-decisioncenter');
+    if (!panel) return;
+    if (active){
+      /* Replay the entry animation when re-entering the wap tab from another
+         panel — without this, a second visit doesn't re-animate. */
+      if (replay && panel.classList.contains('is-wap-active')){
+        panel.classList.remove('is-wap-active');
+        /* Force reflow so the animation can replay on next class add. */
+        void panel.offsetWidth;
+      }
+      panel.classList.add('is-wap-active');
+    } else {
+      panel.classList.remove('is-wap-active');
+    }
+  }
+
+  /* Wrap dcSetTab — toggle on every tab change while the panel is active. */
+  if (typeof global.dcSetTab === 'function' && !global.dcSetTab.__phase3DcModeWrapped){
+    var origSetTab = global.dcSetTab;
+    var wrappedSetTab = function(name){
+      var r = origSetTab.apply(this, arguments);
+      var panel = document.getElementById('panel-decisioncenter');
+      var dcActive = !!(panel && panel.classList.contains('active'));
+      _setMode(dcActive && name === 'wap');
+      return r;
+    };
+    wrappedSetTab.__phase3DcModeWrapped = true;
+    global.dcSetTab = wrappedSetTab;
+  }
+
+  /* Wrap showPanel — clear the class when leaving Decision Center; re-apply
+     (with replay) when entering Decision Center on the wap tab. */
+  if (typeof global.showPanel === 'function' && !global.showPanel.__phase3DcModeWrapped){
+    var origShow = global.showPanel;
+    var wrappedShow = function(name, btn){
+      var r = origShow.apply(this, arguments);
+      if (name === 'decisioncenter'){
+        var tab;
+        try { tab = localStorage.getItem('fortis_dc_tab') || 'wap'; } catch(_){ tab = 'wap'; }
+        if (VALID_TABS.indexOf(tab) === -1) tab = 'wap';
+        _setMode(tab === 'wap', true /* replay entry animation */);
+      } else {
+        _setMode(false);
+      }
+      return r;
+    };
+    wrappedShow.__phase3DcModeWrapped = true;
+    global.showPanel = wrappedShow;
+  }
+})(typeof window !== 'undefined' ? window : globalThis);
 
 /* =============================================================================
  * Pass C — Collapse + Focus + Polish controller
