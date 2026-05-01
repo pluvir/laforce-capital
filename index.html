@@ -691,11 +691,16 @@ body:has(#panel-compare.active)        .lfc-foot {
   display: flex;
   flex-direction: column;
 }
-#panel-dashboard > #welcomeHero      { order: 1; }
-#panel-dashboard > #wapDashboardSlot { order: 2; }
-#panel-dashboard > *:not(#welcomeHero):not(#wapDashboardSlot) {
-  display: none !important;
-}
+/* Phase 17a fix — Restore Dashboard analytical content.
+   Previously a `*:not(...) { display: none !important }` rule limited the
+   Dashboard to only #welcomeHero + #wapDashboardSlot, leaving everything
+   else (Today's Pulse, Decision Sequence, Strategy Paths, Allocation,
+   Risk Flags / Action Plan, Deployment Plan, Stock Decision) hidden.
+   Removed so the rest of the dashboard renders again.
+   WAP anchoring near the top is preserved via NEGATIVE order on Hero/WAP
+   slots — all other children default to order: 0 and render after them. */
+#panel-dashboard > #welcomeHero      { order: -2; }
+#panel-dashboard > #wapDashboardSlot { order: -1; }
 
 /* ===== Phase 8 — Sidebar simplification =====================================
    Hide the five nav items absorbed into Decision Center. Panels remain alive
@@ -1211,11 +1216,17 @@ html, body, #app, #main { background: var(--noir); }
   overflow-x: hidden;
 }
 
+/* Phase 17a fix — DC layout properties stay scoped, but display:flex
+   only fires when DC is active. Without the .active qualifier the ID
+   selector beats `.panel { display: none }` and Decision Center renders
+   on top of every other panel, making sidebar nav appear broken. */
 #panel-decisioncenter {
   height: 100%;
-  display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+#panel-decisioncenter.active {
+  display: flex;
 }
 #panel-decisioncenter > .ph,
 #panel-decisioncenter > .dc-context,
@@ -13565,26 +13576,40 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
         and ticker existence. No AI, no model variance.
      ============================================================================ */
   var WAP_CONTRIB_KEY = 'fortis_contribution_v1';
+  /* Phase 17a fix — User-set flag. Required to honor the localStorage value.
+     Without this flag, the wrapper around setPortfolioCash was leaking
+     extracted brokerage cash into the contribution key, making "$1,000 to
+     deploy" appear after upload when the user's actual baseline is $100.
+     Now: default $100 unless the user has EXPLICITLY set a value via the
+     WAP edit pencil (which is the only thing that flips this flag on). */
+  var WAP_CONTRIB_USER_FLAG = 'fortis_contribution_v1_user_set';
 
   function _wapGetContribution(){
     try {
-      var raw = localStorage.getItem(WAP_CONTRIB_KEY);
-      var v = parseFloat(raw);
-      if (isFinite(v) && v > 0) return Math.round(v);
+      var userSet = localStorage.getItem(WAP_CONTRIB_USER_FLAG) === '1';
+      if (userSet) {
+        var raw = localStorage.getItem(WAP_CONTRIB_KEY);
+        var v = parseFloat(raw);
+        if (isFinite(v) && v > 0) return Math.round(v);
+      }
     } catch(_){}
-    /* Fallback to existing portfolioState.cash flow for backward compat. */
-    try {
-      var ps = window.portfolioState || {};
-      if (typeof ps.cash === 'number' && ps.cash > 0) return Math.round(ps.cash);
-    } catch(_){}
-    return 100; /* Rod's baseline contribution per profile. */
+    /* Default to Rod's baseline weekly contribution. Do NOT fall back to
+       portfolioState.cash — extracted brokerage cash is portfolio context,
+       not weekly contribution. Keeping these separate is the whole point. */
+    return 100;
   }
 
   function _wapSetContribution(amount){
     var n = parseFloat(amount);
     if (!isFinite(n) || n <= 0) return false;
     n = Math.round(n);
-    try { localStorage.setItem(WAP_CONTRIB_KEY, String(n)); } catch(_){}
+    /* Phase 17a fix — also flip the user-set flag so _wapGetContribution
+       trusts this localStorage value. Without the flag, extraction-driven
+       writes to the key would leak through. */
+    try {
+      localStorage.setItem(WAP_CONTRIB_KEY, String(n));
+      localStorage.setItem(WAP_CONTRIB_USER_FLAG, '1');
+    } catch(_){}
     /* Keep portfolioState.cash + #intelCashInput in sync so the deploy plan
        and other surfaces that read ps.cash see the same value. The Phase 4
        setPortfolioCash wrap will fire _renderWAP, but we re-render below
@@ -13792,22 +13817,13 @@ function esc(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/
     } catch(_){}
   }
 
-  /* Sync localStorage when setPortfolioCash is called externally (e.g., the
-     deploy-plan input). Keeps the contribution source-of-truth consistent. */
-  (function _wapHookSetCashForContrib(){
-    if (typeof window.setPortfolioCash !== 'function' || window.setPortfolioCash.__phase17aWrapped) return;
-    var origSetCash = window.setPortfolioCash;
-    var wrapped = function(n){
-      var r = origSetCash.apply(this, arguments);
-      try {
-        var v = parseFloat(n);
-        if (isFinite(v) && v > 0) localStorage.setItem(WAP_CONTRIB_KEY, String(Math.round(v)));
-      } catch(_){}
-      return r;
-    };
-    wrapped.__phase17aWrapped = true;
-    window.setPortfolioCash = wrapped;
-  })();
+  /* Phase 17a fix — REMOVED setPortfolioCash → localStorage sync wrapper.
+     The wrapper was writing every cash value (including extracted brokerage
+     cash) to the contribution key, conflating "what's in the account" with
+     "what to deploy this week." Now the contribution key is only written by
+     the WAP edit pencil (via _wapSetContribution), which is the explicit
+     user-driven path. The Deploy tab still updates portfolioState.cash via
+     setPortfolioCash, but no longer leaks into the contribution key. */
 
   function _wapInstallWrapper(){
     if (typeof window.WAPUi === 'undefined' || window.WAPUi.__wapWrapped) return;
